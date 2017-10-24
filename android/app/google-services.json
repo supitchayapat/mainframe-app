@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "925112258271",
+    "firebase_url": "https://auphantum.firebaseio.com",
+    "project_id": "auphantum",
+    "storage_bucket": "auphantum.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925112258271:android:f88054086180b1e1",
+        "android_client_info": {
+          "package_name": "com.firebaseapp.org.firebaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925112258271-ljrh992vrjtq4vl21gjm0qaj5beggj9c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseapp.org.firebaseapp",
+            "certificate_hash": "b9d2e503ba79b8ce8836b314ee47239a0a678e34"
+          }
+        },
+        {
+          "client_id": "925112258271-l0s6si4m29s1ag9gce1s9adoj4lei9k0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoQKu0cF2-MXy2yQ5thkOGAqn_sBR6-pk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925112258271-l0s6si4m29s1ag9gce1s9adoj4lei9k0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
