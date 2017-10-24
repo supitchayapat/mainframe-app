@@ -49,9 +49,11 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     print("INIT BDAY.....");
     getCurrentUserProfile().then((usr) {
       _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
-      genderVal = usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
-      if(genderVal == null || genderVal.isEmpty) {
+      if(usr.gender == null) {
         genderVal = "MALE";
+      } else {
+        genderVal =
+            usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
       }
       _user = usr;
     });
