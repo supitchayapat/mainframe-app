@@ -13,8 +13,9 @@ class ProfileSetupBday extends StatefulWidget {
 class _ProfileSetupBdayState extends State<ProfileSetupBday> {
 
   TextEditingController _bdayCtrl = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  String genderVal = "male";
+  String genderVal = "MALE";
   User _user;
 
   void _handleGenderChanged(String val) {
@@ -24,12 +25,22 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     });
   }
 
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(value)
+    ));
+  }
+
   void _handleSubmitted() {
     // perform validation and save
     final FormState form = _formKey.currentState;
-    form.save();
-    saveUser(_user);
-    Navigator.pushNamed(context, "/profilesetup-3");
+    if(!form.validate()) {
+      showInSnackBar('Please fix the errors in red before submitting.');
+    } else {
+      form.save();
+      saveUser(_user);
+      Navigator.pushNamed(context, "/profilesetup-3");
+    }
   }
 
   @override
@@ -39,13 +50,29 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     getCurrentUserProfile().then((usr) {
       _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
       genderVal = usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
+      if(genderVal == null || genderVal.isEmpty) {
+        genderVal = "MALE";
+      }
       _user = usr;
     });
+  }
+
+  String _validateBirthday(String val) {
+    if(val.isEmpty) {
+      return "Birth date Field Required";
+    }
+    try {
+      DateTime dt = new DateFormat("MM/dd/yyyy").parse(val);
+    } catch(exception, stackTrace) {
+      return "invalid format. Please enter date in mm/dd/yyyy";
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        key: _scaffoldKey,
         appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
         body: new Form(
             key: _formKey,
@@ -61,6 +88,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                     keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.birthday = new DateFormat("MM/dd/yyyy").parse(val),
                     controller: _bdayCtrl,
+                    validator: _validateBirthday,
                   ),
                   new Row(
                     children: <Widget>[

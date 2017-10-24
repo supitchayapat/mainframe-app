@@ -31,7 +31,7 @@ Future<User> saveUser(User usr) async {
 }
 
 Future<User> saveUserFromFirebase(FirebaseUser usr) async {
-  User user = new User(null, null, null, usr.email, null, null, null, usr.photoUrl);
+  User user = new User("", "", "", usr.email, new DateTime.now(), null, null, usr.photoUrl);
   return reference.child(usr.uid).set(user.toJson());
 }
 

@@ -21,7 +21,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     getCurrentUserProfile().then((usr) {
       _user = usr;
     });
-    categoryVal = "";
+    categoryVal = "PROFESSIONAL";
   }
 
   void _handleSubmitted() {

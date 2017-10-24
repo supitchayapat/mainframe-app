@@ -74,6 +74,7 @@ class _MyAppState extends State<MyApp> {
                 child: new Text("Sign-up Email"),
                 color: Colors.red,
                 onPressed: () {
+                  _nextRoute = "/profilesetup-1";
                   Navigator.pushNamed(context, '/emailRegistry');
                 }
             )
