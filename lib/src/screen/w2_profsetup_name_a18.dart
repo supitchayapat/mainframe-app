@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
 
 class ProfileSetupName extends StatefulWidget {
   @override
@@ -18,12 +19,6 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   User _user;
-
-  void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-        content: new Text(value)
-    ));
-  }
 
   @override
   void initState() {
@@ -50,7 +45,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
       final FormState form = _formKey.currentState;
       // validate form and save
       if(!form.validate()) {
-        showInSnackBar('Please fix the errors in red before submitting.');
+        showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
       } else {
         form.save();
         // save user using UserDao

@@ -13,15 +13,17 @@ User convertResponseToUser(var response) {
   final json_usr = JSON.decode(response);
   final formatter = new DateFormat("MM/dd/yyyy");
   return new User(json_usr["id"], json_usr["first_name"], json_usr["last_name"], null,
-      formatter.parse(json_usr["birthday"]),
+      json_usr["birthday"] != null ? formatter.parse(json_usr["birthday"]) : null,
       getGenderFromString(json_usr["gender"].toString().toUpperCase()),
       null, null);
 }
 
 void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
   User user = convertResponseToUser(response);
+  print('SAVING USER FROM RESPONSE....');
   user.displayPhotoUrl = fbaseUser.photoUrl;
   user.email = fbaseUser.email;
+  print(user.toJson());
   reference.child(fbaseUser.uid).set(user.toJson());
 }
 

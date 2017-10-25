@@ -35,9 +35,9 @@ class User {
       "first_name": first_name,
       "last_name": last_name,
       "email": email,
-      "birthday": formatter.format(birthday),
-      "gender": gender.toString().replaceAll("Gender.", ""),
-      "category": category.toString().replaceAll("DanceCategory.", ""),
+      "birthday": birthday!= null ? formatter.format(birthday) : formatter.format(new DateTime.now()),
+      "gender": gender != null ? gender.toString().replaceAll("Gender.", "") : null,
+      "category": category != null ? category.toString().replaceAll("DanceCategory.", "") : null,
       "displayPhotoUrl": displayPhotoUrl
     };
   }

@@ -17,7 +17,8 @@ Future<FirebaseUser> registerEmail(String email, String password) {
 }
 
 Future<String> signInWithFacebook() async {
-  String token = await FacebookSignIn.loginWithReadPermissions(read);
+  String token = await FacebookSignIn.loginWithReadPermissions(read)
+      .catchError((err) => print('FB LOGIN WITH PERMISSION ERROR. $err'));
   print("token: $token");
   final FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
   assert(user.email != null);
