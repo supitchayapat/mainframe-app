@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'src/screen/w2_profsetup_name_a18.dart';
 import 'src/screen/w1_email_registry_a16.dart';
+import 'src/screen/w1-1_email_login_a2.dart';
 import 'src/screen/w3_profsetup_bday_a6.dart';
 import 'src/screen/w4_profsetup_category_a7.dart';
 import 'src/screen/main_screen.dart';
@@ -47,6 +48,11 @@ Route<Null> getMainFrameRoute(RouteSettings settings) {
     case '/emailRegistry':
       return new MainFrameRoute(
         builder: (_) => new EmailRegistry(),
+        settings: settings,
+      );
+    case '/emailLogin':
+      return new MainFrameRoute(
+        builder: (_) => new EmailLogin(),
         settings: settings,
       );
     default:

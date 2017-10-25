@@ -16,9 +16,40 @@ Future<FirebaseUser> registerEmail(String email, String password) {
   });
 }
 
+Future<FirebaseUser> loginWithEmail(String email, String password) {
+  return _auth.signInWithEmailAndPassword(email: email, password: password);
+}
+
+Future<String> loginWithFacebook() async {
+  String token = "";
+  bool isLogged = await FacebookSignIn.isLoggedIn();
+  if(!isLogged) {
+    token = await FacebookSignIn.loginWithReadPermissions(read);
+  }
+  else {
+    token = await FacebookSignIn.getToken();
+  }
+  print("token: $token");
+  final FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
+  assert(user.email != null);
+  assert(user.displayName != null);
+  assert(!user.isAnonymous);
+  assert(await user.getToken() != null);
+
+  final FirebaseUser currentUser = await _auth.currentUser();
+  assert(user.uid == currentUser.uid);
+  return 'signInWithGoogle succeeded: $user';
+}
+
 Future<String> signInWithFacebook() async {
-  String token = await FacebookSignIn.loginWithReadPermissions(read)
-      .catchError((err) => print('FB LOGIN WITH PERMISSION ERROR. $err'));
+  String token = "";
+  bool isLogged = await FacebookSignIn.isLoggedIn();
+  if(!isLogged) {
+    token = await FacebookSignIn.loginWithReadPermissions(read);
+  }
+  else {
+    token = await FacebookSignIn.getToken();
+  }
   print("token: $token");
   final FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
   assert(user.email != null);

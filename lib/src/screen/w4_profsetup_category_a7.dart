@@ -19,9 +19,15 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     super.initState();
     print("INIT CATEGORY.....");
     getCurrentUserProfile().then((usr) {
+      if(usr.category == null) {
+        categoryVal = "PROFESSIONAL";
+      }
+      else {
+        categoryVal =
+            usr.category.toString().replaceAll("DanceCategory.", "").toUpperCase();
+      }
       _user = usr;
     });
-    categoryVal = "PROFESSIONAL";
   }
 
   void _handleSubmitted() {
@@ -42,9 +48,13 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     return new Scaffold(
         appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
         body: new Container(
+          padding: new EdgeInsets.all(20.0),
           child: new Column(
             children: <Widget>[
-              new Text("Dance Category:"),
+              new Align(
+                alignment: Alignment.centerLeft,
+                child: new Text("Dance Category")
+              ),
               new Row(
                 children: <Widget>[
                   new Radio(value: "PROFESSIONAL", groupValue: categoryVal, onChanged: _handleCategoryChanged),

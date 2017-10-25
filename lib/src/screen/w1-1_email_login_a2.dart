@@ -4,12 +4,12 @@ import 'package:myapp/src/model/User.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 
-class EmailRegistry extends StatefulWidget {
+class EmailLogin extends StatefulWidget {
   @override
-  _EmailRegistryState createState() => new _EmailRegistryState();
+  _EmailLoginState createState() => new _EmailLoginState();
 }
 
-class _EmailRegistryState extends State<EmailRegistry> {
+class _EmailLoginState extends State<EmailLogin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String pwd = "";
@@ -27,11 +27,10 @@ class _EmailRegistryState extends State<EmailRegistry> {
       showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
       form.save();
-      registerEmail(_user.email, pwd).then((usr) =>
-          Navigator.of(context).pushNamed("/profilesetup-1"))
+      loginWithEmail(_user.email, pwd).then((usr) =>
+          Navigator.of(context).pushNamed("/mainscreen"))
           .catchError((err) {
-              showMainFrameDialog(context, "Sign-up Error",
-                  err.message);
+              showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
       });
     }
   }
@@ -92,7 +91,7 @@ class _EmailRegistryState extends State<EmailRegistry> {
                     padding: const EdgeInsets.all(20.0),
                     alignment: Alignment.bottomCenter,
                     child: new RaisedButton(
-                      child: const Text('NEXT'),
+                      child: const Text('LOGIN'),
                       onPressed: _handleSubmitted,
                     ),
                   ),

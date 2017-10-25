@@ -68,6 +68,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
         body: new Form(
             key: _formKey,
             child: new Container(
+              padding: new EdgeInsets.all(20.0),
               child: new Column(
                 children: <Widget>[
                   new TextFormField(

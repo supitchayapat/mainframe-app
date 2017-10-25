@@ -61,8 +61,13 @@ class _MyAppState extends State<MyApp> {
                   child: new Text("Facebook Login"),
                   color: Colors.blue,
                   onPressed: () {
-                    signInWithFacebook().then((str) => Navigator.of(context).pushNamed(_nextRoute));
-                    _nextRoute = "/profilesetup-1";
+                    loginWithFacebook().then((str) =>
+                        Navigator.of(context).pushNamed(_nextRoute))
+                        .catchError((err) {
+                      print('SIGN UP ERROR.... $err');
+                      showMainFrameDialog(context, "Application Error", "An error occurred during the process.");
+                    });
+                    _nextRoute = "/mainscreen";
                   }
               ),
               new Padding(padding: new EdgeInsets.all(6.0)),
@@ -70,8 +75,8 @@ class _MyAppState extends State<MyApp> {
                   child: new Text("Email Login"),
                   color: Colors.red,
                   onPressed: () {
-                    _nextRoute = "/profilesetup-1";
-                    Navigator.pushNamed(context, '/emailRegistry');
+                    _nextRoute = "/mainscreen";
+                    Navigator.pushNamed(context, '/emailLogin');
                   }
               )
             ],
