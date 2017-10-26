@@ -23,7 +23,7 @@ class MainScreen extends StatelessWidget {
                   color: Colors.red,
                   onPressed: () {
                     _logout();
-                    Navigator.of(context).pushReplacementNamed("/");
+                    Navigator.of(context).pushNamedAndRemoveUntil("/", (_) => false);
                   }
               )
             ],
