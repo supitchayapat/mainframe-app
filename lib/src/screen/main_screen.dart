@@ -3,21 +3,38 @@ import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+
+  @override
+  _MainScreenState createState() => new _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  MainFrameDrawer _mainFrameDrawer;
 
   void _logout() {
     logoutUser();
   }
 
   void _menuPressed() {
-    _scaffoldKey.currentState.openDrawer();
+    if(MainFrameDrawer.currentUser != null) {
+      _scaffoldKey.currentState.openDrawer();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserProfile().then((usr) {
+      _mainFrameDrawer = new MainFrameDrawer(_scaffoldKey);
+      MainFrameDrawer.currentUser=usr;
+    });
   }
   
   @override
   Widget build(BuildContext context) {
-    getCurrentUserProfile().then((usr) => MainFrameDrawer.currentUser=usr);
 
     return new Scaffold(
         key: _scaffoldKey,
@@ -48,7 +65,7 @@ class MainScreen extends StatelessWidget {
           ),
         ),
 
-        drawer: new MainFrameDrawer(_scaffoldKey)
+        drawer: _mainFrameDrawer
     );
   }
 }
