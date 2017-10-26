@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'src/util/ScreenUtils.dart';
+import 'src/util/LoadingIndicator.dart';
 
 
 void main() {
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> {
       initAuthStateListener((bool isLogged) {
         print("[Main page] Is loggedin: $isLogged");
         if(isLogged) {
+          MainFrameLoadingIndicator.hideLoading(context);
           SchedulerBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushNamed(_nextRoute);
           });
@@ -61,6 +63,7 @@ class _MyAppState extends State<MyApp> {
                   child: new Text("Facebook Login"),
                   color: Colors.blue,
                   onPressed: () {
+                    MainFrameLoadingIndicator.showLoading(context);
                     loginWithFacebook().then((str) =>
                         Navigator.of(context).pushNamed(_nextRoute))
                         .catchError((err) {
@@ -100,6 +103,7 @@ class _MyAppState extends State<MyApp> {
                   child: new Text("Connect with Facebook"),
                   color: Colors.blue,
                   onPressed: () {
+                    MainFrameLoadingIndicator.showLoading(context);
                     signInWithFacebook().then((str) =>
                         Navigator.of(context).pushNamed(_nextRoute))
                         .catchError((err) {

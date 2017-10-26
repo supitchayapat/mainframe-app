@@ -64,7 +64,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
 
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
+        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
         body: new Form(
             key: _formKey,
             child: new Container(

@@ -33,7 +33,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void _handleSubmitted() {
     // validate and save
     saveUser(_user);
-    Navigator.pushNamed(context, "/mainscreen");
+    Navigator.pushReplacementNamed(context, "/mainscreen");
   }
 
   void _handleCategoryChanged(String val) {
@@ -46,7 +46,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
+        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
         body: new Container(
           padding: new EdgeInsets.all(20.0),
           child: new Column(

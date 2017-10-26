@@ -3,6 +3,7 @@ import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/util/LoadingIndicator.dart';
 
 class EmailRegistry extends StatefulWidget {
   @override
@@ -24,12 +25,15 @@ class _EmailRegistryState extends State<EmailRegistry> {
   void _handleSubmitted() {
     final FormState form = _formKey.currentState;
     if(!form.validate()) {
+
       showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
+      MainFrameLoadingIndicator.showLoading(context);
       form.save();
-      registerEmail(_user.email, pwd).then((usr) =>
-          Navigator.of(context).pushNamed("/profilesetup-1"))
-          .catchError((err) {
+      registerEmail(_user.email, pwd).then((usr) {
+          MainFrameLoadingIndicator.hideLoading(context);
+          Navigator.of(context).pushNamed("/profilesetup-1");
+        }).catchError((err) {
               showMainFrameDialog(context, "Sign-up Error",
                   err.message);
       });
@@ -60,7 +64,7 @@ class _EmailRegistryState extends State<EmailRegistry> {
   Widget build(BuildContext context) {
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
+        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
         body: new Form(
             key: _formKey,
             child: new Container(

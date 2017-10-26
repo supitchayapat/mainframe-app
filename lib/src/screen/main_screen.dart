@@ -10,7 +10,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio")),
+        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
         body: new Container(
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -23,7 +23,7 @@ class MainScreen extends StatelessWidget {
                   color: Colors.red,
                   onPressed: () {
                     _logout();
-                    Navigator.of(context).pushNamed('/');
+                    Navigator.of(context).pushReplacementNamed("/");
                   }
               )
             ],
