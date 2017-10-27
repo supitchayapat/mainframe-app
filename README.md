@@ -1,8 +1,8 @@
-# myapp
+# Main Frame Dance Studio
 
-A new Flutter project.
+A Dance System App
 
 ## Getting Started
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+For help getting started with MainFrame DS, view our online
+[documentation](http://mainframeds.io/).
