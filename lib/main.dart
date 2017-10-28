@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
                         Navigator.of(context).pushNamed(_nextRoute))
                         .catchError((err) {
                       print('SIGN UP ERROR.... $err');
+                      MainFrameLoadingIndicator.hideLoading(context);
                       showMainFrameDialog(context, "Application Error", "An error occurred during the process. $err.message");
                     });
                     _nextRoute = "/mainscreen";
@@ -108,6 +109,7 @@ class _MyAppState extends State<MyApp> {
                         Navigator.of(context).pushNamed(_nextRoute))
                         .catchError((err) {
                           print('SIGN UP ERROR.... $err');
+                          MainFrameLoadingIndicator.hideLoading(context);
                           showMainFrameDialog(context, "Application Error", "An error occurred during the process. $err.message");
                     });
                     _nextRoute = "/profilesetup-1";
@@ -129,6 +131,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     return new TabbedComponentDemoScaffold(
+      hasBackButton: false,
       title: "Main Frame Dance Studio",
       demos: <ComponentDemoTabData>[
         new ComponentDemoTabData(

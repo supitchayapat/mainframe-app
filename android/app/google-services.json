@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "925112258271",
-    "firebase_url": "https://auphantum.firebaseio.com",
-    "project_id": "auphantum",
-    "storage_bucket": "auphantum.appspot.com"
+    "project_number": "475259608267",
+    "firebase_url": "https://uberregister-5308a.firebaseio.com",
+    "project_id": "uberregister-5308a",
+    "storage_bucket": "uberregister-5308a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:925112258271:android:f88054086180b1e1",
+        "mobilesdk_app_id": "1:475259608267:android:f88054086180b1e1",
         "android_client_info": {
           "package_name": "com.firebaseapp.org.firebaseapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "925112258271-ljrh992vrjtq4vl21gjm0qaj5beggj9c.apps.googleusercontent.com",
+          "client_id": "475259608267-0ksi34tl152lk2amfo1tm1q9pfc1609j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.firebaseapp.org.firebaseapp",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "925112258271-l0s6si4m29s1ag9gce1s9adoj4lei9k0.apps.googleusercontent.com",
+          "client_id": "475259608267-jhae22t8g27hh0tpsu07sr4hemegbst6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDoQKu0cF2-MXy2yQ5thkOGAqn_sBR6-pk"
+          "current_key": "AIzaSyDBSWoKqzBwhsuIwwS6L820E5dPFb-jQ3o"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "925112258271-l0s6si4m29s1ag9gce1s9adoj4lei9k0.apps.googleusercontent.com",
+              "client_id": "475259608267-jhae22t8g27hh0tpsu07sr4hemegbst6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

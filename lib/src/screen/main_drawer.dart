@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/model/User.dart';
 
+/*
+  Below is a list of Menu and their corresponding Navigation link.
+  each _MenuContent can be either a Parent menu or a Child menu
+ */
+final List<_MenuContent> _drawerContents = <_MenuContent>[
+  new _MenuContent("MENU", "", null, true, false),
+  new _MenuContent("Find Service Center", "", Icons.search, false, false),
+  new _MenuContent("Map View", "", Icons.map, false, false),
+  new _MenuContent("Messages", "", Icons.mail_outline, false, false),
+  new _MenuContent("Industry News", "", Icons.receipt, false, false),
+  new _MenuContent("ACCOUNT", "", null, true, false),
+  new _MenuContent("Settings", "", Icons.settings, false, false),
+  new _MenuContent("Logout", "", Icons.person_outline, false, false),
+  new _MenuContent("TECH SUPPORT", "", null, true, false),
+  new _MenuContent("Contact", "", Icons.phone, false, true),
+];
+
 class MainFrameDrawer extends StatefulWidget {
   static User currentUser;
   GlobalKey<ScaffoldState> scaffoldKey;
-
   MainFrameDrawer(this.scaffoldKey);
 
   @override
@@ -13,11 +29,12 @@ class MainFrameDrawer extends StatefulWidget {
 
 class _MenuContent {
   String menuLabel;
+  dynamic menuNavUri;
   IconData menuIcon;
   bool isParent;
   bool isLastMenu;
 
-  _MenuContent(this.menuLabel, this.menuIcon, this.isParent, this.isLastMenu);
+  _MenuContent(this.menuLabel, this.menuNavUri, this.menuIcon, this.isParent, this.isLastMenu);
 }
 
 class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderStateMixin {
@@ -27,18 +44,6 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   AnimationController _controller;
   Animation<double> _drawerContentsOpacity;
   Animation<Offset> _drawerDetailsPosition;
-  static List<_MenuContent> _drawerContents = <_MenuContent>[
-    new _MenuContent("MENU", null, true, false),
-    new _MenuContent("Find Service Center", Icons.search, false, false),
-    new _MenuContent("Map View", Icons.map, false, false),
-    new _MenuContent("Messages", Icons.mail_outline, false, false),
-    new _MenuContent("Industry News", Icons.receipt, false, false),
-    new _MenuContent("ACCOUNT", null, true, false),
-    new _MenuContent("Settings", Icons.settings, false, false),
-    new _MenuContent("Logout", Icons.person_outline, false, false),
-    new _MenuContent("TECH SUPPORT", null, true, false),
-    new _MenuContent("Contact", Icons.phone, false, true),
-  ];
   User usr;
 
   _MainFrameDrawerState(this._scaffoldKey,this.usr);
@@ -48,6 +53,17 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
     _scaffoldKey.currentState.showSnackBar(const SnackBar(
         content: const Text("The drawer's items don't do anything")
     ));
+  }
+
+  void _MFMenuPressed(_MenuContent content) {
+    if(content.menuNavUri == null ||
+        (content.menuNavUri is String && content.menuNavUri.isEmpty)) {
+      if(!content.isParent)
+        _showNotImplementedMessage();
+    }
+    else {
+      Navigator.pushNamed(context, content.menuNavUri);
+    }
   }
 
   @override
@@ -150,7 +166,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                               ],
                             ),
                           ),
-                          onTap: _showNotImplementedMessage,
+                          onTap: () => _MFMenuPressed(content),
                         );
                       }).toList(),
                     ),

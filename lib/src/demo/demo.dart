@@ -35,11 +35,13 @@ class ComponentDemoTabData {
 class TabbedComponentDemoScaffold extends StatelessWidget {
   const TabbedComponentDemoScaffold({
     this.title,
+    this.hasBackButton,
     this.demos
   });
 
   final List<ComponentDemoTabData> demos;
   final String title;
+  final bool hasBackButton;
 
   void _showExampleCode(BuildContext context) {
     final String tag = demos[DefaultTabController.of(context).index].exampleCodeTag;
@@ -56,8 +58,9 @@ class TabbedComponentDemoScaffold extends StatelessWidget {
       length: demos.length,
       child: new Scaffold(
         appBar: new AppBar(
+          automaticallyImplyLeading: hasBackButton,
           title: new Text(title),
-          actions: <Widget>[
+          /*actions: <Widget>[
             new Builder(
               builder: (BuildContext context) {
                 return new IconButton(
@@ -69,7 +72,7 @@ class TabbedComponentDemoScaffold extends StatelessWidget {
                 );
               },
             ),
-          ],
+          ],*/
           bottom: new TabBar(
             isScrollable: true,
             tabs: demos.map((ComponentDemoTabData data) => new Tab(text: data.tabName)).toList(),

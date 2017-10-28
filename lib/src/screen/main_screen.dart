@@ -16,6 +16,8 @@ class _MainScreenState extends State<MainScreen> {
 
   void _logout() {
     logoutUser();
+    Navigator.popUntil(context, (_) => !Navigator.canPop(context));
+    Navigator.of(context).pushNamed("/");
   }
 
   void _menuPressed() {
@@ -63,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                     color: Colors.red,
                     onPressed: () {
                       _logout();
-                      Navigator.of(context).pushNamedAndRemoveUntil("/", (_) => false);
+                      //Navigator.of(context).pushNamedAndRemoveUntil("/", (_) => false);
                     }
                 )
               ],
