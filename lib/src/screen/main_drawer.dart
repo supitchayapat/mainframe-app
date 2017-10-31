@@ -18,6 +18,12 @@ final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("Contact", "", Icons.phone, false, true),
 ];
 
+/*
+  Author: Art
+
+  [MainFrameDrawer] is a Drawer widget that contains Side Nav menu for the Application
+ */
+
 class MainFrameDrawer extends StatefulWidget {
   static User currentUser;
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -27,6 +33,10 @@ class MainFrameDrawer extends StatefulWidget {
   _MainFrameDrawerState createState() => new _MainFrameDrawerState(this.scaffoldKey, currentUser);
 }
 
+/*
+  [_MenuContent] class refers to the menu contents of the [MainFrameDrawer]
+  Side Nav menu.
+ */
 class _MenuContent {
   String menuLabel;
   dynamic menuNavUri;
@@ -55,6 +65,9 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
     ));
   }
 
+  /*
+    Metod implementation when the Side Nav menu is pressed.
+   */
   void _MFMenuPressed(_MenuContent content) {
     if(content.menuNavUri == null ||
         (content.menuNavUri is String && content.menuNavUri.isEmpty)) {
@@ -181,6 +194,10 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   }
 }
 
+/*
+  [_MFListTile] extends class [ListTile]
+  The class is tailored for the Application's Nav menu
+ */
 class _MFListTile extends ListTile {
   _MFListTile({Widget leading, Widget trailing, Widget title, Widget subtitle, GestureTapCallback onTap})
   : super(leading: leading, trailing: trailing, title: title, subtitle: subtitle, onTap: onTap);

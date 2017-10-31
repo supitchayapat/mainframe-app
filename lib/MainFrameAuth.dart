@@ -6,20 +6,38 @@ import 'package:facebook_sign_in/facebook_sign_in.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 
+/*
+  Author: Art
+
+  This dart contains the Authentication methods that is utilized in this Application
+ */
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = new GoogleSignIn();
 final List<String> read = ["public_profile", "user_friends", "email", "user_birthday"];
 
+/*
+  Method to register the current user to the Firebase Authenticated users.
+  This method uses email/password to register.
+ */
 Future<FirebaseUser> registerEmail(String email, String password) {
   return _auth.createUserWithEmailAndPassword(email: email, password: password).then((FirebaseUser data) {
     saveUserFromFirebase(data);
   });
 }
 
+/*
+  Method to login the current user to the Firebase Authenticated users.
+  This method uses email/password to login.
+ */
 Future<FirebaseUser> loginWithEmail(String email, String password) {
   return _auth.signInWithEmailAndPassword(email: email, password: password);
 }
 
+/*
+  Method to login the current user to the Firebase Authenticated users.
+  This method uses Facebook to login.
+ */
 Future<String> loginWithFacebook() async {
   String token = "";
   bool isLogged = await FacebookSignIn.isLoggedIn();
@@ -41,6 +59,10 @@ Future<String> loginWithFacebook() async {
   return 'signInWithGoogle succeeded: $user';
 }
 
+/*
+  Method to register the current user to the Firebase Authenticated users.
+  This method uses Facebook to register.
+ */
 Future<String> signInWithFacebook() async {
   String token = "";
   bool isLogged = await FacebookSignIn.isLoggedIn();
@@ -72,6 +94,10 @@ Future<String> signInWithFacebook() async {
   return 'signInWithGoogle succeeded: $user';
 }
 
+/*
+  Method to register the current user to the Firebase Authenticated users.
+  This method uses Google to register.
+ */
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
   final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -92,10 +118,16 @@ Future<String> signInWithGoogle() async {
   return 'signInWithGoogle succeeded: $user';
 }
 
+/*
+  Logout current Firebase User
+ */
 void logoutUser() {
   _auth.signOut();
 }
 
+/*
+  An Authentication State Listener
+ */
 void initAuthStateListener(Function p) {
   _auth.onAuthStateChanged.listen((FirebaseUser user){
     if(user != null) {

@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'src/util/ScreenUtils.dart';
 import 'src/util/LoadingIndicator.dart';
+import 'src/util/FirebaseCrashReport.dart';
 
 
 void main() {

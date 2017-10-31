@@ -4,6 +4,7 @@ import 'package:myapp/src/model/User.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/util/FirebaseCrashReport.dart';
 
 class EmailLogin extends StatefulWidget {
   @override
@@ -32,9 +33,11 @@ class _EmailLoginState extends State<EmailLogin> {
       loginWithEmail(_user.email, pwd).then((usr) {
             MainFrameLoadingIndicator.hideLoading(context);
             Navigator.of(context).pushReplacementNamed("/mainscreen");
-          }).catchError((err) =>
-              showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.")
-          );
+          }).catchError((err) {
+              MainFrameLoadingIndicator.hideLoading(context);
+              MainFrameCrashReport.send(err.message);
+              showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
+          });
     }
   }
 
