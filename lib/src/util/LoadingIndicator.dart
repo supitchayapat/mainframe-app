@@ -1,6 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+/*
+  Author: Art
+
+  [MainFrameLoading] class contains methods
+  to hide and show a [CircularProgressIndicator]
+  when processes are ongoing
+ */
 class MainFrameLoadingIndicator {
 
   static bool isOpened = false;
@@ -12,6 +19,9 @@ class MainFrameLoadingIndicator {
     }
   }
 
+  /*
+    Method that shows the Loading Indicator
+   */
   static Future<Null> showLoading(BuildContext context) async {
     isOpened = true;
 

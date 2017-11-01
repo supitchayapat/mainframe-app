@@ -6,6 +6,13 @@ import 'src/screen/w3_profsetup_bday_a6.dart';
 import 'src/screen/w4_profsetup_category_a7.dart';
 import 'src/screen/main_screen.dart';
 
+/*
+  Author: Art
+
+  [_MainFrameRoute] this class contains all routing/navigation path
+  for the application. It also utilizes a fade transition when going
+  to another screen
+ */
 class MainFrameRoute<T> extends MaterialPageRoute<T> {
   MainFrameRoute({ WidgetBuilder builder, RouteSettings settings })
       : super(builder: builder, settings: settings);
@@ -23,6 +30,9 @@ class MainFrameRoute<T> extends MaterialPageRoute<T> {
   }
 }
 
+/*
+  Method for getting all the route for this application
+ */
 Route<Null> getMainFrameRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/mainscreen':

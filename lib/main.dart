@@ -9,7 +9,12 @@ import 'package:myapp/src/demo/demo.dart';
 import 'src/util/ScreenUtils.dart';
 import 'src/util/LoadingIndicator.dart';
 
+/*
+  Author: Art
 
+  This is the main dart file for the application.
+  It contains the login and sign-up screen widgets
+ */
 void main() {
   runApp(new MaterialApp(
       home: new MyApp(),
