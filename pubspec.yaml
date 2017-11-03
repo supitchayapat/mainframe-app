@@ -31,6 +31,7 @@ flutter:
   assets:
     - mainframe_assets/profile/displayPhoto.jpg
     - mainframe_assets/profile/profilePhoto.jpg
+    - mainframe_assets/images/m7x5ba.jpg
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -44,15 +45,18 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+     - family: Montserrat-Light
+       fonts:
+         - asset: fonts/Montserrat-Light.otf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
+     - family: Montserrat-Medium
+       fonts:
+         - asset: fonts/Montserrat-Medium.otf
+     - family: Montserrat-Regular
+       fonts:
+         - asset: fonts/Montserrat-Regular.otf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
