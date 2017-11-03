@@ -162,3 +162,38 @@ class EventsListTile extends ListTile {
     );
   }
 }
+
+class ListTileText extends StatelessWidget {
+  Key key;
+  TextAlign textAlign;
+  TextDirection textDirection;
+  bool softWrap;
+  TextOverflow overflow;
+  double textScaleFactor;
+  int maxLines;
+  String data;
+  ListTileText(this.data, {this.key, this.textAlign, this.textDirection,
+    this.softWrap, this.overflow, this.textScaleFactor, this.maxLines});
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle style = new TextStyle(
+        color: Colors.white
+    );
+    if(data.length > 28) {
+      style = new TextStyle(
+          color: Colors.white,
+          fontSize: 14.0
+      );
+    }
+    return new Text(data,
+        style: style,
+        overflow: overflow,
+        textDirection: textDirection,
+        key: key,
+        maxLines: maxLines,
+        softWrap: softWrap,
+        textAlign: textAlign,
+        textScaleFactor: textScaleFactor);
+  }
+}
