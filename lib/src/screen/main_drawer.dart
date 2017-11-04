@@ -7,15 +7,15 @@ import 'package:myapp/src/model/User.dart';
  */
 final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("MENU", "", null, true, false),
-  new _MenuContent("Find Service Center", "", Icons.search, false, false),
-  new _MenuContent("Map View", "", Icons.map, false, false),
-  new _MenuContent("Messages", "", Icons.mail_outline, false, false),
-  new _MenuContent("Industry News", "", Icons.receipt, false, false),
+  new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
+  new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
+  new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
+  new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
   new _MenuContent("ACCOUNT", "", null, true, false),
-  new _MenuContent("Settings", "", Icons.settings, false, false),
-  new _MenuContent("Logout", "", Icons.person_outline, false, false),
+  new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
+  new _MenuContent("Logout", "", "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
   new _MenuContent("TECH SUPPORT", "", null, true, false),
-  new _MenuContent("Contact", "", Icons.phone, false, true),
+  new _MenuContent("Contact", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, true),
 ];
 
 /*
@@ -43,8 +43,9 @@ class _MenuContent {
   IconData menuIcon;
   bool isParent;
   bool isLastMenu;
+  String iconImage;
 
-  _MenuContent(this.menuLabel, this.menuNavUri, this.menuIcon, this.isParent, this.isLastMenu);
+  _MenuContent(this.menuLabel, this.menuNavUri, this.iconImage, this.isParent, this.isLastMenu, {this.menuIcon});
 }
 
 class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderStateMixin {
@@ -111,10 +112,21 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
     List<Widget> _generateRowChildren(_MenuContent content) {
       List<Widget> children = <Widget>[];
       if(!content.isParent) {
-        children.add(new Icon(content.menuIcon, color: Colors.white));
-        children.add(new Padding(padding: const EdgeInsets.only(right: 5.0)));
+        //children.add(new Icon(content.menuIcon, color: Colors.white));
+        children.add(new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white,));
+        children.add(new Padding(padding: const EdgeInsets.only(right: 8.0)));
+        children.add(new Text(content.menuLabel));
+      } else {
+        children.add(
+            new Container(
+                child: new Text(
+                    content.menuLabel,
+                    style: new TextStyle(fontWeight: FontWeight.bold)
+                ),
+                padding: const EdgeInsets.only(top: 2.0)
+            )
+        );
       }
-      children.add(new Text(content.menuLabel));
       return children;
     }
 
@@ -142,22 +154,28 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   new Container(
-                                    padding: new EdgeInsets.only(top: 5.0),
+                                    alignment: Alignment.topRight,
+                                    padding: new EdgeInsets.only(top: 10.0),
                                     //color: Colors.blue,
                                     child: new Column(
                                       children: <Widget>[
-                                        new Icon(Icons.brightness_1, size: 10.0, color: content.isParent ? Colors.red : Colors.white),
+                                        new Icon(Icons.brightness_1, size: 8.0, color: content.isParent ? Colors.red : Colors.white),
                                         new DefaultTextStyle(
-                                            style: new TextStyle(fontSize: 22.0),
+                                            style: new TextStyle(fontSize: 26.0),
                                             child: new Text(content.isLastMenu ? "" : "|")
                                         )
                                       ],
                                     ),
                                   ),
                                   new Container(
-                                    margin: new EdgeInsets.only(left: 5.0),
+                                    alignment: Alignment.topLeft,
+                                    margin: new EdgeInsets.only(left: 5.0, bottom: 30.0),
+                                    padding: new EdgeInsets.only(bottom: 5.0),
                                     //color: Colors.red,
-                                    child: new DefaultTextStyle(style: new TextStyle(fontSize: 18.0), child: new Text("---")),
+                                    child: new DefaultTextStyle(
+                                        style: new TextStyle(fontSize: 25.0),
+                                        child: new Text("—")
+                                    ),
                                   )
                                 ],
                               )
@@ -171,7 +189,8 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 new DefaultTextStyle(
-                                    style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: content.isParent ? Colors.red : Colors.white),
+                                      style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light",color: content.isParent ? new Color(0xfff4101d) : Colors.white
+                                    ),
                                     child: new Row(
                                       children: _generateRowChildren(content),
                                     )
@@ -291,7 +310,7 @@ class _MFListTile extends ListTile {
       children.add(IconTheme.merge(
         data: iconThemeData,
         child: new Container(
-          //margin: const EdgeInsetsDirectional.only(end: 16.0),
+          margin: const EdgeInsetsDirectional.only(end: 5.0),
           width: 40.0,
           alignment: AlignmentDirectional.centerStart,
           child: leading,

@@ -32,7 +32,14 @@ flutter:
     - mainframe_assets/profile/displayPhoto.jpg
     - mainframe_assets/profile/profilePhoto.jpg
     - mainframe_assets/images/m7x5ba.jpg
-  #  - images/a_dot_ham.jpeg
+  # icons
+    - mainframe_assets/icons/noun_939113_cc@2x.png
+    - mainframe_assets/icons/noun_961889_cc@2x.png
+    - mainframe_assets/icons/noun_1037967_cc@2x.png
+    - mainframe_assets/icons/noun_1042992_cc@2x.png
+    - mainframe_assets/icons/noun_1049935_cc@2x.png
+    - mainframe_assets/icons/noun_1098180_cc@2x.png
+    - mainframe_assets/icons/noun_1129072_cc@2x.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
