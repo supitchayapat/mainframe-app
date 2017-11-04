@@ -15,7 +15,7 @@ final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
   new _MenuContent("Logout", "", "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
   new _MenuContent("TECH SUPPORT", "", null, true, false),
-  new _MenuContent("Contact", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, true),
+  new _MenuContent("Contact", "", "mainframe_assets/icons/noun_961889_cc@2x.png", false, true),
 ];
 
 /*
@@ -113,9 +113,21 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
       List<Widget> children = <Widget>[];
       if(!content.isParent) {
         //children.add(new Icon(content.menuIcon, color: Colors.white));
-        children.add(new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white,));
-        children.add(new Padding(padding: const EdgeInsets.only(right: 8.0)));
-        children.add(new Text(content.menuLabel));
+        children.add(
+            new Container(
+                child: new Row(
+                  children: <Widget>[
+                    new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white, size: 16.0,),
+                    new Padding(padding: const EdgeInsets.only(right: 8.0)),
+                    new Text(content.menuLabel)
+                  ],
+                ),
+                padding: const EdgeInsets.only(top: 5.0)
+            )
+        );
+        //children.add(new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white, size: 16.0,));
+        //children.add(new Padding(padding: const EdgeInsets.only(right: 8.0)));
+        //children.add(new Text(content.menuLabel));
       } else {
         children.add(
             new Container(
@@ -123,7 +135,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                     content.menuLabel,
                     style: new TextStyle(fontWeight: FontWeight.bold)
                 ),
-                padding: const EdgeInsets.only(top: 2.0)
+                padding: const EdgeInsets.only(top: 5.0)
             )
         );
       }
@@ -161,7 +173,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                                       children: <Widget>[
                                         new Icon(Icons.brightness_1, size: 8.0, color: content.isParent ? Colors.red : Colors.white),
                                         new DefaultTextStyle(
-                                            style: new TextStyle(fontSize: 26.0),
+                                            style: new TextStyle(fontSize: 26.0, fontFamily: "Monserrat-Light", fontWeight: FontWeight.w200),
                                             child: new Text(content.isLastMenu ? "" : "|")
                                         )
                                       ],
@@ -173,7 +185,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                                     padding: new EdgeInsets.only(bottom: 5.0),
                                     //color: Colors.red,
                                     child: new DefaultTextStyle(
-                                        style: new TextStyle(fontSize: 25.0),
+                                        style: new TextStyle(fontSize: 25.0, fontFamily: "Monserrat-Light", fontWeight: FontWeight.w200),
                                         child: new Text("—")
                                     ),
                                   )
@@ -189,7 +201,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 new DefaultTextStyle(
-                                      style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light",color: content.isParent ? new Color(0xfff4101d) : Colors.white
+                                      style: new TextStyle(fontSize: 16.0, fontFamily: "Montserrat-Light",color: content.isParent ? new Color(0xfff4101d) : Colors.white
                                     ),
                                     child: new Row(
                                       children: _generateRowChildren(content),
