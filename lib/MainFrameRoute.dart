@@ -5,6 +5,9 @@ import 'src/screen/w1-1_email_login_a2.dart';
 import 'src/screen/w3_profsetup_bday_a6.dart';
 import 'src/screen/w4_profsetup_category_a7.dart';
 import 'src/screen/main_screen.dart';
+import 'src/screen/SplashScreen.dart';
+import 'src/screen/w0_login_a2.dart';
+import 'src/screen/login_screen.dart';
 
 /*
   Author: Art
@@ -33,8 +36,23 @@ class MainFrameRoute<T> extends MaterialPageRoute<T> {
 /*
   Method for getting all the route for this application
  */
-Route<Null> getMainFrameRoute(RouteSettings settings) {
+Route<Null> getMainFrameOnRoute(RouteSettings settings) {
   switch (settings.name) {
+    case '/':
+      return new MainFrameRoute(
+        builder: (_) => new MainFrameSplash(),
+        settings: settings,
+      );
+    case '/login':
+      return new MainFrameRoute(
+        builder: (_) => new LoginApp(),
+        settings: settings,
+      );
+    case '/loginscreen':
+      return new MainFrameRoute(
+        builder: (_) => new LoginScreen(),
+        settings: settings,
+      );
     case '/mainscreen':
       return new MainFrameRoute(
         builder: (_) => new MainScreen(),
@@ -68,4 +86,18 @@ Route<Null> getMainFrameRoute(RouteSettings settings) {
     default:
       return null;
   }
+}
+
+Map<String, WidgetBuilder> getMainFrameRoute() {
+  return <String, WidgetBuilder>{
+    '/':         (BuildContext context) => new MainFrameSplash(),
+    '/login':         (BuildContext context) => new LoginApp(),
+    '/loginscreen':         (BuildContext context) => new LoginScreen(),
+    '/mainscreen': (BuildContext context) => new MainScreen(),
+    '/profilesetup-1': (BuildContext context) => new ProfileSetupName(),
+    '/profilesetup-2': (BuildContext context) => new ProfileSetupBday(),
+    '/profilesetup-3': (BuildContext context) => new ProfileSetupCategory(),
+    '/emailRegistry': (BuildContext context) => new EmailRegistry(),
+    '/emailLogin': (BuildContext context) => new EmailLogin(),
+  };
 }

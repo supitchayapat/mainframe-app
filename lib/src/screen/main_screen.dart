@@ -33,10 +33,11 @@ class _MainScreenState extends State<MainScreen> {
         fontFamily: "Montserrat-Regular",
         canvasColor: new Color(0xFF324261)
     );
-    return new MaterialApp(
+    /*return new MaterialApp(
       title: 'Flutter Demo',
       theme: theme,
       home: new EventsWidget(),
-    );
+    );*/
+    return new EventsWidget();
   }
 }

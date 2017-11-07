@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/model/User.dart';
+import 'package:myapp/MainFrameAuth.dart';
 
 /*
   Below is a list of Menu and their corresponding Navigation link.
@@ -13,10 +14,15 @@ final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
   new _MenuContent("ACCOUNT", "", null, true, false),
   new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
-  new _MenuContent("Logout", "", "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
+  new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
   new _MenuContent("TECH SUPPORT", "", null, true, false),
   new _MenuContent("Contact", "", "mainframe_assets/icons/noun_961889_cc@2x.png", false, true),
 ];
+
+bool _logoutUser() {
+  logoutUser();
+  return true;
+}
 
 /*
   Author: Art
@@ -60,23 +66,31 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   _MainFrameDrawerState(this._scaffoldKey,this.usr);
 
   void _showNotImplementedMessage() {
-    Navigator.of(context).pop(); // Dismiss the drawer.
     _scaffoldKey.currentState.showSnackBar(const SnackBar(
         content: const Text("The drawer's items don't do anything")
     ));
   }
 
   /*
-    Metod implementation when the Side Nav menu is pressed.
+    Method implementation when the Side Nav menu is pressed.
    */
   void _MFMenuPressed(_MenuContent content) {
+    Navigator.of(context).pop(); // Dismiss the drawer.
+
     if(content.menuNavUri == null ||
         (content.menuNavUri is String && content.menuNavUri.isEmpty)) {
       if(!content.isParent)
         _showNotImplementedMessage();
     }
     else {
-      Navigator.pushNamed(context, content.menuNavUri);
+      if(content.menuNavUri is String) {
+        Navigator.pushNamed(context, content.menuNavUri);
+      } else {
+        bool popNav = content.menuNavUri();
+        if(popNav) {
+          Navigator.of(context).pushReplacementNamed("/loginscreen");
+        }
+      }
     }
   }
 
