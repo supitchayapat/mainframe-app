@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:facebook_sign_in/facebook_sign_in.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/src/dao/UserDao.dart';
@@ -13,7 +12,6 @@ import 'package:myapp/src/dao/UserDao.dart';
  */
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = new GoogleSignIn();
 final List<String> read = ["public_profile", "user_friends", "email", "user_birthday"];
 
 /*
@@ -52,7 +50,7 @@ Future<String> loginWithFacebook() async {
   assert(user.email != null);
   assert(user.displayName != null);
   assert(!user.isAnonymous);
-  assert(await user.getToken() != null);
+  assert(await user.getIdToken() != null);
 
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
@@ -77,7 +75,7 @@ Future<String> signInWithFacebook() async {
   assert(user.email != null);
   assert(user.displayName != null);
   assert(!user.isAnonymous);
-  assert(await user.getToken() != null);
+  assert(await user.getIdToken() != null);
 
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
@@ -90,30 +88,6 @@ Future<String> signInWithFacebook() async {
   print('response = $resp');
   //var usr = convertResponseToUser(resp);
   saveUserFromResponse(resp, user);
-
-  return 'signInWithGoogle succeeded: $user';
-}
-
-/*
-  Method to register the current user to the Firebase Authenticated users.
-  This method uses Google to register.
- */
-Future<String> signInWithGoogle() async {
-  final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-  final FirebaseUser user = await _auth.signInWithGoogle(
-    accessToken: googleAuth.accessToken,
-    idToken: googleAuth.idToken,
-  );
-  assert(user.email != null);
-  assert(user.displayName != null);
-  assert(!user.isAnonymous);
-  assert(await user.getToken() != null);
-
-  final FirebaseUser currentUser = await _auth.currentUser();
-  assert(user.uid == currentUser.uid);
-
-  print("This user is signed in: $user");
 
   return 'signInWithGoogle succeeded: $user';
 }
