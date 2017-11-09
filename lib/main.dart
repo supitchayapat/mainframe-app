@@ -11,7 +11,11 @@ void main() {
   ThemeData theme = new ThemeData(
       primaryColor: new Color(0xFF324261),
       fontFamily: "Montserrat-Regular",
-      canvasColor: new Color(0xFF324261)
+      canvasColor: new Color(0xFF324261),
+      brightness: Brightness.dark,
+      hintColor: Colors.white,
+      accentColor: Colors.white,
+      dialogBackgroundColor: new Color(0xFF324261),
   );
   runApp(new MaterialApp(
       onGenerateRoute: getMainFrameOnRoute,

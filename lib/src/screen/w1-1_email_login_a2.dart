@@ -4,6 +4,9 @@ import 'package:myapp/src/model/User.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/demo/demo.dart';
+import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/widget/MFTextFormField.dart';
 
 class EmailLogin extends StatefulWidget {
   @override
@@ -13,6 +16,7 @@ class EmailLogin extends StatefulWidget {
 class _EmailLoginState extends State<EmailLogin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _signUpFormKey = new GlobalKey<FormState>();
   String pwd = "";
   User _user;
 
@@ -22,21 +26,44 @@ class _EmailLoginState extends State<EmailLogin> {
     _user = new User(null, null, null, null, null, null, null, null);
   }
 
-  void _handleSubmitted() {
-    final FormState form = _formKey.currentState;
+  void _handleSubmitted(final FormState form, VoidCallback func) {
     if(!form.validate()) {
-      showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+      //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
       form.save();
       MainFrameLoadingIndicator.showLoading(context);
-      loginWithEmail(_user.email, pwd).then((usr) {
+      func();
+    }
+  }
+
+  void _handleSignUp() {
+    _handleSubmitted(
+        _signUpFormKey.currentState,
+        () {
+          registerEmail(_user.email, pwd).then((usr) {
+            MainFrameLoadingIndicator.hideLoading(context);
+            Navigator.of(context).pushReplacementNamed("/profilesetup-1");
+          }).catchError((err) {
+            MainFrameLoadingIndicator.hideLoading(context);
+            showMainFrameDialog(context, "Sign Up Error", err.message);
+          });
+        }
+    );
+  }
+
+  void _handleLogin() {
+    _handleSubmitted(
+        _formKey.currentState,
+        () {
+          loginWithEmail(_user.email, pwd).then((usr) {
             MainFrameLoadingIndicator.hideLoading(context);
             Navigator.of(context).pushReplacementNamed("/mainscreen");
           }).catchError((err) {
-              MainFrameLoadingIndicator.hideLoading(context);
-              showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
+            MainFrameLoadingIndicator.hideLoading(context);
+            showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
           });
-    }
+        }
+    );
   }
 
   String _validateEmail(String value) {
@@ -61,48 +88,94 @@ class _EmailLoginState extends State<EmailLogin> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        key: _scaffoldKey,
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
-        body: new Form(
-            key: _formKey,
-            child: new Container(
-              padding: new EdgeInsets.all(20.0),
-              child: new Column(
-                children: <Widget>[
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                        icon: const Icon(Icons.email),
-                        hintText: 'Enter Email...',
-                        labelText: 'Email'
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (String val) => _user.email = val,
-                    validator: _validateEmail,
+
+    Widget _buildLogin() {
+      return new Form(
+          key: _formKey,
+          child: new Container(
+            padding: new EdgeInsets.all(20.0),
+            child: new ListView(
+              children: <Widget>[
+                new MFTextFormField(
+                  labelText: 'Email',
+                  icon: new Icon(Icons.email, color: Colors.white),
+                  validator: _validateEmail,
+                  onSaved: (String val) => _user.email = val,
+                ),
+                new MFTextFormField(
+                  labelText: 'Password',
+                  icon: new Icon(Icons.lock, color: Colors.white),
+                  validator: _validPassword,
+                  onSaved: (String val) => pwd = val,
+                  obscureText: true,
+                ),
+                new Padding(padding: const EdgeInsets.all(30.0)),
+                new Container(
+                  alignment: Alignment.bottomCenter,
+                  child: new MainFrameButton(
+                    child: new Text("LOG IN"),
+                    onPressed: _handleLogin,
                   ),
-                  new TextFormField(
-                      decoration: const InputDecoration(
-                          icon: const Icon(Icons.lock),
-                          hintText: 'Enter Password...',
-                          labelText: 'Password'
-                      ),
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      onSaved: (String val) => pwd = val,
-                      validator: _validPassword,
+                ),
+                new Padding(padding: const EdgeInsets.all(15.0)),
+                new Center(
+                  child: new Text("Forgot Password?", style: new TextStyle(color: Colors.grey, fontSize: 16.0))
+                )
+              ],
+            ),
+          )
+      );
+    }
+
+    Widget _buildSignUp() {
+      return new Form(
+          key: _signUpFormKey,
+          child: new Container(
+            padding: new EdgeInsets.all(20.0),
+            child: new ListView(
+              children: <Widget>[
+                new MFTextFormField(
+                  labelText: 'Email',
+                  icon: new Icon(Icons.email, color: Colors.white),
+                  validator: _validateEmail,
+                  onSaved: (String val) => _user.email = val,
+                ),
+                new MFTextFormField(
+                  labelText: 'Password',
+                  icon: new Icon(Icons.lock, color: Colors.white),
+                  validator: _validPassword,
+                  onSaved: (String val) => pwd = val,
+                  obscureText: true,
+                ),
+                new Padding(padding: const EdgeInsets.all(30.0)),
+                new Container(
+                  alignment: Alignment.bottomCenter,
+                  child: new MainFrameButton(
+                    child: new Text("SIGN UP"),
+                    onPressed: _handleSignUp,
                   ),
-                  new Container(
-                    padding: const EdgeInsets.all(20.0),
-                    alignment: Alignment.bottomCenter,
-                    child: new RaisedButton(
-                      child: const Text('LOGIN'),
-                      onPressed: _handleSubmitted,
-                    ),
-                  ),
-                ],
-              ),
-            )
-        )
+                )
+              ],
+            ),
+          )
+      );
+    }
+
+    return new TabbedComponentDemoScaffold(
+        hasBackButton: true,
+        title: " ",
+        demos: <ComponentDemoTabData>[
+          new ComponentDemoTabData(
+              tabName: 'LOG IN',
+              description: '',
+              demoWidget: _buildLogin()
+          ),
+          new ComponentDemoTabData(
+              tabName: 'SIGN UP',
+              description: '',
+              demoWidget: _buildSignUp()
+          )
+        ]
     );
   }
 }

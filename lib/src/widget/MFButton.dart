@@ -20,10 +20,10 @@ class MainFrameButton extends FlatButton {
             decoration: new BoxDecoration(
                 image: new DecorationImage(
                     image: new ExactAssetImage("mainframe_assets/images/button_mds.png"),
-                    fit: BoxFit.cover
+                    fit: BoxFit.contain
                 )
             ),
-            height: 50.0,
+            height: 56.0,
             alignment: Alignment.center,
             child: new DefaultTextStyle(
                 style: new TextStyle(

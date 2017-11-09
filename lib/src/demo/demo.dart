@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'example_code_parser.dart';
 import 'syntax_highlighter.dart';
+import 'package:myapp/src/widget/MFTab.dart';
+import 'package:myapp/src/widget/MFTabs.dart';
 
 class ComponentDemoTabData {
   ComponentDemoTabData({
@@ -32,54 +34,67 @@ class ComponentDemoTabData {
   int get hashCode => hashValues(tabName.hashCode, description.hashCode);
 }
 
-class TabbedComponentDemoScaffold extends StatelessWidget {
+class TabbedComponentDemoScaffold extends StatefulWidget {
   const TabbedComponentDemoScaffold({
+    this.key,
     this.title,
     this.hasBackButton,
     this.demos
   });
 
   final List<ComponentDemoTabData> demos;
+  final Key key;
   final String title;
   final bool hasBackButton;
 
-  void _showExampleCode(BuildContext context) {
-    final String tag = demos[DefaultTabController.of(context).index].exampleCodeTag;
-    if (tag != null) {
-      Navigator.push(context, new MaterialPageRoute<FullScreenCodeDialog>(
-          builder: (BuildContext context) => new FullScreenCodeDialog(exampleCodeTag: tag)
-      ));
-    }
+  @override
+  _TabbedComponentDemoScaffoldState createState() => new _TabbedComponentDemoScaffoldState();
+}
+
+class _TabbedComponentDemoScaffoldState extends State<TabbedComponentDemoScaffold> {
+  List<Widget> tabs = <Widget>[];
+
+  List<Widget> _buildTabs(double d_width) {
+    double tabWidth = d_width / widget.demos.length;
+    int idx = 0;
+    return widget.demos.map((ComponentDemoTabData data) {
+      return new MFTab(idx++, text: data.tabName, width: tabWidth);
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    tabs = _buildTabs(MediaQuery.of(context).size.width);
+
     return new DefaultTabController(
-      length: demos.length,
+      length: widget.demos.length,
       child: new Scaffold(
+        key: widget.key,
         appBar: new AppBar(
-          automaticallyImplyLeading: hasBackButton,
-          title: new Text(title),
-          /*actions: <Widget>[
-            new Builder(
-              builder: (BuildContext context) {
-                return new IconButton(
-                  icon: const Icon(Icons.description),
-                  tooltip: 'Show example code',
-                  onPressed: () {
-                    _showExampleCode(context);
-                  },
-                );
-              },
-            ),
-          ],*/
-          bottom: new TabBar(
-            isScrollable: true,
-            tabs: demos.map((ComponentDemoTabData data) => new Tab(text: data.tabName)).toList(),
+          automaticallyImplyLeading: false,
+          leading: new IconButton(
+              icon: new Icon(Icons.arrow_back_ios),
+              color: Colors.white,
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onPressed: () {
+                Navigator.of(context).maybePop();
+              }
+          ),
+          title: new Text(widget.title),
+          bottom: new MainFrameTabBar(
+            isScrollable: false,
+            indicatorColor: new Color(0xff38e6f1),
+            indicatorWeight: 3.0,
+            tabs: tabs,
+            tabCallback: () {
+              setState((){
+                tabs = _buildTabs(MediaQuery.of(context).size.width);
+              });
+            },
           ),
         ),
-        body: new TabBarView(
-          children: demos.map((ComponentDemoTabData demo) {
+        body: new MainFrameTabBarView(
+          children: widget.demos.map((ComponentDemoTabData demo) {
             return new Column(
               children: <Widget>[
                 new Padding(

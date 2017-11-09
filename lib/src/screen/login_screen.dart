@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
-    loginWithFacebook().then((str) =>
+    signInWithFacebook().then((str) =>
         Navigator.of(context).pushReplacementNamed(_nextRoute))
         .catchError((err) {
       print('SIGN UP ERROR.... $err');
