@@ -8,6 +8,7 @@ import 'src/screen/main_screen.dart';
 import 'src/screen/SplashScreen.dart';
 import 'src/screen/w0_login_a2.dart';
 import 'src/screen/login_screen.dart';
+import 'src/screen/forgot_password_a3.dart';
 
 /*
   Author: Art
@@ -53,6 +54,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new LoginScreen(),
         settings: settings,
       );
+    case '/forgot-password':
+      return new MainFrameRoute(
+        builder: (_) => new ForgotPassword(),
+        settings: settings,
+      );
     case '/mainscreen':
       return new MainFrameRoute(
         builder: (_) => new MainScreen(),
@@ -93,6 +99,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/':         (BuildContext context) => new MainFrameSplash(),
     '/login':         (BuildContext context) => new LoginApp(),
     '/loginscreen':         (BuildContext context) => new LoginScreen(),
+    '/forgot-password':         (BuildContext context) => new ForgotPassword(),
     '/mainscreen': (BuildContext context) => new MainScreen(),
     '/profilesetup-1': (BuildContext context) => new ProfileSetupName(),
     '/profilesetup-2': (BuildContext context) => new ProfileSetupBday(),

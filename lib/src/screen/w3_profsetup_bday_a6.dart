@@ -3,6 +3,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
+import 'package:myapp/src/widget/MFAppBar.dart';
 
 class ProfileSetupBday extends StatefulWidget {
 
@@ -75,12 +76,12 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   Widget build(BuildContext context) {
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
+        appBar: new MFAppBar("MY PROFILE SETUP", context),
         body: new Form(
             key: _formKey,
             child: new Container(
               padding: new EdgeInsets.all(20.0),
-              child: new Column(
+              child: new ListView(
                 children: <Widget>[
                   new TextFormField(
                     decoration: const InputDecoration(

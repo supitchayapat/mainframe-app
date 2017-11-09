@@ -9,6 +9,7 @@ class MFTextFormField extends StatefulWidget {
   FormFieldValidator<String> validator;
   bool obscureText;
   TextInputType keyboardType;
+  TextEditingController controller;
 
   MFTextFormField({
     this.labelText,
@@ -17,7 +18,8 @@ class MFTextFormField extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.obscureText : false,
-    this.keyboardType : TextInputType.text
+    this.keyboardType : TextInputType.text,
+    this.controller
   });
 
   @override
@@ -42,6 +44,7 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
       obscureText: widget.obscureText,
       onSaved: widget.onSaved,
       validator: widget.validator,
+      controller: widget.controller,
     );
 
     if(widget.icon != null) {

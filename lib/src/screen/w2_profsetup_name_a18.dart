@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/widget/MFTextFormField.dart';
+import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/widget/MFAppBar.dart';
 
 class ProfileSetupName extends StatefulWidget {
   @override
@@ -38,79 +41,81 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
     });
   }
 
+  void _handleSubmitted() {
+    final FormState form = _formKey.currentState;
+    // validate form and save
+    if(!form.validate()) {
+      showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+    } else {
+      form.save();
+      // save user using UserDao
+      saveUser(_user);
+      // navigate to next screen
+      Navigator.of(context).pushNamed("/profilesetup-2");
+    }
+  }
+
+  String _validateNotEmpty(String val) {
+    if(val.isEmpty) {
+      return "Field must not be empty";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    void _handleSubmitted() {
-      final FormState form = _formKey.currentState;
-      // validate form and save
-      if(!form.validate()) {
-        showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
-      } else {
-        form.save();
-        // save user using UserDao
-        saveUser(_user);
-        // navigate to next screen
-        Navigator.of(context).pushNamed("/profilesetup-2");
-      }
-    }
-
-    String _validateNotEmpty(String val) {
-      if(val.isEmpty) {
-        return "Field must not be empty";
-      }
-      return null;
-    }
-
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
+        appBar: new MFAppBar("MY PROFILE SETUP", context),
         body: new Form(
             key: _formKey,
             child: new Container(
-              margin: new EdgeInsets.only(right: 20.0),
+              margin: new EdgeInsets.only(right: 30.0, left: 30.0),
               child: new ListView(
                 children: <Widget>[
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                        icon: const Icon(Icons.person),
-                        hintText: 'Enter First Name...',
-                        labelText: 'First Name'
+                  new Container(
+                    child: new Text(
+                      "Please provide the following information so we can accurately provide features that are specific to you.",
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: "Montserrat-Light",
+                      ),
                     ),
+                    alignment: Alignment.bottomCenter,
+                    height: 120.0,
+                  ),
+                  new Padding(padding: const EdgeInsets.all(10.0)),
+                  new MFTextFormField(
+                    icon: const Icon(Icons.person),
+                    labelText: 'First Name',
                     keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.first_name = val,
                     controller: _fnameCtrl,
                     validator: _validateNotEmpty,
                   ),
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                        icon: const Icon(Icons.person),
-                        hintText: 'Enter Last Name...',
-                        labelText: 'Last Name'
-                    ),
+                  new MFTextFormField(
+                    icon: const Icon(Icons.person),
+                    labelText: 'Last Name',
                     keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.last_name = val,
                     controller: _lnameCtrl,
                     validator: _validateNotEmpty,
                   ),
-                  new TextFormField(
-                    decoration: const InputDecoration(
-                        icon: const Icon(Icons.email),
-                        hintText: 'Enter Email...',
-                        labelText: 'Email'
-                    ),
+                  new MFTextFormField(
+                    icon: const Icon(Icons.email),
+                    labelText: 'Email',
                     keyboardType: TextInputType.emailAddress,
                     onSaved: (String val) => _user.email = val,
                     controller: _emailCtrl
                   ),
+                  new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(
-                    padding: const EdgeInsets.all(20.0),
-                    alignment: Alignment.bottomCenter,
-                    child: new RaisedButton(
-                      child: const Text('NEXT'),
+                    child: new MainFrameButton(
+                      child: new Text("CONTINUE"),
                       onPressed: _handleSubmitted,
                     ),
-                  ),
+                  )
                 ],
               ),
             )

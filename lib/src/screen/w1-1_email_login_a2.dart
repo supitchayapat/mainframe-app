@@ -37,6 +37,7 @@ class _EmailLoginState extends State<EmailLogin> {
   }
 
   void _handleSignUp() {
+    print("SIGN UP HANDLED");
     _handleSubmitted(
         _signUpFormKey.currentState,
         () {
@@ -52,6 +53,7 @@ class _EmailLoginState extends State<EmailLogin> {
   }
 
   void _handleLogin() {
+    print("LOGIN HANDLED");
     _handleSubmitted(
         _formKey.currentState,
         () {
@@ -119,7 +121,10 @@ class _EmailLoginState extends State<EmailLogin> {
                 ),
                 new Padding(padding: const EdgeInsets.all(15.0)),
                 new Center(
-                  child: new Text("Forgot Password?", style: new TextStyle(color: Colors.grey, fontSize: 16.0))
+                  child: new MaterialButton(
+                      onPressed: () => Navigator.of(context).pushNamed("/forgot-password"),
+                      child: new Text("Forgot Password?", style: new TextStyle(color: Colors.grey, fontSize: 16.0)),
+                  )
                 )
               ],
             ),

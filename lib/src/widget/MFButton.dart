@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MainFrameButton extends FlatButton {
-  MainFrameButton({Key key, Brightness colorBrightness, ButtonTextTheme textTheme,
+  double fontSize;
+  MainFrameButton({this.fontSize : 18.0, Key key, Brightness colorBrightness, ButtonTextTheme textTheme,
       Color textColor, Color color, Color splashColor, Color highlightColor, double elevation,
       double highlightElevation, double minWidth, double height, EdgeInsetsGeometry padding,
       VoidCallback onPressed, Widget child}) :
@@ -28,7 +29,7 @@ class MainFrameButton extends FlatButton {
             child: new DefaultTextStyle(
                 style: new TextStyle(
                   fontFamily: "Montserrat-Light",
-                  fontSize: 18.0,
+                  fontSize: fontSize,
                   color: Colors.white
                 ),
                 child: child
