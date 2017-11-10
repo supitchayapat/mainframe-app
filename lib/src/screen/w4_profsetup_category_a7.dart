@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/widget/MFAppBar.dart';
+import 'package:myapp/src/widget/MFRadioGroup.dart';
+import 'package:myapp/src/widget/MFButton.dart';
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -33,7 +36,8 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void _handleSubmitted() {
     // validate and save
     saveUser(_user);
-    Navigator.pushReplacementNamed(context, "/mainscreen");
+    //Navigator.pushReplacementNamed(context, "/mainscreen");
+    Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
   }
 
   void _handleCategoryChanged(String val) {
@@ -46,31 +50,46 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(title: new Text("Main Frame Dance Studio"), automaticallyImplyLeading: false),
+        appBar: new MFAppBar("MY PROFILE SETUP", context),
         body: new Container(
-          padding: new EdgeInsets.all(20.0),
-          child: new Column(
+          margin: new EdgeInsets.only(right: 30.0, left: 30.0),
+          child: new ListView(
             children: <Widget>[
-              new Align(
-                alignment: Alignment.centerLeft,
-                child: new Text("Dance Category")
-              ),
-              new Row(
-                children: <Widget>[
-                  new Radio(value: "PROFESSIONAL", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                  new Text("Professional"),
-                  new Radio(value: "AMATEUR", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                  new Text("Amateur")
-                ],
-              ),
+              new Padding(padding: const EdgeInsets.all(20.0)),
+              new MFRadio(value: "PROFESSIONAL", labelText: "Professional", groupValue: categoryVal, onChanged: _handleCategoryChanged),
+              new Padding(padding: const EdgeInsets.all(10.0)),
               new Container(
-                padding: const EdgeInsets.all(20.0),
-                alignment: Alignment.bottomCenter,
-                child: new RaisedButton(
-                  child: const Text('FINISH'),
+                alignment: Alignment.bottomLeft,
+                child: new Text(
+                  "Professional dancers compete as a Professional Couple, or as a Professional in a Pro-Am Couple.",
+                  style: new TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: "Montserrat-Light",
+                  ),
+                ),
+                height: 60.0,
+              ),
+              new Padding(padding: const EdgeInsets.all(30.0)),
+              new MFRadio(value: "AMATEUR", labelText: "Amateur", groupValue: categoryVal, onChanged: _handleCategoryChanged),
+              new Padding(padding: const EdgeInsets.all(10.0)),
+              new Container(
+                alignment: Alignment.bottomLeft,
+                child: new Text(
+                  "Amateur dancers compete as an Amateur Couple, or as an Amateur in a Pro-Am Couple.",
+                  style: new TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: "Montserrat-Light",
+                  ),
+                ),
+                height: 60.0,
+              ),
+              new Padding(padding: const EdgeInsets.all(30.0)),
+              new Container(
+                child: new MainFrameButton(
+                  child: new Text("FINISH PROFILE"),
                   onPressed: _handleSubmitted,
                 ),
-              ),
+              )
             ],
           ),
         )

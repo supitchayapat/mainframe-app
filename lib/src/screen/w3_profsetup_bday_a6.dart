@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
+import 'package:myapp/src/widget/MFTextFormField.dart';
+import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/widget/MFRadioGroup.dart';
 
 class ProfileSetupBday extends StatefulWidget {
 
@@ -49,9 +52,9 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     super.initState();
     print("INIT BDAY.....");
     getCurrentUserProfile().then((usr) {
-      _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
+      //_bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
       if(usr.gender == null) {
-        genderVal = "MALE";
+        genderVal = "MAN";
       } else {
         genderVal =
             usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
@@ -80,10 +83,42 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
         body: new Form(
             key: _formKey,
             child: new Container(
-              padding: new EdgeInsets.all(20.0),
+              margin: new EdgeInsets.only(right: 30.0, left: 30.0),
               child: new ListView(
                 children: <Widget>[
-                  new TextFormField(
+                  new Container(
+                    alignment: Alignment.bottomLeft,
+                    child: new Text(
+                      "Birthday",
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: "Montserrat-Light",
+                      ),
+                    ),
+                    height: 60.0,
+                  ),
+                  new Padding(padding: const EdgeInsets.all(5.0)),
+                  new MFTextFormField(
+                    icon: const Icon(Icons.access_time),
+                    labelText: 'Ex. February 18, 1982',
+                    keyboardType: TextInputType.text,
+                    onSaved: (String val) => _user.birthday = new DateFormat("MM/dd/yyyy").parse(val),
+                    controller: _bdayCtrl,
+                    validator: _validateBirthday,
+                  ),
+                  new Container(
+                    child: new Text(
+                      "Gender",
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: "Montserrat-Light",
+                      ),
+                    ),
+                    alignment: Alignment.bottomLeft,
+                    height: 120.0,
+                  ),
+                  new Padding(padding: const EdgeInsets.all(5.0)),
+                  /*new TextFormField(
                     decoration: const InputDecoration(
                         icon: const Icon(Icons.access_time),
                         hintText: 'Enter Date of Birth...',
@@ -101,15 +136,21 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                       new Radio(value: "FEMALE", groupValue: genderVal, onChanged: _handleGenderChanged),
                       new Text("Female")
                     ],
+                  ),*/
+                  new MFRadioGroup(
+                      radioItems: <MFRadio>[
+                        new MFRadio(labelText: "Man", value: "MAN", groupValue: genderVal, onChanged: _handleGenderChanged),
+                        new MFRadio(labelText: "Woman", value: "WOMAN", groupValue: genderVal, onChanged: _handleGenderChanged)
+                      ]
                   ),
+
+                  new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(
-                    padding: const EdgeInsets.all(20.0),
-                    alignment: Alignment.bottomCenter,
-                    child: new RaisedButton(
-                      child: const Text('NEXT'),
+                    child: new MainFrameButton(
+                      child: new Text("CONTINUE"),
                       onPressed: _handleSubmitted,
                     ),
-                  ),
+                  )
                 ],
               ),
             )

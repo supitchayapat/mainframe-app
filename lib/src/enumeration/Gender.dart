@@ -1,5 +1,5 @@
 enum Gender {
-  MALE, FEMALE
+  MAN, WOMAN
 }
 
 Gender getGenderFromString(String gender) {
