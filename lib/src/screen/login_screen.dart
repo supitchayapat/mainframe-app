@@ -11,10 +11,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
+  var listener;
   String _nextRoute = "/mainscreen"; // if user is logged-in
 
   void _signInEmailPressed() {
+    print("Listener CANCELLED");
+    listener.cancel();
     Navigator.pushNamed(context, "/emailLogin");
   }
 
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
 
     // check user logged in
-    initAuthStateListener((bool isLogged) {
+    listener = initAuthStateListener((bool isLogged) {
       print("[Main page] Is loggedin: $isLogged");
       if(isLogged) {
         MainFrameLoadingIndicator.hideLoading(context);
@@ -44,6 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    print("DISPOSED LOGIN");
+    super.dispose();
+    listener.cancel();
   }
 
   @override

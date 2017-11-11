@@ -10,6 +10,8 @@ class MFTextFormField extends StatefulWidget {
   bool obscureText;
   TextInputType keyboardType;
   TextEditingController controller;
+  String initialValue;
+  bool isEnabled;
 
   MFTextFormField({
     this.labelText,
@@ -19,7 +21,9 @@ class MFTextFormField extends StatefulWidget {
     this.validator,
     this.obscureText : false,
     this.keyboardType : TextInputType.text,
-    this.controller
+    this.controller,
+    this.initialValue : "",
+    this.isEnabled : true
   });
 
   @override
@@ -31,6 +35,8 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
   @override
   Widget build(BuildContext context) {
     List<Widget> rowItems = <Widget>[];
+    Alignment align = Alignment.topLeft;
+    EdgeInsets padding = new EdgeInsets.only(bottom: 0.0);
     InputDecoration decoration = new InputDecoration(
         //icon: widget.icon,
         hintText: widget.hintText,
@@ -38,14 +44,31 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
         hideDivider: true,
     );
 
-    TextFormField field = new TextFormField(
+    Widget field = new TextFormField(
       decoration: decoration,
       keyboardType: widget.keyboardType,
       obscureText: widget.obscureText,
       onSaved: widget.onSaved,
       validator: widget.validator,
       controller: widget.controller,
+      initialValue: widget.initialValue,
     );
+
+    TextStyle style = new TextStyle(
+      fontFamily: "Montserrat-Regular",
+      fontSize: 16.0
+    );
+
+    if(!widget.isEnabled) {
+      if(widget.initialValue != null) {
+        field = new Text(widget.controller.text, style: style);
+      }
+      else {
+        field = new Text(widget.labelText, style: style);
+      }
+      align = Alignment.bottomLeft;
+      padding = new EdgeInsets.only(bottom: 10.0);
+    }
 
     if(widget.icon != null) {
       rowItems.add(
@@ -60,8 +83,9 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
     rowItems.add(
       new Expanded(
           child: new Container(
-            alignment: Alignment.topLeft,
-            //color: Colors.amber,
+            padding: padding,
+            alignment: align,
+            //color: Colors.indigo,
             child: field,
             //height: 50.0,
             constraints: new BoxConstraints(

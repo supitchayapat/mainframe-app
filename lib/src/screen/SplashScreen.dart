@@ -10,6 +10,7 @@ class MainFrameSplash extends StatefulWidget {
 }
 
 class _MainFrameSplashState extends State<MainFrameSplash> {
+  var listener;
 
   @override
   void initState() {
@@ -19,7 +20,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
     FirebaseDatabase.instance.setPersistenceEnabled(true);
 
     // check user logged in
-    initAuthStateListener((bool isLogged) {
+    listener = initAuthStateListener((bool isLogged) {
       print("[SPLASH page] Is loggedin: $isLogged");
       String _navi = '/mainscreen';
       if(!isLogged) {
@@ -30,6 +31,13 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       });
 
     });
+  }
+
+  @override
+  void dispose() {
+    print("DISPOSED SPLASH");
+    super.dispose();
+    listener.cancel();
   }
 
   @override

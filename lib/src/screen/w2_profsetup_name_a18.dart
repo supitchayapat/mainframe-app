@@ -28,16 +28,18 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
     super.initState();
     print("INIT STATE PROFILE SETUP....");
     getCurrentUserProfile().then((usr) {
-      if(usr.first_name != null && !usr.first_name.isEmpty) {
-        _fnameCtrl.text = usr.first_name;
-      }
-      if(usr.last_name != null && !usr.last_name.isEmpty) {
-        _lnameCtrl.text = usr.last_name;
-      }
-      if(usr.email != null && !usr.email.isEmpty) {
-        _emailCtrl.text = usr.email;
-      }
-      _user = usr;
+      setState(() {
+        if (usr.first_name != null && !usr.first_name.isEmpty) {
+          _fnameCtrl.text = usr.first_name;
+        }
+        if (usr.last_name != null && !usr.last_name.isEmpty) {
+          _lnameCtrl.text = usr.last_name;
+        }
+        if (usr.email != null && !usr.email.isEmpty) {
+          _emailCtrl.text = usr.email;
+        }
+        _user = usr;
+      });
     });
   }
 
@@ -92,7 +94,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
                     keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.first_name = val,
                     controller: _fnameCtrl,
-                    validator: _validateNotEmpty,
+                    validator: _validateNotEmpty
                   ),
                   new MFTextFormField(
                     icon: const Icon(Icons.person),
@@ -105,9 +107,12 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
                   new MFTextFormField(
                     icon: const Icon(Icons.email),
                     labelText: 'Email',
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.email = val,
-                    controller: _emailCtrl
+                    controller: _emailCtrl,
+                    validator: _validateNotEmpty,
+                    //initialValue: _user.email != null ? _user.email : "",
+                    isEnabled: false,
                   ),
                   new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(

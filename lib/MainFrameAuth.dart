@@ -102,8 +102,9 @@ void logoutUser() {
 /*
   An Authentication State Listener
  */
-void initAuthStateListener(Function p) {
-  _auth.onAuthStateChanged.listen((FirebaseUser user){
+StreamSubscription initAuthStateListener(Function p) {
+  return _auth.onAuthStateChanged.listen((FirebaseUser user){
+    print("AUTHENTICATION HAS CHANGED!!!!!");
     if(user != null) {
       Function.apply(p, [true]);
     } else {

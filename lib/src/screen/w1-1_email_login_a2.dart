@@ -26,46 +26,40 @@ class _EmailLoginState extends State<EmailLogin> {
     _user = new User(null, null, null, null, null, null, null, null);
   }
 
-  void _handleSubmitted(final FormState form, VoidCallback func) {
+  void _handleSignUp() {
+    print("SIGN UP HANDLED");
+    FormState form = _signUpFormKey.currentState;
     if(!form.validate()) {
       //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
       form.save();
       MainFrameLoadingIndicator.showLoading(context);
-      func();
+      registerEmail(_user.email, pwd).then((usr) {
+        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.of(context).pushReplacementNamed("/profilesetup-1");
+      }).catchError((err) {
+        MainFrameLoadingIndicator.hideLoading(context);
+        showMainFrameDialog(context, "Sign Up Error", err.message);
+      });
     }
   }
 
-  void _handleSignUp() {
-    print("SIGN UP HANDLED");
-    _handleSubmitted(
-        _signUpFormKey.currentState,
-        () {
-          registerEmail(_user.email, pwd).then((usr) {
-            MainFrameLoadingIndicator.hideLoading(context);
-            Navigator.of(context).pushReplacementNamed("/profilesetup-1");
-          }).catchError((err) {
-            MainFrameLoadingIndicator.hideLoading(context);
-            showMainFrameDialog(context, "Sign Up Error", err.message);
-          });
-        }
-    );
-  }
-
   void _handleLogin() {
+    FormState form = _formKey.currentState;
     print("LOGIN HANDLED");
-    _handleSubmitted(
-        _formKey.currentState,
-        () {
-          loginWithEmail(_user.email, pwd).then((usr) {
-            MainFrameLoadingIndicator.hideLoading(context);
-            Navigator.of(context).pushReplacementNamed("/mainscreen");
-          }).catchError((err) {
-            MainFrameLoadingIndicator.hideLoading(context);
-            showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
-          });
-        }
-    );
+    if(!form.validate()) {
+      //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+    } else {
+      form.save();
+      MainFrameLoadingIndicator.showLoading(context);
+      loginWithEmail(_user.email, pwd).then((usr) {
+        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.of(context).pushReplacementNamed("/mainscreen");
+      }).catchError((err) {
+        MainFrameLoadingIndicator.hideLoading(context);
+        showMainFrameDialog(context, "Login Error", "The password is invalid, or the user email does not exist.");
+      });
+    }
   }
 
   String _validateEmail(String value) {

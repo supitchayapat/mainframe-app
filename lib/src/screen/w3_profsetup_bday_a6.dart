@@ -70,7 +70,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     try {
       DateTime dt = new DateFormat("MM/dd/yyyy").parse(val);
     } catch(exception, stackTrace) {
-      return "invalid format. Please enter date in mm/dd/yyyy";
+      return "Please enter date in mm/dd/yyyy";
     }
     return null;
   }
