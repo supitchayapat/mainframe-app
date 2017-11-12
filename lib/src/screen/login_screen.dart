@@ -16,14 +16,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _signInEmailPressed() {
     print("Listener CANCELLED");
-    listener.cancel();
+    //listener.cancel();
     Navigator.pushNamed(context, "/emailLogin");
   }
 
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
-    signInWithFacebook().then((str) =>
-        Navigator.of(context).pushReplacementNamed(_nextRoute))
+    signInWithFacebook().then((str) {
+          if(str != "success") {
+            _nextRoute = "/profilesetup-1";
+          }
+          Navigator.of(context).pushReplacementNamed(_nextRoute);
+        })
         .catchError((err) {
       print('SIGN UP ERROR.... $err');
       MainFrameLoadingIndicator.hideLoading(context);
@@ -37,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
 
     // check user logged in
-    listener = initAuthStateListener((bool isLogged) {
+    /*listener = initAuthStateListener((bool isLogged) {
       print("[Main page] Is loggedin: $isLogged");
       if(isLogged) {
         MainFrameLoadingIndicator.hideLoading(context);
@@ -45,14 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.of(context).pushReplacementNamed(_nextRoute);
         });
       }
-    });
+    });*/
   }
 
   @override
   void dispose() {
     print("DISPOSED LOGIN");
     super.dispose();
-    listener.cancel();
+    //listener.cancel();
   }
 
   @override

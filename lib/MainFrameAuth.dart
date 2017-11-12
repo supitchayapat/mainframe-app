@@ -81,15 +81,29 @@ Future<String> signInWithFacebook() async {
   assert(user.uid == currentUser.uid);
 
   print("This user is signed in: $user");
-  // make http request to get additional info
-  String url = 'https://graph.facebook.com/me?fields=first_name,last_name,gender,birthday,picture&access_token=$token';
-  var httpClient = createHttpClient();
-  var resp = await httpClient.read(url);
-  print('response = $resp');
-  //var usr = convertResponseToUser(resp);
-  saveUserFromResponse(resp, user);
+  _checkUserExisting(user, token);
 
-  return 'signInWithGoogle succeeded: $user';
+  //return 'signInWithGoogle succeeded: $user';
+  return await _checkUserExisting(user, token);
+}
+
+Future _checkUserExisting(FirebaseUser user, String token) async {
+  var exists = await userExists(user);
+  if(exists.value == null) {
+    //print("NEW USER");
+    // register user on RDB
+    // make http request to get additional info
+    String url = 'https://graph.facebook.com/me?fields=first_name,last_name,gender,birthday,picture&access_token=$token';
+    var httpClient = createHttpClient();
+    var resp = await httpClient.read(url);
+    print('response = $resp');
+    //var usr = convertResponseToUser(resp);
+    saveUserFromResponse(resp, user);
+  }
+  /*else {
+    print("EXISTING USER");
+  }*/
+  return exists.value == null ? "failed" : "success";
 }
 
 /*

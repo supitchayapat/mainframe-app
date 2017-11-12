@@ -52,7 +52,9 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     super.initState();
     print("INIT BDAY.....");
     getCurrentUserProfile().then((usr) {
-      //_bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
+      if(usr.birthday != null) {
+        _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
+      }
       if(usr.gender == null) {
         genderVal = "MAN";
       } else {
@@ -102,9 +104,15 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                     icon: const Icon(Icons.access_time),
                     labelText: 'Ex. February 18, 1982',
                     keyboardType: TextInputType.text,
-                    onSaved: (String val) => _user.birthday = new DateFormat("MM/dd/yyyy").parse(val),
+                    onSaved: (String val) {
+                      if(val != null && !val.isEmpty) {
+                        _user.birthday =
+                            new DateFormat("MM/dd/yyyy").parse(val);
+                      }
+                    },
                     controller: _bdayCtrl,
                     validator: _validateBirthday,
+                    isDatePicker: true,
                   ),
                   new Container(
                     child: new Text(
@@ -118,25 +126,6 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                     height: 120.0,
                   ),
                   new Padding(padding: const EdgeInsets.all(5.0)),
-                  /*new TextFormField(
-                    decoration: const InputDecoration(
-                        icon: const Icon(Icons.access_time),
-                        hintText: 'Enter Date of Birth...',
-                        labelText: 'Birth date'
-                    ),
-                    keyboardType: TextInputType.text,
-                    onSaved: (String val) => _user.birthday = new DateFormat("MM/dd/yyyy").parse(val),
-                    controller: _bdayCtrl,
-                    validator: _validateBirthday,
-                  ),
-                  new Row(
-                    children: <Widget>[
-                      new Radio(value: "MALE", groupValue: genderVal, onChanged: _handleGenderChanged),
-                      new Text("Male"),
-                      new Radio(value: "FEMALE", groupValue: genderVal, onChanged: _handleGenderChanged),
-                      new Text("Female")
-                    ],
-                  ),*/
                   new MFRadioGroup(
                       radioItems: <MFRadio>[
                         new MFRadio(labelText: "Man", value: "MAN", groupValue: genderVal, onChanged: _handleGenderChanged),

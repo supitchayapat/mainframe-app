@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class MFTextFormField extends StatefulWidget {
   String labelText;
@@ -12,6 +14,7 @@ class MFTextFormField extends StatefulWidget {
   TextEditingController controller;
   String initialValue;
   bool isEnabled;
+  bool isDatePicker;
 
   MFTextFormField({
     this.labelText,
@@ -23,7 +26,8 @@ class MFTextFormField extends StatefulWidget {
     this.keyboardType : TextInputType.text,
     this.controller,
     this.initialValue : "",
-    this.isEnabled : true
+    this.isEnabled : true,
+    this.isDatePicker : false
   });
 
   @override
@@ -31,6 +35,7 @@ class MFTextFormField extends StatefulWidget {
 }
 
 class _MFTextFormFieldState extends State<MFTextFormField> {
+  DateTime _pickDate = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +73,22 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
       }
       align = Alignment.bottomLeft;
       padding = new EdgeInsets.only(bottom: 10.0);
+    }
+
+    if(widget.isDatePicker){
+      if(widget.controller != null && (widget.controller.text != null && !widget.controller.text.isEmpty)) {
+        _pickDate = new DateFormat("MM/dd/yyyy").parse(widget.controller.text);
+      }
+      field = new _DateTimePicker(
+        labelText: widget.labelText,
+        selectedDate: _pickDate,
+        selectDate: (DateTime date){
+          setState((){
+            _pickDate = date;
+            widget.onSaved(new DateFormat("MM/dd/yyyy").format(_pickDate));
+          });
+        }
+      );
     }
 
     if(widget.icon != null) {
@@ -111,6 +132,107 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DateTimePicker extends StatelessWidget {
+  const _DateTimePicker({
+    Key key,
+    this.labelText,
+    this.selectedDate,
+    this.selectedTime,
+    this.selectDate,
+    this.selectTime
+  }) : super(key: key);
+
+  final String labelText;
+  final DateTime selectedDate;
+  final TimeOfDay selectedTime;
+  final ValueChanged<DateTime> selectDate;
+  final ValueChanged<TimeOfDay> selectTime;
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime _today = new DateTime.now();
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: new DateTime(1900, 8),
+        lastDate: _today,
+    );
+    if (picked != null && picked != selectedDate)
+      selectDate(picked);
+  }
+
+  Future<Null> _selectTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+        context: context,
+        initialTime: selectedTime
+    );
+    if (picked != null && picked != selectedTime)
+      selectTime(picked);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle valueStyle = Theme.of(context).textTheme.title;
+    return new Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        new Expanded(
+          flex: 4,
+          child: new _InputDropdown(
+            labelText: labelText,
+            valueText: new DateFormat("MM/dd/yyyy").format(selectedDate),
+            valueStyle: valueStyle,
+            onPressed: () { _selectDate(context); },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InputDropdown extends StatelessWidget {
+  const _InputDropdown({
+    Key key,
+    this.child,
+    this.labelText,
+    this.valueText,
+    this.valueStyle,
+    this.onPressed }) : super(key: key);
+
+  final String labelText;
+  final String valueText;
+  final TextStyle valueStyle;
+  final VoidCallback onPressed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle style = new TextStyle(
+        fontFamily: "Montserrat-Regular",
+        fontSize: 16.0
+    );
+
+    return new InkWell(
+      onTap: onPressed,
+      child: new InputDecorator(
+        decoration: new InputDecoration(
+          labelText: labelText,
+          hideDivider: true
+        ),
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new Text(valueText, style: style),
+            new Icon(Icons.arrow_drop_down,
+                color: Theme.of(context).brightness == Brightness.light ? Colors.grey.shade700 : Colors.white70
+            ),
+          ],
+        ),
       ),
     );
   }

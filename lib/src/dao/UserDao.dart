@@ -27,6 +27,10 @@ void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
   reference.child(fbaseUser.uid).set(user.toJson());
 }
 
+Future userExists(FirebaseUser user) {
+  return reference.child(user.uid).once();
+}
+
 Future<User> saveUser(User usr) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).set(usr.toJson());
