@@ -88,8 +88,9 @@ Future<String> signInWithFacebook() async {
 }
 
 Future _checkUserExisting(FirebaseUser user, String token) async {
+  String returnVal = "failed";
   var exists = await userExists(user);
-  if(exists.value == null) {
+  if(exists == null) {
     //print("NEW USER");
     // register user on RDB
     // make http request to get additional info
@@ -100,10 +101,13 @@ Future _checkUserExisting(FirebaseUser user, String token) async {
     //var usr = convertResponseToUser(resp);
     saveUserFromResponse(resp, user);
   }
-  /*else {
-    print("EXISTING USER");
-  }*/
-  return exists.value == null ? "failed" : "success";
+  else {
+    //print("EXISTING USER");
+    if(exists.hasProfileSetup) {
+      returnVal = "success";
+    }
+  }
+  return returnVal;
 }
 
 /*

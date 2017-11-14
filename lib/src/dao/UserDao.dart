@@ -28,7 +28,9 @@ void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
 }
 
 Future userExists(FirebaseUser user) {
-  return reference.child(user.uid).once();
+  return reference.child(user.uid).once().then((DataSnapshot data) {
+    return new User.fromSnapshot(data);
+  });
 }
 
 Future<User> saveUser(User usr) async {

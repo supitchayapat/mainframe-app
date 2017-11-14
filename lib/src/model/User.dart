@@ -15,9 +15,10 @@ class User {
   Gender gender;
   DanceCategory category;
   String displayPhotoUrl;
+  bool hasProfileSetup;
 
   User(this.fbUserId, this.first_name, this.last_name, this.email,
-      this.birthday, this.gender, this.category, this.displayPhotoUrl);
+      this.birthday, this.gender, this.category, this.displayPhotoUrl, {this.hasProfileSetup : false});
 
   User.fromSnapshot(DataSnapshot s) : fbUserId = s.value["facebook_userId"],
                         first_name = s.value["first_name"],
@@ -26,7 +27,8 @@ class User {
                         birthday = new DateFormat("MM/dd/yyyy").parse(s.value["birthday"]),
                         gender = getGenderFromString(s.value["gender"]),
                         category = getDanceCategoryFromString(s.value["category"]),
-                        displayPhotoUrl = s.value["displayPhotoUrl"];
+                        displayPhotoUrl = s.value["displayPhotoUrl"],
+                        hasProfileSetup = s.value["hasProfileSetup"];
 
 
   toJson() {
@@ -38,7 +40,8 @@ class User {
       "birthday": birthday!= null ? formatter.format(birthday) : formatter.format(new DateTime.now()),
       "gender": gender != null ? gender.toString().replaceAll("Gender.", "") : null,
       "category": category != null ? category.toString().replaceAll("DanceCategory.", "") : null,
-      "displayPhotoUrl": displayPhotoUrl
+      "displayPhotoUrl": displayPhotoUrl,
+      "hasProfileSetup": hasProfileSetup
     };
   }
 }

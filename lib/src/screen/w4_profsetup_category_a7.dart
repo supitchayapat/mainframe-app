@@ -35,6 +35,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
 
   void _handleSubmitted() {
     // validate and save
+    _user.hasProfileSetup = true;
     saveUser(_user);
     //Navigator.pushReplacementNamed(context, "/mainscreen");
     Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
