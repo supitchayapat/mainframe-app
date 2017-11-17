@@ -14,17 +14,4 @@ public class MainActivity extends FlutterActivity {
     // add a method channel to call firebase crash reporting
     new MethodChannel(getFlutterView(), "firebase_crash").setMethodCallHandler(new FirebaseCrashPlugin());
   }
-
-  @java.lang.Override
-  public void onBackPressed() {
-
-    /*if(super.getFlutterView() != null) {
-      System.out.println("Popped route");
-      super.getFlutterView().popRoute();
-    } else {
-      System.out.println("back pressed");
-      super.onBackPressed();
-    }*/
-    super.onBackPressed();
-  }
 }

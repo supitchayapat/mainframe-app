@@ -9,6 +9,7 @@ import 'src/screen/SplashScreen.dart';
 import 'src/screen/w0_login_a2.dart';
 import 'src/screen/login_screen.dart';
 import 'src/screen/forgot_password_a3.dart';
+import 'src/screen/entry_form_a24.dart';
 
 /*
   Author: Art
@@ -89,6 +90,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new EmailLogin(),
         settings: settings,
       );
+    case '/entryForm':
+      return new MainFrameRoute(
+        builder: (_) => new EntryForm(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -106,5 +112,6 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/profilesetup-3': (BuildContext context) => new ProfileSetupCategory(),
     '/emailRegistry': (BuildContext context) => new EmailRegistry(),
     '/emailLogin': (BuildContext context) => new EmailLogin(),
+    '/entryForm': (BuildContext context) => new EntryForm(),
   };
 }

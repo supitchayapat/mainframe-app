@@ -34,6 +34,9 @@ flutter:
     - mainframe_assets/images/Mainframe_Dance_System_Logo.png
     - mainframe_assets/images/powered_by_2x.png
     - mainframe_assets/images/button_mds.png
+    - mainframe_assets/images/add_button.png
+    - mainframe_assets/images/level_row_divider.png
+    - mainframe_assets/images/sel_age_bg.png
   # icons
     - mainframe_assets/icons/noun_939113_cc@2x.png
     - mainframe_assets/icons/noun_961889_cc@2x.png

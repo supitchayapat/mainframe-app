@@ -8,7 +8,7 @@ import 'package:myapp/MainFrameAuth.dart';
  */
 final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("MENU", "", null, true, false),
-  new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
+  new _MenuContent("Find Service Center", "/entryForm", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
   new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
   new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
   new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),

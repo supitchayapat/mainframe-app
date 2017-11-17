@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MainFrameButton extends FlatButton {
+  String imgAsset;
   double fontSize;
-  MainFrameButton({this.fontSize : 18.0, Key key, Brightness colorBrightness, ButtonTextTheme textTheme,
+  double imgHeight;
+  MainFrameButton({this.imgAsset : "mainframe_assets/images/button_mds.png",this.fontSize : 18.0, this.imgHeight: 56.0, Key key, Brightness colorBrightness, ButtonTextTheme textTheme,
       Color textColor, Color color, Color splashColor, Color highlightColor, double elevation,
       double highlightElevation, double minWidth, double height, EdgeInsetsGeometry padding,
       VoidCallback onPressed, Widget child}) :
@@ -20,11 +22,11 @@ class MainFrameButton extends FlatButton {
           new Container(
             decoration: new BoxDecoration(
                 image: new DecorationImage(
-                    image: new ExactAssetImage("mainframe_assets/images/button_mds.png"),
+                    image: new ExactAssetImage(imgAsset),
                     fit: BoxFit.contain
                 )
             ),
-            height: 56.0,
+            height: imgHeight,
             alignment: Alignment.center,
             child: new DefaultTextStyle(
                 style: new TextStyle(
