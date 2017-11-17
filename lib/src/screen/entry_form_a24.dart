@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/CompetitionForm.dart';
@@ -10,13 +11,133 @@ class EntryForm extends StatefulWidget {
 }
 
 class _EntryFormState extends State<EntryForm> {
+  HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
   String categoryVal = "";
+  List<String> smoothHeadings = <String>[
+    "W", "T", "F", "W"
+  ];
+  List<String> smoothValues = <String>[
+    "W1", "T", "F", "W2"
+  ];
+  Map<String, Color> smoothBgs = {
+    "W1": Colors.amber,
+    "T": Colors.lightBlueAccent,
+    "F": Colors.indigo,
+    "W2": Colors.cyanAccent,
+  };
 
   void _handleCategoryChanged(String val) {
     setState((){
       categoryVal = val;
-      //rightPanel = _buildRightPanel();
     });
+  }
+
+  Widget _buildLevelColumn(String levelTxt) {
+    return new Container(
+      alignment: Alignment.center,
+      decoration: new BoxDecoration(
+          image: new DecorationImage(
+              image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter
+          )
+      ),
+      padding: const EdgeInsets.all(5.0),
+      height: 42.0,
+      child: new Text(
+          levelTxt,
+          style: new TextStyle(
+              fontSize: 18.0,
+              fontFamily: "Montserrat-Light"
+          )
+      ),
+    );
+  }
+
+  Widget _buildAgeColumn(String levelTxt, {String buttonTxt : "ADD"}) {
+    String _imgAsset = "mainframe_assets/images/add_button.png";
+    if(buttonTxt != "ADD") {
+      _imgAsset = "mainframe_assets/images/add_highlight.png";
+    }
+    return new Container(
+      alignment: Alignment.center,
+      //color: Colors.amber,
+      height: 42.0,
+      padding: const EdgeInsets.all(5.0),
+      child: new MainFrameButton(
+        imgAsset: _imgAsset,
+        imgHeight: 32.0,
+        fontSize: 16.0,
+        onPressed: (){
+          List<String> _selButtons = <String>[];
+          if(levelMap.containsKey(levelTxt)) {
+            _selButtons = levelMap[levelTxt];
+          }
+          showAgeCategoryDialog(context, _selButtons, () {
+            //print("COMPLETED");
+            //levelMap.putIfAbsent(levelTxt, () => _selButtons);
+            levelMap[levelTxt] = _selButtons;
+            if(_selButtons.length < 1) {
+              levelMap.remove(levelTxt);
+            }
+          });
+        },
+        child: new Text(buttonTxt, style: new TextStyle(color: buttonTxt == "ADD" ? const Color(0xff4e6686) : Colors.white)),
+      ),
+    );
+  }
+
+  List<Widget> _buildRightTable() {
+    return <Widget>[
+      new Container(
+        alignment: Alignment.bottomCenter,
+        height: 30.0,
+        child: new Text(
+            "SMOOTH",
+            style: new TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold
+            )
+        ),
+      ),
+      //new Padding(padding: const EdgeInsets.only(top: 5.0)),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: smoothHeadings.map((heading) {
+          return new Expanded(
+              child: new Container(
+                //color: smoothBgs[heading],
+                alignment: Alignment.center,
+                child: new Container(
+                  alignment: Alignment.center,
+                  //color: Colors.cyanAccent,
+                  width: 20.0,
+                  height: 20.0,
+                  child: new Text(heading),
+                ),
+              )
+          );
+        }).toList(),
+      )
+      /*new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: smoothValues.map((headingVal) {
+          return new Expanded(
+              child: new Container(
+                color: smoothBgs[headingVal],
+                alignment: Alignment.center,
+                height: 42.0,
+                child: new Container(
+                  alignment: Alignment.center,
+                  child: new Radio(
+                      value: headingVal, groupValue: categoryVal, onChanged: _handleCategoryChanged
+                  ),
+                ),
+              )
+          );
+        }).toList(),
+      )*/
+    ];
   }
 
   @override
@@ -27,16 +148,19 @@ class _EntryFormState extends State<EntryForm> {
       "Full Silver", "Pre Gold", "Int. Gold",
       "Full Gold", "Open Gold"
     ];
-    
+
     List<Widget> _children = <Widget>[];
     List<Widget> _childrenAdd = <Widget>[];
+    List<Widget> _minLPanelChildren = <Widget>[];
+    List<Widget> _rightPanelChildren = <Widget>[];
+
     _children.add(new Container(
       decoration: new BoxDecoration(
-        image: new DecorationImage(
-            image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
-            fit: BoxFit.contain,
-            alignment: Alignment.bottomCenter
-        )
+          image: new DecorationImage(
+              image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter
+          )
       ),
       alignment: Alignment.center,
       height: 50.0,
@@ -61,128 +185,161 @@ class _EntryFormState extends State<EntryForm> {
     ));
 
     for(String level in levels) {
-      _children.add(new Container(
-        alignment: Alignment.center,
-        decoration: new BoxDecoration(
-            image: new DecorationImage(
-                image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
-                fit: BoxFit.contain,
-                alignment: Alignment.bottomCenter
-            )
-        ),
-        padding: const EdgeInsets.all(5.0),
-        height: 42.0,
-        child: new Text(
-          level,
-            style: new TextStyle(
-                fontSize: 18.0,
-                fontFamily: "Montserrat-Light"
-            )
-        ),
-      ));
-
-      _childrenAdd.add(new Container(
-        alignment: Alignment.center,
-        //color: Colors.amber,
-        height: 42.0,
-        padding: const EdgeInsets.all(5.0),
-        child: new MainFrameButton(
-          imgAsset: "mainframe_assets/images/add_button.png",
-          imgHeight: 32.0,
-          fontSize: 16.0,
-          onPressed: (){
-            List<String> _selButtons = <String>[];
-            showAgeCategoryDialog(context, _selButtons, () {
-              //print("COMPLETED");
-              //print(_selButtons);
-            });
-          },
-          child: new Text("ADD", style: new TextStyle(color: const Color(0xff4e6686))),
-        ),
-      ));
+      if(!levelMap.containsKey(level)) {
+        _children.add(_buildLevelColumn(level));
+        _childrenAdd.add(_buildAgeColumn(level));
+      } else {
+        levelMap[level].forEach((val) {
+          List<String> ageValues = val.split(" ");
+          _children.add(_buildLevelColumn(level));
+          _childrenAdd.add(_buildAgeColumn(level, buttonTxt: ageValues[0]));
+        });
+      }
     }
+
+    // minimized left panel children
+    _minLPanelChildren.add(new Container(
+      decoration: new BoxDecoration(
+          image: new DecorationImage(
+              image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+              fit: BoxFit.contain,
+              alignment: Alignment.bottomCenter
+          )
+      ),
+      alignment: Alignment.center,
+      height: 50.0,
+      child: new Text(
+          "LEVEL - AGE",
+          style: new TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold
+          )
+      ),
+    ));
+
+    _rightPanelChildren.addAll(_buildRightTable());
+
+    levelMap.forEach((key, values){
+      values.forEach((val){
+        List<String> ageValues = val.split(" ");
+        _minLPanelChildren.add(new Container(
+          alignment: Alignment.center,
+          decoration: new BoxDecoration(
+              image: new DecorationImage(
+                  image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+                  fit: BoxFit.contain,
+                  alignment: Alignment.bottomCenter
+              )
+          ),
+          padding: const EdgeInsets.all(5.0),
+          height: 42.0,
+          child: new Text(
+              key+" - "+ageValues[0],
+              style: new TextStyle(
+                  fontSize: 15.0,
+                  fontFamily: "Montserrat-Light"
+              )
+          ),
+        ));
+
+        _rightPanelChildren.add(new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: smoothValues.map((headingVal) {
+            return new Expanded(
+                child: new Container(
+                  //color: smoothBgs[headingVal],
+                  alignment: Alignment.center,
+                  height: 42.0,
+                  child: new Container(
+                    alignment: Alignment.center,
+                    child: new Radio(
+                        value: headingVal, groupValue: categoryVal, onChanged: _handleCategoryChanged
+                    ),
+                  ),
+                )
+            );
+          }).toList(),
+        ));
+      });
+    });
 
     return new Scaffold(
       appBar: new MFAppBar("ENTRY FORM", context),
       body: new CompetitionForm(
-          maximizedLeftPanel: new Container(
-            child: new ListView(
-              children: <Widget>[
-                new Row(
-                  children: <Widget>[
-                    new Expanded(
-                        child: new Container(
-                          decoration: new BoxDecoration(
-                              gradient: new LinearGradient(
-                                begin: const Alignment(0.0, -1.0),
-                                end: const Alignment(0.0, 2.0),
-                                colors: <Color>[
-                                  const Color(0xff1A7FA7),
-                                  const Color(0x003E5A9B)
-                                ],
-                              )
-                          ),
-                          child: new Column(
-                            children: _children,
-                          ),
-                        )
-                    ),
-                    new SizedBox(
-                      width: 140.0,
+        maximizedLeftPanel: new Container(
+          child: new ListView(
+            children: <Widget>[
+              new Row(
+                children: <Widget>[
+                  new Expanded(
                       child: new Container(
                         decoration: new BoxDecoration(
                             gradient: new LinearGradient(
-                              begin: const Alignment(2.0, -1.0),
+                              begin: const Alignment(0.0, -1.0),
                               end: const Alignment(0.0, 2.0),
                               colors: <Color>[
-                                const Color(0xff1468A7),
-                                const Color(0x00463D91)
+                                const Color(0xff1A7FA7),
+                                const Color(0x003E5A9B)
                               ],
                             )
                         ),
                         child: new Column(
-                          children: _childrenAdd,
+                          children: _children,
                         ),
+                      )
+                  ),
+                  new SizedBox(
+                    width: 140.0,
+                    child: new Container(
+                      decoration: new BoxDecoration(
+                          gradient: new LinearGradient(
+                            begin: const Alignment(2.0, -1.0),
+                            end: const Alignment(0.0, 2.0),
+                            colors: <Color>[
+                              const Color(0xff1468A7),
+                              const Color(0x00463D91)
+                            ],
+                          )
                       ),
-                    )
-                  ],
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                )
-              ],
-            ),
-          ), 
-          minimizedLeftPanel: new Container(
-            child: new Text("Minimized Left"),
-          ),
-          rightPanelTabs: <Widget>[
-            new Container(
-                color: new Color(0xff113E69),
-                child: new ListView(
-                  children: <Widget>[
-                    new Center( child: new Text("SMOOTH")),
-                    new Padding(padding: const EdgeInsets.only(top: 5.0)),
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        new Text("W"),
-                        new Text("T"),
-                        new Text("F"),
-                        new Text("W"),
-                      ],
+                      child: new Column(
+                        children: _childrenAdd,
+                      ),
                     ),
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        new Radio(value: "W1", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                        new Radio(value: "T", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                        new Radio(value: "F", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                        new Radio(value: "W2", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-                      ],
-                    )
-                  ],
-                )
-            )
-          ],
+                  )
+                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            ],
+          ),
+        ),
+        minimizedLeftPanel: new Container(
+          decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                begin: const Alignment(0.0, -1.0),
+                end: const Alignment(0.0, 2.0),
+                colors: <Color>[
+                  const Color(0xff1A7FA7),
+                  const Color(0x003E5A9B)
+                ],
+              )
+          ),
+          child: new ListView(
+            children: _minLPanelChildren,
+          ),
+        ),
+        rightPanelTabs: <Widget>[
+          // first tab contain SMOOTH
+          new Container(
+              color: new Color(0xff113E69),
+              child: new ListView(
+                children: _rightPanelChildren,
+              )
+          ),
+          // next tab contains RHYTHM
+          new Container(
+            child: new Text("Testing"),
+          )
+        ],
       ),
     );
   }

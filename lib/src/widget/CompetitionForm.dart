@@ -58,6 +58,8 @@ class _CompetitionFormState extends State<CompetitionForm> {
   final GlobalKey _drawerKey = new GlobalKey();
   Widget leftPanel;
   Widget rightPanel;
+  bool isMaximizedLeft = true;
+  bool isBuildRPanel = false;
 
   @override
   void initState() {
@@ -78,22 +80,30 @@ class _CompetitionFormState extends State<CompetitionForm> {
       if(!_scrollController.position.atEdge) {
         if(_scrollController.position.pixels > 50.0) {
           leftPanel = _buildMinimizedLPanel();
+          isMaximizedLeft = false;
         } else {
           leftPanel = _buildMaximizedLPanel();
+          isMaximizedLeft = true;
         }
       }
       else {
-        if(_scrollController.position.pixels < 50.0)
+        if(_scrollController.position.pixels < 50.0) {
           leftPanel = _buildMaximizedLPanel();
-        else
+          isMaximizedLeft = true;
+        }
+        else {
           leftPanel = _buildMinimizedLPanel();
+          isMaximizedLeft = false;
+        }
       }
 
       if(_width <= 200.0) {
         rightPanel = _buildRightPanel();
+        isBuildRPanel = true;
       }
       else {
         rightPanel = new Container(color: new Color(0xff113E69));
+        isBuildRPanel = false;
       }
     });
   }
@@ -117,12 +127,8 @@ class _CompetitionFormState extends State<CompetitionForm> {
     if(widget.rightPanelTabs != null) {
       children.addAll(widget.rightPanelTabs.map((widget) {
         return new Container(
-          child: new Card(
-            elevation: 0.0,
-            //color: Colors.amber,
-            child: new Center(
-                child: widget
-            ),
+          child: new Center(
+              child: widget
           ),
         );
       }).toList());
@@ -133,7 +139,7 @@ class _CompetitionFormState extends State<CompetitionForm> {
     return new DefaultTabController(
         length: widget.rightPanelTabs != null ? widget.rightPanelTabs.length : 0,
         child: new Container(
-          color: new Color(0xff113E69),
+          //color: new Color(0xff113E69),
           child: new TabBarView(
               children: children,
           ),
@@ -156,6 +162,13 @@ class _CompetitionFormState extends State<CompetitionForm> {
       rPanelWidth = (mediaQueryData.size.width - 250.0) + 135;
     }
     //print(mediaQueryData.size.width - 250.0);
+
+    if(isMaximizedLeft) {
+      leftPanel = _buildMaximizedLPanel();
+    }
+    if(isBuildRPanel) {
+      rightPanel = _buildRightPanel();
+    }
 
     return new SizedBox.expand(
       child: new NotificationListener<ScrollEndNotification>(

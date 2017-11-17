@@ -58,14 +58,22 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
     return new MaterialButton(
         padding: const EdgeInsets.all(5.0),
         onPressed: (){
-          _selectedButtons.add(str);
+          if(_selectedButtons.contains(str)) {
+            _selectedButtons.remove(str);
+          } else {
+            _selectedButtons.add(str);
+          }
           Navigator.of(context).pop();
           showAgeCategoryDialog(context, _selectedButtons, onComplete);
         },
         child: new Container(
           decoration: new BoxDecoration(
               borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : new Color(0xff230E30),
+              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : new Color(0xff335577),
+              /*image: new DecorationImage(
+                  image: new ExactAssetImage("mainframe_assets/images/age_modal_btn.png"),
+                  fit: BoxFit.cover,
+              )*/
           ),
           padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
           child: new Text(str),
@@ -81,12 +89,18 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
 
   return showDialog<Null>(
     context: context,
-    barrierDismissible: false,
+    //barrierDismissible: false,
     child: new Dialog(
       child: new Container(
         decoration: new BoxDecoration(
             borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-            color: new Color(0xff24041E)
+            color: new Color(0xff364864),
+            boxShadow: <BoxShadow>[
+              new BoxShadow(
+                blurRadius: 1.0,
+                spreadRadius: 1.0
+              )
+            ]
         ),
         height: 390.0,
         width: 180.0,
@@ -107,7 +121,7 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                           }
                       )
                   ),
-                  new Text("SELECT AGE", style: new TextStyle(fontSize: 18.0))
+                  new Text("SELECT AGE[S]", style: new TextStyle(fontSize: 18.0))
                 ],
               ),
             ),
@@ -138,20 +152,22 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                                     height: 80.0,
                                     decoration: new BoxDecoration(
                                         borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-                                        color: new Color(0xff230E30)
+                                        color: new Color(0xff335577)
                                     ),
-                                    child: new Column(
+                                    /*child: new Column(
                                       children: <Widget>[
-                                        new Text("+", style: new TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
-                                        new Text("ADD")
+                                        //new Text("+", style: new TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
+                                        new Icon(Icons.check),
+                                        new Text("OK")
                                       ],
                                       crossAxisAlignment: CrossAxisAlignment.center,
-                                    ),
+                                    ),*/
+                                    child: new Text("OK", style: new TextStyle(fontWeight: FontWeight.bold)),
                                     alignment: Alignment.center,
                                   )
                               ),
                             ),
-                            new Container(
+                            /*new Container(
                               child: new MaterialButton(
                                   padding: const EdgeInsets.all(5.0),
                                   onPressed: () {
@@ -162,7 +178,7 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                                     height: 80.0,
                                     decoration: new BoxDecoration(
                                         borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-                                        color: new Color(0xff230E30)
+                                        color: new Color(0xff335577)
                                     ),
                                     child: new Column(
                                       children: <Widget>[
@@ -174,7 +190,7 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                                     alignment: Alignment.center,
                                   )
                               ),
-                            )
+                            )*/
                           ],
                         )
                       )

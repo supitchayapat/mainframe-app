@@ -35,6 +35,8 @@ flutter:
     - mainframe_assets/images/powered_by_2x.png
     - mainframe_assets/images/button_mds.png
     - mainframe_assets/images/add_button.png
+    - mainframe_assets/images/add_highlight.png
+    - mainframe_assets/images/age_modal_btn.png
     - mainframe_assets/images/level_row_divider.png
     - mainframe_assets/images/sel_age_bg.png
   # icons
