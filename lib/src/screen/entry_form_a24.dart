@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/CompetitionForm.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/dao/EventDao.dart';
 
 class EntryForm extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class EntryForm extends StatefulWidget {
 
 class _EntryFormState extends State<EntryForm> {
   HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
+  Map<String, Map<String, String>> levelValMap = {};
   String categoryVal = "";
   List<String> smoothHeadings = <String>[
     "W", "T", "F", "W"
@@ -19,14 +21,29 @@ class _EntryFormState extends State<EntryForm> {
   List<String> smoothValues = <String>[
     "W1", "T", "F", "W2"
   ];
-  Map<String, Color> smoothBgs = {
+  List danceCategories;
+  List danceLevels;
+  /*Map<String, Color> smoothBgs = {
     "W1": Colors.amber,
     "T": Colors.lightBlueAccent,
     "F": Colors.indigo,
     "W2": Colors.cyanAccent,
-  };
+  };*/
 
-  void _handleCategoryChanged(String val) {
+  @override
+  void initState() {
+    super.initState();
+    EventDao.getEvents().then((events){
+      events.forEach((event) {
+        if(event.danceCategories != null) {
+          danceCategories = event.danceCategories;
+          danceLevels = event.levels;
+        }
+      });
+    });
+  }
+
+  void _handleCategoryChanged(String val, {String catVal}) {
     setState((){
       categoryVal = val;
     });
@@ -77,6 +94,9 @@ class _EntryFormState extends State<EntryForm> {
             //print("COMPLETED");
             //levelMap.putIfAbsent(levelTxt, () => _selButtons);
             levelMap[levelTxt] = _selButtons;
+            levelMap.forEach((key, values) { 
+              values.forEach((val) => levelValMap.putIfAbsent(key+"_"+val, () => {}));
+            });
             if(_selButtons.length < 1) {
               levelMap.remove(levelTxt);
             }
@@ -87,13 +107,13 @@ class _EntryFormState extends State<EntryForm> {
     );
   }
 
-  List<Widget> _buildRightTable() {
+  List<Widget> _buildRightTable(String tableHeader, List<String> subHeadings) {
     return <Widget>[
       new Container(
         alignment: Alignment.bottomCenter,
         height: 30.0,
         child: new Text(
-            "SMOOTH",
+            tableHeader,
             style: new TextStyle(
                 fontSize: 15.0,
                 fontWeight: FontWeight.bold
@@ -103,15 +123,15 @@ class _EntryFormState extends State<EntryForm> {
       //new Padding(padding: const EdgeInsets.only(top: 5.0)),
       new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: smoothHeadings.map((heading) {
+        children: subHeadings.map((heading) {
           return new Expanded(
               child: new Container(
                 //color: smoothBgs[heading],
                 alignment: Alignment.center,
                 child: new Container(
                   alignment: Alignment.center,
-                  //color: Colors.cyanAccent,
-                  width: 20.0,
+                  //color: Colors.amber,
+                  //width: 30.0,
                   height: 20.0,
                   child: new Text(heading),
                 ),
@@ -119,25 +139,79 @@ class _EntryFormState extends State<EntryForm> {
           );
         }).toList(),
       )
-      /*new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: smoothValues.map((headingVal) {
-          return new Expanded(
-              child: new Container(
-                color: smoothBgs[headingVal],
-                alignment: Alignment.center,
-                height: 42.0,
-                child: new Container(
-                  alignment: Alignment.center,
-                  child: new Radio(
-                      value: headingVal, groupValue: categoryVal, onChanged: _handleCategoryChanged
-                  ),
-                ),
-              )
-          );
-        }).toList(),
-      )*/
     ];
+  }
+
+  List<Widget> _buildRightPanelTabs() {
+    List<Widget> rightPanelTabs = <Widget>[];
+
+    if(danceCategories != null) {
+      danceCategories.forEach((danceCategory) {
+        List<Widget> _rightPanelChildren = <Widget>[];
+        List<String> subHeadings = <String>[];
+        List<String> subHeadingValues = <String>[];
+        danceCategory.subCategories.forEach((val) {
+          subHeadings.add(val.subCategory);
+          subHeadingValues.add(val.subCategory+val.order.toString());
+        });
+        _rightPanelChildren.addAll(_buildRightTable(danceCategory.category.toUpperCase(), subHeadings));
+
+        levelMap.forEach((key, values) {
+          values.forEach((val) {
+            _rightPanelChildren.add(new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: subHeadingValues.map((headingVal) {
+                levelValMap[key + "_" + val].putIfAbsent(headingVal, () => "");
+                //print(levelValMap[key+"_"+val]);
+                Radio radioElement = new Radio(
+                    value: headingVal,
+                    groupValue: levelValMap[key + "_" + val][headingVal],
+                    onChanged: (String radioVal) {
+                      //print(radioVal);
+                      setState(() {
+                        levelValMap[key + "_" + val][headingVal] = radioVal;
+                      });
+                      //print(levelValMap[key+"_"+val][headingVal]);
+                    }
+                );
+
+                return new Expanded(
+                    child: new InkWell(
+                      onTap: () {
+                        String catVal = levelValMap[key + "_" +
+                            val][headingVal];
+                        if (!catVal.isEmpty && catVal == headingVal) {
+                          catVal = "";
+                        } else {
+                          catVal = headingVal;
+                        }
+                        radioElement.onChanged(catVal);
+                      },
+                      child: new Container(
+                        //color: smoothBgs[headingVal],
+                        alignment: Alignment.center,
+                        height: 42.0,
+                        child: new Container(
+                          alignment: Alignment.center,
+                          child: radioElement,
+                        ),
+                      ),
+                    )
+                );
+              }).toList(),
+            ));
+          });
+        });
+
+        rightPanelTabs.add(new Container(
+            color: new Color(0xff113E69),
+            child: new ListView(
+              children: _rightPanelChildren,
+            )
+        ));
+      });
+    }
+    return rightPanelTabs;
   }
 
   @override
@@ -149,10 +223,16 @@ class _EntryFormState extends State<EntryForm> {
       "Full Gold", "Open Gold"
     ];
 
+    if(danceLevels != null) {
+      levels = <String>[];
+      danceLevels.forEach((val) {
+        levels.add(val.level);
+      });
+    }
+
     List<Widget> _children = <Widget>[];
     List<Widget> _childrenAdd = <Widget>[];
     List<Widget> _minLPanelChildren = <Widget>[];
-    List<Widget> _rightPanelChildren = <Widget>[];
 
     _children.add(new Container(
       decoration: new BoxDecoration(
@@ -217,7 +297,7 @@ class _EntryFormState extends State<EntryForm> {
       ),
     ));
 
-    _rightPanelChildren.addAll(_buildRightTable());
+    //_rightPanelChildren.addAll(_buildRightTable("SMOOTH", smoothHeadings));
 
     levelMap.forEach((key, values){
       values.forEach((val){
@@ -241,27 +321,11 @@ class _EntryFormState extends State<EntryForm> {
               )
           ),
         ));
-
-        _rightPanelChildren.add(new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: smoothValues.map((headingVal) {
-            return new Expanded(
-                child: new Container(
-                  //color: smoothBgs[headingVal],
-                  alignment: Alignment.center,
-                  height: 42.0,
-                  child: new Container(
-                    alignment: Alignment.center,
-                    child: new Radio(
-                        value: headingVal, groupValue: categoryVal, onChanged: _handleCategoryChanged
-                    ),
-                  ),
-                )
-            );
-          }).toList(),
-        ));
       });
     });
+
+    // right panel table
+    List<Widget> rightPanelTabs = _buildRightPanelTabs();
 
     return new Scaffold(
       appBar: new MFAppBar("ENTRY FORM", context),
@@ -327,19 +391,7 @@ class _EntryFormState extends State<EntryForm> {
             children: _minLPanelChildren,
           ),
         ),
-        rightPanelTabs: <Widget>[
-          // first tab contain SMOOTH
-          new Container(
-              color: new Color(0xff113E69),
-              child: new ListView(
-                children: _rightPanelChildren,
-              )
-          ),
-          // next tab contains RHYTHM
-          new Container(
-            child: new Text("Testing"),
-          )
-        ],
+        rightPanelTabs: rightPanelTabs,
       ),
     );
   }

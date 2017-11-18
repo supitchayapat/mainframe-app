@@ -15,7 +15,8 @@ class EventDao {
     return reference.once().then((snap) {
       for(Iterator iter=snap.value.iterator; iter.moveNext();) {
         var item = iter.current;
-        events.add(new MFEvent.fromSnapshot(item));
+        MFEvent evt = new MFEvent.fromSnapshot(item);
+        events.add(evt);
       }
       return events;
     });
