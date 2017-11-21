@@ -40,7 +40,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                     new Text(e.year.toString(), style: new TextStyle(color: new Color(0xff00e5ff)))
                   ],
                 ),
-                trailing: e.hasAttended ? new Image.network("http://i67.tinypic.com/1zclu7t.jpg",
+                trailing: e.hasAttended ? new Image.asset("mainframe_assets/images/attended_before@2x.png",
                   height: 50.0,
                   width: 50.0,
                 ) : new Container(),
