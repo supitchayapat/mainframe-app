@@ -16,7 +16,7 @@ final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
   new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
   new _MenuContent("TECH SUPPORT", "", null, true, false),
-  new _MenuContent("Contact", "", "mainframe_assets/icons/noun_961889_cc@2x.png", false, true),
+  new _MenuContent("Contact", "/contactUs", "mainframe_assets/icons/noun_961889_cc@2x.png", false, true),
 ];
 
 bool _logoutUser() {

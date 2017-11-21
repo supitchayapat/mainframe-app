@@ -10,6 +10,7 @@ import 'src/screen/w0_login_a2.dart';
 import 'src/screen/login_screen.dart';
 import 'src/screen/forgot_password_a3.dart';
 import 'src/screen/entry_form_a24.dart';
+import 'src/screen/about_us.dart';
 
 /*
   Author: Art
@@ -53,6 +54,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
     case '/loginscreen':
       return new MainFrameRoute(
         builder: (_) => new LoginScreen(),
+        settings: settings,
+      );
+    case '/contactUs':
+      return new MainFrameRoute(
+        builder: (_) => new AboutUs(),
         settings: settings,
       );
     case '/forgot-password':
@@ -105,6 +111,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/':         (BuildContext context) => new MainFrameSplash(),
     '/login':         (BuildContext context) => new LoginApp(),
     '/loginscreen':         (BuildContext context) => new LoginScreen(),
+    '/contactUs':         (BuildContext context) => new AboutUs(),
     '/forgot-password':         (BuildContext context) => new ForgotPassword(),
     '/mainscreen': (BuildContext context) => new MainScreen(),
     '/profilesetup-1': (BuildContext context) => new ProfileSetupName(),
