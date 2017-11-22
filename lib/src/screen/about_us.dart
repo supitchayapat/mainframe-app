@@ -1,3 +1,5 @@
+import 'dart:convert' show JSON;
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 
@@ -7,6 +9,24 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
+  String _appVersion = "";
+  String _internalBuild = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    rootBundle.loadString('mainframe_assets/conf/config.json').then<Null>((String data) {
+      var result = JSON.decode(data);
+      String internal_build = result['internal_build'];
+      String app_version = result['app_version'];
+      //print("JSON has "+ internal_build +" internal_build");
+      setState((){
+        _appVersion = app_version;
+        _internalBuild = internal_build;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +54,17 @@ class _AboutUsState extends State<AboutUs> {
           new Container(
             alignment: Alignment.center,
             //padding: const EdgeInsets.all(20.0),
-            child: new Text(
-                "version build 1.0.0",
-                style: new TextStyle(fontSize: 12.0, color: Colors.white, fontFamily: "Montserrat-Light")
+            child: new Column(
+              children: <Widget>[
+                new Text(
+                    "app ver "+_appVersion,
+                    style: new TextStyle(fontSize: 12.0, color: Colors.white, fontFamily: "Montserrat-Light")
+                ),
+                new Text(
+                    "internal build: "+_internalBuild,
+                    style: new TextStyle(fontSize: 12.0, color: Colors.white, fontFamily: "Montserrat-Light")
+                )
+              ],
             ),
           ),
         ],

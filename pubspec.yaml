@@ -48,6 +48,8 @@ flutter:
     - mainframe_assets/icons/noun_1049935_cc@2x.png
     - mainframe_assets/icons/noun_1098180_cc@2x.png
     - mainframe_assets/icons/noun_1129072_cc@2x.png
+  # json
+    - mainframe_assets/conf/config.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
