@@ -5,6 +5,9 @@ import 'package:myapp/src/widget/CompetitionForm.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/EventDao.dart';
+import 'package:myapp/src/model/EventDanceCategory.dart';
+
+const int subColumnTreshold = 12;
 
 class EntryForm extends StatefulWidget {
   @override
@@ -13,7 +16,10 @@ class EntryForm extends StatefulWidget {
 
 class _EntryFormState extends State<EntryForm> {
   HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
+  ScrollController _minLeftScrollController = new ScrollController();
+  ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
+  CompetitionForm form;
   String categoryVal = "";
   List<String> smoothHeadings = <String>[
     "W", "T", "F", "W"
@@ -23,12 +29,12 @@ class _EntryFormState extends State<EntryForm> {
   ];
   List danceCategories;
   List danceLevels;
-  /*Map<String, Color> smoothBgs = {
-    "W1": Colors.amber,
-    "T": Colors.lightBlueAccent,
+  Map<String, Color> smoothBgs = {
+    "SMOOTH": Colors.amber,
+    "RHYTHM": Colors.lightBlueAccent,
     "F": Colors.indigo,
     "W2": Colors.cyanAccent,
-  };*/
+  };
 
   @override
   void initState() {
@@ -43,10 +49,19 @@ class _EntryFormState extends State<EntryForm> {
     });
   }
 
-  void _handleCategoryChanged(String val, {String catVal}) {
-    setState((){
-      categoryVal = val;
-    });
+  void _scrollListener(notification, ScrollController from, ScrollController to) {
+    if(notification is ScrollEndNotification) {
+      to.jumpTo(from.offset);
+    }
+  }
+
+  double get _rPanelWidth {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
+    double rPanelWidth = 205.0;
+    if(mediaQueryData.orientation == Orientation.landscape) {
+      rPanelWidth = (mediaQueryData.size.width - 250.0) + 135;
+    }
+    return rPanelWidth;
   }
 
   Widget _buildLevelColumn(String levelTxt) {
@@ -107,20 +122,47 @@ class _EntryFormState extends State<EntryForm> {
     );
   }
 
-  List<Widget> _buildRightTable(String tableHeader, List<String> subHeadings) {
+  List<Widget> _buildRightTable(String tableHeader, List<String> subHeadings, List<int> divisions) {
+    List<String> headings = tableHeader.split("||");
+    double subheadingWidth = _rPanelWidth / 12;
+    int idx = 0;
+
     return <Widget>[
-      new Container(
-        alignment: Alignment.bottomCenter,
-        height: 30.0,
-        child: new Text(
-            tableHeader,
-            style: new TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold
-            )
-        ),
+      new Row(
+        children: headings.map((heading){
+          double headingWidth = (divisions[idx] == subColumnTreshold) ? 0.0 : subheadingWidth * divisions[idx];
+          idx++;
+          Widget _headContainer = new Container(
+            //color: smoothBgs[heading],
+            alignment: Alignment.bottomCenter,
+            child: new Container(
+              alignment: Alignment.bottomCenter,
+              height: 30.0,
+              child: new Text(heading),
+            ),
+          );
+
+          if(headings.length > 1 && headingWidth != 0.0) {
+            _headContainer = new Container(
+              //color: smoothBgs[heading],
+              alignment: Alignment.bottomCenter,
+              width: headingWidth,
+              child: new Container(
+                alignment: Alignment.bottomCenter,
+                height: 30.0,
+                child: new Text(heading),
+              ),
+            );
+            return _headContainer;
+          }
+          else {
+            return new Expanded(
+                child: _headContainer
+            );
+          }
+
+        }).toList(),
       ),
-      //new Padding(padding: const EdgeInsets.only(top: 5.0)),
       new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: subHeadings.map((heading) {
@@ -146,15 +188,52 @@ class _EntryFormState extends State<EntryForm> {
     List<Widget> rightPanelTabs = <Widget>[];
 
     if(danceCategories != null) {
-      danceCategories.forEach((danceCategory) {
+      String headings = "";
+      Map<String, List<String>> subHeadings = {};
+      List<String> subHead = <String>[];
+      List<int> divisions = <int>[];
+      int bucket = 0;
+      // assess groupings
+      danceCategories.forEach((danceCategory){
+        if(headings.isEmpty) {
+          headings += danceCategory.category;
+        }
+        else {
+          headings += "||" + danceCategory.category;
+        }
+        danceCategory.subCategories.forEach((val) {
+          if (bucket < subColumnTreshold) {
+            subHead.add(val.subCategory);
+            bucket++;
+          } else {
+            //print(subHead);
+            subHeadings.putIfAbsent(headings, () => subHead);
+            subHead = <String>[];
+            subHead.add(val.subCategory);
+            divisions.add(bucket);
+            headings = danceCategory.category;
+            bucket = 0;
+          }
+        });
+        // record division
+        divisions.add(bucket);
+      });
+
+      if(subHead.length > 0) {
+        subHeadings.putIfAbsent(headings, () => subHead);
+      }
+
+      subHeadings.forEach((danceCategory, subDanceCategories) {
         List<Widget> _rightPanelChildren = <Widget>[];
         List<String> subHeadings = <String>[];
         List<String> subHeadingValues = <String>[];
-        danceCategory.subCategories.forEach((val) {
-          subHeadings.add(val.subCategory);
-          subHeadingValues.add(val.subCategory+val.order.toString());
+        int idx = 0;
+        subDanceCategories.forEach((val) {
+          idx++;
+          subHeadings.add(val);
+          subHeadingValues.add(val+idx.toString());
         });
-        _rightPanelChildren.addAll(_buildRightTable(danceCategory.category.toUpperCase(), subHeadings));
+        //_rightPanelChildren.addAll(_buildRightTable(danceCategory.toUpperCase(), subHeadings, divisions));
 
         levelMap.forEach((key, values) {
           values.forEach((val) {
@@ -203,10 +282,22 @@ class _EntryFormState extends State<EntryForm> {
           });
         });
 
+        List<Widget> _rightPanelTabColumns = <Widget>[];
+        _rightPanelTabColumns.addAll(_buildRightTable(danceCategory.toUpperCase(), subHeadings, divisions));
+        _rightPanelTabColumns.add(new Flexible(
+            child: new NotificationListener(
+                onNotification: (notification) { _scrollListener(notification, _rightScrollController, _minLeftScrollController); },
+                child: new ListView(
+                  controller: _rightScrollController,
+                  children: _rightPanelChildren,
+                )
+            )
+        ));
+
         rightPanelTabs.add(new Container(
             color: new Color(0xff113E69),
-            child: new ListView(
-              children: _rightPanelChildren,
+            child: new Column(
+              children: _rightPanelTabColumns,
             )
         ));
       });
@@ -278,24 +369,7 @@ class _EntryFormState extends State<EntryForm> {
     }
 
     // minimized left panel children
-    _minLPanelChildren.add(new Container(
-      decoration: new BoxDecoration(
-          image: new DecorationImage(
-              image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
-              fit: BoxFit.contain,
-              alignment: Alignment.bottomCenter
-          )
-      ),
-      alignment: Alignment.center,
-      height: 50.0,
-      child: new Text(
-          "LEVEL - AGE",
-          style: new TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.bold
-          )
-      ),
-    ));
+    //_minLPanelChildren.add();
 
     //_rightPanelChildren.addAll(_buildRightTable("SMOOTH", smoothHeadings));
 
@@ -327,72 +401,102 @@ class _EntryFormState extends State<EntryForm> {
     // right panel table
     List<Widget> rightPanelTabs = _buildRightPanelTabs();
 
-    return new Scaffold(
-      appBar: new MFAppBar("ENTRY FORM", context),
-      body: new CompetitionForm(
-        maximizedLeftPanel: new Container(
-          child: new ListView(
-            children: <Widget>[
-              new Row(
-                children: <Widget>[
-                  new Expanded(
-                      child: new Container(
-                        decoration: new BoxDecoration(
-                            gradient: new LinearGradient(
-                              begin: const Alignment(0.0, -1.0),
-                              end: const Alignment(0.0, 2.0),
-                              colors: <Color>[
-                                const Color(0xff1A7FA7),
-                                const Color(0x003E5A9B)
-                              ],
-                            )
-                        ),
-                        child: new Column(
-                          children: _children,
-                        ),
-                      )
-                  ),
-                  new SizedBox(
-                    width: 140.0,
+    form = new CompetitionForm(
+      maximizedLeftPanel: new Container(
+        child: new ListView(
+          children: <Widget>[
+            new Row(
+              children: <Widget>[
+                new Expanded(
                     child: new Container(
                       decoration: new BoxDecoration(
                           gradient: new LinearGradient(
-                            begin: const Alignment(2.0, -1.0),
+                            begin: const Alignment(0.0, -1.0),
                             end: const Alignment(0.0, 2.0),
                             colors: <Color>[
-                              const Color(0xff1468A7),
-                              const Color(0x00463D91)
+                              const Color(0xff1A7FA7),
+                              const Color(0x003E5A9B)
                             ],
                           )
                       ),
                       child: new Column(
-                        children: _childrenAdd,
+                        children: _children,
                       ),
+                    )
+                ),
+                new SizedBox(
+                  width: 140.0,
+                  child: new Container(
+                    decoration: new BoxDecoration(
+                        gradient: new LinearGradient(
+                          begin: const Alignment(2.0, -1.0),
+                          end: const Alignment(0.0, 2.0),
+                          colors: <Color>[
+                            const Color(0xff1468A7),
+                            const Color(0x00463D91)
+                          ],
+                        )
                     ),
-                  )
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              )
-            ],
-          ),
+                    child: new Column(
+                      children: _childrenAdd,
+                    ),
+                  ),
+                )
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+            )
+          ],
         ),
-        minimizedLeftPanel: new Container(
-          decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                begin: const Alignment(0.0, -1.0),
-                end: const Alignment(0.0, 2.0),
-                colors: <Color>[
-                  const Color(0xff1A7FA7),
-                  const Color(0x003E5A9B)
-                ],
-              )
-          ),
-          child: new ListView(
-            children: _minLPanelChildren,
-          ),
-        ),
-        rightPanelTabs: rightPanelTabs,
       ),
+      minimizedLeftPanel: new Container(
+        decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+              begin: const Alignment(0.0, -1.0),
+              end: const Alignment(0.0, 2.0),
+              colors: <Color>[
+                const Color(0xff1A7FA7),
+                const Color(0x003E5A9B)
+              ],
+            )
+        ),
+        child: new Column(
+          children: <Widget>[
+            new Container(
+              decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                      image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+                      fit: BoxFit.contain,
+                      alignment: Alignment.bottomCenter
+                  )
+              ),
+              alignment: Alignment.center,
+              height: 50.0,
+              child: new Text(
+                  "LEVEL - AGE",
+                  style: new TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold
+                  )
+              ),
+            ),
+            new Flexible(
+                child: new NotificationListener(
+                    onNotification: (notification) { _scrollListener(notification, _minLeftScrollController, _rightScrollController); },
+                    child: new ListView(
+                      children: _minLPanelChildren,
+                      controller: _minLeftScrollController,
+                    )
+                )
+            )
+          ],
+        ),
+      ),
+      rightPanelTabs: rightPanelTabs,
+    );
+
+    return new Scaffold(
+      appBar: new MFAppBar("ENTRY FORM", context),
+      body: form,
     );
   }
 }
