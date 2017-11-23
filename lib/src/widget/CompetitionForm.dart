@@ -42,11 +42,13 @@ class CompetitionForm extends StatefulWidget {
   Widget minimizedLeftPanel;
   Widget maximizedLeftPanel;
   List<Widget> rightPanelTabs;
+  double rPanelWidth;
 
   CompetitionForm({
     @required this.maximizedLeftPanel,
     @required this.minimizedLeftPanel,
-    this.rightPanelTabs
+    this.rightPanelTabs,
+    @required this.rPanelWidth
   });
 
   @override
@@ -159,7 +161,7 @@ class _CompetitionFormState extends State<CompetitionForm> {
     double rPanelWidth = 205.0;
     //print(mediaQueryData.orientation);
     if(mediaQueryData.orientation == Orientation.landscape) {
-      rPanelWidth = (mediaQueryData.size.width - 250.0) + 135;
+      rPanelWidth = (widget.rPanelWidth != null && widget.rPanelWidth > 0) ? widget.rPanelWidth : rPanelWidth;
     }
     //print(mediaQueryData.size.width - 250.0);
 

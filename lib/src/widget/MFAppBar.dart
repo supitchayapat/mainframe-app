@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class MFAppBar extends AppBar {
   String textTitle;
+  VoidCallback backButtonFunc;
 
-  MFAppBar(this.textTitle, BuildContext context) : super(
+  MFAppBar(this.textTitle, BuildContext context, {this.backButtonFunc}) : super(
       title: new Text(
           textTitle,
           style: new TextStyle(
@@ -21,7 +22,11 @@ class MFAppBar extends AppBar {
           color: Colors.white,
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onPressed: () {
-            Navigator.of(context).maybePop();
+            if(backButtonFunc != null) {
+              backButtonFunc();
+            } else {
+              Navigator.of(context).maybePop();
+            }
           }
       )
   );

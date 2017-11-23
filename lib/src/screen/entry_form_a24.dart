@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/CompetitionForm.dart';
@@ -7,26 +8,19 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/model/EventDanceCategory.dart';
 
-const int subColumnTreshold = 12;
+const double subColumnTreshold = 40.0;
 
 class EntryForm extends StatefulWidget {
   @override
   _EntryFormState createState() => new _EntryFormState();
 }
 
-class _EntryFormState extends State<EntryForm> {
+class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
   ScrollController _minLeftScrollController = new ScrollController();
   ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
-  CompetitionForm form;
-  String categoryVal = "";
-  List<String> smoothHeadings = <String>[
-    "W", "T", "F", "W"
-  ];
-  List<String> smoothValues = <String>[
-    "W1", "T", "F", "W2"
-  ];
+  double rPanelWidth;
   List danceCategories;
   List danceLevels;
   Map<String, Color> smoothBgs = {
@@ -43,14 +37,24 @@ class _EntryFormState extends State<EntryForm> {
       events.forEach((event) {
         if(event.danceCategories != null) {
           danceCategories = event.danceCategories;
+          rPanelWidth = 0.0;
+          danceCategories.forEach((danceCategory){
+            rPanelWidth += danceCategory.subCategories.length;
+          });
+          rPanelWidth = rPanelWidth * subColumnTreshold;
           danceLevels = event.levels;
         }
       });
     });
   }
 
+  @override
+  Future<Null> handlePopRoute() async {
+    print("pop handled");
+  }
+
   void _scrollListener(notification, ScrollController from, ScrollController to) {
-    if(notification is ScrollEndNotification) {
+    if(notification is ScrollUpdateNotification) { // change to ScrollEndNotification to prevent exception
       to.jumpTo(from.offset);
     }
   }
@@ -122,62 +126,33 @@ class _EntryFormState extends State<EntryForm> {
     );
   }
 
-  List<Widget> _buildRightTable(String tableHeader, List<String> subHeadings, List<int> divisions) {
-    List<String> headings = tableHeader.split("||");
-    double subheadingWidth = _rPanelWidth / 12;
+  List<Widget> _buildRightTable() {
     int idx = 0;
-
     return <Widget>[
       new Row(
-        children: headings.map((heading){
-          double headingWidth = (divisions[idx] == subColumnTreshold) ? 0.0 : subheadingWidth * divisions[idx];
-          idx++;
-          Widget _headContainer = new Container(
-            //color: smoothBgs[heading],
-            alignment: Alignment.bottomCenter,
-            child: new Container(
-              alignment: Alignment.bottomCenter,
-              height: 30.0,
-              child: new Text(heading),
-            ),
-          );
-
-          if(headings.length > 1 && headingWidth != 0.0) {
-            _headContainer = new Container(
-              //color: smoothBgs[heading],
-              alignment: Alignment.bottomCenter,
-              width: headingWidth,
-              child: new Container(
+        children: danceCategories.map((danceCategory){
+          return new Column(
+            children: <Widget>[
+              new Container(
+                child: new Text(danceCategory.category.toUpperCase()),
                 alignment: Alignment.bottomCenter,
                 height: 30.0,
-                child: new Text(heading),
               ),
-            );
-            return _headContainer;
-          }
-          else {
-            return new Expanded(
-                child: _headContainer
-            );
-          }
-
-        }).toList(),
-      ),
-      new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: subHeadings.map((heading) {
-          return new Expanded(
-              child: new Container(
-                //color: smoothBgs[heading],
-                alignment: Alignment.center,
-                child: new Container(
-                  alignment: Alignment.center,
-                  //color: Colors.amber,
-                  //width: 30.0,
-                  height: 20.0,
-                  child: new Text(heading),
-                ),
+              new Row(
+                children: danceCategory.subCategories.map((sub){
+                  //print("idx: $idx mod: "+(idx % 2).toString());
+                  idx += 1;
+                  return new Container(
+                    //color: (idx % 2) != 0 ? Colors.amber : Colors.cyanAccent,
+                    width: subColumnTreshold,
+                    height: 20.0,
+                    alignment: Alignment.center,
+                    child: new Text(sub.subCategory),
+                  );
+                }).toList(),
               )
+            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
           );
         }).toList(),
       )
@@ -186,122 +161,86 @@ class _EntryFormState extends State<EntryForm> {
 
   List<Widget> _buildRightPanelTabs() {
     List<Widget> rightPanelTabs = <Widget>[];
+    List<Widget> _rightPanelChildren = <Widget>[];
+    List<String> subHeadingValues = <String>[];
+    List<Widget> _rightPanelTabColumns = <Widget>[];
 
     if(danceCategories != null) {
-      String headings = "";
-      Map<String, List<String>> subHeadings = {};
-      List<String> subHead = <String>[];
-      List<int> divisions = <int>[];
-      int bucket = 0;
-      // assess groupings
-      danceCategories.forEach((danceCategory){
-        if(headings.isEmpty) {
-          headings += danceCategory.category;
-        }
-        else {
-          headings += "||" + danceCategory.category;
-        }
+      _rightPanelTabColumns.addAll(_buildRightTable());
+
+      danceCategories.forEach((danceCategory) {
         danceCategory.subCategories.forEach((val) {
-          if (bucket < subColumnTreshold) {
-            subHead.add(val.subCategory);
-            bucket++;
-          } else {
-            //print(subHead);
-            subHeadings.putIfAbsent(headings, () => subHead);
-            subHead = <String>[];
-            subHead.add(val.subCategory);
-            divisions.add(bucket);
-            headings = danceCategory.category;
-            bucket = 0;
-          }
+          subHeadingValues.add(val.subCategory + val.order.toString());
         });
-        // record division
-        divisions.add(bucket);
-      });
-
-      if(subHead.length > 0) {
-        subHeadings.putIfAbsent(headings, () => subHead);
-      }
-
-      subHeadings.forEach((danceCategory, subDanceCategories) {
-        List<Widget> _rightPanelChildren = <Widget>[];
-        List<String> subHeadings = <String>[];
-        List<String> subHeadingValues = <String>[];
-        int idx = 0;
-        subDanceCategories.forEach((val) {
-          idx++;
-          subHeadings.add(val);
-          subHeadingValues.add(val+idx.toString());
-        });
-        //_rightPanelChildren.addAll(_buildRightTable(danceCategory.toUpperCase(), subHeadings, divisions));
-
-        levelMap.forEach((key, values) {
-          values.forEach((val) {
-            _rightPanelChildren.add(new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: subHeadingValues.map((headingVal) {
-                levelValMap[key + "_" + val].putIfAbsent(headingVal, () => "");
-                //print(levelValMap[key+"_"+val]);
-                Radio radioElement = new Radio(
-                    value: headingVal,
-                    groupValue: levelValMap[key + "_" + val][headingVal],
-                    onChanged: (String radioVal) {
-                      //print(radioVal);
-                      setState(() {
-                        levelValMap[key + "_" + val][headingVal] = radioVal;
-                      });
-                      //print(levelValMap[key+"_"+val][headingVal]);
-                    }
-                );
-
-                return new Expanded(
-                    child: new InkWell(
-                      onTap: () {
-                        String catVal = levelValMap[key + "_" +
-                            val][headingVal];
-                        if (!catVal.isEmpty && catVal == headingVal) {
-                          catVal = "";
-                        } else {
-                          catVal = headingVal;
-                        }
-                        radioElement.onChanged(catVal);
-                      },
-                      child: new Container(
-                        //color: smoothBgs[headingVal],
-                        alignment: Alignment.center,
-                        height: 42.0,
-                        child: new Container(
-                          alignment: Alignment.center,
-                          child: radioElement,
-                        ),
-                      ),
-                    )
-                );
-              }).toList(),
-            ));
-          });
-        });
-
-        List<Widget> _rightPanelTabColumns = <Widget>[];
-        _rightPanelTabColumns.addAll(_buildRightTable(danceCategory.toUpperCase(), subHeadings, divisions));
-        _rightPanelTabColumns.add(new Flexible(
-            child: new NotificationListener(
-                onNotification: (notification) { _scrollListener(notification, _rightScrollController, _minLeftScrollController); },
-                child: new ListView(
-                  controller: _rightScrollController,
-                  children: _rightPanelChildren,
-                )
-            )
-        ));
-
-        rightPanelTabs.add(new Container(
-            color: new Color(0xff113E69),
-            child: new Column(
-              children: _rightPanelTabColumns,
-            )
-        ));
       });
     }
+
+    levelMap.forEach((key, values) {
+      values.forEach((val) {
+        _rightPanelChildren.add(new Row(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: subHeadingValues.map((headingVal) {
+            levelValMap[key + "_" + val].putIfAbsent(headingVal, () => "");
+            //print(levelValMap[key+"_"+val]);
+            Radio radioElement = new Radio(
+                value: headingVal,
+                groupValue: levelValMap[key + "_" + val][headingVal],
+                onChanged: (String radioVal) {
+                  //print(radioVal);
+                  setState(() {
+                    levelValMap[key + "_" + val][headingVal] = radioVal;
+                  });
+                  //print(levelValMap[key+"_"+val][headingVal]);
+                }
+            );
+
+            return new Container(
+                width: subColumnTreshold,
+                //color: Colors.amber,
+                child: new InkWell(
+                  onTap: () {
+                    String catVal = levelValMap[key + "_" +
+                        val][headingVal];
+                    if (!catVal.isEmpty && catVal == headingVal) {
+                      catVal = "";
+                    } else {
+                      catVal = headingVal;
+                    }
+                    radioElement.onChanged(catVal);
+                  },
+                  child: new Container(
+                    //color: smoothBgs[headingVal],
+                    alignment: Alignment.center,
+                    height: 42.0,
+                    child: new Container(
+                      alignment: Alignment.center,
+                      child: radioElement,
+                    ),
+                  ),
+                )
+            );
+          }).toList(),
+        ));
+      });
+    });
+
+    _rightPanelTabColumns.add(new Flexible(
+        child: new NotificationListener(
+            onNotification: (notification) { _scrollListener(notification, _rightScrollController, _minLeftScrollController); },
+            child: new ListView(
+              controller: _rightScrollController,
+              children: _rightPanelChildren,
+            )
+        )
+    ));
+
+    rightPanelTabs.add(new Container(
+        color: new Color(0xff113E69),
+        child: new Column(
+          children: _rightPanelTabColumns,
+        )
+    ));
+
     return rightPanelTabs;
   }
 
@@ -331,7 +270,7 @@ class _EntryFormState extends State<EntryForm> {
               image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
               fit: BoxFit.contain,
               alignment: Alignment.bottomCenter
-          )
+          ),
       ),
       alignment: Alignment.center,
       height: 50.0,
@@ -383,7 +322,8 @@ class _EntryFormState extends State<EntryForm> {
                   image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomCenter
-              )
+              ),
+              color: const Color(0xff1983A8)
           ),
           padding: const EdgeInsets.all(5.0),
           height: 42.0,
@@ -401,102 +341,102 @@ class _EntryFormState extends State<EntryForm> {
     // right panel table
     List<Widget> rightPanelTabs = _buildRightPanelTabs();
 
-    form = new CompetitionForm(
-      maximizedLeftPanel: new Container(
-        child: new ListView(
-          children: <Widget>[
-            new Row(
-              children: <Widget>[
-                new Expanded(
+    return new Scaffold(
+      appBar: new MFAppBar("ENTRY FORM", context),
+      body: new CompetitionForm(
+        maximizedLeftPanel: new Container(
+          child: new ListView(
+            children: <Widget>[
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                      child: new Container(
+                        decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              begin: const Alignment(0.0, -1.0),
+                              end: const Alignment(0.0, 2.0),
+                              colors: <Color>[
+                                const Color(0xff1A7FA7),
+                                const Color(0x003E5A9B)
+                              ],
+                            )
+                        ),
+                        child: new Column(
+                          children: _children,
+                        ),
+                      )
+                  ),
+                  new SizedBox(
+                    width: 140.0,
                     child: new Container(
                       decoration: new BoxDecoration(
                           gradient: new LinearGradient(
-                            begin: const Alignment(0.0, -1.0),
+                            begin: const Alignment(2.0, -1.0),
                             end: const Alignment(0.0, 2.0),
                             colors: <Color>[
-                              const Color(0xff1A7FA7),
-                              const Color(0x003E5A9B)
+                              const Color(0xff1468A7),
+                              const Color(0x00463D91)
                             ],
                           )
                       ),
                       child: new Column(
-                        children: _children,
+                        children: _childrenAdd,
                       ),
+                    ),
+                  )
+                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            ],
+          ),
+        ),
+        minimizedLeftPanel: new Container(
+          decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                begin: const Alignment(0.0, -1.0),
+                end: const Alignment(0.0, 2.0),
+                colors: <Color>[
+                  const Color(0xff1A7FA7),
+                  const Color(0x003E5A9B)
+                ],
+              )
+          ),
+          child: new Column(
+            children: <Widget>[
+              new Container(
+                decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                        image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png", scale: 1.0),
+                        fit: BoxFit.contain,
+                        alignment: Alignment.bottomCenter
+                    ),
+                    color: const Color(0xff1983A8)
+                ),
+                alignment: Alignment.center,
+                height: 50.0,
+                child: new Text(
+                    "LEVEL - AGE",
+                    style: new TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold
                     )
                 ),
-                new SizedBox(
-                  width: 140.0,
-                  child: new Container(
-                    decoration: new BoxDecoration(
-                        gradient: new LinearGradient(
-                          begin: const Alignment(2.0, -1.0),
-                          end: const Alignment(0.0, 2.0),
-                          colors: <Color>[
-                            const Color(0xff1468A7),
-                            const Color(0x00463D91)
-                          ],
-                        )
-                    ),
-                    child: new Column(
-                      children: _childrenAdd,
-                    ),
-                  ),
-                )
-              ],
-              crossAxisAlignment: CrossAxisAlignment.start,
-            )
-          ],
-        ),
-      ),
-      minimizedLeftPanel: new Container(
-        decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-              begin: const Alignment(0.0, -1.0),
-              end: const Alignment(0.0, 2.0),
-              colors: <Color>[
-                const Color(0xff1A7FA7),
-                const Color(0x003E5A9B)
-              ],
-            )
-        ),
-        child: new Column(
-          children: <Widget>[
-            new Container(
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
-                      fit: BoxFit.contain,
-                      alignment: Alignment.bottomCenter
-                  )
               ),
-              alignment: Alignment.center,
-              height: 50.0,
-              child: new Text(
-                  "LEVEL - AGE",
-                  style: new TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold
+              new Flexible(
+                  child: new NotificationListener(
+                      onNotification: (notification) { _scrollListener(notification, _minLeftScrollController, _rightScrollController); },
+                      child: new ListView(
+                        children: _minLPanelChildren,
+                        controller: _minLeftScrollController,
+                      )
                   )
-              ),
-            ),
-            new Flexible(
-                child: new NotificationListener(
-                    onNotification: (notification) { _scrollListener(notification, _minLeftScrollController, _rightScrollController); },
-                    child: new ListView(
-                      children: _minLPanelChildren,
-                      controller: _minLeftScrollController,
-                    )
-                )
-            )
-          ],
+              )
+            ],
+          ),
         ),
+        rightPanelTabs: rightPanelTabs,
+        rPanelWidth: rPanelWidth,
       ),
-      rightPanelTabs: rightPanelTabs,
-    );
-
-    return new Scaffold(
-      appBar: new MFAppBar("ENTRY FORM", context),
-      body: form,
     );
   }
 }
