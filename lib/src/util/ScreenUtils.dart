@@ -121,10 +121,8 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
         _enabledAges.add("B1 51 to 65");
       }
     });
-
-    if(ages == null || ages.isEmpty) {
-      _enabledAges = _agesText;
-    }
+  } else {
+    _enabledAges = _agesText;
   }
 
   List<Widget> _ages = <Widget>[];
@@ -132,18 +130,21 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
     return new MaterialButton(
         padding: const EdgeInsets.all(5.0),
         onPressed: (){
-          if(_selectedButtons.contains(str)) {
-            _selectedButtons.remove(str);
-          } else {
-            _selectedButtons.add(str);
+          if(_enabledAges.contains(str)) {
+            if (_selectedButtons.contains(str)) {
+              _selectedButtons.remove(str);
+            } else {
+              _selectedButtons.add(str);
+            }
+            Navigator.of(context).pop();
+            showAgeCategoryDialog(context, _selectedButtons, onComplete, ages: ages);
           }
-          Navigator.of(context).pop();
-          showAgeCategoryDialog(context, _selectedButtons, onComplete);
         },
         child: new Container(
           decoration: new BoxDecoration(
               borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : new Color(0xff335577),
+              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : (_enabledAges.contains(str) ? new Color(0xff335577) : new Color(0xff334157)),
+              //color: _filteredColor(str, _selectedButtons, _enabledAges)
               /*image: new DecorationImage(
                   image: new ExactAssetImage("mainframe_assets/images/age_modal_btn.png"),
                   fit: BoxFit.cover,
