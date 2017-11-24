@@ -143,7 +143,7 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
         child: new Container(
           decoration: new BoxDecoration(
               borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : (_enabledAges.contains(str) ? new Color(0xff335577) : new Color(0xff334157)),
+              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : (_enabledAges.contains(str) ? new Color(0xff335577) : new Color(0xff556c8f)),
               //color: _filteredColor(str, _selectedButtons, _enabledAges)
               /*image: new DecorationImage(
                   image: new ExactAssetImage("mainframe_assets/images/age_modal_btn.png"),
