@@ -7,6 +7,8 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/model/EventDanceCategory.dart';
+import 'package:myapp/src/model/EventEntry.dart';
+import 'package:myapp/src/dao/EventEntryDao.dart';
 
 const double subColumnTreshold = 40.0;
 
@@ -53,8 +55,50 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     print("pop handled");
   }
 
+  Future _handleSaving() async {
+    if(levelMap.length > 0) {
+      var val = await showMainFrameDialogWithCancel(
+          context, "Entry Changed", "Save Changes on Entry Form?");
+      if (val == "OK") {
+        //print("Saving changes");
+        EventEntry entry = new EventEntry();
+        entry.levels = [];
+        levelMap.forEach((key, values) {
+          LevelEntry levelEntry = new LevelEntry();
+          levelEntry.levelName = key;
+          levelEntry.ageMap = [];
+          values.forEach((val) {
+            SubCategoryEntry subEntry = new SubCategoryEntry();
+            subEntry.ageCategory = val;
+            subEntry.subCategoryMap = {};
+            levelValMap[key+"_"+val].forEach((key2, value){
+              if(value != null && !value.isEmpty)
+                subEntry.subCategoryMap.putIfAbsent(key2, () => true);
+              else
+                subEntry.subCategoryMap.putIfAbsent(key2, () => false);
+            });
+            if(subEntry.subCategoryMap.length > 0)
+              levelEntry.ageMap.add(subEntry);
+          });
+          if(levelEntry.ageMap.length > 0)
+            entry.levels.add(levelEntry);
+        });
+
+        //print(entry.toJson());
+        if(entry.levels.length > 0)
+          EventEntryDao.saveEventEntry(entry);
+        Navigator.of(context).maybePop();
+      }
+      else {
+        Navigator.of(context).maybePop();
+      }
+    } else {
+      Navigator.of(context).maybePop();
+    }
+  }
+
   void _scrollListener(notification, ScrollController from, ScrollController to) {
-    if(notification is ScrollUpdateNotification) { // change to ScrollEndNotification to prevent exception
+    if(notification is ScrollEndNotification) { // change to ScrollEndNotification to prevent exception
       to.jumpTo(from.offset);
     }
   }
@@ -342,7 +386,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     List<Widget> rightPanelTabs = _buildRightPanelTabs();
 
     return new Scaffold(
-      appBar: new MFAppBar("ENTRY FORM", context),
+      appBar: new MFAppBar("ENTRY FORM", context, backButtonFunc: _handleSaving),
       body: new CompetitionForm(
         maximizedLeftPanel: new Container(
           child: new ListView(
