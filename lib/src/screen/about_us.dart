@@ -32,7 +32,7 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new MFAppBar("CONTACT US", context),
-      body: new Column(
+      body: new ListView(
         children: <Widget>[
           new Container(
             alignment: Alignment.center,

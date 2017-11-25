@@ -108,6 +108,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                       if(val != null && !val.isEmpty) {
                         _user.birthday =
                             new DateFormat("MM/dd/yyyy").parse(val);
+                        _bdayCtrl.text = val;
                       }
                     },
                     controller: _bdayCtrl,

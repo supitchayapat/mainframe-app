@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      body: new Column(
+      body: new ListView(
         children: <Widget>[
           new Container(
             alignment: Alignment.center,
