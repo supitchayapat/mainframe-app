@@ -11,6 +11,10 @@ target 'Runner' do
   # Flutter Pods
   pod 'Flutter', :path => ENV['FLUTTER_FRAMEWORK_DIR']
 
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKShareKit'
+  pod 'FBSDKLoginKit'
+
   if File.exists? '../.flutter-plugins'
       flutter_root = File.expand_path('..')
       File.foreach('../.flutter-plugins') { |line|
