@@ -12,18 +12,18 @@ target 'Runner' do
   pod 'Flutter', :path => ENV['FLUTTER_FRAMEWORK_DIR']
 
   if File.exists? '../.flutter-plugins'
-    flutter_root = File.expand_path('..')
-    File.foreach('../.flutter-plugins') { |line|
-      plugin = line.split(pattern='=')
-      if plugin.length == 2
-        name = plugin[0].strip()
-        path = plugin[1].strip()
-        resolved_path = File.expand_path("#{path}/ios", flutter_root)
-        pod name, :path => resolved_path
-      else
-        puts "Invalid plugin specification: #{line}"
-      end
-    }
+      flutter_root = File.expand_path('..')
+      File.foreach('../.flutter-plugins') { |line|
+        plugin = line.split(pattern='=')
+        if plugin.length == 2
+          name = plugin[0].strip()
+          path = plugin[1].strip()
+          resolved_path = File.expand_path("#{path}/ios", flutter_root)
+          pod name, :path => resolved_path
+        else
+          puts "Invalid plugin specification: #{line}"
+        end
+      }
   end
 end
 
