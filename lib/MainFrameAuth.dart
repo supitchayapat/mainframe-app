@@ -115,7 +115,6 @@ Future _checkUserExisting(FirebaseUser user, String token) async {
  */
 void logoutUser() {
   _auth.signOut();
-  FacebookSignIn.logout();
 }
 
 /*
