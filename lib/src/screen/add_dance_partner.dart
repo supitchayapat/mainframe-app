@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
+import 'package:myapp/src/util/HttpUtil.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -10,150 +12,32 @@ class AddDancePartner extends StatefulWidget {
 
 class _AddDancePartnerState extends State<AddDancePartner> {
   TextEditingController _searchCtrl = new TextEditingController();
+  List users = [];
 
   @override
   void initState() {
     super.initState();
     _searchCtrl.text = "SEARCH";
+
+    MFHttpUtil.requestFacebookFriends().then((users){
+      print(users.length);
+    });
+    taggableFBFriendsListener((usr) {
+      print('Child added: ${usr.toJson()}');
+      setState((){
+        users.add(usr);
+      });
+    });
   }
 
   Widget _buildFacebookContacts() {
-    return new Column(
-      children: <Widget>[
-        new Container(
-          height: 80.0,
-          margin: const EdgeInsets.only(left: 20.0),
-          //color: Colors.amber,
-          child: new Row(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Container(
-                padding: new EdgeInsets.only(left: 20.0),
-                //color: Colors.redAccent,
-                child: new Text("A",
-                  style:new TextStyle(
-                      fontSize:32.0,
-                      color: const Color(0xff1daad2)
-                  ),
-                ),
-              ),
-              new Container(
-                padding: new EdgeInsets.only(left: 30.0),
-                //color: Colors.cyanAccent,
-                child: new CircleAvatar(
-                  backgroundImage: new NetworkImage("http://landing.chartio.com/hs-fs/hubfs/ed-bush-wework-circle.png?t=1474558672089&width=614&name=ed-bush-wework-circle.png"),
-                  radius: 20.0,
-                ),
-              ),
-              new Container(
-                padding: new EdgeInsets.only(left: 20.0),
-                //color: Colors.purple,
-                child: new Text("Aaron Bennett",
-                  style: new TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Montserrat-Light",
-                    color: const Color(0xffffffff),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ),
-        // next row
-        new Container(
-            height: 80.0,
-            margin: const EdgeInsets.only(left: 20.0),
-            //color: Colors.amber,
-            child: new Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Padding(padding: const EdgeInsets.only(left: 45.0)),
-                new Container(
-                  //color: Colors.cyanAccent,
-                  padding: new EdgeInsets.only(left: 30.0),
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage("http://ablossominglife.com/wp-content/uploads/2013/08/marilyn-circle-2.png"),
-                    radius: 20.0,
-                  ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.purple,
-                  child: new Text("Abbey Christensen",
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Montserrat-Light",
-                      color: const Color(0xffffffff),
-                    ),
-                  ),
-                ),
-              ],
-            )
-        ),
-        // next row
-        new Container(
-            height: 80.0,
-            margin: const EdgeInsets.only(left: 20.0),
-            //color: Colors.amber,
-            child: new Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Padding(padding: const EdgeInsets.only(left: 45.0)),
-                new Container(
-                  //color: Colors.cyanAccent,
-                  padding: new EdgeInsets.only(left: 30.0),
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage("http://paigehaverstock.com/wp-content/uploads/2016/04/Paige-Face-Circle.png"),
-                    radius: 20.0,
-                  ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.purple,
-                  child: new Text("Ali Connors",
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Montserrat-Light",
-                      color: const Color(0xffffffff),
-                    ),
-                  ),
-                ),
-              ],
-            )
-        ),
-        // next row
-        new Container(
-            height: 80.0,
-            margin: const EdgeInsets.only(left: 20.0),
-            //color: Colors.amber,
-            child: new Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Padding(padding: const EdgeInsets.only(left: 45.0)),
-                new Container(
-                  //color: Colors.cyanAccent,
-                  padding: new EdgeInsets.only(left: 30.0),
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage("http://madugangatravel.com/images/matt-bloom-circle.png"),
-                    radius: 20.0,
-                  ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.purple,
-                  child: new Text("Alex Ross",
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Montserrat-Light",
-                      color: const Color(0xffffffff),
-                    ),
-                  ),
-                ),
-              ],
-            )
-        ),
-        // next row
-        new Container(
+    List<Widget> _fbChildren = <Widget>[];
+    String _letter = "";
+    users.forEach((usr){
+      String _curr = usr.first_name[0].toUpperCase();
+      if(_letter != _curr) {
+        _letter = _curr;
+        _fbChildren.add(new Container(
             height: 80.0,
             margin: const EdgeInsets.only(left: 20.0),
             //color: Colors.amber,
@@ -163,9 +47,10 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                 new Container(
                   padding: new EdgeInsets.only(left: 20.0),
                   //color: Colors.redAccent,
-                  child: new Text("B",
+                  child: new Text(_letter,
                     style:new TextStyle(
                         fontSize:32.0,
+                        fontFamily: "Montserrat-Light",
                         color: const Color(0xff1daad2)
                     ),
                   ),
@@ -174,14 +59,14 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   padding: new EdgeInsets.only(left: 30.0),
                   //color: Colors.cyanAccent,
                   child: new CircleAvatar(
-                    backgroundImage: new NetworkImage("http://baileyroutzong.com/wp-content/uploads/2015/03/circle-man.png"),
+                    backgroundImage: new NetworkImage(usr.displayPhotoUrl),
                     radius: 20.0,
                   ),
                 ),
                 new Container(
                   padding: new EdgeInsets.only(left: 20.0),
                   //color: Colors.purple,
-                  child: new Text("Benjamin Burton",
+                  child: new Text("${usr.first_name} ${usr.last_name}",
                     style: new TextStyle(
                       fontSize: 16.0,
                       fontFamily: "Montserrat-Light",
@@ -191,8 +76,43 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                 ),
               ],
             )
-        ),
-      ],
+        ));
+      } else {
+        _fbChildren.add(new Container(
+            height: 80.0,
+            margin: const EdgeInsets.only(left: 20.0),
+            //color: Colors.amber,
+            child: new Row(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Padding(padding: const EdgeInsets.only(left: 45.0)),
+                new Container(
+                  //color: Colors.cyanAccent,
+                  padding: new EdgeInsets.only(left: 30.0),
+                  child: new CircleAvatar(
+                    backgroundImage: new NetworkImage(usr.displayPhotoUrl),
+                    radius: 20.0,
+                  ),
+                ),
+                new Container(
+                  padding: new EdgeInsets.only(left: 20.0),
+                  //color: Colors.purple,
+                  child: new Text("${usr.first_name} ${usr.last_name}",
+                    style: new TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: "Montserrat-Light",
+                      color: const Color(0xffffffff),
+                    ),
+                  ),
+                ),
+              ],
+            )
+        ));
+      }
+    });
+
+    return new Column(
+      children: _fbChildren,
     );
   }
 
