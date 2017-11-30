@@ -23,7 +23,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       print(users.length);
     });
     taggableFBFriendsListener((usr) {
-      print('Child added: ${usr.toJson()}');
+      //print('Child added: ${usr.toJson()}');
       setState((){
         users.add(usr);
       });
