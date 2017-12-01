@@ -72,3 +72,14 @@ Future<StreamSubscription> taggableFBFriendsListener(Function p) async {
     Function.apply(p, [new User.fromSnapshot(event.snapshot)]);
   });
 }
+
+Future<List<User>> getTaggableFriends() async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("taggable_fb_friends").once().then((DataSnapshot data){
+    List<User> _users = <User>[];
+    data.value.forEach((dataVal){
+      _users.add(new User.fromDataSnapshot(dataVal));
+    });
+    return _users;
+  });
+}

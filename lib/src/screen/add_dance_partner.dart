@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
-import 'package:myapp/src/util/HttpUtil.dart';
-import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/ScreenUtils.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -13,100 +13,156 @@ class AddDancePartner extends StatefulWidget {
 class _AddDancePartnerState extends State<AddDancePartner> {
   TextEditingController _searchCtrl = new TextEditingController();
   List users = [];
+  int _page = 10;
 
   @override
   void initState() {
     super.initState();
     _searchCtrl.text = "SEARCH";
 
-    MFHttpUtil.requestFacebookFriends().then((users){
-      print(users.length);
-    });
-    taggableFBFriendsListener((usr) {
-      //print('Child added: ${usr.toJson()}');
+    global.taggableFriends.then((usrs){
       setState((){
-        users.add(usr);
+        if(usrs != null && !usrs.isEmpty) {
+          int _ctr = 1;
+          for(var usr in usrs) {
+            if(_ctr <= 10) {
+              users.add(usr);
+            }
+            else {
+              break;
+            }
+            _ctr++;
+          }
+        }
       });
     });
   }
 
+  void _handleTapFBFriend(usr) {
+    var _ans = showMainFrameDialogWithCancel(
+        context, "Invite Friend",
+        "Do you want to add ${usr.first_name} ${usr.last_name} as a Dance Partner?")
+        .then((_ans){
+          if(_ans == "OK") {
+            print("Invite and add as partner.");
+          }
+    });
+  }
+
+  _loadMoreFBContacts() {
+    //print("load more");
+    global.taggableFriends.then((usrs){
+      if(usrs != null && !usrs.isEmpty) {
+        int _ctr = 1;
+        while(_page < usrs.length) {
+          if(_ctr <= 10) {
+            setState((){
+              users.add(usrs[_page]);
+            });
+          }
+          else {
+            break;
+          }
+          _ctr++;
+          _page++;
+        }
+      }
+    });
+  }
+
   Widget _buildFacebookContacts() {
+    double _screenWidth = MediaQuery.of(context).size.width;
     List<Widget> _fbChildren = <Widget>[];
     String _letter = "";
+
     users.forEach((usr){
       String _curr = usr.first_name[0].toUpperCase();
       if(_letter != _curr) {
         _letter = _curr;
-        _fbChildren.add(new Container(
-            height: 80.0,
-            margin: const EdgeInsets.only(left: 20.0),
-            //color: Colors.amber,
-            child: new Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.redAccent,
-                  child: new Text(_letter,
-                    style:new TextStyle(
-                        fontSize:32.0,
+        _fbChildren.add(new InkWell(
+          onTap: () => _handleTapFBFriend(usr),
+          child: new Container(
+              height: 80.0,
+              margin: const EdgeInsets.only(left: 20.0),
+              //color: Colors.amber,
+              child: new Row(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Container(
+                    padding: new EdgeInsets.only(left: 20.0),
+                    //color: Colors.amber,
+                    child: new Container(
+                      alignment: Alignment.center,
+                      width: 25.0,
+                      //color: Colors.cyanAccent,
+                      child: new Text(_letter,
+                        style:new TextStyle(
+                            fontSize:32.0,
+                            fontFamily: "Montserrat-Light",
+                            color: const Color(0xff1daad2)
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Container(
+                    padding: new EdgeInsets.only(left: 30.0),
+                    //color: Colors.cyanAccent,
+                    child: new CircleAvatar(
+                      backgroundImage: new NetworkImage(usr.displayPhotoUrl),
+                      radius: 20.0,
+                    ),
+                  ),
+                  new Container(
+                    padding: new EdgeInsets.only(left: 20.0),
+                    //color: Colors.cyanAccent,
+                    width: _screenWidth * 0.6,
+                    child: new Text("${usr.first_name} ${usr.last_name}",
+                      style: new TextStyle(
+                        fontSize: 16.0,
                         fontFamily: "Montserrat-Light",
-                        color: const Color(0xff1daad2)
+                        color: const Color(0xffffffff),
+                      ),
                     ),
                   ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 30.0),
-                  //color: Colors.cyanAccent,
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage(usr.displayPhotoUrl),
-                    radius: 20.0,
-                  ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.purple,
-                  child: new Text("${usr.first_name} ${usr.last_name}",
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Montserrat-Light",
-                      color: const Color(0xffffffff),
-                    ),
-                  ),
-                ),
-              ],
-            )
+                ],
+              )
+          ),
         ));
       } else {
-        _fbChildren.add(new Container(
-            height: 80.0,
-            margin: const EdgeInsets.only(left: 20.0),
-            //color: Colors.amber,
-            child: new Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Padding(padding: const EdgeInsets.only(left: 45.0)),
-                new Container(
-                  //color: Colors.cyanAccent,
-                  padding: new EdgeInsets.only(left: 30.0),
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage(usr.displayPhotoUrl),
-                    radius: 20.0,
-                  ),
-                ),
-                new Container(
-                  padding: new EdgeInsets.only(left: 20.0),
-                  //color: Colors.purple,
-                  child: new Text("${usr.first_name} ${usr.last_name}",
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Montserrat-Light",
-                      color: const Color(0xffffffff),
+        _fbChildren.add(new InkWell(
+          onTap: () => _handleTapFBFriend(usr),
+          child: new Container(
+              height: 80.0,
+              margin: const EdgeInsets.only(left: 20.0),
+              //color: Colors.amber,
+              child: new Row(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Padding(padding: const EdgeInsets.only(left: 45.0)),
+                  new Container(
+                    //color: Colors.cyanAccent,
+                    padding: new EdgeInsets.only(left: 30.0),
+                    child: new CircleAvatar(
+                      backgroundImage: new NetworkImage(usr.displayPhotoUrl),
+                      radius: 20.0,
                     ),
                   ),
-                ),
-              ],
-            )
+                  new Container(
+                    padding: new EdgeInsets.only(left: 20.0),
+                    //color: Colors.cyanAccent,
+                    //constraints: new BoxConstraints.expand(),
+                    width: _screenWidth * 0.6,
+                    child: new Text("${usr.first_name} ${usr.last_name}",
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: "Montserrat-Light",
+                        color: const Color(0xffffffff),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
         ));
       }
     });
@@ -183,7 +239,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   new MFComponentDemoTabData(
                       tabName: 'FACEBOOK',
                       description: '',
-                      demoWidget: _buildFacebookContacts()
+                      demoWidget: _buildFacebookContacts(),
+                      loadMoreCallback: _loadMoreFBContacts
                   ),
                   new MFComponentDemoTabData(
                       tabName: 'CONTACTS',

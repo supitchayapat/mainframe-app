@@ -30,6 +30,16 @@ class User {
                         displayPhotoUrl = s.value["displayPhotoUrl"],
                         hasProfileSetup = s.value["hasProfileSetup"];
 
+  User.fromDataSnapshot(s) : fbUserId = s["facebook_userId"],
+        first_name = s["first_name"],
+        last_name = s["last_name"],
+        email = s["email"],
+        birthday = new DateFormat("MM/dd/yyyy").parse(s["birthday"]),
+        gender = getGenderFromString(s["gender"]),
+        category = getDanceCategoryFromString(s["category"]),
+        displayPhotoUrl = s["displayPhotoUrl"],
+        hasProfileSetup = s["hasProfileSetup"];
+
 
   toJson() {
     return {

@@ -8,13 +8,17 @@ class MFComponentDemoTabData {
     this.demoWidget,
     this.exampleCodeTag,
     this.description,
-    this.tabName
+    this.tabName,
+    this.loadMoreCallback,
+    this.refreshCallback
   });
 
   final Widget demoWidget;
   final String exampleCodeTag;
   final String description;
   final String tabName;
+  final VoidCallback loadMoreCallback;
+  final VoidCallback refreshCallback;
 
   @override
   bool operator==(Object other) {
@@ -33,7 +37,7 @@ class MFTabbedComponentDemoScaffold extends StatefulWidget {
     this.key,
     this.title,
     this.hasBackButton,
-    this.demos
+    this.demos,
   });
 
   final List<MFComponentDemoTabData> demos;
@@ -95,10 +99,27 @@ class _MFTabbedComponentDemoScaffoldState extends State<MFTabbedComponentDemoSca
                     ),
                     //new Container(color: Colors.amber, height: 200.0)new Expanded(child: demo.demoWidget)
                     new Flexible(
-                        child: new ListView(
-                          children: <Widget>[
-                            demo.demoWidget
-                          ],
+                        child: new NotificationListener<OverscrollNotification>(
+                            child: new ListView(
+                              children: <Widget>[
+                                demo.demoWidget
+                              ],
+                            ),
+                            onNotification: (OverscrollNotification notif) {
+                              //print(notif.metrics.pixels);
+                              if(notif.metrics.pixels > 0.0) {
+                                // reached bottom
+                                // handle load more content callback
+                                if(demo.loadMoreCallback != null)
+                                  demo.loadMoreCallback();
+                              }
+                              else {
+                                // reached top
+                                // handle refresh callback
+                                if(demo.refreshCallback != null)
+                                  demo.refreshCallback();
+                              }
+                            },
                         )
                     )
                   ],

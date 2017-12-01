@@ -4,6 +4,8 @@ import 'package:myapp/MainFrameAuth.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/util/HttpUtil.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,6 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
     signInWithFacebook().then((str) {
+          MFHttpUtil.requestFacebookFriends().then((users){
+            global.setTaggableFriends = users;
+          });
           if(str != "success") {
             _nextRoute = "/profilesetup-1";
           }
@@ -39,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
     // check user logged in
     /*listener = initAuthStateListener((bool isLogged) {
       print("[Main page] Is loggedin: $isLogged");
