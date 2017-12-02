@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:validator/validator.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -12,13 +13,17 @@ class AddDancePartner extends StatefulWidget {
 
 class _AddDancePartnerState extends State<AddDancePartner> {
   TextEditingController _searchCtrl = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   List users = [];
   int _page = 10;
 
   @override
   void initState() {
     super.initState();
-    _searchCtrl.text = "SEARCH";
+    //setState((){
+      _searchCtrl.text = "SEARCH";
+    //});
 
     global.taggableFriends.then((usrs){
       setState((){
@@ -36,6 +41,33 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         }
       });
     });
+  }
+
+  void _handleAddViaEmail() {
+    FormState form = _formKey.currentState;
+    if(!form.validate()) {
+      showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+    } else {
+      // send email
+      var _ans = showMainFrameDialogWithCancel(
+          context, "Invite via Email",
+          "Do you want to send email to ${_searchCtrl.text} and add as a Dance Partner?")
+          .then((_ans){
+        if(_ans == "OK") {
+          print("Invite and add as partner.");
+        }
+      });
+    }
+  }
+
+  String _validateEmail(String value) {
+    if(value.isEmpty) {
+      return "Email Field Required";
+    }
+    if(!isEmail(value)){
+      return "Invalid Email";
+    }
+    return null;
   }
 
   void _handleTapFBFriend(usr) {
@@ -178,6 +210,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
 
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new MFAppBar("ADD A DANCE PARTNER", context),
       body: new Column(
         children: <Widget>[
@@ -206,13 +239,17 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                           padding: const EdgeInsets.only(top: 2.0, bottom: 5.0),
                           child: new Container(
                             //onTap: () => print("SEARCH"),
-                            child: new TextField(
-                              decoration: new InputDecoration(
-                                //labelText: "SEARCH",
-                                hideDivider: true,
-                              ),
-                              controller: _searchCtrl,
-                              onChanged: (val) {},
+                            child: new Form(
+                                key: _formKey,
+                                child: new TextFormField(
+                                  decoration: new InputDecoration(
+                                    //labelText: "SEARCH",
+                                    hideDivider: true,
+                                  ),
+                                  controller: _searchCtrl,
+                                  validator: _validateEmail,
+                                  initialValue: "SEARCH",
+                                )
                             ),
                           ),
                         )
@@ -227,7 +264,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   child: new MainFrameButton(
                     child: new Text("ADD VIA EMAIL", style: new TextStyle(fontSize: 14.0)),
                     imgAsset: _imgAsset,
-                    onPressed: () {},
+                    onPressed: _handleAddViaEmail,
                   )
               )
             ],
