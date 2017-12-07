@@ -76,7 +76,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         "Do you want to add ${usr.first_name} ${usr.last_name} as a Dance Partner?")
         .then((_ans){
           if(_ans == "OK") {
-            print("Invite and add as partner.");
+            showFacebookAppShareDialog();
           }
     });
   }

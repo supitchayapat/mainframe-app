@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:facebook_sign_in/facebook_sign_in.dart';
 
 /*
   Author: Art
@@ -14,6 +15,13 @@ void showInSnackBar(GlobalKey<ScaffoldState> _scaffoldKey, String value) {
   _scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: new Text(value)
   ));
+}
+
+/*
+  Facebook Share Dialog
+ */
+void showFacebookAppShareDialog() {
+  FacebookSignIn.shareDialog();
 }
 
 /*

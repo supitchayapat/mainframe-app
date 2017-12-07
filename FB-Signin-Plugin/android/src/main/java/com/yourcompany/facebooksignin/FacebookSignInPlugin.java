@@ -1,8 +1,11 @@
 package com.yourcompany.facebooksignin;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.net.Uri;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -11,6 +14,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.MessageDialog;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +35,18 @@ public class FacebookSignInPlugin implements MethodCallHandler,
 
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "facebook_sign_in");
-    final FacebookSignInPlugin instance = new FacebookSignInPlugin(registrar.activity());
+    final FacebookSignInPlugin instance = new FacebookSignInPlugin(registrar.activity(), null);
     registrar.addActivityResultListener(instance);
     channel.setMethodCallHandler(instance);
   }
 
-
+  private Context context;
   private Activity activity;
+  private MessageDialog messageDialog;
   //private AccessToken token;
   private CallbackManager callbackManager = CallbackManager.Factory.create();
 
-  private FacebookSignInPlugin(Activity activity) {
+  private FacebookSignInPlugin(Activity activity, Context context) {
     this.activity = activity;
   }
 
@@ -71,6 +77,36 @@ public class FacebookSignInPlugin implements MethodCallHandler,
         result.error("UNAVAILABLE", "No token available, is the user logged in?", null);
       else
         result.success(currentToken.getToken());
+    } else if (call.method.equals("shareDialog")) {
+      ShareLinkContent.Builder linkContent = new ShareLinkContent.Builder()
+              .setContentDescription(
+                      "Coder who learned and share")
+              .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.facebook.orca"));
+      messageDialog = new MessageDialog(this.activity);
+
+      if (messageDialog.canShow(ShareLinkContent.class)) {
+        Log.i("dialog", "can show dialog");
+        Log.i("dialog", "showing dialog");
+        messageDialog.show(linkContent.build());
+      }
+      else {
+        Log.i("message dialog", "Messenger app not installed");
+        final String appPackageName = "com.facebook.orca";
+        try {
+          this.activity.startActivity(new Intent(
+                  Intent.ACTION_VIEW,
+                  Uri.parse("market://details?id="
+                          + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+          Log.i("message dialog", "Market not available");
+          this.activity.startActivity(new Intent(
+                  Intent.ACTION_VIEW,
+                  Uri.parse("http://play.google.com/store/apps/details?id="
+                          + appPackageName)));
+          Log.e("activity", "cannot start activity");
+        }
+      }
+      result.success("dialog");
     } else {
       result.notImplemented();
     }

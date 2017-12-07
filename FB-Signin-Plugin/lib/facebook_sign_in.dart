@@ -40,4 +40,8 @@ class FacebookSignIn {
     static Future<String> getToken() {
         return _channel.invokeMethod("getToken");
     }
+
+    static Future<String> shareDialog() {
+        return _channel.invokeMethod("shareDialog");
+    }
 }
