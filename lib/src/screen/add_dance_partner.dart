@@ -5,6 +5,7 @@ import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:validator/validator.dart';
+import 'package:mframe_plugins/mframe_plugins.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   List users = [];
+  List contacts = [];
   int _page = 10;
 
   @override
@@ -24,6 +26,11 @@ class _AddDancePartnerState extends State<AddDancePartner> {
     //setState((){
       _searchCtrl.text = "SEARCH";
     //});
+    MframePlugins.phoneContacts().then((val){
+      setState(() {
+        contacts = val;
+      });
+    });
 
     global.taggableFriends.then((usrs){
       setState((){
@@ -100,6 +107,45 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         }
       }
     });
+  }
+
+  Widget _buildPhoneContacts() {
+    List<Widget> _phoneChildren = <Widget>[];
+
+    contacts.forEach((con){
+      _phoneChildren.add(new InkWell(
+        onTap: (){},
+        child: new Container(
+          height: 80.0,
+          margin: const EdgeInsets.only(left: 20.0),
+          alignment: Alignment.centerLeft,
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              new Text(
+                con.contactName,
+                style:new TextStyle(
+                    fontSize:18.0,
+                    fontFamily: "Montserrat-Light"
+                )
+              ),
+              new Text(
+                  con.contactPhone,
+                  style:new TextStyle(
+                      fontSize:18.0,
+                      fontFamily: "Montserrat-Light"
+                  )
+              ),
+            ],
+          ),
+        ),
+      ));
+    });
+
+    return new Column(
+      children: _phoneChildren,
+    );
   }
 
   Widget _buildFacebookContacts() {
@@ -282,7 +328,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   new MFComponentDemoTabData(
                       tabName: 'CONTACTS',
                       description: '',
-                      demoWidget: new Text("Contacts list"),
+                      demoWidget: _buildPhoneContacts(),
                   ),
                   new MFComponentDemoTabData(
                       tabName: 'EXISTING',
