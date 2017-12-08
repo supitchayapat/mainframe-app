@@ -4,16 +4,18 @@ description: A new Flutter project.
 dependencies:
   flutter:
     sdk: flutter
-  firebase_auth: "^0.3.1"
-  #firebase_auth:
-    #path: ../firebase_plugins/packages/firebase_auth
-  firebase_database: "^0.1.4"
-  #firebase_database:
-    #path: ../firebase_plugins/packages/firebase_database
+  #firebase_auth: "^0.3.1"
+  firebase_auth:
+    path: firebase_plugins/firebase_auth
+  #firebase_database: "^0.1.4"
+  firebase_database:
+    path: firebase_plugins/firebase_database
   validator: ">=0.0.4 <0.1.0"
-  #intl: "^0.15.2"
+  intl: "^0.15.2"
   facebook_sign_in:
     path: FB-Signin-Plugin
+  mframe_plugins:
+    path: mframe_plugins
   #facebook_sign_in:
     #git: https://github.com/bramvbilsen/Flutter-Facebook-Sign-In-Plugin.git
 

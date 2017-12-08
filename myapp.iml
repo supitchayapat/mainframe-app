@@ -8,6 +8,14 @@
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_database/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_database/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_database/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_database/example/build" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart Packages" level="project" />
