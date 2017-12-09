@@ -116,12 +116,12 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       _phoneChildren.add(new InkWell(
         onTap: (){},
         child: new Container(
-          height: 80.0,
+          height: 60.0,
           margin: const EdgeInsets.only(left: 20.0),
           alignment: Alignment.centerLeft,
           child: new Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               new Text(
                 con.contactName,
@@ -130,6 +130,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                     fontFamily: "Montserrat-Light"
                 )
               ),
+              new Padding(padding: const EdgeInsets.only(left: 15.0)),
               new Text(
                   con.contactPhone,
                   style:new TextStyle(

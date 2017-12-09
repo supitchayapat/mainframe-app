@@ -16,6 +16,7 @@ class MframePlugins {
   static Future<List<UserContactInfo>> phoneContacts() async {
     List<UserContactInfo> _contacts = [];
     final Map<String, dynamic> data = await _channel.invokeMethod('getContacts');
+    print("data: "+data.toString());
     if(data != null && data.isNotEmpty && data["contacts"].length > 0) {
       for(Map<String, dynamic> contact in data["contacts"]) {
         _contacts.add(new UserContactInfo(contactName: contact["name"], contactPhone: contact["phoneNumber"]));

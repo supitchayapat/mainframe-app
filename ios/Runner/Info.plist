@@ -69,5 +69,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSContactsUsageDescription</key>
+	<string>The Application needs your contacts list to list your contacts as your possible partner</string>
 </dict>
 </plist>

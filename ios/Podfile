@@ -14,6 +14,7 @@ target 'Runner' do
   pod 'FBSDKCoreKit'
   pod 'FBSDKShareKit'
   pod 'FBSDKLoginKit'
+  pod 'APAddressBook'
 
   if File.exists? '../.flutter-plugins'
       flutter_root = File.expand_path('..')
