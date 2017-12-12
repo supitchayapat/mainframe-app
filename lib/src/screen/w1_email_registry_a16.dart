@@ -19,7 +19,7 @@ class _EmailRegistryState extends State<EmailRegistry> {
   @override
   void initState() {
     super.initState();
-    _user = new User(null, null, null, null, null, null, null, null);
+    _user = new User();
   }
 
   void _handleSubmitted() {

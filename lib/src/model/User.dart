@@ -17,8 +17,8 @@ class User {
   String displayPhotoUrl;
   bool hasProfileSetup;
 
-  User(this.fbUserId, this.first_name, this.last_name, this.email,
-      this.birthday, this.gender, this.category, this.displayPhotoUrl, {this.hasProfileSetup : false});
+  User({this.fbUserId, this.first_name, this.last_name, this.email,
+      this.birthday, this.gender, this.category, this.displayPhotoUrl, this.hasProfileSetup : false});
 
   User.fromSnapshot(DataSnapshot s) : fbUserId = s.value["facebook_userId"],
                         first_name = s.value["first_name"],

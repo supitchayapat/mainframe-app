@@ -7,6 +7,8 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
+import 'package:validator/validator.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class ProfileSetupName extends StatefulWidget {
   @override
@@ -20,6 +22,9 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   TextEditingController _emailCtrl = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  bool isEmailEnabled = false;
+  String headingTitle = "MY PROFILE SETUP";
+  String textDescription = "Please provide the following information so we can accurately provide features that are specific to you.";
 
   User _user;
 
@@ -27,20 +32,35 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   void initState() {
     super.initState();
     print("INIT STATE PROFILE SETUP....");
-    getCurrentUserProfile().then((usr) {
-      setState(() {
-        if (usr.first_name != null && !usr.first_name.isEmpty) {
-          _fnameCtrl.text = usr.first_name;
-        }
-        if (usr.last_name != null && !usr.last_name.isEmpty) {
-          _lnameCtrl.text = usr.last_name;
-        }
-        if (usr.email != null && !usr.email.isEmpty) {
-          _emailCtrl.text = usr.email;
-        }
-        _user = usr;
+    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      getCurrentUserProfile().then((usr) {
+        setState(() {
+          if (usr.first_name != null && !usr.first_name.isEmpty) {
+            _fnameCtrl.text = usr.first_name;
+          }
+          if (usr.last_name != null && !usr.last_name.isEmpty) {
+            _lnameCtrl.text = usr.last_name;
+          }
+          if (usr.email != null && !usr.email.isEmpty) {
+            _emailCtrl.text = usr.email;
+          }
+          _user = usr;
+        });
       });
-    });
+    } else {
+      // setup for dance partner
+      print(global.dancePartner);
+      getCurrentUserProfile().then((usr) {
+        setState(() {
+          _fnameCtrl.text = global.dancePartner.first_name;
+          _lnameCtrl.text = global.dancePartner.last_name;
+          isEmailEnabled = true;
+          headingTitle = "ADD A DANCE PARTNER";
+          textDescription = "Please provide the following information accurately.";
+          _user = new User(first_name: _fnameCtrl.text, last_name: _lnameCtrl.text);
+        });
+      });
+    }
   }
 
   void _handleSubmitted() {
@@ -50,8 +70,12 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
       showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
       form.save();
-      // save user using UserDao
-      saveUser(_user);
+      if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+        // save user using UserDao
+        saveUser(_user);
+      } else {
+        global.dancePartner = _user;
+      }
       // navigate to next screen
       Navigator.of(context).pushNamed("/profilesetup-2");
     }
@@ -64,12 +88,19 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
     return null;
   }
 
+  String _validateEmail(String value) {
+    if(!value.isEmpty && !isEmail(value)){
+      return "Invalid Email";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new MFAppBar("MY PROFILE SETUP", context),
+        appBar: new MFAppBar(headingTitle, context),
         body: new Form(
             key: _formKey,
             child: new Container(
@@ -78,7 +109,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
                 children: <Widget>[
                   new Container(
                     child: new Text(
-                      "Please provide the following information so we can accurately provide features that are specific to you.",
+                      textDescription,
                       style: new TextStyle(
                         fontSize: 16.0,
                         fontFamily: "Montserrat-Light",
@@ -110,9 +141,9 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
                     keyboardType: TextInputType.text,
                     onSaved: (String val) => _user.email = val,
                     controller: _emailCtrl,
-                    validator: _validateNotEmpty,
+                    validator: isEmailEnabled ? _validateEmail : _validateNotEmpty,
                     //initialValue: _user.email != null ? _user.email : "",
-                    isEnabled: false,
+                    isEnabled: isEmailEnabled,
                   ),
                   new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(

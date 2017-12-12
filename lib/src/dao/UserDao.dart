@@ -14,10 +14,9 @@ final reference = FirebaseDatabase.instance.reference().child("users");
 
 User convertResponseToUser(json_usr) {
   final formatter = new DateFormat("MM/dd/yyyy");
-  return new User(json_usr["id"], json_usr["first_name"], json_usr["last_name"], null,
-      json_usr["birthday"] != null ? formatter.parse(json_usr["birthday"]) : null,
-      getGenderFromString(json_usr["gender"].toString().toUpperCase()),
-      null, null);
+  return new User(fbUserId: json_usr["id"], first_name: json_usr["first_name"], last_name: json_usr["last_name"],
+      birthday: json_usr["birthday"] != null ? formatter.parse(json_usr["birthday"]) : null,
+      gender: getGenderFromString(json_usr["gender"].toString().toUpperCase()));
 }
 
 void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
@@ -42,7 +41,7 @@ Future<User> saveUser(User usr) async {
 }
 
 Future<User> saveUserFromFirebase(FirebaseUser usr) async {
-  User user = new User("", "", "", usr.email, new DateTime.now(), null, null, usr.photoUrl);
+  User user = new User(fbUserId: "", first_name: "", last_name: "", email: usr.email, birthday: new DateTime.now(), displayPhotoUrl: usr.photoUrl);
   return reference.child(usr.uid).set(user.toJson());
 }
 
@@ -60,6 +59,11 @@ Future<User> saveUserFriends(List<User> users) async {
       return val.toJson();
     }).toList()
   );
+}
+
+Future<User> saveUserDancePartner(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("dance_partners").push().set(user.toJson());
 }
 
 Future<String> getFBAccessToken() async {

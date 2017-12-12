@@ -114,7 +114,10 @@ class _AddDancePartnerState extends State<AddDancePartner> {
 
     contacts.forEach((con){
       _phoneChildren.add(new InkWell(
-        onTap: (){},
+        onTap: (){
+          global.setDancePartner = con.contactName;
+          Navigator.of(context).pushNamed("/profilesetup-1");
+        },
         child: new Container(
           height: 60.0,
           margin: const EdgeInsets.only(left: 20.0),

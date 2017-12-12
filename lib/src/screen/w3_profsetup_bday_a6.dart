@@ -7,6 +7,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class ProfileSetupBday extends StatefulWidget {
 
@@ -20,6 +21,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String genderVal = "MALE";
+  String headingTitle = "MY PROFILE SETUP";
   User _user;
 
   void _handleGenderChanged(String val) {
@@ -42,7 +44,11 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      saveUser(_user);
+      if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+        saveUser(_user);
+      } else {
+        global.dancePartner = _user;
+      }
       Navigator.pushNamed(context, "/profilesetup-3");
     }
   }
@@ -51,18 +57,26 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   void initState(){
     super.initState();
     print("INIT BDAY.....");
-    getCurrentUserProfile().then((usr) {
-      if(usr.birthday != null) {
-        _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
-      }
-      if(usr.gender == null) {
-        genderVal = "MAN";
-      } else {
-        genderVal =
-            usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
-      }
-      _user = usr;
-    });
+    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      getCurrentUserProfile().then((usr) {
+        if (usr.birthday != null) {
+          _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
+        }
+        if (usr.gender == null) {
+          genderVal = "MAN";
+        } else {
+          genderVal =
+              usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
+        }
+        _user = usr;
+      });
+    } else {
+      // setup for dance partner
+      setState((){
+        headingTitle = "ADD A DANCE PARTNER";
+        _user = global.dancePartner;
+      });
+    }
   }
 
   String _validateBirthday(String val) {
@@ -81,7 +95,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   Widget build(BuildContext context) {
     return new Scaffold(
         key: _scaffoldKey,
-        appBar: new MFAppBar("MY PROFILE SETUP", context),
+        appBar: new MFAppBar(headingTitle, context),
         body: new Form(
             key: _formKey,
             child: new Container(

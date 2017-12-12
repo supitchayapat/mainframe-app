@@ -5,6 +5,7 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -13,7 +14,7 @@ class ProfileSetupCategory extends StatefulWidget {
 }
 
 class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
-
+  String headingTitle = "MY PROFILE SETUP";
   String categoryVal = "PROFESSIONAL";
   User _user;
 
@@ -21,24 +22,39 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void initState(){
     super.initState();
     print("INIT CATEGORY.....");
-    getCurrentUserProfile().then((usr) {
-      if(usr.category == null) {
-        categoryVal = "PROFESSIONAL";
-      }
-      else {
-        categoryVal =
-            usr.category.toString().replaceAll("DanceCategory.", "").toUpperCase();
-      }
-      _user = usr;
-    });
+    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      getCurrentUserProfile().then((usr) {
+        if (usr.category == null) {
+          categoryVal = "PROFESSIONAL";
+        }
+        else {
+          categoryVal =
+              usr.category.toString()
+                  .replaceAll("DanceCategory.", "")
+                  .toUpperCase();
+        }
+        _user = usr;
+      });
+    } else {
+      setState((){
+        _user = global.dancePartner;
+        headingTitle = "ADD A DANCE PARTNER";
+      });
+    }
   }
 
   void _handleSubmitted() {
     // validate and save
     _user.hasProfileSetup = true;
-    saveUser(_user);
+    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      saveUser(_user);
+      Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
+    } else {
+      global.dancePartner = _user;
+      saveUserDancePartner(_user);
+      Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
+    }
     //Navigator.pushReplacementNamed(context, "/mainscreen");
-    Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
   }
 
   void _handleCategoryChanged(String val) {
@@ -51,7 +67,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new MFAppBar("MY PROFILE SETUP", context),
+        appBar: new MFAppBar(headingTitle, context),
         body: new Container(
           margin: new EdgeInsets.only(right: 30.0, left: 30.0),
           child: new ListView(
