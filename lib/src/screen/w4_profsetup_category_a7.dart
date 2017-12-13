@@ -22,7 +22,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void initState(){
     super.initState();
     print("INIT CATEGORY.....");
-    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+    if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
         if (usr.category == null) {
           categoryVal = "PROFESSIONAL";
@@ -46,7 +46,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void _handleSubmitted() {
     // validate and save
     _user.hasProfileSetup = true;
-    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+    if(global.dancePartner == null) {
       saveUser(_user);
       Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
     } else {

@@ -35,6 +35,16 @@ Future userExists(FirebaseUser user) {
   });
 }
 
+Future userExistsByEmail(String email) {
+  return reference.orderByChild("email").equalTo(email).once().then((data){
+    User usr = null;
+    data.value.forEach((k, val){
+      usr = new User.fromDataSnapshot(val);
+    });
+    return usr;
+  });
+}
+
 Future<User> saveUser(User usr) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).set(usr.toJson());

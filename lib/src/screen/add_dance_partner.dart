@@ -6,6 +6,7 @@ import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:validator/validator.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -50,18 +51,45 @@ class _AddDancePartnerState extends State<AddDancePartner> {
     });
   }
 
+  void _inviteWithEmail() {
+    var _ans = showMainFrameDialogWithCancel(
+        context, "Invite via Email",
+        "Do you want to send email to ${_searchCtrl.text} and add as a Dance Partner?")
+        .then((_ans){
+      if(_ans == "OK") {
+        // send email
+        print("Invite and add as partner on email.");
+      }
+
+      global.setDancePartner = _searchCtrl.text;
+      Navigator.of(context).pushNamed("/profilesetup-1");
+    });
+  }
+
   void _handleAddViaEmail() {
     FormState form = _formKey.currentState;
     if(!form.validate()) {
       showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
-      // send email
-      var _ans = showMainFrameDialogWithCancel(
-          context, "Invite via Email",
-          "Do you want to send email to ${_searchCtrl.text} and add as a Dance Partner?")
-          .then((_ans){
-        if(_ans == "OK") {
-          print("Invite and add as partner.");
+      // check if email is an existing app user
+      userExistsByEmail(_searchCtrl.text).then((usr){
+        if(usr != null) {
+          // user exists, do you want to save User as Dance partner?
+          var _ans = showMainFrameDialogWithCancel(
+              context, "Registered User",
+              "${usr.first_name} ${usr.last_name} with email ${_searchCtrl.text} is already a registered user. Is this the dance partner you want to add?")
+              .then((_ans){
+            if(_ans == "OK") {
+              // save dance partner
+              global.dancePartner = usr;
+              saveUserDancePartner(usr);
+            }
+            else {
+              _inviteWithEmail();
+            }
+          });
+        } else {
+          _inviteWithEmail();
         }
       });
     }

@@ -44,10 +44,10 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
       showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      if(global.dancePartner == null) {
         saveUser(_user);
       } else {
-        global.dancePartner = _user;
+
       }
       Navigator.pushNamed(context, "/profilesetup-3");
     }
@@ -57,7 +57,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   void initState(){
     super.initState();
     print("INIT BDAY.....");
-    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+    if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
         if (usr.birthday != null) {
           _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);

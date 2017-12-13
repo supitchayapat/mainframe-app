@@ -32,7 +32,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   void initState() {
     super.initState();
     print("INIT STATE PROFILE SETUP....");
-    if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+    if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
         setState(() {
           if (usr.first_name != null && !usr.first_name.isEmpty) {
@@ -49,15 +49,18 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
       });
     } else {
       // setup for dance partner
-      print(global.dancePartner);
+      print(global.dancePartner.toJson());
       getCurrentUserProfile().then((usr) {
         setState(() {
           _fnameCtrl.text = global.dancePartner.first_name;
           _lnameCtrl.text = global.dancePartner.last_name;
-          isEmailEnabled = true;
+          _emailCtrl.text = global.dancePartner.email;
+          if(global.dancePartner.email == null || global.dancePartner.email.isEmpty) {
+            isEmailEnabled = true;
+          }
           headingTitle = "ADD A DANCE PARTNER";
           textDescription = "Please provide the following information accurately.";
-          _user = new User(first_name: _fnameCtrl.text, last_name: _lnameCtrl.text);
+          _user = new User(first_name: _fnameCtrl.text, last_name: _lnameCtrl.text, email: _emailCtrl.text);
         });
       });
     }
@@ -70,7 +73,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
       showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
       form.save();
-      if(global.dancePartner == null || global.dancePartner.first_name.isEmpty) {
+      if(global.dancePartner == null) {
         // save user using UserDao
         saveUser(_user);
       } else {

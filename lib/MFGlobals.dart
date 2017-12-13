@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:validator/validator.dart';
 
 String FBToken = "";
 FirebaseUser currentUser;
@@ -20,13 +21,17 @@ set setTaggableFriends(List<User> users) {
 }
 
 set setDancePartner(String name) {
-  String fname = "";
-  String lname = "";
-  if(name.contains(" ")) {
-    fname = (name.split(" "))[0];
-    lname = (name.split(" "))[1];
+  if(isEmail(name)) {
+    dancePartner = new User(email: name);
   } else {
-    fname = name;
+    String fname = "";
+    String lname = "";
+    if (name.contains(" ")) {
+      fname = (name.split(" "))[0];
+      lname = (name.split(" "))[1];
+    } else {
+      fname = name;
+    }
+    dancePartner = new User(first_name: fname, last_name: lname);
   }
-  dancePartner = new User(first_name: fname, last_name: lname);
 }
