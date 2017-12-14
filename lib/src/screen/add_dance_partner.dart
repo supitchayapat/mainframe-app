@@ -205,7 +205,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         new Container(
-                          padding: const EdgeInsets.only(left: 7.0),
+                          //padding: const EdgeInsets.only(left: 7.0),
                           alignment: Alignment.centerLeft,
                           child: new Text(con.contactName,
                             style: new TextStyle(
@@ -262,7 +262,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Container(
-                            padding: const EdgeInsets.only(left: 7.0),
+                            //padding: const EdgeInsets.only(left: 7.0),
                             alignment: Alignment.centerLeft,
                             child: new Text(con.contactName,
                               style: new TextStyle(
