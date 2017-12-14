@@ -51,6 +51,7 @@ flutter:
     - mainframe_assets/images/level_row_divider.png
     - mainframe_assets/images/sel_age_bg.png
     - mainframe_assets/images/attended_before@2x.png
+    - mainframe_assets/images/user-avatar.png
   # icons
     - mainframe_assets/icons/noun_939113_cc@2x.png
     - mainframe_assets/icons/noun_961889_cc@2x.png
