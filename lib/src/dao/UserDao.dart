@@ -73,7 +73,30 @@ Future<User> saveUserFriends(List<User> users) async {
 
 Future<User> saveUserDancePartner(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  User _existingUser = await getUserDancePartnerViaName(user);
+  if(_existingUser != null) {
+    print("User ${user.first_name} ${user.last_name} exists");
+    return _existingUser;
+  }
+
   return reference.child(fuser.uid).child("dance_partners").push().set(user.toJson());
+}
+
+Future<User> getUserDancePartnerViaName(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("dance_partners")
+      .orderByChild("first_name").equalTo(user.first_name).once().then((data){
+    User _retVal = null;
+    if(data.value != null && data.value.length > 0) {
+      data.value.forEach((dataKey, dataVal) {
+        User dataUser = new User.fromDataSnapshot(dataVal);
+        if(dataUser.last_name == user.last_name) {
+          _retVal = dataUser;
+        }
+      });
+    }
+    return _retVal;
+  });
 }
 
 Future getUserExistingDancePartners() async {

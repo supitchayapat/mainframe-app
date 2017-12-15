@@ -67,7 +67,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
 
   void _showNotImplementedMessage() {
     _scaffoldKey.currentState.showSnackBar(const SnackBar(
-        content: const Text("The drawer's items don't do anything")
+        content: const Text("This feature is not yet available.")
     ));
   }
 
