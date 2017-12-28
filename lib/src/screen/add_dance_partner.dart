@@ -7,6 +7,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:validator/validator.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/util/HttpUtil.dart';
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -59,18 +60,25 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   }
 
   void _inviteWithEmail() {
-    var _ans = showMainFrameDialogWithCancel(
+    // will send email immediately right after finish dance partner forms
+    /*var _ans = showMainFrameDialogWithCancel(
         context, "Invite via Email",
         "Do you want to send email to ${_searchCtrl.text} and add as a Dance Partner?")
         .then((_ans){
       if(_ans == "OK") {
         // send email
         print("Invite and add as partner on email.");
+        MFHttpUtil.sendMailInvite().then((val) {
+          global.setDancePartner = _searchCtrl.text;
+          Navigator.of(context).pushNamed("/profilesetup-1");
+        });
+      } else {
+        global.setDancePartner = _searchCtrl.text;
+        Navigator.of(context).pushNamed("/profilesetup-1");
       }
-
-      global.setDancePartner = _searchCtrl.text;
-      Navigator.of(context).pushNamed("/profilesetup-1");
-    });
+    });*/
+    global.setDancePartner = _searchCtrl.text;
+    Navigator.of(context).pushNamed("/profilesetup-1");
   }
 
   void _handleAddViaEmail() {
@@ -124,7 +132,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   }
 
   void _handleTapExisting(usr) {
-
+    // TODO: will implement saving of entry form
   }
 
   _loadMoreFBContacts() {

@@ -12,6 +12,7 @@ dependencies:
     path: firebase_plugins/firebase_database
   validator: ">=0.0.4 <0.1.0"
   intl: "^0.15.2"
+  http: "^0.11.3+14"
   facebook_sign_in:
     path: FB-Signin-Plugin
   mframe_plugins:

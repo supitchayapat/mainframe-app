@@ -38,9 +38,11 @@ Future userExists(FirebaseUser user) {
 Future userExistsByEmail(String email) {
   return reference.orderByChild("email").equalTo(email).once().then((data){
     User usr = null;
-    data.value.forEach((k, val){
-      usr = new User.fromDataSnapshot(val);
-    });
+    if(data.value != null && data.value.length > 0) {
+      data.value.forEach((k, val) {
+        usr = new User.fromDataSnapshot(val);
+      });
+    }
     return usr;
   });
 }

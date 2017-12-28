@@ -2,6 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+const String cloudFunctionsUri = "https://us-central1-uberregister-5308a.cloudfunctions.net";
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class MFHttpUtil {
   static Future<List> requestFacebookFriends() async {
@@ -41,5 +47,30 @@ class MFHttpUtil {
     saveUserFriends(users);
 
     return users;
+  }
+
+  static Future sendMailInvite() async {
+    final FirebaseUser currentUser = await _auth.currentUser();
+    final String idToken = await currentUser.getIdToken();
+    print(idToken);
+    Map<String, String> headers = <String, String> {
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+      "Content-Type": "text/html; charset=utf-8",
+      "Authorization": "Bearer ${idToken}",
+    };
+    print(headers);
+    String _mailerUri = cloudFunctionsUri + "/testAuthEmail";
+    var resp = await http.get(Uri.parse(_mailerUri), headers: headers);
+    //HttpClient httpClient = new HttpClient();
+    //var httpClient = createHttpClient();
+    /*var resp = await httpClient.getUrl(Uri.parse(_mailerUri)).then((HttpClientRequest request){
+      request.headers.add("Authorization", "Bearer ${currentUser.getIdToken()}");
+      return request.close();
+    }).then((HttpClientResponse resp){
+
+    });*/
+    print(resp.statusCode);
+    print(resp.body);
+    return resp;
   }
 }
