@@ -81,7 +81,7 @@ Future<String> signInWithFacebook() async {
   assert(user.uid == currentUser.uid);
 
   print("This user is signed in: $user");
-  _checkUserExisting(user, token);
+  //_checkUserExisting(user, token);
 
   //return 'signInWithGoogle succeeded: $user';
   return await _checkUserExisting(user, token);
@@ -91,18 +91,20 @@ Future _checkUserExisting(FirebaseUser user, String token) async {
   String returnVal = "failed";
   var exists = await userExists(user);
   if(exists == null) {
-    //print("NEW USER");
+    print("NEW USER");
     // register user on RDB
     // make http request to get additional info
-    String url = 'https://graph.facebook.com/me?fields=first_name,last_name,gender,birthday,picture&access_token=$token';
+    /*String url = 'https://graph.facebook.com/me?fields=first_name,last_name,gender,birthday,picture&access_token=$token';
     var httpClient = createHttpClient();
     var resp = await httpClient.read(url);
     print('response = $resp');
-    //var usr = convertResponseToUser(resp);
-    saveUserFromResponse(resp, user);
+    saveUserFromResponse(resp, user);*/
+    // create the access token and execute cloud function
+    saveUserAccessToken(token);
+    returnVal = "new-user";
   }
   else {
-    //print("EXISTING USER");
+    print("EXISTING USER");
     if(exists.hasProfileSetup) {
       returnVal = "success";
     }
@@ -129,4 +131,8 @@ StreamSubscription initAuthStateListener(Function p) {
       Function.apply(p, [false]);
     }
   });
+}
+
+Future<StreamSubscription> newUserListener(Function p) async {
+  return await savedUserListener(p);
 }

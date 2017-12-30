@@ -77,7 +77,7 @@ DEPENDENCIES:
   - FBSDKShareKit
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
 
 EXTERNAL SOURCES:
@@ -88,7 +88,7 @@ EXTERNAL SOURCES:
   firebase_database:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios
   Flutter:
-    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios
+    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
   mframe_plugins:
     :path: /Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios
 

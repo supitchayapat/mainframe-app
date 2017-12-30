@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var listener;
+  var listener = null;
   String _nextRoute = "/mainscreen"; // if user is logged-in
 
   void _signInEmailPressed() {
@@ -25,13 +25,22 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
     signInWithFacebook().then((str) {
-          MFHttpUtil.requestFacebookFriends().then((users){
-            global.setTaggableFriends = users;
-          });
-          if(str != "success") {
-            _nextRoute = "/profilesetup-1";
+          if(str == "success") {
+            Navigator.of(context).pushReplacementNamed(_nextRoute);
           }
-          Navigator.of(context).pushReplacementNamed(_nextRoute);
+          else if(str == "new-user") {
+            _nextRoute = "/profilesetup-1";
+            newUserListener((event){
+              //print("printing event data");
+              /*MFHttpUtil.requestFacebookFriends().then((users){
+                global.setTaggableFriends = users;
+              });*/
+              Navigator.of(context).pushReplacementNamed(_nextRoute);
+              if(listener != null) {
+                listener.cancel();
+              }
+            }).then((sub){ listener = sub; });
+          }
         })
         .catchError((err) {
       print('SIGN UP ERROR.... $err');

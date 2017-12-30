@@ -31,7 +31,12 @@ void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
 
 Future userExists(FirebaseUser user) {
   return reference.child(user.uid).once().then((DataSnapshot data) {
-    return new User.fromSnapshot(data);
+    if(data.value != null && data.value.length > 0) {
+      return new User.fromSnapshot(data);
+    }
+    else {
+      return null;
+    }
   });
 }
 
@@ -55,6 +60,21 @@ Future<User> saveUser(User usr) async {
 Future<User> saveUserFromFirebase(FirebaseUser usr) async {
   User user = new User(fbUserId: "", first_name: "", last_name: "", email: usr.email, birthday: new DateTime.now(), displayPhotoUrl: usr.photoUrl);
   return reference.child(usr.uid).set(user.toJson());
+}
+
+Future<User> saveUserAccessToken(String token) async {
+  final _ref = FirebaseDatabase.instance.reference().child("fb_tokens");
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return _ref.child(fuser.uid).set({"fbToken": token});
+}
+
+Future<StreamSubscription> savedUserListener(Function p) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).onValue.listen((event){
+    if(event.snapshot.value != null) {
+      Function.apply(p, [event]);
+    }
+  });
 }
 
 Future<User> getCurrentUserProfile() async {
