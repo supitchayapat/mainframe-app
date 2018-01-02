@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'EventsTile.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
 import 'package:myapp/src/dao/EventDao.dart';
+import 'package:myapp/src/util/FileUtil.dart';
 
 class EventsWidget extends StatefulWidget {
   @override
@@ -21,32 +22,46 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   void initState() {
     super.initState();
-    EventDao.getEvents().then((events) {
-      setState(() {
-        for(var e in events) {
-          listTiles.add(
-              new EventsListTile(
-                leadingColor: e.thumbnailBg != null ? new Color(int.parse(e.thumbnailBg)) : new Color(0xffffffff),
-                leading: new SizedBox(
-                  height: 75.0,
-                  width: 140.0,
-                  child: new Image.network(e.thumbnail),
-                ),
-                title: new ListTileText(e.eventTitle),
-                subtitle: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(e.dateRange, style: new TextStyle(color: new Color(0xff00e5ff))),
-                    new Text(e.year.toString(), style: new TextStyle(color: new Color(0xff00e5ff)))
-                  ],
-                ),
-                trailing: e.hasAttended ? new Image.asset("mainframe_assets/images/attended_before@2x.png",
-                  height: 60.0,
-                  width: 60.0,
-                ) : new Container(),
-              )
-          );
-        }
+    FileUtil.getImages().then((lst) {
+      print("list lenght: ${lst.length}");
+      EventDao.getEvents().then((events) {
+        setState(() {
+          int ctr = 0;
+          for (var e in events) {
+            Widget imgThumb = lst[ctr++];
+            /*FileUtil.getImage(e.thumbnail).then((imgItem){
+              imgThumb = imgItem;
+            });*/
+
+            listTiles.add(
+                new EventsListTile(
+                  leadingColor: e.thumbnailBg != null ? new Color(
+                      int.parse(e.thumbnailBg)) : new Color(0xffffffff),
+                  leading: new SizedBox(
+                      height: 75.0,
+                      width: 140.0,
+                      //child: new Image.network(e.thumbnail),
+                      child: imgThumb
+                  ),
+                  title: new ListTileText(e.eventTitle),
+                  subtitle: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(e.dateRange,
+                          style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new Text(e.year.toString(),
+                          style: new TextStyle(color: new Color(0xff00e5ff)))
+                    ],
+                  ),
+                  trailing: e.hasAttended ? new Image.asset(
+                    "mainframe_assets/images/attended_before@2x.png",
+                    height: 60.0,
+                    width: 60.0,
+                  ) : new Container(),
+                )
+            );
+          }
+        });
       });
     });
   }

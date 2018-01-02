@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:myapp/src/util/FileUtil.dart';
 
 class MainFrameSplash extends StatefulWidget {
   @override
@@ -15,6 +16,9 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
   @override
   void initState() {
     super.initState();
+
+    FileUtil.loadImages();
+    //FileUtil.getImages().then((val) => print("val type: ${val.length}"));
 
     // set firebase instance offline
     FirebaseDatabase.instance.setPersistenceEnabled(true);
