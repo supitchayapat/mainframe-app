@@ -25,6 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
     signInWithFacebook().then((str) {
+          /*MFHttpUtil.requestFacebookFriends().then((users){
+            global.setTaggableFriends = users;
+          });*/
           if(str == "success") {
             Navigator.of(context).pushReplacementNamed(_nextRoute);
           }
@@ -32,9 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
             _nextRoute = "/profilesetup-1";
             newUserListener((event){
               //print("printing event data");
-              /*MFHttpUtil.requestFacebookFriends().then((users){
-                global.setTaggableFriends = users;
-              });*/
               Navigator.of(context).pushReplacementNamed(_nextRoute);
               if(listener != null) {
                 listener.cancel();
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .catchError((err) {
       print('SIGN UP ERROR.... $err');
       MainFrameLoadingIndicator.hideLoading(context);
-      showMainFrameDialog(context, "Application Error", "An error occurred during the process. $err.message");
+      showMainFrameDialog(context, "Application Error", "An error occurred during the process. ${err.message}");
     });
     _nextRoute = "/mainscreen";
   }

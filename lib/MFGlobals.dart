@@ -10,9 +10,11 @@ List<User> _taggableFriends = <User>[];
 User dancePartner = null;
 
 Future<List<User>> get taggableFriends async {
-  await getTaggableFriends().then((val) {
-    _taggableFriends.addAll(val);
-  });
+  if(_taggableFriends.length <= 0) {
+    await getTaggableFriends().then((val) {
+      _taggableFriends.addAll(val);
+    });
+  }
   return _taggableFriends;
 }
 
@@ -26,6 +28,7 @@ set setDancePartner(String name) {
   } else {
     String fname = "";
     String lname = "";
+    print(name);
     if (name.contains(" ")) {
       fname = (name.split(" "))[0];
       lname = (name.split(" "))[1];

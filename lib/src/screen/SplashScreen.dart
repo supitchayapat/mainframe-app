@@ -17,7 +17,6 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
   void initState() {
     super.initState();
 
-    FileUtil.loadImages();
     //FileUtil.getImages().then((val) => print("val type: ${val.length}"));
 
     // set firebase instance offline
@@ -29,6 +28,9 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       String _navi = '/mainscreen';
       if(!isLogged) {
         _navi = '/loginscreen';
+      }
+      else {
+        FileUtil.loadImages();
       }
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(_navi);

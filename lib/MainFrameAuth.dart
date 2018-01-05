@@ -71,7 +71,7 @@ Future<String> signInWithFacebook() async {
     token = await FacebookSignIn.getToken();
   }
   print("token: $token");
-  final FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
+  FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
   assert(user.email != null);
   assert(user.displayName != null);
   assert(!user.isAnonymous);

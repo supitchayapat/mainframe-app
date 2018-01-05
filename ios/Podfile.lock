@@ -68,6 +68,8 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - path_provider (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - APAddressBook
@@ -77,8 +79,9 @@ DEPENDENCIES:
   - FBSDKShareKit
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
+  - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
 
 EXTERNAL SOURCES:
   facebook_sign_in:
@@ -88,9 +91,11 @@ EXTERNAL SOURCES:
   firebase_database:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios
   Flutter:
-    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
+    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios
   mframe_plugins:
     :path: /Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios
+  path_provider:
+    :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios
 
 SPEC CHECKSUMS:
   APAddressBook: e68ecaf95f2c323b625ae585a0d25fe505291286
@@ -113,6 +118,7 @@ SPEC CHECKSUMS:
   leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022
   mframe_plugins: 689c7710f2a9c85a6d9d972f7ab8ae57851d69b2
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
 
 PODFILE CHECKSUM: 5fba3686960d909647701b64b1f3f7389c38fc49
 

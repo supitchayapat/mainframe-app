@@ -10,7 +10,8 @@ import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:intl/intl.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("users");
-
+final taggableRef = FirebaseDatabase.instance.reference().child("taggable_friends");
+final partnerRef = FirebaseDatabase.instance.reference().child("dance_partners");
 
 User convertResponseToUser(json_usr) {
   final formatter = new DateFormat("MM/dd/yyyy");
@@ -80,13 +81,15 @@ Future<StreamSubscription> savedUserListener(Function p) async {
 Future<User> getCurrentUserProfile() async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).once().then((DataSnapshot data) {
+    //print(data.value["first_name"]);
+    print(data.value);
     return new User.fromSnapshot(data);
   });
 }
 
 Future<User> saveUserFriends(List<User> users) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).child("taggable_fb_friends").set(
+  return taggableRef.child(fuser.uid).push().set(
     users.map((val){
       return val.toJson();
     }).toList()
@@ -101,13 +104,12 @@ Future<User> saveUserDancePartner(User user) async {
     return _existingUser;
   }
 
-  return reference.child(fuser.uid).child("dance_partners").push().set(user.toJson());
+  return partnerRef.child(fuser.uid).push().set(user.toJson());
 }
 
 Future<User> getUserDancePartnerViaName(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).child("dance_partners")
-      .orderByChild("first_name").equalTo(user.first_name).once().then((data){
+  return partnerRef.child(fuser.uid).orderByChild("first_name").equalTo(user.first_name).once().then((data){
     User _retVal = null;
     if(data.value != null && data.value.length > 0) {
       data.value.forEach((dataKey, dataVal) {
@@ -123,7 +125,7 @@ Future<User> getUserDancePartnerViaName(User user) async {
 
 Future getUserExistingDancePartners() async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).child("dance_partners").once().then((data){
+  return partnerRef.child(fuser.uid).once().then((data){
     List<User> _users = <User>[];
     if(data.value != null && data.value.length > 0) {
       data.value.forEach((dataKey, dataVal) {
@@ -141,18 +143,21 @@ Future<String> getFBAccessToken() async {
 
 Future<StreamSubscription> taggableFBFriendsListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).child("taggable_fb_friends").limitToFirst(10).onChildAdded.listen((event){
+  return taggableRef.child(fuser.uid).limitToFirst(10).onChildAdded.listen((event){
     Function.apply(p, [new User.fromSnapshot(event.snapshot)]);
   });
 }
 
 Future<List<User>> getTaggableFriends() async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).child("taggable_fb_friends").once().then((DataSnapshot data){
+  return taggableRef.child(fuser.uid).once().then((DataSnapshot data){
     List<User> _users = <User>[];
-    data.value.forEach((dataVal){
+    print(data.value.runtimeType);
+    data.value.forEach((key, dataVal){
       _users.add(new User.fromDataSnapshot(dataVal));
     });
+
+    _users.sort((a, b) => (a.first_name).compareTo(b.first_name));
     return _users;
   });
 }

@@ -8,14 +8,14 @@
         <dict>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>fb86060211695</string>
+                <string>fb137803466893195</string>
             </array>
         </dict>
     </array>
     <key>FacebookAppID</key>
-    <string>86060211695</string>
+    <string>137803466893195</string>
     <key>FacebookDisplayName</key>
-    <string>Mainframe DS Login</string>
+    <string>DanceSport Registration</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>fbapi</string>
