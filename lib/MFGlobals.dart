@@ -11,9 +11,15 @@ User dancePartner = null;
 
 Future<List<User>> get taggableFriends async {
   if(_taggableFriends.length <= 0) {
-    await getTaggableFriends().then((val) {
+    var subs = taggableFBFriendsListener((val){
+      print("taggable list length: ${val.length}");
+      val.sort((a, b) => (a.first_name).compareTo(b.first_name));
       _taggableFriends.addAll(val);
     });
+    /*await getTaggableFriends().then((val) {
+      print("taggable list length: ${val.length}");
+      _taggableFriends.addAll(val);
+    });*/
   }
   return _taggableFriends;
 }
@@ -28,7 +34,6 @@ set setDancePartner(String name) {
   } else {
     String fname = "";
     String lname = "";
-    print(name);
     if (name.contains(" ")) {
       fname = (name.split(" "))[0];
       lname = (name.split(" "))[1];
@@ -37,4 +42,11 @@ set setDancePartner(String name) {
     }
     dancePartner = new User(first_name: fname, last_name: lname);
   }
+}
+
+resetGlobal() {
+  FBToken = "";
+  currentUser = null;
+  _taggableFriends = [];
+  dancePartner = null;
 }

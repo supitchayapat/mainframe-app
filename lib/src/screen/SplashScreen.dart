@@ -4,6 +4,7 @@ import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:myapp/src/util/FileUtil.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class MainFrameSplash extends StatefulWidget {
   @override
@@ -31,6 +32,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       }
       else {
         FileUtil.loadImages();
+        global.taggableFriends.then((val) {});
       }
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(_navi);

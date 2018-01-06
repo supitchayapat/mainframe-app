@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:facebook_sign_in/facebook_sign_in.dart';
-import 'package:flutter/services.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/dao/UserDao.dart';
 
 /*
@@ -117,6 +117,7 @@ Future _checkUserExisting(FirebaseUser user, String token) async {
  */
 void logoutUser() {
   _auth.signOut();
+  global.resetGlobal();
 }
 
 /*
