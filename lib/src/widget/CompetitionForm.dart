@@ -166,6 +166,7 @@ class _CompetitionFormState extends State<CompetitionForm> {
     //print("${mediaQueryData.size.width} - 250.0");
     if((rPanelWidth + 300) < mediaQueryData.size.width) {
       rPanelWidth += mediaQueryData.size.width - (rPanelWidth + 300);
+      rPanelWidth += 185;
     }
 
     if(isMaximizedLeft) {
