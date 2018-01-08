@@ -43,7 +43,9 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           danceCategories.forEach((danceCategory){
             rPanelWidth += danceCategory.subCategories.length;
           });
+          //print("$rPanelWidth first init");
           rPanelWidth = rPanelWidth * subColumnTreshold;
+          //print("$rPanelWidth last init");
           danceLevels = event.levels;
         }
       });
@@ -151,7 +153,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         onPressed: (){
           List<String> _selButtons = <String>[];
           if(levelMap.containsKey(levelTxt)) {
-            _selButtons = levelMap[levelTxt];
+            _selButtons.addAll(levelMap[levelTxt]);
           }
           showAgeCategoryDialog(context, _selButtons, () {
             //print("COMPLETED");
@@ -225,7 +227,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: subHeadingValues.map((headingVal) {
             levelValMap[key + "_" + val].putIfAbsent(headingVal, () => "");
-            //print(levelValMap[key+"_"+val]);
+            //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
             Radio radioElement = new Radio(
                 value: headingVal,
                 groupValue: levelValMap[key + "_" + val][headingVal],

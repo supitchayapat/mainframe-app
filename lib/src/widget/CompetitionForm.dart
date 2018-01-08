@@ -158,12 +158,15 @@ class _CompetitionFormState extends State<CompetitionForm> {
 
   Widget _buildBody(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    double rPanelWidth = 205.0;
+    double rPanelWidth = mediaQueryData.size.width * 0.57; //205.0;
     //print(mediaQueryData.orientation);
     if(mediaQueryData.orientation == Orientation.landscape) {
       rPanelWidth = (widget.rPanelWidth != null && widget.rPanelWidth > 0) ? widget.rPanelWidth : rPanelWidth;
     }
-    //print(mediaQueryData.size.width - 250.0);
+    //print("${mediaQueryData.size.width} - 250.0");
+    if((rPanelWidth + 300) < mediaQueryData.size.width) {
+      rPanelWidth += mediaQueryData.size.width - (rPanelWidth + 300);
+    }
 
     if(isMaximizedLeft) {
       leftPanel = _buildMaximizedLPanel();
@@ -171,6 +174,8 @@ class _CompetitionFormState extends State<CompetitionForm> {
     if(isBuildRPanel) {
       rightPanel = _buildRightPanel();
     }
+
+    //print("from inside form: ${rPanelWidth}");
 
     return new SizedBox.expand(
       child: new NotificationListener<ScrollEndNotification>(
