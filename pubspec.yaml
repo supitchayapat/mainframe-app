@@ -18,6 +18,8 @@ dependencies:
     path: FB-Signin-Plugin
   mframe_plugins:
     path: mframe_plugins
+  stripe_plugin:
+      path: stripe_plugin
   #facebook_sign_in:
     #git: https://github.com/bramvbilsen/Flutter-Facebook-Sign-In-Plugin.git
 

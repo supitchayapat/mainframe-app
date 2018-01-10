@@ -4,6 +4,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myapp/src/dao/PaymentDao.dart';
 
 
 const String cloudFunctionsUri = "https://us-central1-uberregister-5308a.cloudfunctions.net";
@@ -72,5 +73,13 @@ class MFHttpUtil {
     print(resp.statusCode);
     print(resp.body);
     return resp;
+  }
+
+  static createStripeToken() {
+    /*StripePlugin.createToken("4242-4242-4242-4242", "12", "2019", "123", "pk_test_I3QbZv331ioLsVDcw4LXxM82")
+        .then((token){
+      print("API TOKEN ID: $token");
+    });*/
+    PaymentDao.createPayment();
   }
 }
