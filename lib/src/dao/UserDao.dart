@@ -64,14 +64,14 @@ Future<User> saveUserFromFirebase(FirebaseUser usr) async {
 }
 
 Future<User> saveUserAccessToken(String token) async {
-  final _ref = FirebaseDatabase.instance.reference().child("fb_tokens");
+  //final _ref = FirebaseDatabase.instance.reference().child("fb_tokens");
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return _ref.child(fuser.uid).set({"fbToken": token});
+  return reference.child(fuser.uid).child("fb_tokens").set({"fbToken": token});
 }
 
 Future<StreamSubscription> savedUserListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return reference.child(fuser.uid).onValue.listen((event){
+  return reference.child(fuser.uid).child("info").onValue.listen((event){
     if(event.snapshot.value != null) {
       Function.apply(p, [event]);
     }
@@ -145,11 +145,13 @@ Future<StreamSubscription> taggableFBFriendsListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return taggableRef.child(fuser.uid).child("taggable_friends").onValue.listen((event){
     List<User> _users = <User>[];
-    print("snap length: ${event.snapshot.value.length}");
-    event.snapshot.value.forEach((key, dataVal){
-      _users.add(new User.fromDataSnapshot(dataVal));
-    });
-    Function.apply(p, [_users]);
+    if(event.snapshot.value != null) {
+      print("snap length: ${event.snapshot.value.length}");
+      event.snapshot.value.forEach((key, dataVal) {
+        _users.add(new User.fromDataSnapshot(dataVal));
+      });
+      Function.apply(p, [_users]);
+    }
   });
 }
 

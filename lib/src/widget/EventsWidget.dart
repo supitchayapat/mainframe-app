@@ -13,56 +13,68 @@ class _EventsWidgetState extends State<EventsWidget> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
-  List<EventsListTile> listTiles = <EventsListTile>[];
+  List<Widget> listTiles = <Widget>[];
 
   void _menuPressed() {
     _scaffoldKey.currentState.openDrawer();
+  }
+
+  void _handleEventTap(event) {
+    Navigator.of(context).pushNamed("/eventInfo");
   }
 
   @override
   void initState() {
     super.initState();
     FileUtil.getImages().then((lst) {
-      print("list lenght: ${lst.length}");
-      EventDao.getEvents().then((events) {
-        setState(() {
-          int ctr = 0;
-          for (var e in events) {
-            Widget imgThumb = lst[ctr++];
-            /*FileUtil.getImage(e.thumbnail).then((imgItem){
+      //print("list lenght: ${lst.length}");
+      //if(lst.length > 0) {
+        EventDao.getEvents().then((events) {
+          setState(() {
+            int ctr = 0;
+            for (var e in events) {
+              //print("CTR === $ctr");
+              Widget imgThumb;
+              if(ctr < lst.length)
+                imgThumb = lst[ctr++];
+              /*FileUtil.getImage(e.thumbnail).then((imgItem){
               imgThumb = imgItem;
             });*/
 
-            listTiles.add(
-                new EventsListTile(
-                  leadingColor: e.thumbnailBg != null ? new Color(
-                      int.parse(e.thumbnailBg)) : new Color(0xffffffff),
-                  leading: new SizedBox(
-                      height: 75.0,
-                      width: 140.0,
-                      //child: new Image.network(e.thumbnail),
-                      child: imgThumb
-                  ),
-                  title: new ListTileText(e.eventTitle),
-                  subtitle: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(e.dateRange,
-                          style: new TextStyle(color: new Color(0xff00e5ff))),
-                      new Text(e.year.toString(),
-                          style: new TextStyle(color: new Color(0xff00e5ff)))
-                    ],
-                  ),
-                  trailing: e.hasAttended ? new Image.asset(
-                    "mainframe_assets/images/attended_before@2x.png",
-                    height: 60.0,
-                    width: 60.0,
-                  ) : new Container(),
-                )
-            );
-          }
+              listTiles.add(
+                  new InkWell(
+                    onTap: () { _handleEventTap(e); },
+                    child: new EventsListTile(
+                      leadingColor: e.thumbnailBg != null ? new Color(
+                          int.parse(e.thumbnailBg)) : new Color(0xffffffff),
+                      leading: new SizedBox(
+                          height: 75.0,
+                          width: 140.0,
+                          //child: new Image.network(e.thumbnail),
+                          child: imgThumb != null ? imgThumb : new Container()
+                      ),
+                      title: new ListTileText(e.eventTitle),
+                      subtitle: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new Text(e.dateRange,
+                              style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new Text(e.year.toString(),
+                              style: new TextStyle(color: new Color(0xff00e5ff)))
+                        ],
+                      ),
+                      trailing: e.hasAttended ? new Image.asset(
+                        "mainframe_assets/images/attended_before@2x.png",
+                        height: 60.0,
+                        width: 60.0,
+                      ) : new Container(),
+                    )
+                  )
+              );
+            }
+          });
         });
-      });
+      //}
     });
   }
 

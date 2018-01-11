@@ -12,6 +12,7 @@ import 'src/screen/forgot_password_a3.dart';
 import 'src/screen/entry_form_a24.dart';
 import 'src/screen/about_us.dart';
 import 'src/screen/add_dance_partner.dart';
+import 'src/screen/event_details.dart';
 
 /*
   Author: Art
@@ -107,6 +108,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new AddDancePartner(),
         settings: settings,
       );
+    case '/eventInfo':
+      return new MainFrameRoute(
+        builder: (_) => new EventDetails(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -127,5 +133,6 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/emailLogin': (BuildContext context) => new EmailLogin(),
     '/entryForm': (BuildContext context) => new EntryForm(),
     '/addPartner': (BuildContext context) => new AddDancePartner(),
+    '/eventInfo': (BuildContext context) => new EventDetails(),
   };
 }
