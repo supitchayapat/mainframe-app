@@ -3,6 +3,7 @@ import 'EventsTile.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
+import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 
 class EventsWidget extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   }
 
   void _handleEventTap(event) {
+    eventInfo.eventItem = event;
     Navigator.of(context).pushNamed("/eventInfo");
   }
 
