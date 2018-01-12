@@ -99,7 +99,7 @@ class EventsListTile extends ListTile {
         data: iconThemeData,
         child: new Container(
           margin: const EdgeInsetsDirectional.only(end: 10.0),
-          padding: const EdgeInsets.all(5.0),
+          //padding: const EdgeInsets.all(5.0),
           width: 140.0,
           color: leadingColor != null ? leadingColor : new Color(0xffffffff),
           alignment: AlignmentDirectional.centerStart,

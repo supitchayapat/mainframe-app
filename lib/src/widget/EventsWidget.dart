@@ -46,9 +46,9 @@ class _EventsWidgetState extends State<EventsWidget> {
                     onTap: () { _handleEventTap(e); },
                     child: new EventsListTile(
                       leadingColor: e.thumbnailBg != null ? new Color(
-                          int.parse(e.thumbnailBg)) : new Color(0xffffffff),
+                          int.parse(e.thumbnailBg)) : Theme.of(context).primaryColor,
                       leading: new SizedBox(
-                          height: 75.0,
+                          height: 78.0,
                           width: 140.0,
                           //child: new Image.network(e.thumbnail),
                           child: imgThumb != null ? imgThumb : new Container()
