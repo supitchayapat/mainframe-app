@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/EventsWidget.dart';
+import 'package:myapp/MainFrameAuth.dart';
+import 'package:flutter/scheduler.dart';
 
 class MainScreen extends StatefulWidget {
 
@@ -8,6 +10,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  var remove_listener;
 
   /*void _logout() {
     logoutUser();
@@ -22,6 +25,22 @@ class _MainScreenState extends State<MainScreen> {
       //_mainFrameDrawer = new MainFrameDrawer(_scaffoldKey);
       MainFrameDrawer.currentUser=usr;
     });*/
+
+    // check user is deleted on firebase console
+    remove_listener = removeUserListener((event){
+      logoutUser();
+      String _navi = "/loginscreen";
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacementNamed(_navi);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    print("DISPOSED SPLASH");
+    super.dispose();
+    remove_listener.cancel();
   }
 
   // This widget is the root of your application.

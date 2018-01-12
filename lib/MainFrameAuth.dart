@@ -137,3 +137,7 @@ StreamSubscription initAuthStateListener(Function p) {
 Future<StreamSubscription> newUserListener(Function p) async {
   return await savedUserListener(p);
 }
+
+Future<StreamSubscription> removeUserListener(Function p) async {
+  return await deleteUserListener(p);
+}
