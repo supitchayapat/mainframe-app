@@ -118,8 +118,8 @@ class _EventDetailsState extends State<EventDetails> {
       appBar: new MFAppBar(eventTitle, context),
       body: new Column(
         children: <Widget>[
-          //new Expanded(
-              /*child:*/ new Container(
+          new Expanded(
+              child: new Container(
                 decoration: new BoxDecoration(
                     image: new DecorationImage(
                         image: new ExactAssetImage("mainframe_assets/images/m7x5ba.jpg"),
@@ -141,7 +141,7 @@ class _EventDetailsState extends State<EventDetails> {
                 alignment: Alignment.bottomLeft,
                 padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
               ),
-          //),
+          ),
           new Flexible(
               child: new MFTabbedComponentDemoScaffold(
                 demos: <MFComponentDemoTabData>[
