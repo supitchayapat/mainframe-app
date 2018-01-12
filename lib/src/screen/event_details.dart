@@ -36,6 +36,8 @@ class _EventDetailsState extends State<EventDetails> {
             new Text("When:  ${format.format(eventItem.startDate)} to ${format.format(eventItem.stopDate)}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
             new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
+            new Padding(padding: const EdgeInsets.only(top: 10.0)),
+            new Text("Registration ends:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
           ],
         ),
     );

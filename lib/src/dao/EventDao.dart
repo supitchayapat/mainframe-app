@@ -62,6 +62,6 @@ class EventDao {
       return (evt.stopDate.isAtSameMomentAs(_now) || evt.stopDate.isBefore(_now));
     });
     // sort events by start date DESC
-    events.sort((a, b) => (a.startDate).compareTo(b.startDate));
+    events.sort((a, b) => (b.startDate).compareTo(a.startDate));
   }
 }

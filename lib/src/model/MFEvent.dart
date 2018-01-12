@@ -74,6 +74,7 @@ class MFEvent {
     //dateRange = s["dateRange"];
     startDate = formatterSrc.parse(s["info"]["dateStart"]);
     stopDate = formatterSrc.parse(s["info"]["dateStop"]);
+    deadline = s["info"]["deadline"] != null ? formatterSrc.parse(s["info"]["deadline"]) : null;
     dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
