@@ -10,7 +10,7 @@ class EventsWidget extends StatefulWidget {
 }
 
 class _EventsWidgetState extends State<EventsWidget> {
-
+  var listener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
   List<Widget> listTiles = <Widget>[];
@@ -26,56 +26,62 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   void initState() {
     super.initState();
-    FileUtil.getImages().then((lst) {
-      //print("list lenght: ${lst.length}");
-      //if(lst.length > 0) {
-        EventDao.getEvents().then((events) {
-          setState(() {
-            int ctr = 0;
-            for (var e in events) {
-              //print("CTR === $ctr");
-              Widget imgThumb;
-              if(ctr < lst.length)
-                imgThumb = lst[ctr++];
-              /*FileUtil.getImage(e.thumbnail).then((imgItem){
-              imgThumb = imgItem;
-            });*/
 
-              listTiles.add(
-                  new InkWell(
-                    onTap: () { _handleEventTap(e); },
-                    child: new EventsListTile(
-                      leadingColor: e.thumbnailBg != null ? new Color(
-                          int.parse(e.thumbnailBg)) : Theme.of(context).primaryColor,
-                      leading: new SizedBox(
-                          height: 78.0,
-                          width: 140.0,
-                          //child: new Image.network(e.thumbnail),
-                          child: imgThumb != null ? imgThumb : new Container()
-                      ),
-                      title: new ListTileText(e.eventTitle),
-                      subtitle: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Text(e.dateRange,
-                              style: new TextStyle(color: new Color(0xff00e5ff))),
-                          new Text(e.year.toString(),
-                              style: new TextStyle(color: new Color(0xff00e5ff)))
-                        ],
-                      ),
-                      trailing: e.hasAttended ? new Image.asset(
-                        "mainframe_assets/images/attended_before@2x.png",
-                        height: 60.0,
-                        width: 60.0,
-                      ) : new Container(),
-                    )
+    listener = EventDao.eventsListener((events) {
+      FileUtil.getImages().then((lst) {
+        setState(() {
+          listTiles = <Widget>[];
+          int ctr = 0;
+          for (var e in events) {
+            //print("CTR === $ctr");
+            Widget imgThumb;
+            if(ctr < lst.length)
+              imgThumb = lst[ctr++];
+            /*FileUtil.getImage(e.thumbnail).then((imgItem){
+            imgThumb = imgItem;
+          });*/
+
+            listTiles.add(
+                new InkWell(
+                  onTap: () { _handleEventTap(e); },
+                  child: new EventsListTile(
+                    leadingColor: e.thumbnailBg != null ? new Color(
+                        int.parse(e.thumbnailBg)) : Theme.of(context).primaryColor,
+                    leading: new SizedBox(
+                        height: 78.0,
+                        width: 140.0,
+                        //child: new Image.network(e.thumbnail),
+                        child: imgThumb != null ? imgThumb : new Container()
+                    ),
+                    title: new ListTileText(e.eventTitle),
+                    subtitle: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text(e.dateRange,
+                            style: new TextStyle(color: new Color(0xff00e5ff))),
+                        new Text(e.year.toString(),
+                            style: new TextStyle(color: new Color(0xff00e5ff)))
+                      ],
+                    ),
+                    trailing: e.hasAttended ? new Image.asset(
+                      "mainframe_assets/images/attended_before@2x.png",
+                      height: 60.0,
+                      width: 60.0,
+                    ) : new Container(),
                   )
-              );
-            }
-          });
+                )
+            );
+          }
         });
-      //}
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    print("DISPOSED EVENTS WIDGET");
+    super.dispose();
+    listener.cancel();
   }
 
   @override

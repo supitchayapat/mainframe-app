@@ -12,6 +12,8 @@ class MFEvent {
   String thumbnail;
   String thumbnailBg;
   String dateRange;
+  DateTime startDate;
+  DateTime stopDate;
   bool hasAttended;
   int year;
   List<EventDanceCategory> danceCategories;
@@ -29,13 +31,13 @@ class MFEvent {
         year = s["year"],
         danceCategories = (s["danceCategories"] as List).map((val) => val).toList();*/
   MFEvent.fromSnapshot(var s) {
-    eventTitle = s["info"]["competitionName"];
+    eventTitle = s["info"]["name"];
     thumbnail = s["info"]["imgFilename"];
     thumbnailBg = s["info"]["thumbnailBg"];
     //dateRange = s["dateRange"];
-    DateTime from = formatterSrc.parse(s["info"]["dateStart"]);
-    DateTime to = formatterSrc.parse(s["info"]["dateStop"]);
-    dateRange = "${formatterOut.format(from)} - ${formatterOut.format(to)}";
+    startDate = formatterSrc.parse(s["info"]["dateStart"]);
+    stopDate = formatterSrc.parse(s["info"]["dateStop"]);
+    dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
     if(s["danceCategories"] != null) {
