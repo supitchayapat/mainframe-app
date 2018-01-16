@@ -5,6 +5,8 @@ import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 
+const double _kFlexibleSpaceMaxHeight = 186.0;
+
 class EventsWidget extends StatefulWidget {
   @override
   _EventsWidgetState createState() => new _EventsWidgetState();
@@ -12,9 +14,12 @@ class EventsWidget extends StatefulWidget {
 
 class _EventsWidgetState extends State<EventsWidget> {
   var listener;
+  var past_listener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
   List<Widget> listTiles = <Widget>[];
+  List _events = [];
+  List _pastEvents = [];
 
   void _menuPressed() {
     _scaffoldKey.currentState.openDrawer();
@@ -25,26 +30,23 @@ class _EventsWidgetState extends State<EventsWidget> {
     Navigator.of(context).pushNamed("/eventInfo");
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    listener = EventDao.eventsListener((events) {
-      FileUtil.getImages().then((lst) {
-        setState(() {
-          listTiles = <Widget>[];
-          int ctr = 0;
-          for (var e in events) {
-            //print("CTR === $ctr");
-            Widget imgThumb;
-            if(ctr < lst.length)
-              imgThumb = lst[ctr++];
-            /*FileUtil.getImage(e.thumbnail).then((imgItem){
+  void _buildListTiles() {
+    // get images and create listTiles
+    FileUtil.getImages().then((lst) {
+      setState(() {
+        listTiles = <Widget>[];
+        int ctr = 0;
+        for (var e in _events) {
+          //print("CTR === $ctr");
+          Widget imgThumb;
+          if(ctr < lst.length)
+            imgThumb = lst[ctr++];
+          /*FileUtil.getImage(e.thumbnail).then((imgItem){
             imgThumb = imgItem;
           });*/
 
-            listTiles.add(
-                new InkWell(
+          listTiles.add(
+              new InkWell(
                   onTap: () { _handleEventTap(e); },
                   child: new EventsListTile(
                     leadingColor: e.thumbnailBg != null ? new Color(
@@ -71,10 +73,32 @@ class _EventsWidgetState extends State<EventsWidget> {
                       width: 60.0,
                     ) : new Container(),
                   )
-                )
-            );
-          }
-        });
+              )
+          );
+        }
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    listener = EventDao.eventsListener((events) {
+      setState((){
+        print("set events");
+        _events = [];
+        _events.addAll(events);
+        _buildListTiles();
+      });
+    });
+
+    past_listener = EventDao.pastUserEventListener((events) {
+      setState((){
+        print("past events LENGTH: ${events.length}");
+        _events = [];
+        _events.addAll(events);
+        _buildListTiles();
       });
     });
   }
@@ -84,9 +108,10 @@ class _EventsWidgetState extends State<EventsWidget> {
     print("DISPOSED EVENTS WIDGET");
     super.dispose();
     listener.cancel();
+    past_listener.cancel();
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
@@ -153,6 +178,76 @@ class _EventsWidgetState extends State<EventsWidget> {
           ],
         ),
       ),
+    );
+  }*/
+
+  @override
+  Widget build(BuildContext context) {
+
+    // TODO: implement build
+    return new Scaffold(
+      drawer: new MainFrameDrawer(_scaffoldKey),
+      body: new CustomScrollView(
+        slivers: <Widget>[
+          const SliverAppBar(
+            pinned: true,
+            expandedHeight: _kFlexibleSpaceMaxHeight,
+            flexibleSpace: const FlexibleSpaceBar(
+              title: const Text('Events'),
+              // TODO(abarth): Wire up to the parallax in a way that doesn't pop during hero transition.
+              background: const _AppBarBackground(animation: kAlwaysDismissedAnimation),
+            ),
+          ),
+          new SliverList(delegate: new SliverChildListDelegate(listTiles)),
+        ],
+      ),
+    );
+  }
+}
+
+class _BackgroundLayer {
+  _BackgroundLayer({ int level, double parallax })
+      : assetName = "mainframe_assets/images/m7x5ba.jpg",
+        parallaxTween = new Tween<double>(begin: 0.0, end: parallax);
+  final String assetName;
+  final Tween<double> parallaxTween;
+}
+
+final List<_BackgroundLayer> _kBackgroundLayers = <_BackgroundLayer>[
+  new _BackgroundLayer(level: 0, parallax: _kFlexibleSpaceMaxHeight),
+  new _BackgroundLayer(level: 1, parallax: _kFlexibleSpaceMaxHeight),
+  new _BackgroundLayer(level: 2, parallax: _kFlexibleSpaceMaxHeight / 2.0),
+  new _BackgroundLayer(level: 3, parallax: _kFlexibleSpaceMaxHeight / 4.0),
+  new _BackgroundLayer(level: 4, parallax: _kFlexibleSpaceMaxHeight / 2.0),
+  new _BackgroundLayer(level: 5, parallax: _kFlexibleSpaceMaxHeight)
+];
+
+class _AppBarBackground extends StatelessWidget {
+  const _AppBarBackground({ Key key, this.animation }) : super(key: key);
+
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return new AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, Widget child) {
+          return new Stack(
+              children: _kBackgroundLayers.map((_BackgroundLayer layer) {
+                return new Positioned(
+                    top: -layer.parallaxTween.evaluate(animation),
+                    left: 0.0,
+                    right: 0.0,
+                    bottom: 0.0,
+                    child: new Image.asset(
+                        layer.assetName,
+                        fit: BoxFit.cover,
+                        height: _kFlexibleSpaceMaxHeight
+                    )
+                );
+              }).toList()
+          );
+        }
     );
   }
 }

@@ -150,6 +150,16 @@ Future<String> getFBAccessToken() async {
   return await FacebookSignIn.getToken();
 }
 
+Future<StreamSubscription> userEventsListener(Function p) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("events").onValue.listen((event){
+    if(event.snapshot != null) {
+      var _events = event.snapshot;
+      Function.apply(p, [_events]);
+    }
+  });
+}
+
 Future<StreamSubscription> taggableFBFriendsListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return taggableRef.child(fuser.uid).child("taggable_friends").onValue.listen((event){

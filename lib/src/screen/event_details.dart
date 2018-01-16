@@ -113,6 +113,12 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
+    DateTime _now = new DateTime.now();
+    String _floatText = "Register";
+
+    if(_now.isAfter(eventItem.stopDate)) {
+      _floatText = "Results";
+    }
 
     return new Scaffold(
       appBar: new MFAppBar(eventTitle, context),
@@ -184,7 +190,7 @@ class _EventDetailsState extends State<EventDetails> {
           decoration: new BoxDecoration(
             image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
           ),
-          child: new Text("Register"),
+          child: new Text(_floatText),
         ),
       )
     );
