@@ -39,7 +39,7 @@ class _EventsWidgetState extends State<EventsWidget> {
         for (var e in _events) {
           //print("CTR === $ctr");
           Widget imgThumb;
-          if(ctr < lst.length)
+          if (ctr < lst.length)
             imgThumb = lst[ctr++];
           /*FileUtil.getImage(e.thumbnail).then((imgItem){
             imgThumb = imgItem;
@@ -47,10 +47,14 @@ class _EventsWidgetState extends State<EventsWidget> {
 
           listTiles.add(
               new InkWell(
-                  onTap: () { _handleEventTap(e); },
+                  onTap: () {
+                    _handleEventTap(e);
+                  },
                   child: new EventsListTile(
                     leadingColor: e.thumbnailBg != null ? new Color(
-                        int.parse(e.thumbnailBg)) : Theme.of(context).primaryColor,
+                        int.parse(e.thumbnailBg)) : Theme
+                        .of(context)
+                        .primaryColor,
                     leading: new SizedBox(
                         height: 78.0,
                         width: 140.0,
@@ -85,7 +89,7 @@ class _EventsWidgetState extends State<EventsWidget> {
     super.initState();
 
     listener = EventDao.eventsListener((events) {
-      setState((){
+      setState(() {
         print("set events");
         _events = [];
         _events.addAll(events);
@@ -94,7 +98,7 @@ class _EventsWidgetState extends State<EventsWidget> {
     });
 
     past_listener = EventDao.pastUserEventListener((events) {
-      setState((){
+      setState(() {
         print("past events LENGTH: ${events.length}");
         _events = [];
         _events.addAll(events);
@@ -111,8 +115,34 @@ class _EventsWidgetState extends State<EventsWidget> {
     past_listener.cancel();
   }
 
-  /*@override
+  @override
   Widget build(BuildContext context) {
+    List<Widget> _children = [];
+    _children.add(new Container(
+      decoration: new BoxDecoration(
+          image: new DecorationImage(
+              image: new ExactAssetImage(
+                  "mainframe_assets/images/m7x5ba.jpg"),
+              fit: BoxFit.cover
+          )
+      ),
+      child: new Container(
+        height: 55.0,
+        width: 200.0,
+        child: new Text("Find Your Next Event Below",
+          style: new TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0
+          ),
+        ),
+      ),
+      height: 235.0,
+      alignment: Alignment.bottomLeft,
+      padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
+    ));
+    _children.addAll(listTiles);
+
     return new Scaffold(
       key: _scaffoldKey,
       drawer: new MainFrameDrawer(_scaffoldKey),
@@ -127,13 +157,15 @@ class _EventsWidgetState extends State<EventsWidget> {
       backgroundColor: const Color(0xFF324261),
       body: new Container(
         margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-        child: new Column(
-          children: <Widget>[
-            new Expanded(
-                child: new Container(
+        child: new ListView(
+          children: _children
+          /*children: <Widget>[
+            //new Expanded(
+                /*child:*/ new Container(
                   decoration: new BoxDecoration(
                       image: new DecorationImage(
-                          image: new ExactAssetImage("mainframe_assets/images/m7x5ba.jpg"),
+                          image: new ExactAssetImage(
+                              "mainframe_assets/images/m7x5ba.jpg"),
                           fit: BoxFit.cover
                       )
                   ),
@@ -151,12 +183,11 @@ class _EventsWidgetState extends State<EventsWidget> {
                   height: 235.0,
                   alignment: Alignment.bottomLeft,
                   padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
-                )
-            ),
-
+                ),
+            //),
             new Flexible(
-                //color: Colors.amber,
-                //height: 275.0,
+              //color: Colors.amber,
+              //height: 275.0,
                 child: new ListView(
                   children: <Widget>[
                     new ClipRect(
@@ -165,7 +196,8 @@ class _EventsWidgetState extends State<EventsWidget> {
                             new Container(
                                 child: new Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .stretch,
                                     children: listTiles
                                 )
                             ),
@@ -175,13 +207,13 @@ class _EventsWidgetState extends State<EventsWidget> {
                   ],
                 )
             )
-          ],
+          ],*/
         ),
       ),
     );
-  }*/
-
-  @override
+  }
+}
+  /*@override
   Widget build(BuildContext context) {
 
     // TODO: implement build
@@ -203,9 +235,9 @@ class _EventsWidgetState extends State<EventsWidget> {
       ),
     );
   }
-}
+}*/
 
-class _BackgroundLayer {
+/*class _BackgroundLayer {
   _BackgroundLayer({ int level, double parallax })
       : assetName = "mainframe_assets/images/m7x5ba.jpg",
         parallaxTween = new Tween<double>(begin: 0.0, end: parallax);
@@ -250,4 +282,4 @@ class _AppBarBackground extends StatelessWidget {
         }
     );
   }
-}
+}*/
