@@ -13,6 +13,7 @@ import 'src/screen/entry_form_a24.dart';
 import 'src/screen/about_us.dart';
 import 'src/screen/add_dance_partner.dart';
 import 'src/screen/event_details.dart';
+import 'src/screen/ticket_summary_a60.dart';
 
 /*
   Author: Art
@@ -113,6 +114,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new EventDetails(),
         settings: settings,
       );
+    case '/ticketSummary':
+      return new MainFrameRoute(
+        builder: (_) => new ticket_summary_a60(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -134,5 +140,6 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/entryForm': (BuildContext context) => new EntryForm(),
     '/addPartner': (BuildContext context) => new AddDancePartner(),
     '/eventInfo': (BuildContext context) => new EventDetails(),
+    '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
   };
 }

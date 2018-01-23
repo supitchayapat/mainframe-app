@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class MFAppBar extends AppBar {
   String textTitle;
   VoidCallback backButtonFunc;
+  List<Widget> actions;
 
-  MFAppBar(this.textTitle, BuildContext context, {this.backButtonFunc}) : super(
+  MFAppBar(this.textTitle, BuildContext context, {this.backButtonFunc, this.actions}) : super(
       title: new Text(
           textTitle,
           style: new TextStyle(
@@ -17,6 +18,7 @@ class MFAppBar extends AppBar {
       elevation: 0.0,
       centerTitle: true,
       automaticallyImplyLeading: false,
+      actions: actions,
       leading: new IconButton(
           icon: new Icon(Icons.arrow_back_ios),
           color: Colors.white,
