@@ -54,6 +54,251 @@ Future<Null> showMainFrameDialog(BuildContext context, String title, String msg)
   );
 }
 
+Future<Null> showSummaryDialog(BuildContext context) async {
+  double _scrWidth = MediaQuery.of(context).size.width;
+  //print(_scrWidth * 0.65);
+  //print(340.0 * 0.65);
+
+  return showDialog<Null>(
+    context: context,
+    barrierDismissible: true, // user must tap button!
+    child: new Theme(
+        // Dialog Theme
+        data: new ThemeData(
+          brightness: Brightness.light,
+        ),
+        // body
+        child: new SimpleDialog(
+          children: <Widget>[
+            new Container(
+              decoration: new BoxDecoration(
+                borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+                color: Colors.white,
+              ),
+              height: 450.0,
+              width: 340.0,
+              child: new Column(
+                children: <Widget>[
+                  new Text("Session SUMMARY",
+                    textAlign: TextAlign.center,
+                    style: new TextStyle(
+                        height: 1.5,
+                        fontSize: 16.0,
+                        color: const Color(0xff000a12,
+                        )
+                    ),
+                  ),
+
+                  new Container(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: new Divider(color: Colors.black, height: 16.0)
+                  ),
+
+                  new Container(
+                    //color: Colors.amber,
+                    child: new Row(
+                      children: <Widget>[
+                        new Container(
+                          //color: Colors.cyan,
+                          width: (MediaQuery.of(context).orientation == Orientation.portrait) ? _scrWidth * 0.6 : 340.0 * 0.8,
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              new Container(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Text(
+                                      "FRIDAY",
+                                      style: new TextStyle(
+                                        fontSize: 16.0,
+                                        color: const Color(
+                                          (0xff000a12),
+                                        ),
+                                      ),
+                                    ),
+                                    new Text(
+                                      "July 21, 2017",
+                                      style: new TextStyle(
+                                        fontSize: 12.0,
+                                        color: const Color(
+                                          (0xff000a12),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              new Padding(padding: const EdgeInsets.only(left: 10.0)),
+                              new Container(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Text("ALL DAY",
+                                      style: new TextStyle(
+                                        fontSize: 16.0,
+                                        color: const Color(
+                                          (0xff000a12),
+                                        ),
+                                      ),
+                                    ),
+                                    new Text(
+                                      "with dinner",
+                                      style: new TextStyle(
+                                        fontSize: 12.0,
+                                        color: const Color(
+                                          (0xff000a12),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              new Padding(padding: const EdgeInsets.only(left: 5.0)),
+                              new Container(
+                                child: new Row(
+                                  children:<Widget>[
+                                    new Image.asset("mainframe_assets/images/sun_a60.jpg",
+                                      width: 16.0,
+                                      height: 16.0,
+                                    ),
+
+                                    new Container(
+                                      padding: new EdgeInsets.fromLTRB(3.0, 0.0, 0.0, 0.0),
+                                      child: new Image.asset("mainframe_assets/images/moon_a60.png",
+                                        width: 16.0,
+                                        height: 16.0,
+                                      ),
+                                    ),
+
+                                    new Container(
+                                      padding: new EdgeInsets.fromLTRB(3.0, 0.0, 0.0, 0.0),
+                                      child: new Image.asset("mainframe_assets/images/food_a60.png",
+                                        width: 16.0,
+                                        height: 16.0,
+                                      ),
+                                    ),
+
+
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        new Expanded(
+                          //padding: const EdgeInsets.all(5.0),
+                          child: new Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                            decoration: new BoxDecoration(
+                                borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                                border: new Border.all(
+                                  width: 2.0,
+                                  color: const Color(0xFF313746),
+                                  style: BorderStyle.solid,
+                                ),
+                                //color: Colors.green
+                            ),
+                            height: 40.0,
+                            //color: Colors.green,
+                            child: new Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                new Text("Total", style: new TextStyle(color: const Color(0xFF778198))),
+                                new Text("24", style: new TextStyle(color: const Color(0xFF313746), fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
+                  new Container(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: new Divider(color: Colors.black, height: 16.0)
+                  ),
+
+                  new Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: new Text("John Doe (21 TICKETS)"),
+                  ),
+                  
+                  new Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      //color: Colors.amber,
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          new Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: new Text("GENERAL ADMISSION"),
+                          ),
+                          new Expanded(
+                              child: new Container(
+                                //color: Colors.cyan,
+                                alignment: Alignment.centerRight,
+                                child: new Text("11"),
+                              )
+                          )
+                        ],
+                      )
+                  ),
+
+                  new Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      //color: Colors.amber,
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          new Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: new Text("STANDING ROOM"),
+                          ),
+                          new Expanded(
+                              child: new Container(
+                                //color: Colors.cyan,
+                                alignment: Alignment.centerRight,
+                                child: new Text("1"),
+                              )
+                          )
+                        ],
+                      )
+                  ),
+
+                  new Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                      //color: Colors.amber,
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          new Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: new Text("RISERS"),
+                          ),
+                          new Expanded(
+                              child: new Container(
+                                //color: Colors.cyan,
+                                alignment: Alignment.centerRight,
+                                child: new Text("1"),
+                              )
+                          )
+                        ],
+                      )
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+    ),
+  );
+}
+
 /*
   A method that shows a dialog screen with cancel option.
   It accepts a String message and a string title
