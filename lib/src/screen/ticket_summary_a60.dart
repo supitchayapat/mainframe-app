@@ -16,6 +16,9 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
     if(_dropValue == "SUMMARY") {
       showSummaryDialog(context);
     }
+    else {
+      showTicketDialog(context, _dropValue);
+    }
   }
 
   Widget _generateCard(String _txtContent, {Color legend}) {
