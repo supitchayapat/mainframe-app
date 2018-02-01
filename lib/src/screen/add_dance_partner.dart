@@ -433,7 +433,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
 
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: new MFAppBar("ADD A DANCE PARTNER", context),
+      appBar: new MFAppBar("ADD PARTICIPANT", context),
       body: new Column(
         children: <Widget>[
           new Row(

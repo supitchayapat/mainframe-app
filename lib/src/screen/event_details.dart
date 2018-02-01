@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 
 var eventItem;
 
@@ -181,7 +183,11 @@ class _EventDetailsState extends State<EventDetails> {
         ],
       ),
       floatingActionButton: new InkWell(
-        onTap: (){},
+        onTap: (){
+          eventInfo.eventItem = eventItem;
+          if(_floatText == "Register")
+            Navigator.of(context).pushNamed("/registration");
+        },
         child: new Container(
           //color: Colors.amber,
           width: 100.0,
@@ -190,7 +196,7 @@ class _EventDetailsState extends State<EventDetails> {
           decoration: new BoxDecoration(
             image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
           ),
-          child: new Text(_floatText),
+          child: new Text(_floatText, style: new TextStyle(fontSize: 17.0)),
         ),
       )
     );

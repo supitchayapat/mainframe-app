@@ -14,6 +14,10 @@ import 'src/screen/about_us.dart';
 import 'src/screen/add_dance_partner.dart';
 import 'src/screen/event_details.dart';
 import 'src/screen/ticket_summary_a60.dart';
+import 'src/screen/event_registration.dart';
+import 'src/screen/couple_management.dart';
+import 'src/screen/participant_list.dart';
+import 'src/screen/entry_summary.dart';
 
 /*
   Author: Art
@@ -119,6 +123,26 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new ticket_summary_a60(),
         settings: settings,
       );
+    case '/registration':
+      return new MainFrameRoute(
+        builder: (_) => new event_registration(),
+        settings: settings,
+      );
+    case '/coupleManagement':
+      return new MainFrameRoute(
+        builder: (_) => new couple_management(),
+        settings: settings,
+      );
+    case '/participants':
+      return new MainFrameRoute(
+        builder: (_) => new participant_list(),
+        settings: settings,
+      );
+    case '/registrationSummary':
+      return new MainFrameRoute(
+        builder: (_) => new entry_summary(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -141,5 +165,8 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/addPartner': (BuildContext context) => new AddDancePartner(),
     '/eventInfo': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
+    '/registration': (BuildContext context) => new event_registration(),
+    '/participants': (BuildContext context) => new participant_list(),
+    '/registrationSummary': (BuildContext context) => new entry_summary(),
   };
 }

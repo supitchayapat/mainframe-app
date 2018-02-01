@@ -3,6 +3,25 @@ import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+class Couple {
+  String coupleName;
+  List<User> couple;
+
+  Couple({this.coupleName, this.couple});
+
+  Couple.fromSnapshot(var s) {
+    coupleName = s["coupleName"];
+
+    if(s["couple"].length > 0) {
+      couple = [];
+      var _couple = s["couple"];
+      _couple.forEach((key, val){
+        couple.add(new User.fromDataSnapshot(val));
+      });
+    }
+  }
+}
+
 class User {
 
   final formatter = new DateFormat("MM/dd/yyyy");

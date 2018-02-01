@@ -188,3 +188,33 @@ Future<List<User>> getTaggableFriends() async {
     return _users;
   });
 }
+
+Future<StreamSubscription> soloParticipantsListener(Function p) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("solo_participants").onValue.listen((event){
+    if(event.snapshot != null && event.snapshot.value.length > 0) {
+      List<User> _users = <User>[];
+      var _snapshot = event.snapshot;
+      _snapshot.value.forEach((key, dataVal){
+        _users.add(new User.fromDataSnapshot(dataVal));
+      });
+      _users.sort((a, b) => (a.first_name).compareTo(b.first_name));
+      Function.apply(p, [_users]);
+    }
+  });
+}
+
+Future<StreamSubscription> coupleParticipantsListener(Function p) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("couple_participants").onValue.listen((event){
+    if(event.snapshot != null && event.snapshot.value.length > 0) {
+      List<Couple> _couples = <Couple>[];
+      var _snapshot = event.snapshot;
+      _snapshot.value.forEach((key, dataVal){
+        _couples.add(new Couple.fromSnapshot(dataVal));
+      });
+      _couples.sort((a, b) => (a.coupleName).compareTo(b.coupleName));
+      Function.apply(p, [_couples]);
+    }
+  });
+}
