@@ -18,6 +18,7 @@ import 'src/screen/event_registration.dart';
 import 'src/screen/couple_management.dart';
 import 'src/screen/participant_list.dart';
 import 'src/screen/entry_summary.dart';
+import 'src/screen/checkout_entry.dart';
 
 /*
   Author: Art
@@ -143,6 +144,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new entry_summary(),
         settings: settings,
       );
+    case '/checkoutEntry':
+      return new MainFrameRoute(
+        builder: (_) => new checkout_entry(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -168,5 +174,6 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/registration': (BuildContext context) => new event_registration(),
     '/participants': (BuildContext context) => new participant_list(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
+    '/checkoutEntry': (BuildContext context) => new checkout_entry(),
   };
 }

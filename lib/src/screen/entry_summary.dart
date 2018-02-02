@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
+import 'package:myapp/src/screen/checkout_entry.dart' as checkout;
 
 var participantEntries;
 
@@ -81,13 +82,19 @@ class _entry_summaryState extends State<entry_summary> {
               new Expanded(
                 child: new Text("Total Fees: \$${(_total).toStringAsFixed(2)}", style: new TextStyle(fontSize: 17.0)),
               ),
-              new Container(
-                decoration: new BoxDecoration(
-                  image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+              new InkWell(
+                onTap: (){
+                  checkout.totalAmount = _total;
+                  Navigator.of(context).pushNamed("/checkoutEntry");
+                },
+                child: new Container(
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+                  ),
+                  width: 115.0,
+                  height: 40.0,
+                  child: new Center(child: new Text("Pay Fees", style: new TextStyle(fontSize: 17.0))),
                 ),
-                width: 115.0,
-                height: 40.0,
-                child: new Center(child: new Text("Pay Fees", style: new TextStyle(fontSize: 17.0))),
               )
             ],
           ),
