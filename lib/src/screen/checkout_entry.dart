@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:flutter/services.dart';
+import 'package:myapp/src/util/CreditCardFormatter.dart';
+import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 
@@ -69,9 +71,10 @@ class _checkout_entryState extends State<checkout_entry> {
                 //hintStyle: new TextStyle(color: Colors.black),
               ),
               inputFormatters: <TextInputFormatter>[
-                new LengthLimitingTextInputFormatter(19),
+                new LengthLimitingTextInputFormatter(23),
+                new CreditCardTextInputFormatter(),
               ],
-              style: new TextStyle(fontSize: 17.0, fontFamily: "Montserrat-Regular"),
+              style: new TextStyle(fontSize: 22.0, fontFamily: "Montserrat-Regular"),
               keyboardType: TextInputType.number,
             ),
             //)
@@ -86,9 +89,10 @@ class _checkout_entryState extends State<checkout_entry> {
                           labelText: "Exp. Date",
                           hintText: "00/00"
                       ),
-                      style: new TextStyle(fontSize: 17.0, fontFamily: "Montserrat-Regular"),
+                      style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
                       inputFormatters: <TextInputFormatter>[
-                        new LengthLimitingTextInputFormatter(4),
+                        new ExpDateTextInputFormatter(),
+                        new LengthLimitingTextInputFormatter(6),
                       ],
                       keyboardType: TextInputType.number,
                     ),
@@ -102,7 +106,7 @@ class _checkout_entryState extends State<checkout_entry> {
                       inputFormatters: <TextInputFormatter>[
                         new LengthLimitingTextInputFormatter(3),
                       ],
-                      style: new TextStyle(fontSize: 17.0, fontFamily: "Montserrat-Regular"),
+                      style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
                       keyboardType: TextInputType.number,
                     ),
                   )
@@ -116,7 +120,7 @@ class _checkout_entryState extends State<checkout_entry> {
               decoration: new InputDecoration(
                 labelText: "Card Holder Name",
               ),
-              style: new TextStyle(fontSize: 17.0, fontFamily: "Montserrat-Regular"),
+              style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
               keyboardType: TextInputType.text,
             ),
           ),
@@ -135,7 +139,7 @@ class _checkout_entryState extends State<checkout_entry> {
           ),
           new Container(
               alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 30.0),
+              margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
               child: new Row(
                 children: <Widget>[
                   new Checkbox(activeColor: const Color(0xFF324261),value: setDefault,
@@ -153,7 +157,7 @@ class _checkout_entryState extends State<checkout_entry> {
                     margin: const EdgeInsets.only(bottom: 15.0),
                     child: new InkWell(
                       onTap: (){
-
+                        MainFrameLoadingIndicator.showLoading(context);
                       },
                       child: new Container(
                         decoration: new BoxDecoration(
