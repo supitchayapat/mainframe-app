@@ -25,13 +25,16 @@ class EventDao {
 
     return reference.once().then((snap) {
       //print("snapval: ${snap.value.length}");
-      for(Iterator iter=snap.value.iterator; iter.moveNext();) {
-        var item = iter.current;
-        //print("item: ${item}");
-        if(item != null) {
-          MFEvent evt = new MFEvent.fromSnapshot(item);
-          events.add(evt);
-        }
+      if(snap.value != null && snap.value.length > 0) {
+        events = [];
+        snap.value.forEach((key, val){
+          var item = val;
+          //print("item: ${item}");
+          if(item != null) {
+            MFEvent evt = new MFEvent.fromSnapshot(item);
+            events.add(evt);
+          }
+        });
       }
       _filterEvents();
       _sortEvents();
@@ -42,20 +45,28 @@ class EventDao {
   static StreamSubscription eventsListener(Function p) {
     return reference.onValue.listen((event){
       var snap = event.snapshot;
+      //print("EVT SNAP: ${event.snapshot.value}");
       future_events = <MFEvent>[];
-      for(Iterator iter=snap.value.iterator; iter.moveNext();) {
-        var item = iter.current;
-        //print("item: ${item}");
-        if(item != null) {
-          MFEvent evt = new MFEvent.fromSnapshot(item);
-          future_events.add(evt);
-        }
+      if(snap.value != null && snap.value.length > 0) {
+        snap.value.forEach((key, val){
+          var item = val;
+          //print("item: ${item}");
+          if(item != null) {
+            MFEvent evt = new MFEvent.fromSnapshot(item);
+            future_events.add(evt);
+          }
+        });
       }
+
+      //print("FUTURE: ${future_events.length}");
+
       events = [];
       _filterEvents();
+      //print("AFTER FUTURE: ${future_events.length}");
       events.addAll(future_events);
       events.addAll(past_events);
       _sortEvents();
+      //print("EVENTS LENGTH AFTER: ${events.length}");
       Function.apply(p, [events]);
     });
   }
