@@ -52,18 +52,24 @@ class EventDao {
   static StreamSubscription eventsListener(Function p) {
     return reference.onValue.listen((event){
       var snap = event.snapshot;
-      //print("EVT SNAP: ${event.snapshot.value}");
+      print("EVT SNAP: ${event.snapshot.value.length}");
       future_events = <MFEvent>[];
       if(snap.value != null && snap.value.length > 0) {
         if(snap.value is List) {
-          snap.value.forEach((val){_addEventItem(val, future_events);});
+          snap.value.forEach((val){
+            //print("val: ${val}");
+            _addEventItem(val, future_events);
+          });
         }
         else {
-          snap.value.forEach((key, val){_addEventItem(val, future_events);});
+          snap.value.forEach((key, val){
+            //print("key: ${key} val: ${val}");
+            _addEventItem(val, future_events);
+          });
         }
       }
 
-      //print("FUTURE: ${future_events.length}");
+      print("FUTURE EVTS: ${future_events.length}");
 
       events = [];
       _filterEvents();
@@ -106,6 +112,7 @@ class EventDao {
           }
         });
       }
+      print("PAST EVTS: ${past_events.length}");
       events = [];
       events.addAll(past_events);
       _filterEvents();

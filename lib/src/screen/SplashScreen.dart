@@ -31,7 +31,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
         _navi = '/loginscreen';
       }
       else {
-        FileUtil.loadImages();
+        //FileUtil.loadImages();
         global.taggableFriends.then((val) {});
       }
       SchedulerBinding.instance.addPostFrameCallback((_) {

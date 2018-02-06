@@ -7,6 +7,7 @@ import 'package:myapp/src/dao/EventDao.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/FirebaseCrashReport.dart';
 
 final StorageReference ref = FirebaseStorage.instance.ref();
 final int ONE_MEGABYTE = 1024 * 1024;
@@ -28,9 +29,14 @@ class FileUtil {
         //print("File exists: ${await imgFile.exists()}");
         if(!(await imgFile.exists())) {
           StorageReference _imgRef = ref.child("event_images/$fileName");
-          var _imgResult = await _imgRef.getData(ONE_MEGABYTE);
-          //print("WRITING IMAGE FILE $fileName");
-          await imgFile.writeAsBytes(_imgResult);
+          try {
+            var _imgResult = await _imgRef.getData(ONE_MEGABYTE);
+            //print("WRITING IMAGE FILE $fileName");
+            await imgFile.writeAsBytes(_imgResult);
+          } catch(e) {
+            print("ERROR WRITING $fileName");
+            MainFrameCrashReport.send("[File Util] ERROR WRITING IMAGE: $fileName");
+          }
           //global.imgFiles.putIfAbsent(fileName, () => imgFile);
           /*String url = evt.thumbnail;
           http.get(Uri.parse(url)).then((res) {
