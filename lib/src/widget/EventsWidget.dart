@@ -20,6 +20,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   List<Widget> listTiles = <Widget>[];
   List _events = [];
   List _pastEvents = [];
+  Map<String, Widget> _thumbImages = {};
 
   void _menuPressed() {
     _scaffoldKey.currentState.openDrawer();
@@ -31,56 +32,48 @@ class _EventsWidgetState extends State<EventsWidget> {
   }
 
   void _buildListTiles() {
-    // get images and create listTiles
-    FileUtil.getImages().then((lst) {
-      setState(() {
-        listTiles = <Widget>[];
-        int ctr = 0;
-        for (var e in _events) {
-          //print("CTR === $ctr");
-          Widget imgThumb;
-          if (ctr < lst.length)
-            imgThumb = lst[ctr++];
-          /*FileUtil.getImage(e.thumbnail).then((imgItem){
-            imgThumb = imgItem;
-          });*/
+    listTiles = [];
+    _renderEvents();
+  }
 
-          listTiles.add(
-              new InkWell(
-                  onTap: () {
-                    _handleEventTap(e);
-                  },
-                  child: new EventsListTile(
-                    leadingColor: e.thumbnailBg != null ? new Color(
-                        int.parse(e.thumbnailBg)) : Theme
-                        .of(context)
-                        .primaryColor,
-                    leading: new SizedBox(
-                        height: 78.0,
-                        width: 140.0,
-                        //child: new Image.network(e.thumbnail),
-                        child: imgThumb != null ? imgThumb : new Container()
-                    ),
-                    title: new ListTileText(e.eventTitle),
-                    subtitle: new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Text(e.dateRange,
-                            style: new TextStyle(color: new Color(0xff00e5ff))),
-                        new Text(e.year.toString(),
-                            style: new TextStyle(color: new Color(0xff00e5ff)))
-                      ],
-                    ),
-                    trailing: e.hasAttended ? new Image.asset(
-                      "mainframe_assets/images/attended_before@2x.png",
-                      height: 60.0,
-                      width: 60.0,
-                    ) : new Container(),
-                  )
+  void _renderEvents() {
+    _events.forEach((e){
+      //print(e.thumbnail);
+      listTiles.add(
+          new InkWell(
+              onTap: () {
+                _handleEventTap(e);
+              },
+              child: new EventsListTile(
+                leadingColor: e.thumbnailBg != null ? new Color(
+                    int.parse(e.thumbnailBg)) : Theme
+                    .of(context)
+                    .primaryColor,
+                leading: new SizedBox(
+                    height: 78.0,
+                    width: 140.0,
+                    //child: new Image.network(e.thumbnail),
+                    child: (_thumbImages != null && _thumbImages.containsKey(e.thumbnail)) ? _thumbImages[e.thumbnail] : new Container()
+                ),
+                title: new ListTileText(e.eventTitle),
+                subtitle: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(e.dateRange,
+                        style: new TextStyle(color: new Color(0xff00e5ff))),
+                    new Text(e.year.toString(),
+                        style: new TextStyle(color: new Color(0xff00e5ff)))
+                  ],
+                ),
+                trailing: e.hasAttended ? new Image.asset(
+                  "mainframe_assets/images/attended_before@2x.png",
+                  height: 60.0,
+                  width: 60.0,
+                ) : new Container(),
               )
-          );
-        }
-      });
+          )
+      );
+
     });
   }
 
@@ -102,6 +95,14 @@ class _EventsWidgetState extends State<EventsWidget> {
         print("past events LENGTH: ${events.length}");
         _events = [];
         _events.addAll(events);
+        _buildListTiles();
+      });
+    });
+
+    FileUtil.downloadImagesCallback((fileName, img){
+      setState((){
+        Image _img = new Image.file(img);
+        _thumbImages.putIfAbsent(fileName, () => _img);
         _buildListTiles();
       });
     });
