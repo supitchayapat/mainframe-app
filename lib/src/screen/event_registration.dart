@@ -235,6 +235,7 @@ class _event_registrationState extends State<event_registration> {
                   child: new MaterialButton(
                       padding: const EdgeInsets.all(0.0),
                       onPressed: (){
+                        participant = null;
                         Navigator.of(context).pushNamed("/participants");
                       },
                       child: new Container(

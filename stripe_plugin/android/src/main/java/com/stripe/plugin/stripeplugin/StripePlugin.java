@@ -6,10 +6,14 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import com.google.common.collect.ImmutableMap;
+
 import android.util.Log;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import com.stripe.android.model.Card;
+import com.stripe.android.model.Customer;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.Token;
 import com.stripe.android.TokenCallback;
@@ -30,7 +34,7 @@ public class StripePlugin implements MethodCallHandler {
   }
 
   private StripePlugin(Activity activity) {
-    this.context = activity.getApplicationContext();;
+    this.context = activity.getApplicationContext();
   }
 
   @Override
@@ -42,7 +46,8 @@ public class StripePlugin implements MethodCallHandler {
       String cardExpYear = call.argument("cardExpYear");
       String cardCVC = call.argument("cardCVC");
       String stripeKey = call.argument("stripeKey");
-      Card card = new Card(
+      String stripeSecretKey = call.argument("stripeSecretKey");
+      final Card card = new Card(
               cardNumber,
               Integer.parseInt(cardExpMonth),
               Integer.parseInt(cardExpYear),
@@ -58,6 +63,23 @@ public class StripePlugin implements MethodCallHandler {
               new TokenCallback() {
                 public void onSuccess(Token token) {
                   // Send token to your server
+                  Log.i("stripe", "SUCCESS TOKEN");
+                  ImmutableMap.Builder<String, Object> cardMap = ImmutableMap.<String, Object>builder();
+                  cardMap.put("token", token.getId());
+                  //cardMap.put("fingerprint", card.getFingerprint());
+                  //cardMap.put("brand", card.getBrand());
+                  //cardMap.put("lastdigits", card.getLast4());
+                  //result.success(cardMap.build());
+                  /*Map<String, Object> customerParams = new HashMap<String, Object>();
+                  customerParams.put("email", "paying.user@example.com");
+                  customerParams.put("source", token.getId());
+                  Customer customer = Customer.create(customerParams);
+
+                  HashMap<String, Object> sourcesParams = new HashMap<String, Object>();
+                  sourcesParams.put("object", "card");
+                  customer.getSources().all(sourcesParams);*/
+                  Log.i("stripe CARD", token.getCard().toJson().toString());
+
                   result.success(token.getId());
                 }
                 public void onError(Exception error) {

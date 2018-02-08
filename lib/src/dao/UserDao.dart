@@ -105,20 +105,31 @@ Future<User> saveUserFriends(List<User> users) async {
   );
 }
 
-Future<User> saveUserDancePartner(User user) async {
+Future<User> saveUserExistingParticipants(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  User _existingUser = await getUserDancePartnerViaName(user);
+  User _existingUser = await getUserDanceParticipantViaName(user);
   if(_existingUser != null) {
     print("User ${user.first_name} ${user.last_name} exists");
     return _existingUser;
   }
 
-  return partnerRef.child(fuser.uid).child("dance_partners").push().set(user.toJson());
+  return partnerRef.child(fuser.uid).child("existing_participants").push().set(user.toJson());
 }
 
-Future<User> getUserDancePartnerViaName(User user) async {
+Future<User> saveUserSoloParticipants(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return partnerRef.child(fuser.uid).child("dance_partners").orderByChild("first_name").equalTo(user.first_name).once().then((data){
+  User _existingUser = await getUserSoloParticipantViaName(user);
+  if(_existingUser != null) {
+    print("User ${user.first_name} ${user.last_name} exists");
+    return _existingUser;
+  }
+
+  return partnerRef.child(fuser.uid).child("solo_participants").push().set(user.toJson());
+}
+
+Future<User> getUserSoloParticipantViaName(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("solo_participants").orderByChild("first_name").equalTo(user.first_name).once().then((data){
     User _retVal = null;
     if(data.value != null && data.value.length > 0) {
       data.value.forEach((dataKey, dataVal) {
@@ -132,9 +143,25 @@ Future<User> getUserDancePartnerViaName(User user) async {
   });
 }
 
-Future getUserExistingDancePartners() async {
+Future<User> getUserDanceParticipantViaName(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-  return partnerRef.child(fuser.uid).child("dance_partners").once().then((data){
+  return partnerRef.child(fuser.uid).child("existing_participants").orderByChild("first_name").equalTo(user.first_name).once().then((data){
+    User _retVal = null;
+    if(data.value != null && data.value.length > 0) {
+      data.value.forEach((dataKey, dataVal) {
+        User dataUser = new User.fromDataSnapshot(dataVal);
+        if(dataUser.last_name == user.last_name) {
+          _retVal = dataUser;
+        }
+      });
+    }
+    return _retVal;
+  });
+}
+
+Future getUserExistingParticipants() async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("existing_participants").once().then((data){
     List<User> _users = <User>[];
     if(data.value != null && data.value.length > 0) {
       data.value.forEach((dataKey, dataVal) {
@@ -192,7 +219,7 @@ Future<List<User>> getTaggableFriends() async {
 Future<StreamSubscription> soloParticipantsListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).child("solo_participants").onValue.listen((event){
-    if(event.snapshot != null && event.snapshot.value.length > 0) {
+    if(event.snapshot.value != null && event.snapshot.value.length > 0) {
       List<User> _users = <User>[];
       var _snapshot = event.snapshot;
       _snapshot.value.forEach((key, dataVal){
@@ -207,14 +234,77 @@ Future<StreamSubscription> soloParticipantsListener(Function p) async {
 Future<StreamSubscription> coupleParticipantsListener(Function p) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).child("couple_participants").onValue.listen((event){
-    if(event.snapshot != null && event.snapshot.value.length > 0) {
+    if(event.snapshot.value != null && event.snapshot.value.length > 0) {
       List<Couple> _couples = <Couple>[];
       var _snapshot = event.snapshot;
+      //print("SNAP TYPE: ${_snapshot.value.runtimeType}");
       _snapshot.value.forEach((key, dataVal){
         _couples.add(new Couple.fromSnapshot(dataVal));
       });
       _couples.sort((a, b) => (a.coupleName).compareTo(b.coupleName));
       Function.apply(p, [_couples]);
+    }
+  });
+}
+
+Future<User> getUserCoupleParticipants(User user) async {
+  print("GET COUPLES");
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("couple_participants").once().then((data){
+    print("data: $data");
+    //return _retVal;
+  });
+}
+
+Future<Couple> saveUserCoupleParticipants(User user, User user2) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("couple_participants").once().then((_snapshot){
+    if(_snapshot.value != null && _snapshot.value.length > 0) {
+      Couple couple = null;
+      _snapshot.value.forEach((key, dataVal){
+        Couple coupleSnap = new Couple.fromSnapshot(dataVal);
+        //print(couple.coupleName);
+        //print((coupleSnap.couple.contains(user) && coupleSnap.couple.contains(user2)));
+        if((coupleSnap.couple.contains(user) && coupleSnap.couple.contains(user2))) {
+          //print("COUPLE EXISTS");
+          couple = coupleSnap;
+        }
+      });
+      if(couple == null) {
+        couple = new Couple(
+            coupleName: "${user.first_name} and ${user2.first_name}",
+            couple: [user, user2]);
+        return partnerRef.child(fuser.uid).child("couple_participants")
+            .push()
+            .set(couple.toJson());
+      }
+    } else {
+      Couple couple = new Couple(coupleName: "${user.first_name} and ${user2.first_name}", couple: [user, user2]);
+      return partnerRef.child(fuser.uid).child("couple_participants").push().set(couple.toJson());
+    }
+  });
+}
+
+Future<Couple> removeUserCoupleParticipants(User user, User user2) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("couple_participants").once().then((_snapshot){
+    if(_snapshot.value != null && _snapshot.value.length > 0) {
+      Couple couple = null;
+      var keyId;
+      _snapshot.value.forEach((key, dataVal){
+        Couple coupleSnap = new Couple.fromSnapshot(dataVal);
+        //print(couple.coupleName);
+        //print((coupleSnap.couple.contains(user) && coupleSnap.couple.contains(user2)));
+        if((coupleSnap.couple.contains(user) && coupleSnap.couple.contains(user2))) {
+          //print("COUPLE EXISTS");
+          couple = coupleSnap;
+          keyId = key;
+        }
+      });
+      if(couple != null) {
+        return partnerRef.child(fuser.uid).child("couple_participants")
+            .child(keyId).set(null);
+      }
     }
   });
 }

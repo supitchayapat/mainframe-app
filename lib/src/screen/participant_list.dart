@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 
+var participantType;
+
 class participant_list extends StatefulWidget {
   @override
   _participant_listState createState() => new _participant_listState();
@@ -12,6 +14,8 @@ class _participant_listState extends State<participant_list> {
   List _solo = [];
   List _couples = [];
   Map<String, String> _users = {};
+  var soloListener;
+  var coupleListener;
 
   @override
   void initState() {
@@ -30,7 +34,7 @@ class _participant_listState extends State<participant_list> {
           _users.putIfAbsent("${val.coupleName}", () => "couple");
         });
       });
-    });
+    }).then((listener) {soloListener=listener;});
 
     coupleParticipantsListener((couples){
       //print("NUMBER OF USERS: ${couples.length}");
@@ -45,7 +49,14 @@ class _participant_listState extends State<participant_list> {
           _users.putIfAbsent("${val.coupleName}", () => "couple");
         });
       });
-    });
+    }).then((listener){coupleListener=listener;});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    soloListener.cancel();
+    coupleListener.cancel();
   }
 
   @override
@@ -102,7 +113,10 @@ class _participant_listState extends State<participant_list> {
         });
     //);
     _participants.add(new InkWell(
-      onTap: () {},
+      onTap: () {
+        participantType = "solo";
+        Navigator.of(context).pushNamed("/addPartner");
+      },
       child: new Container(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
         decoration: new BoxDecoration(
@@ -122,7 +136,10 @@ class _participant_listState extends State<participant_list> {
       ),
     ));
     _participants.add(new InkWell(
-      onTap: () {},
+      onTap: () {
+        participantType = "couple";
+        Navigator.of(context).pushNamed("/coupleManagement");
+      },
       child: new Container(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
         decoration: new BoxDecoration(

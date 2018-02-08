@@ -172,6 +172,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/eventInfo': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
     '/registration': (BuildContext context) => new event_registration(),
+    '/coupleManagement': (BuildContext context) => new couple_management(),
     '/participants': (BuildContext context) => new participant_list(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
     '/checkoutEntry': (BuildContext context) => new checkout_entry(),

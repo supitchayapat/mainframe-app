@@ -73,7 +73,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     } else {
       // setup for dance partner
       setState((){
-        headingTitle = "ADD A DANCE PARTNER";
+        headingTitle = "ADD A PARTICIPANT";
         _user = global.dancePartner;
       });
     }

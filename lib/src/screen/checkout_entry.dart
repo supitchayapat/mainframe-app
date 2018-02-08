@@ -3,6 +3,8 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/src/util/CreditCardFormatter.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/dao/PaymentDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 
@@ -14,8 +16,32 @@ class checkout_entry extends StatefulWidget {
 }
 
 class _checkout_entryState extends State<checkout_entry> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController _cardCtrl = new TextEditingController();
+  TextEditingController _expDateCtrl = new TextEditingController();
+  TextEditingController _cvvCtrl = new TextEditingController();
+  TextEditingController _holderNameCtrl = new TextEditingController();
   bool saveToken = true;
   bool setDefault = true;
+
+  void _handlePayment() {
+    if(_cardCtrl.text.isEmpty || _expDateCtrl.text.isEmpty
+      || _cvvCtrl.text.isEmpty || _holderNameCtrl.text.isEmpty) {
+      showInSnackBar(_scaffoldKey, "Please Input Card Number, Exp. date, CVV and Holder's Name");
+    } else {
+      PaymentDao.createToken(
+          _cardCtrl.text,
+          _expDateCtrl.text,
+          _cvvCtrl.text,
+          _holderNameCtrl.text,
+          setDefault,
+          saveToken, (tokenId) {
+            print("The token: $tokenId");
+          }
+      );
+      //MainFrameLoadingIndicator.showLoading(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +52,7 @@ class _checkout_entryState extends State<checkout_entry> {
     });
 
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new MFAppBar("PAYMENT", context),
       body: new ListView(
         children: <Widget>[
@@ -54,14 +81,7 @@ class _checkout_entryState extends State<checkout_entry> {
           ),
           new Container(
             alignment: Alignment.centerLeft,
-            //padding: const EdgeInsets.only(bottom: 10.0),
             margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-            //color: Colors.amber,
-            /*decoration: new BoxDecoration(
-              color: Colors.white
-            ),*/
-            /*child: new Padding(
-                padding: const EdgeInsets.only(left: 10.0),*/
             child: new TextField(
               decoration: new InputDecoration(
                 labelText: "Card Number",
@@ -76,8 +96,8 @@ class _checkout_entryState extends State<checkout_entry> {
               ],
               style: new TextStyle(fontSize: 22.0, fontFamily: "Montserrat-Regular"),
               keyboardType: TextInputType.number,
+              controller: _cardCtrl,
             ),
-            //)
           ),
           new Container(
               margin: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -95,6 +115,7 @@ class _checkout_entryState extends State<checkout_entry> {
                         new LengthLimitingTextInputFormatter(6),
                       ],
                       keyboardType: TextInputType.number,
+                      controller: _expDateCtrl,
                     ),
                   ),
                   new Padding(padding: const EdgeInsets.only(left: 10.0)),
@@ -108,6 +129,7 @@ class _checkout_entryState extends State<checkout_entry> {
                       ],
                       style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
                       keyboardType: TextInputType.number,
+                      controller: _cvvCtrl,
                     ),
                   )
                 ],
@@ -122,6 +144,7 @@ class _checkout_entryState extends State<checkout_entry> {
               ),
               style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
               keyboardType: TextInputType.text,
+              controller: _holderNameCtrl,
             ),
           ),
           new Container(
@@ -157,7 +180,7 @@ class _checkout_entryState extends State<checkout_entry> {
                     margin: const EdgeInsets.only(bottom: 15.0),
                     child: new InkWell(
                       onTap: (){
-                        MainFrameLoadingIndicator.showLoading(context);
+                        _handlePayment();
                       },
                       child: new Container(
                         decoration: new BoxDecoration(

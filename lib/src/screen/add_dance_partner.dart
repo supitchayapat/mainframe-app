@@ -8,6 +8,9 @@ import 'package:validator/validator.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/util/HttpUtil.dart';
+import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/screen/participant_list.dart' as participant;
+import 'package:myapp/src/screen/couple_management.dart' as couple;
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -52,7 +55,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       });
     });
 
-    getUserExistingDancePartners().then((usersData){
+    getUserExistingParticipants().then((usersData){
       setState((){
         existingUsers.addAll(usersData);
       });
@@ -97,7 +100,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
             if(_ans == "OK") {
               // save dance partner
               global.dancePartner = usr;
-              saveUserDancePartner(usr);
+              saveUserExistingParticipants(usr);
             }
             else {
               _inviteWithEmail();
@@ -123,16 +126,44 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   void _handleTapFBFriend(usr) {
     var _ans = showMainFrameDialogWithCancel(
         context, "Invite Friend",
-        "Do you want to add ${usr.first_name} ${usr.last_name} as a Dance Partner?")
+        "Do you want to send facebook message to ${usr.first_name} ${usr.last_name} as a Participant?")
         .then((_ans){
           if(_ans == "OK") {
             showFacebookAppShareDialog();
           }
+
+          global.setDancePartner = "${usr.first_name}|${usr.last_name}";
+          Navigator.of(context).pushNamed("/profilesetup-1");
     });
   }
 
   void _handleTapExisting(usr) {
     // TODO: will implement saving of entry form
+    if(participant.participantType == "solo") {
+      MainFrameLoadingIndicator.showLoading(context);
+      // save participant
+      saveUserSoloParticipants(usr).then((_val){
+        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.of(context).popUntil(ModalRoute.withName("/participants"));
+      });
+    }
+    else if(participant.participantType == "couple") {
+      // navigate couple management screen
+      if(couple.couple1 is String && couple.couple1 == "_assignCoupleParticipant") {
+        setState((){
+          couple.couple1 = usr;
+        });
+      }
+
+      if(couple.couple2 is String && couple.couple2 == "_assignCoupleParticipant") {
+        setState((){
+          couple.couple2 = usr;
+        });
+      }
+      Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
+    } else {
+      Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
+    }
   }
 
   _loadMoreFBContacts() {
@@ -507,7 +538,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                       demoWidget: _buildPhoneContacts(),
                   ),
                   new MFComponentDemoTabData(
-                      tabName: 'EXISTING',
+                      tabName: 'RECENT',
                       description: '',
                       demoWidget: _buildExistingContacts(),
                   ),

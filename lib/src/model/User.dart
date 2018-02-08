@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:quiver/core.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,10 +16,18 @@ class Couple {
     if(s["couple"].length > 0) {
       couple = [];
       var _couple = s["couple"];
-      _couple.forEach((key, val){
+      //print("COUPLE TYPE: ${_couple.runtimeType}");
+      _couple.forEach((val){
         couple.add(new User.fromDataSnapshot(val));
       });
     }
+  }
+
+  toJson() {
+    return {
+      "coupleName": coupleName,
+      "couple": couple.map((val) => val.toJson()).toList(),
+    };
   }
 }
 
@@ -27,6 +36,7 @@ class User {
   final formatter = new DateFormat("MM/dd/yyyy");
 
   String fbUserId;
+  String stripeId;
   String first_name;
   String last_name;
   String email;
@@ -40,6 +50,7 @@ class User {
       this.birthday, this.gender, this.category, this.displayPhotoUrl, this.hasProfileSetup : false});
 
   User.fromSnapshot(DataSnapshot s) : fbUserId = s.value["facebook_userId"],
+                        stripeId = s.value["stripe_custId"],
                         first_name = s.value["first_name"],
                         last_name = s.value["last_name"],
                         email = s.value["email"],
@@ -50,6 +61,7 @@ class User {
                         hasProfileSetup = s.value["hasProfileSetup"];
 
   User.fromDataSnapshot(s) : fbUserId = s["facebook_userId"],
+        stripeId = s["stripe_custId"],
         first_name = s["first_name"],
         last_name = s["last_name"],
         email = s["email"],
@@ -73,4 +85,7 @@ class User {
       "hasProfileSetup": hasProfileSetup
     };
   }
+
+  bool operator ==(o) => o is User && o.first_name == first_name && o.last_name == last_name;
+  int get hashCode => hash2(first_name.hashCode, last_name.hashCode);
 }

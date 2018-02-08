@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/dao/UserDao.dart';
+
+var couple1;
+var couple2;
 
 class couple_management extends StatefulWidget {
   @override
@@ -10,6 +14,33 @@ class couple_management extends StatefulWidget {
 class _couple_managementState extends State<couple_management> {
   String _dropValue = "COUPLE";
   List<String> _listItems = [];
+  Map<String, List> _couples = {};
+  var coupleListener;
+
+  @override
+  void initState() {
+    super.initState();
+
+    coupleParticipantsListener((couples){
+      //print("NUMBER OF USERS: ${couples.length}");
+      setState((){
+        _couples = {};
+        _listItems = [];
+        //_couples.addAll(couples);
+        couples.forEach((val){
+          //_users.putIfAbsent("${val.coupleName}", () => "couple");
+          _listItems.add("${val.coupleName}");
+          _couples.putIfAbsent(val.coupleName, () => val.couple);
+        });
+      });
+    }).then((listener) {coupleListener = listener;});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    coupleListener.cancel();
+  }
 
   void _handleAddCouple() {
     setState(() {
@@ -23,10 +54,22 @@ class _couple_managementState extends State<couple_management> {
     _entryChild = new Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        new Expanded(child: new Text(val, style: new TextStyle(fontSize: 16.0, color: Colors.black))),
+        new Expanded(
+            child: new Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: new Text(val, style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+            )
+        ),
         new Container(
-          width: 25.0,
-          child: new Icon(Icons.keyboard_arrow_right, color: Colors.black),
+          //color: Colors.amber,
+          width: 35.0,
+          child: new IconButton(
+              icon: new Icon(Icons.cancel, color: Colors.black),
+              onPressed: (){
+                List usrs = _couples[val];
+                removeUserCoupleParticipants(usrs[0], usrs[1]);
+              }
+          ),
         )
       ],
     );
@@ -61,13 +104,13 @@ class _couple_managementState extends State<couple_management> {
             new Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(top: 10.0),
-              child: new Text("Assign Couple", style: new TextStyle(fontSize: 16.0)),
+              child: new Text("Assign Couple", style: new TextStyle(fontSize: 18.0)),
             ),
             new Container(
               padding: const EdgeInsets.only(top: 10.0),
               child: new Row(
                 children: <Widget>[
-                  new Text("Name:", style: new TextStyle(fontSize: 16.0)),
+                  new Text("Name:", style: new TextStyle(fontSize: 17.0)),
                   new Container(
                     margin: const EdgeInsets.only(left: 10.0),
                     decoration: new BoxDecoration(
@@ -79,15 +122,16 @@ class _couple_managementState extends State<couple_management> {
                         )
                     ),
                     child: new MaterialButton(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(7.0),
                       minWidth: 5.0, height: 5.0,
                       color: Colors.white,
                       onPressed: () {
+                        couple1 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text("ASSIGN",
+                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name}",
                         style: new TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 17.0,
                             color: Colors.black
                         ),
                       ),
@@ -100,7 +144,7 @@ class _couple_managementState extends State<couple_management> {
               padding: const EdgeInsets.only(top: 10.0),
               child: new Row(
                 children: <Widget>[
-                  new Text("Name:", style: new TextStyle(fontSize: 16.0)),
+                  new Text("Name:", style: new TextStyle(fontSize: 17.0)),
                   new Container(
                     margin: const EdgeInsets.only(left: 10.0),
                     decoration: new BoxDecoration(
@@ -112,15 +156,16 @@ class _couple_managementState extends State<couple_management> {
                         )
                     ),
                     child: new MaterialButton(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(7.0),
                       minWidth: 5.0, height: 5.0,
                       color: Colors.white,
                       onPressed: () {
+                        couple2 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text("ASSIGN",
+                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name}",
                         style: new TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 17.0,
                             color: Colors.black
                         ),
                       ),
@@ -134,7 +179,14 @@ class _couple_managementState extends State<couple_management> {
               padding: const EdgeInsets.only(left: 0.0, right: 0.0, top: 10.0, bottom: 0.0),
               child: new MainFrameButton(
                 child: new Text("ADD COUPLE"),
-                onPressed: (){ },
+                onPressed: (){
+                  if(couple1 != null && couple2 != null) {
+                    saveUserCoupleParticipants(couple1, couple2);
+                  }
+                  else {
+                    print("FAIL ADD");
+                  }
+                },
               ),
             ),
           ],

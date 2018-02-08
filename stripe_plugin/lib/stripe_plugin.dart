@@ -11,12 +11,16 @@ class StripePlugin {
 
   static Future<String> createToken(String cardNumber, String cardExpMonth,
       String cardExpYear, String cardCVC, String stripeKey) {
-    return _channel.invokeMethod("createToken", <String, String> {
+    var card = _channel.invokeMethod("createToken", <String, String> {
       "cardNumber": cardNumber,
       "cardExpMonth": cardExpMonth,
       "cardExpYear": cardExpYear,
       "cardCVC": cardCVC,
       "stripeKey": stripeKey,
     });
+
+    print("CARD: $card");
+
+    return card;
   }
 }

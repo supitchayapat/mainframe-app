@@ -34,7 +34,11 @@ set setDancePartner(String name) {
   } else {
     String fname = "";
     String lname = "";
-    if (name.contains(" ")) {
+    if (name.contains("|")) {
+      fname = (name.split("|"))[0];
+      lname = (name.split("|"))[1];
+    }
+    else if (name.contains(" ")) {
       fname = (name.split(" "))[0];
       lname = (name.split(" "))[1];
     } else {

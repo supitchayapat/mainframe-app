@@ -5,7 +5,10 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/screen/participant_list.dart' as participant;
+import 'package:myapp/src/screen/couple_management.dart' as couple;
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -38,7 +41,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     } else {
       setState((){
         _user = global.dancePartner;
-        headingTitle = "ADD A DANCE PARTNER";
+        headingTitle = "ADD A PARTICIPANT";
       });
     }
   }
@@ -50,9 +53,38 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
       saveUser(_user);
       Navigator.of(context).pushNamedAndRemoveUntil("/mainscreen", (_) => false);
     } else {
+      // show loading indicator
+      MainFrameLoadingIndicator.showLoading(context);
       global.dancePartner = _user;
-      saveUserDancePartner(_user);
-      Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
+      saveUserExistingParticipants(_user).then((_usr){
+        print("PARTICIPANT SAVED");
+        //check wether add as couple or solo participant
+        if(participant.participantType == "solo") {
+          // save participant
+          saveUserSoloParticipants(_user).then((_val){
+            MainFrameLoadingIndicator.hideLoading(context);
+            Navigator.of(context).popUntil(ModalRoute.withName("/participants"));
+          });
+        }
+        else if(participant.participantType == "couple") {
+          // navigate couple management screen
+          MainFrameLoadingIndicator.hideLoading(context);
+          if(couple.couple1 is String && couple.couple1 == "_assignCoupleParticipant") {
+            setState((){
+              couple.couple1 = _user;
+            });
+          }
+
+          if(couple.couple2 is String && couple.couple2 == "_assignCoupleParticipant") {
+            setState((){
+              couple.couple2 = _user;
+            });
+          }
+          Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
+        } else {
+          Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
+        }
+      });
     }
     //Navigator.pushReplacementNamed(context, "/mainscreen");
   }
