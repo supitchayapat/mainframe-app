@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:validator/validator.dart';
+import 'package:myapp/src/model/MFEvent.dart';
 
 String FBToken = "";
 FirebaseUser currentUser;
 List<User> _taggableFriends = <User>[];
 User dancePartner = null;
+List<MFEvent> events = <MFEvent>[];
 
 Future<List<User>> get taggableFriends async {
   if(_taggableFriends.length <= 0) {

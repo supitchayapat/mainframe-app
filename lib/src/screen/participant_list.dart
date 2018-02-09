@@ -13,7 +13,7 @@ class _participant_listState extends State<participant_list> {
   TextEditingController _searchCtrl = new TextEditingController();
   List _solo = [];
   List _couples = [];
-  Map<String, String> _users = {};
+  Map<String, dynamic> _users = {};
   var soloListener;
   var coupleListener;
 
@@ -28,10 +28,10 @@ class _participant_listState extends State<participant_list> {
         _solo = [];
         _solo.addAll(users);
         users.forEach((val){
-          _users.putIfAbsent("${val.first_name} ${val.last_name}", () => "solo");
+          _users.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
         });
         _couples.forEach((val){
-          _users.putIfAbsent("${val.coupleName}", () => "couple");
+          _users.putIfAbsent("${val.coupleName}", () => val);
         });
       });
     }).then((listener) {soloListener=listener;});
@@ -43,10 +43,10 @@ class _participant_listState extends State<participant_list> {
         _couples = [];
         _couples.addAll(couples);
         _solo.forEach((val){
-          _users.putIfAbsent("${val.first_name} ${val.last_name}", () => "solo");
+          _users.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
         });
         couples.forEach((val){
-          _users.putIfAbsent("${val.coupleName}", () => "couple");
+          _users.putIfAbsent("${val.coupleName}", () => val);
         });
       });
     }).then((listener){coupleListener=listener;});
@@ -87,7 +87,7 @@ class _participant_listState extends State<participant_list> {
               setState((){
                 registration.participant = {
                   "name": key,
-                  "type": val
+                  "user": val
                 };
               });
               Navigator.of(context).maybePop();

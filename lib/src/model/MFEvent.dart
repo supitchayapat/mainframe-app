@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'EventDanceCategory.dart';
 import 'EventLevel.dart';
+import 'FormEntry.dart';
 
 class Venue {
   String venueName;
@@ -54,7 +55,7 @@ class MFEvent {
   List<String> organizers;
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
-
+  List<FormEntry> formEntries;
 
   MFEvent({this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
 
@@ -122,6 +123,18 @@ class MFEvent {
     if(s["levels"] != null) {
       levels = (s["levels"] as List).map((val) => new EventLevel.fromSnapshot(val)).toList();
     }
+
+    // form
+    if(s["forms"] != null) {
+      var _forms = s["forms"]["form"];
+      formEntries = [];
+      _forms.forEach((val){
+        FormEntry entry = new FormEntry.fromSnapshot(val);
+        formEntries.add(entry);
+        formEntries.sort((a, b) => (a.order).compareTo(b.order));
+        //print(entry.toJson());
+      });
+    }
   }
 
   toJson() {
@@ -131,7 +144,7 @@ class MFEvent {
       "thumbnailBg": thumbnailBg,
       "dateRange": dateRange,
       "hasAttended": hasAttended.toString(),
-      "year": year.toString()
+      "year": year.toString(),
     };
   }
 }

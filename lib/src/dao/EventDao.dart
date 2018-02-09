@@ -3,11 +3,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/src/model/MFEvent.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 final reference = FirebaseDatabase.instance.reference().child("events");
 
 class EventDao {
-  static List<MFEvent> events = <MFEvent>[];
   static List<MFEvent> future_events = <MFEvent>[];
   static List<MFEvent> past_events = <MFEvent>[];
 
@@ -19,24 +19,24 @@ class EventDao {
     }*/
     //reference.keepSynced(true);
 
-    if(events.length > 0) {
-      return events;
+    if(global.events.length > 0) {
+      return global.events;
     }
 
     return reference.once().then((snap) {
       print("snapval: ${snap.value.runtimeType}");
       if(snap.value != null && snap.value.length > 0) {
-        events = [];
+        global.events = [];
         if(snap.value is List) {
-          snap.value.forEach((val){_addEventItem(val, events);});
+          snap.value.forEach((val){_addEventItem(val, global.events);});
         }
         else {
-          snap.value.forEach((key, val){_addEventItem(val, events);});
+          snap.value.forEach((key, val){_addEventItem(val, global.events);});
         }
       }
       _filterEvents();
       _sortEvents();
-      return events;
+      return global.events;
     });
   }
 
@@ -71,14 +71,14 @@ class EventDao {
 
       print("FUTURE EVTS: ${future_events.length}");
 
-      events = [];
+      global.events = [];
       _filterEvents();
       //print("AFTER FUTURE: ${future_events.length}");
-      events.addAll(future_events);
-      events.addAll(past_events);
+      global.events.addAll(future_events);
+      global.events.addAll(past_events);
       _sortEvents();
       //print("EVENTS LENGTH AFTER: ${events.length}");
-      Function.apply(p, [events]);
+      Function.apply(p, [global.events]);
     });
   }
 
@@ -95,7 +95,7 @@ class EventDao {
 
   static void _sortEvents() {
     // sort events by start date DESC
-    events.sort((a, b) => (b.startDate).compareTo(a.startDate));
+    global.events.sort((a, b) => (b.startDate).compareTo(a.startDate));
   }
 
   static Future<StreamSubscription> pastUserEventListener(Function p) {
@@ -113,12 +113,12 @@ class EventDao {
         });
       }
       print("PAST EVTS: ${past_events.length}");
-      events = [];
-      events.addAll(past_events);
+      global.events = [];
+      global.events.addAll(past_events);
       _filterEvents();
-      events.addAll(future_events);
+      global.events.addAll(future_events);
       _sortEvents();
-      Function.apply(p, [events]);
+      Function.apply(p, [global.events]);
     });
   }
 }

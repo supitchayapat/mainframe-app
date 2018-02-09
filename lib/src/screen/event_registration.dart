@@ -3,17 +3,21 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:quiver/core.dart';
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
+import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/util/EntryFormUtil.dart';
+import 'package:myapp/src/enumeration/FormParticipantType.dart';
 
 var eventItem;
 var participant;
 
 class EventParticipant {
   String name;
-  String type; // solo, couple, group
+  var type; // solo, couple, group
+  var user;
   List formEntries;
   bool toggle;
 
-  EventParticipant({this.name, this.type, this.toggle : false});
+  EventParticipant({this.name, this.type, this.user, this.toggle : false});
 
   void addFormEntry(entry) {
     formEntries.add(entry);
@@ -31,21 +35,40 @@ class event_registration extends StatefulWidget {
 class _event_registrationState extends State<event_registration> {
   Map<EventParticipant, Map<String, int>> _participantEntries = {};
   Set<EventParticipant> _participants = new Set();
-  Map<String, String> _entryForms = {
+  /*Map<String, String> _entryForms = {
     'Showdance Solo': 'couple',
     'Future Celebrities Competition Kids': 'couple',
     'Group Dance Competition': 'group',
     'Adult Showcase Single Dance': 'couple',
     'Amateur Competition': 'couple',
     'Adult Multi-Dance Competition': 'couple',
-  };
-  //List<String> _entryForms = ['Show Dance Solo', 'Future Celebrities Competition Kids', 'Group Dance Competition', 'Adult Showcase Single Dance'];
+  };*/
+  List _entryForms = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if(eventItem.formEntries != null) {
+      //eventItem.formEntries.forEach((val) => print(val.toJson()));
+      _entryForms = eventItem.formEntries;
+      print("entry forms: ${_entryForms.length}");
+    }
+  }
 
   void _handleAddEventParticipant() {
     if(participant != null) {
       setState(() {
+        var _usr = participant["user"];
+        var _type;
+        if(_usr is Couple) {
+          _type = FormParticipantType.COUPLE;
+        }
+        else {
+          _type = FormParticipantType.SOLO;
+        }
         _participants.add(new EventParticipant(
-            name: participant["name"], type: participant["type"]));
+            name: participant["name"], user: participant["user"], type: _type));
       });
     }
   }
@@ -72,8 +95,9 @@ class _event_registrationState extends State<event_registration> {
     }
     else {
       List<Widget> _formButtons = [];
-      _entryForms.forEach((key, val){
-        if(_evtParticipant.type == val) {
+      _entryForms.forEach((val){
+        //print("${val.formName} --- ${_evtParticipant.type}");
+        if(EntryFormUtil.isFormApplicable(val, _evtParticipant.user, _evtParticipant.type)) {
           _formButtons.add(new Row(
             crossAxisAlignment: _evtParticipant.toggle ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: <Widget>[
@@ -96,14 +120,14 @@ class _event_registrationState extends State<event_registration> {
                         minWidth: 5.0, height: 40.0,
                         color: Colors.white,
                         onPressed: () {
-                          int numItem = _entryItems.containsKey(key) ? _entryItems[key] : 0;
+                          int numItem = _entryItems.containsKey(val.formName) ? _entryItems[val.formName] : 0;
                           //print("NUM: $numItem");
                           setState((){
-                            if(_entryItems.containsKey(key)) {
-                              _entryItems.remove(key);
+                            if(_entryItems.containsKey(val.formName)) {
+                              _entryItems.remove(val.formName);
                             }
                             else {
-                              _entryItems.putIfAbsent(key, () => (numItem + 1));
+                              _entryItems.putIfAbsent(val.formName, () => (numItem + 1));
                             }
                             _participantEntries.putIfAbsent(_evtParticipant, () => _entryItems);
                           });
@@ -114,14 +138,14 @@ class _event_registrationState extends State<event_registration> {
                           child: new Row(
                             children: <Widget>[
                               new Expanded(
-                                  child: new Text("${key}",
+                                  child: new Text("${val.formName}",
                                     style: new TextStyle(
                                       fontSize: 15.0,
                                       color: Colors.black,
                                     ),
                                   )
                               ),
-                              _entryItems.containsKey(key) ? new CircleAvatar(
+                              _entryItems.containsKey(val.formName) ? new CircleAvatar(
                                 radius: 14.0,
                                 backgroundColor: const Color(0xFF778198),
                                 child: new Text("1",
