@@ -17,12 +17,7 @@ class EntryFormUtil {
       _participants.add(getParticipantCodeFromString(val.code));
     });
     //print(_participants.contains(_getParticipantCodeOnUser(participant, type)));
-    if(userCode != FormParticipantCode.AM_AM) {
-      retVal = _participants.contains(userCode);
-    }
-    else {
-      retVal = (_participants.contains(FormParticipantCode.AM_AM) || _participants.contains(FormParticipantCode.AMATEUR));
-    }
+    retVal = _participants.contains(userCode);
     //print("returned value: $retVal");
     return retVal;
   }
@@ -37,25 +32,50 @@ class EntryFormUtil {
 
     switch(participantType) {
       case FormParticipantType.SOLO: // FOR SOLO PARTICIPANTS
-        if(participant.gender == Gender.MAN) {
+        if(participant.gender == Gender.MAN && participant.category == DanceCategory.AMATEUR) {
           retVal = FormParticipantCode.SOLO_GUY;
         }
-        else {
+        else if(participant.gender == Gender.WOMAN && participant.category == DanceCategory.AMATEUR) {
           retVal = FormParticipantCode.SOLO_GIRL;
+        }
+        else if(participant.gender == Gender.MAN && participant.category == DanceCategory.PROFESSIONAL) {
+          retVal = FormParticipantCode.POLO_GUY;
+        }
+        else if(participant.gender == Gender.WOMAN && participant.category == DanceCategory.PROFESSIONAL) {
+          retVal = FormParticipantCode.POLO_GIRL;
         }
         break;
       case FormParticipantType.COUPLE: // FOR COUPLE PARTICIPANTS
         Couple couple = participant as Couple;
+        User c1 = couple.couple[0];
+        User c2 = couple.couple[1];
         String user1 = _getUserParticipantCode(couple.couple[0]);
         String user2 = _getUserParticipantCode(couple.couple[1]);
 
         if(user1.contains("AMATEUR") && user2.contains("AMATEUR")) {
-          retVal = FormParticipantCode.AM_AM;
+          if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
+            retVal = FormParticipantCode.AM_GIRL;
+          }
+          else if(c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
+            retVal = FormParticipantCode.AM_GUY;
+          } else {
+            retVal = FormParticipantCode.AM;
+          }
+        }
+        else if(user1.contains("PROFESSIONAL") && user2.contains("PROFESSIONAL")) {
+          if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
+            retVal = FormParticipantCode.PRO_GIRL;
+          }
+          else if(c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
+            retVal = FormParticipantCode.PRO_GUY;
+          } else {
+            retVal = FormParticipantCode.PRO;
+          }
         }
         else if(user1.contains("AMATEUR")) {
           retVal = getParticipantCodeFromString("PRO"+user1.replaceAll("ATEUR", ""));
         }
-        else {
+        else if(user2.contains("AMATEUR")){
           retVal = getParticipantCodeFromString("PRO"+user2.replaceAll("ATEUR", ""));
         }
         break;

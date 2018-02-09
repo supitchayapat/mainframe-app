@@ -6,6 +6,7 @@ import 'package:myapp/src/screen/entry_summary.dart' as summary;
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
 
 var eventItem;
 var participant;
@@ -33,6 +34,7 @@ class event_registration extends StatefulWidget {
 }
 
 class _event_registrationState extends State<event_registration> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Map<EventParticipant, Map<String, int>> _participantEntries = {};
   Set<EventParticipant> _participants = new Set();
   /*Map<String, String> _entryForms = {
@@ -67,8 +69,21 @@ class _event_registrationState extends State<event_registration> {
         else {
           _type = FormParticipantType.SOLO;
         }
-        _participants.add(new EventParticipant(
-            name: participant["name"], user: participant["user"], type: _type));
+        EventParticipant _p = new EventParticipant(
+            name: participant["name"], user: participant["user"], type: _type);
+        int _entryFormCount = 0;
+        _entryForms.forEach((_form){
+          if(EntryFormUtil.isFormApplicable(_form, _p.user, _p.type)) {
+            _entryFormCount += 1;
+          }
+        });
+
+        if(_entryFormCount > 0) {
+          _participants.add(_p);
+        }
+        else {
+          showMainFrameDialog(context, "Entry not allowed", "Selected Participant has no available entries for the event.");
+        }
       });
     }
   }
@@ -228,6 +243,7 @@ class _event_registrationState extends State<event_registration> {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
 
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new MFAppBar("REGISTRATION", context),
       body: new ListView(
         children: <Widget>[
@@ -324,8 +340,10 @@ class _event_registrationState extends State<event_registration> {
       ),
       floatingActionButton: new InkWell(
         onTap: (){
-          summary.participantEntries = _participantEntries;
-          Navigator.of(context).pushNamed("/registrationSummary");
+          if(_participantEntries.length > 0) {
+            summary.participantEntries = _participantEntries;
+            Navigator.of(context).pushNamed("/registrationSummary");
+          }
         },
         child: new Container(
           //color: Colors.amber,
