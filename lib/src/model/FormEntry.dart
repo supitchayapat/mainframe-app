@@ -77,6 +77,17 @@ class FormEntry {
     prices = _setListObject(s, "price");
   }
 
+  FormPrice getPriceFromList(int priceId) {
+    for(var _p in prices){
+      //print("$priceId ${_p.toJson()}");
+      if(_p.id == priceId) {
+        //print("EQUALS!");
+        return _p;
+      }
+    }
+    return null;
+  }
+
   dynamic _setListObject(s, objName) {
     if(s["${objName}s"] != null) {
       var _objects = s["${objName}s"][objName];

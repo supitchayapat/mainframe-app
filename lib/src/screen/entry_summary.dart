@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
+import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/screen/checkout_entry.dart' as checkout;
+import 'package:myapp/src/screen/event_registration.dart' as reg;
 
 var participantEntries;
 
@@ -11,28 +13,51 @@ class entry_summary extends StatefulWidget {
 
 class _entry_summaryState extends State<entry_summary> {
   double _total = 0.0;
-  Map<String, double> _entryForms = {
+  /*Map<String, Map<String, double>> _entryForms = {
     'Showdance Solo': 100.0,
     'Future Celebrities Competition Kids': 20.0,
     'Group Dance Competition': 90.0,
     'Adult Showcase Single Dance': 25.0,
     'Amateur Competition': 25.0,
     'Adult Multi-Dance Competition': 100.0,
-  };
+  };*/
+  Map<String, Map<String, double>> _entryForms = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    _entryForms = {};
+    if(reg.eventItem.formEntries != null) {
+      var _formEntries = reg.eventItem.formEntries;
+      _formEntries.forEach((_entry){
+        Map<String, double> _priceMap = {};
+        _entry.participants.forEach((_p){
+          //print("${_entry.formName} ${_p.code} getPrice: ${_entry.getPriceFromList(_p.price).toJson()}");
+          _priceMap.putIfAbsent(_p.code, () => _entry.getPriceFromList(_p.price));
+        });
+        //print("pricemap: $_priceMap");
+        _entryForms.putIfAbsent(_entry.formName, () => _priceMap);
+      });
+    }
+    //print(_entryForms.length);
+  }
 
   Widget generateContentItem(eventParticipant, Map entries){
     List<Widget> _children = [];
     entries.forEach((key, val){
+      double _price = EntryFormUtil.getPriceFromForm(_entryForms[key], eventParticipant.user, eventParticipant.type);
+      //print("price: $_price");
       _children.add(
           new Row(
             children: <Widget>[
               new Expanded(child: new Text(eventParticipant.name, style: new TextStyle(fontSize: 22.0))),
-              new Text("Fee: \$${(_entryForms[key]).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0))
+              new Text("Fee: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0))
             ],
           )
       );
       // add to total
-      _total += _entryForms[key];
+      _total += _price;
       _children.add(new Text(key, style: new TextStyle(fontFamily: "Montserrat-Light")));
       _children.add(new Padding(padding: const EdgeInsets.only(bottom: 20.0)));
     });

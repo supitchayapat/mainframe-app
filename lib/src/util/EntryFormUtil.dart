@@ -6,6 +6,13 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/model/User.dart';
 
 class EntryFormUtil {
+
+  static double getPriceFromForm(priceMap, participant, type) {
+    FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);
+    var _price = priceMap[(userCode.toString().replaceAll("FormParticipantCode.", "")).replaceAll("_", "-")];
+    return (_price.content).toDouble();
+  }
+
   static bool isFormApplicable(FormEntry form, participant, type) {
     bool retVal = false;
     FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);

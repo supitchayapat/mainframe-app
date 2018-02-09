@@ -146,7 +146,7 @@ class _event_registrationState extends State<event_registration> {
                             }
                             _participantEntries.putIfAbsent(_evtParticipant, () => _entryItems);
                           });
-                          //print(_participantEntries);
+                          print(_participantEntries);
                         },
                         child: new Container(
                           alignment: Alignment.centerLeft,
