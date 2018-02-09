@@ -1,3 +1,5 @@
+import 'package:quiver/core.dart';
+
 class FormParticipant {
   String code;
   String content;
@@ -18,6 +20,9 @@ class FormParticipant {
       "price": price,
     };
   }
+
+  bool operator ==(o) => o is FormParticipant && o.code == code && o.content == content && o.price == price;
+  int get hashCode => hash2(code.hashCode, price.hashCode);
 }
 
 class FormPrice {

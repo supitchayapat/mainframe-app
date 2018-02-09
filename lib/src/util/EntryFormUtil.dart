@@ -8,105 +8,75 @@ import 'package:myapp/src/model/User.dart';
 class EntryFormUtil {
   static bool isFormApplicable(FormEntry form, participant, type) {
     bool retVal = false;
+    FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);
+    //print("USER: ${userCode}");
+    List<FormParticipantCode> _participants = [];
 
-    form.participants.forEach((FormParticipant p){
-      FormParticipantCode code = getParticipantCodeFromString(p.code);
-      // filter based on types
-      FormParticipantType participantType;
-      if(type is String)
-        participantType = getParticipantTypeFromString(type.toString().toUpperCase());
-      else if(type is FormParticipantType)
-        participantType = type;
-
-      //print("CODE: ${code} TYPE: $participantType");
-      switch(participantType) {
-        case FormParticipantType.SOLO: // FOR SOLO PARTICIPANTS
-          if(code == FormParticipantCode.SOLO_GIRL ||
-              code == FormParticipantCode.SOLO_GUY || code == FormParticipantCode.AMATEUR) {
-            Gender gender = participant.gender;
-            DanceCategory category = participant.category;
-
-            // filter based on category
-            if(code == FormParticipantCode.AMATEUR) {
-              if (category == DanceCategory.AMATEUR) {
-                retVal = true;
-              }
-            }
-            // filter based on gender
-            else if (code == FormParticipantCode.SOLO_GIRL){
-              if(gender == Gender.WOMAN) {
-                retVal = true;
-              }
-            }
-            else if (code == FormParticipantCode.SOLO_GUY){
-              if(gender == Gender.MAN) {
-                retVal = true;
-              }
-            }
-          }
-          break;
-        case FormParticipantType.COUPLE:
-          if(code == FormParticipantCode.AM_AM ||
-              code == FormParticipantCode.PROAM_GIRL || code == FormParticipantCode.PROAM_GUY) {
-            Couple couple = participant as Couple;
-            User user1 = couple.couple[0];
-            User user2 = couple.couple[1];
-
-            // filter based on category
-            if(code == FormParticipantCode.AM_AM) {
-              if(user1.category == DanceCategory.AMATEUR && user2.category == DanceCategory.AMATEUR) {
-                retVal = true;
-              }
-            }
-            else if(code == FormParticipantCode.PROAM_GIRL) {
-              User _woman = getUserBasedOnGender(couple, Gender.WOMAN);
-              if(_woman != null && _woman.category == DanceCategory.AMATEUR) {
-                if(user1 == _woman && user2.category == DanceCategory.PROFESSIONAL) {
-                  retVal = true;
-                }
-                else if(user2 == _woman && user1.category == DanceCategory.PROFESSIONAL) {
-                  retVal = true;
-                }
-              }
-            }
-            else if(code == FormParticipantCode.PROAM_GUY) {
-              User _man = getUserBasedOnGender(couple, Gender.MAN);
-              if(_man != null && _man.category == DanceCategory.AMATEUR) {
-                if(user1 == _man && user2.category == DanceCategory.PROFESSIONAL) {
-                  retVal = true;
-                }
-                else if(user2 == _man && user1.category == DanceCategory.PROFESSIONAL) {
-                  retVal = true;
-                }
-              }
-            }
-          }
-          break;
-        case FormParticipantType.GROUP:
-          if(code == FormParticipantCode.GROUP) {
-            retVal = true;
-          }
-          break;
-        default:
-          break;
-      }
+    form.participants.forEach((val) {
+      //print(getParticipantCodeFromString(val.code));
+      _participants.add(getParticipantCodeFromString(val.code));
     });
-
+    //print(_participants.contains(_getParticipantCodeOnUser(participant, type)));
+    if(userCode != FormParticipantCode.AM_AM) {
+      retVal = _participants.contains(userCode);
+    }
+    else {
+      retVal = (_participants.contains(FormParticipantCode.AM_AM) || _participants.contains(FormParticipantCode.AMATEUR));
+    }
     //print("returned value: $retVal");
     return retVal;
   }
 
-  static User getUserBasedOnGender(Couple c, Gender g) {
-    User user1 = c.couple[0];
-    User user2 = c.couple[1];
-    if(user1.gender == g) {
-      return user1;
+  static FormParticipantCode _getParticipantCodeOnUser(participant, type) {
+    FormParticipantCode retVal;
+    FormParticipantType participantType;
+    if(type is String)
+      participantType = getParticipantTypeFromString(type.toString().toUpperCase());
+    else if(type is FormParticipantType)
+      participantType = type;
+
+    switch(participantType) {
+      case FormParticipantType.SOLO: // FOR SOLO PARTICIPANTS
+        if(participant.gender == Gender.MAN) {
+          retVal = FormParticipantCode.SOLO_GUY;
+        }
+        else {
+          retVal = FormParticipantCode.SOLO_GIRL;
+        }
+        break;
+      case FormParticipantType.COUPLE: // FOR COUPLE PARTICIPANTS
+        Couple couple = participant as Couple;
+        String user1 = _getUserParticipantCode(couple.couple[0]);
+        String user2 = _getUserParticipantCode(couple.couple[1]);
+
+        if(user1.contains("AMATEUR") && user2.contains("AMATEUR")) {
+          retVal = FormParticipantCode.AM_AM;
+        }
+        else if(user1.contains("AMATEUR")) {
+          retVal = getParticipantCodeFromString("PRO"+user1.replaceAll("ATEUR", ""));
+        }
+        else {
+          retVal = getParticipantCodeFromString("PRO"+user2.replaceAll("ATEUR", ""));
+        }
+        break;
+      case FormParticipantType.GROUP: // FOR GROUP PARTICIPANTS
+        retVal = FormParticipantCode.GROUP;
+        break;
+      default:
+        break;
     }
-    else if(user2.gender == g) {
-      return user2;
+
+    return retVal;
+  }
+
+  static String _getUserParticipantCode(User u) {
+    String retVal = u.category.toString().replaceAll("DanceCategory.", "");
+    if(u.gender == Gender.WOMAN) {
+      retVal += "_GIRL";
     }
     else {
-      return null;
+      retVal += "_GUY";
     }
+    return retVal;
   }
 }
