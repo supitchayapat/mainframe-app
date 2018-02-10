@@ -37,13 +37,16 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
                   .toUpperCase();
         }
         _user = usr;
+        _user.category = getDanceCategoryFromString(categoryVal);
       });
     } else {
       setState((){
         _user = global.dancePartner;
+        _user.category = getDanceCategoryFromString(categoryVal);
         headingTitle = "ADD A PARTICIPANT";
       });
     }
+    //print(_user.toJson());
   }
 
   void _handleSubmitted() {
@@ -93,6 +96,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     setState((){
       categoryVal = val;
       _user.category = getDanceCategoryFromString(categoryVal);
+      print(_user.toJson());
     });
   }
 
