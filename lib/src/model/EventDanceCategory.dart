@@ -1,13 +1,15 @@
 
 class EventDanceCategory {
   String category;
+  String code;
   int order;
   List<DanceSubCategory> subCategories;
 
-  EventDanceCategory({this.category, this.order, this.subCategories});
+  EventDanceCategory({this.category, this.code, this.order, this.subCategories});
 
   EventDanceCategory.fromSnapshot(var s) {
     category = s["category"];
+    code = s["code"];
     order = s["order"];
     if(s["subCategories"] != null) {
       subCategories = (s["subCategories"] as List).map((val) => new DanceSubCategory.fromSnapshot(val)).toList();
@@ -20,6 +22,7 @@ class EventDanceCategory {
   toJson() {
     return {
       "category": category,
+      "code": code,
       "order": order,
       "subCategories": subCategories.map((val) => val.toJson())
     };
@@ -28,17 +31,20 @@ class EventDanceCategory {
 
 class DanceSubCategory {
   String subCategory;
+  String code;
   int order;
 
-  DanceSubCategory({this.subCategory, this.order});
+  DanceSubCategory({this.subCategory, this.code, this.order});
 
   DanceSubCategory.fromSnapshot(var s) :
         subCategory = s["subCategory"],
+        code = s["code"],
         order = s["order"];
 
   toJson() {
     return {
       "subCategory": subCategory,
+      "code": code,
       "order": order
     };
   }

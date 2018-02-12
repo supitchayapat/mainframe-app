@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:async';
+import 'package:quiver/core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/CompetitionForm.dart';
@@ -9,8 +10,15 @@ import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/model/EventDanceCategory.dart';
 import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/model/EventDanceCategory.dart';
+import 'package:myapp/src/model/EventLevel.dart';
+import 'package:myapp/src/model/FormAgeCat.dart';
+import 'package:myapp/src/screen/event_registration.dart' as registration;
 
 const double subColumnTreshold = 40.0;
+const double minMaxDiffRpanel = 185.0;
+
+var formEntry;
 
 class EntryForm extends StatefulWidget {
   @override
@@ -18,13 +26,16 @@ class EntryForm extends StatefulWidget {
 }
 
 class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
-  HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
+  HashMap<String, Map<String, FormAgeCat>> _levelMap = new HashMap<String, Map<String, FormAgeCat>>();
+  //HashMap<String, List<String>> levelMap = new HashMap<String, List<String>>();
   ScrollController _minLeftScrollController = new ScrollController();
   ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
   double rPanelWidth;
-  List danceCategories;
-  List danceLevels;
+  List danceCategories = [];
+  List danceLevels = [];
+  String _titlePage = "ENTRY FORM";
+  bool triggerCategory = false;
   Map<String, Color> smoothBgs = {
     "SMOOTH": Colors.amber,
     "RHYTHM": Colors.lightBlueAccent,
@@ -34,8 +45,87 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    danceCategories = [];
+    danceLevels = [];
+
     super.initState();
-    EventDao.getEvents().then((events){
+    if(formEntry != null && formEntry.formName != null) {
+      _titlePage = formEntry.formName;
+    }
+
+    // check if form entry has levels as verticals
+    if(formEntry?.structure?.verticals != null && formEntry.structure.verticals.length > 0) {
+      for(var _vert in formEntry.structure.verticals) {
+        if(_vert.link == "LEVELS") {
+          //print("${formEntry.formName} has LEVELS");
+          var _formLookup = formEntry.getFormLookup(_vert.link);
+          //print(_formLookup.toJson());
+
+          //danceCategories = event.danceCategories;
+          //rPanelWidth = 0.0;
+          /*danceCategories.forEach((danceCategory){
+            rPanelWidth += danceCategory.subCategories.length;
+          });*/
+          //print("$rPanelWidth first init");
+          //rPanelWidth = rPanelWidth * subColumnTreshold;
+          //print("$rPanelWidth last init");
+          for(var elem in _formLookup.elements) {
+            EventLevel lvl = new EventLevel(level: elem.content, order: elem.order);
+            danceLevels.add(lvl);
+          }
+          //print(danceLevels);
+        }
+        if(_vert.link == "DANCECAT") {
+          triggerCategory = true;
+        }
+      }
+    }
+    // build horizontals
+    if(formEntry?.structure?.horizontals != null && formEntry.structure.horizontals.length > 0) {
+      Map<String, EventDanceCategory> danceCatMap = {};
+      for(var _horizon in formEntry.structure.horizontals) {
+        if(_horizon.position == "header") {
+          var _formLookup = formEntry.getFormLookup(_horizon.link);
+          //print(_formLookup.toJson());
+          for(var elem in _formLookup.elements) {
+            EventDanceCategory category = new EventDanceCategory(category: elem.content, order: elem.order, code: elem.code);
+            danceCatMap.putIfAbsent(elem.code, () => category);
+          }
+        }
+        if(_horizon.position == "subheader") {
+          var _formLookup = formEntry.getFormLookup(_horizon.link);
+          //print(_formLookup.toJson());
+          var _headLookup = formEntry.getFormLookup("HEADERS");
+          for(var elem in _formLookup.elements) {
+            DanceSubCategory subCategory = new DanceSubCategory(subCategory: elem.code, order: elem.order, code: elem.code);
+            for(var elem2 in _headLookup.elements) {
+              if(elem2.id == elem.grouping) {
+                if(danceCatMap[elem2.code].subCategories == null) {
+                  danceCatMap[elem2.code].subCategories = [];
+                }
+                danceCatMap[elem2.code].subCategories.add(subCategory);
+              }
+            }
+          }
+        }
+      }
+
+      if(danceCatMap != null) {
+        danceCatMap.forEach((key, val) {
+          //print(val.toJson());
+          //print("sub length: ${val.subCategories.length}");
+          danceCategories.add(val);
+        });
+
+        rPanelWidth = 0.0;
+        danceCategories.forEach((danceCategory){
+          rPanelWidth += danceCategory.subCategories.length;
+        });
+        rPanelWidth = rPanelWidth * subColumnTreshold;
+      }
+      //print(danceCategories.map((val) => val.toJson()));
+    }
+    /*EventDao.getEvents().then((events){
       events.forEach((event) {
         if(event.danceCategories != null) {
           danceCategories = event.danceCategories;
@@ -49,7 +139,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           danceLevels = event.levels;
         }
       });
-    });
+    });*/
   }
 
   @override
@@ -58,27 +148,49 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   }
 
   Future _handleSaving() async {
-    if(levelMap.length > 0) {
+    if(_levelMap.length > 0) {
       var val = await showMainFrameDialogWithCancel(
-          context, "Entry Changed", "Save Changes on Entry Form?");
+          context, "Entry Changed", "Save Changes on ${formEntry.formName}?");
       if (val == "OK") {
         //print("Saving changes");
-        EventEntry entry = new EventEntry();
+        EventEntry entry = new EventEntry(
+          formName: formEntry.formName,
+          eventTitle: registration.eventItem.eventTitle,
+          startDate: registration.eventItem.startDate,
+          deadline: registration.eventItem.deadline
+        );
         entry.levels = [];
-        levelMap.forEach((key, values) {
+        _levelMap.forEach((key, values) {
           LevelEntry levelEntry = new LevelEntry();
           levelEntry.levelName = key;
           levelEntry.ageMap = [];
-          values.forEach((val) {
+          values.forEach((key2, val) {
             SubCategoryEntry subEntry = new SubCategoryEntry();
-            subEntry.ageCategory = val;
+            subEntry.ageCategory = key2;
             subEntry.subCategoryMap = {};
-            levelValMap[key+"_"+val].forEach((key2, value){
-              if(value != null && !value.isEmpty)
-                subEntry.subCategoryMap.putIfAbsent(key2, () => true);
-              else
-                subEntry.subCategoryMap.putIfAbsent(key2, () => false);
-            });
+            //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
+
+            if(triggerCategory) {
+              [{"op": "O", "catOC": val.catOpen},{"op": "C", "catOC": val.catClosed}].forEach((_categ){
+                if(_categ["catOC"]) {
+                  levelValMap[key+"_"+key2+_categ["op"]].forEach((key3, value){
+                    if(value != null && !value.isEmpty)
+                      subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                    else
+                      subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                  });
+                }
+              });
+            }
+            else {
+              levelValMap[key+"_"+key2].forEach((key3, value){
+                if(value != null && !value.isEmpty)
+                  subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                else
+                  subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+              });
+            }
+
             if(subEntry.subCategoryMap.length > 0)
               levelEntry.ageMap.add(subEntry);
           });
@@ -141,6 +253,23 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     if(buttonTxt != "ADD") {
       _imgAsset = "mainframe_assets/images/add_highlight.png";
     }
+
+    // build ages text
+    List<String> agesText = [];
+    if(formEntry?.structure?.verticals != null && formEntry.structure.verticals.length > 0) {
+      for (var _vert in formEntry.structure.verticals) {
+        if (_vert.link == "AGES") {
+          var _formLookup = formEntry.getFormLookup(_vert.link);
+          if(_formLookup?.elements != null && _formLookup.elements.length > 0) {
+            _formLookup.elements.forEach((_elem){
+              //print(_elem.toJson());
+              agesText.add(_elem.content);
+            });
+          }
+        }
+      }
+    }
+
     return new Container(
       alignment: Alignment.center,
       //color: Colors.amber,
@@ -151,19 +280,43 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         imgHeight: 32.0,
         fontSize: 16.0,
         onPressed: (){
-          List<String> _selButtons = <String>[];
-          if(levelMap.containsKey(levelTxt)) {
-            _selButtons.addAll(levelMap[levelTxt]);
+          //print(_levelMap[levelTxt]);
+          Map<String, FormAgeCat> _selButtons = {};
+          if(_levelMap.containsKey(levelTxt)) {
+            //_selButtons.addAll(levelMap[levelTxt]);
+            /*for(var _lm in _levelMap[levelTxt]) {
+              _selButtons.putIfAbsent(_lm, () => new FormAgeCat());
+            }*/
+            _levelMap[levelTxt].forEach((key,val){
+              _selButtons.putIfAbsent(key, () => val);
+            });
           }
-          showAgeCategoryDialog(context, _selButtons, () {
+          showAgeCategoryDialog(context, triggerCategory, agesText, _selButtons, () {
             //print("COMPLETED");
+            //print("_levelMap[levelTxt] = ${_levelMap[levelTxt]}");
+            //print("_selButtons = ${_selButtons}");
+            List<String> _selBtnList = [];
+            _selButtons.forEach((key, val){
+              _selBtnList.add(key);
+            });
             //levelMap.putIfAbsent(levelTxt, () => _selButtons);
-            levelMap[levelTxt] = _selButtons;
-            levelMap.forEach((key, values) { 
-              values.forEach((val) => levelValMap.putIfAbsent(key+"_"+val, () => {}));
+            _levelMap[levelTxt] = _selButtons;
+            _levelMap.forEach((key, values) {
+              if(triggerCategory) {
+                values.forEach((key2, val) {
+                  if(val.catOpen)
+                    levelValMap.putIfAbsent(key+"_"+key2+"O", () => {});
+                  if(val.catClosed)
+                    levelValMap.putIfAbsent(key+"_"+key2+"C", () => {});
+                });
+              }
+              else {
+                values.forEach((key2, val) =>
+                    levelValMap.putIfAbsent(key + "_" + key2, () => {}));
+              }
             });
             if(_selButtons.length < 1) {
-              levelMap.remove(levelTxt);
+              _levelMap.remove(levelTxt);
             }
           });
         },
@@ -205,7 +358,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     ];
   }
 
-  List<Widget> _buildRightPanelTabs() {
+  List<Widget> _buildRightPanelTabs(levels) {
     List<Widget> rightPanelTabs = <Widget>[];
     List<Widget> _rightPanelChildren = <Widget>[];
     List<String> subHeadingValues = <String>[];
@@ -221,54 +374,109 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       });
     }
 
-    levelMap.forEach((key, values) {
-      values.forEach((val) {
-        _rightPanelChildren.add(new Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: subHeadingValues.map((headingVal) {
-            levelValMap[key + "_" + val].putIfAbsent(headingVal, () => "");
-            //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
-            Radio radioElement = new Radio(
-                value: headingVal,
-                groupValue: levelValMap[key + "_" + val][headingVal],
-                onChanged: (String radioVal) {
-                  //print(radioVal);
-                  setState(() {
-                    levelValMap[key + "_" + val][headingVal] = radioVal;
-                  });
-                  //print(levelValMap[key+"_"+val][headingVal]);
-                }
-            );
+    for(var _lvl in levels) {
+      _levelMap[_lvl]?.forEach((key2, val) {
+        if(triggerCategory) {
+          [{"op": "O", "catOC": val.catOpen},{"op": "C", "catOC": val.catClosed}].forEach((_categ){
+            if(_categ["catOC"]) {
+              _rightPanelChildren.add(new Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: subHeadingValues.map((headingVal) {
+                  if(levelValMap[_lvl + "_" + key2 + _categ["op"]] == null) {
+                    levelValMap[_lvl + "_" + key2 + _categ["op"]] = {};
+                  }
+                  levelValMap[_lvl + "_" + key2 + _categ["op"]].putIfAbsent(
+                      headingVal, () => "");
+                  //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
+                  Radio radioElement = new Radio(
+                      value: headingVal,
+                      groupValue: levelValMap[_lvl + "_" + key2 + _categ["op"]][headingVal],
+                      onChanged: (String radioVal) {
+                        //print(radioVal);
+                        setState(() {
+                          levelValMap[_lvl + "_" + key2 + _categ["op"]][headingVal] = radioVal;
+                        });
+                        //print(levelValMap[key+"_"+val][headingVal]);
+                      }
+                  );
 
-            return new Container(
-                width: subColumnTreshold,
-                //color: Colors.amber,
-                child: new InkWell(
-                  onTap: () {
-                    String catVal = levelValMap[key + "_" +
-                        val][headingVal];
-                    if (!catVal.isEmpty && catVal == headingVal) {
-                      catVal = "";
-                    } else {
-                      catVal = headingVal;
-                    }
-                    radioElement.onChanged(catVal);
-                  },
-                  child: new Container(
-                    //color: smoothBgs[headingVal],
-                    alignment: Alignment.center,
-                    height: 42.0,
+                  return new Container(
+                      width: subColumnTreshold,
+                      //color: Colors.amber,
+                      child: new InkWell(
+                        onTap: () {
+                          String catVal = levelValMap[_lvl + "_" +
+                              key2 + _categ["op"]][headingVal];
+                          if (!catVal.isEmpty && catVal == headingVal) {
+                            catVal = "";
+                          } else {
+                            catVal = headingVal;
+                          }
+                          radioElement.onChanged(catVal);
+                        },
+                        child: new Container(
+                          //color: smoothBgs[headingVal],
+                          alignment: Alignment.center,
+                          height: 42.0,
+                          child: new Container(
+                            alignment: Alignment.center,
+                            child: radioElement,
+                          ),
+                        ),
+                      )
+                  );
+                }).toList(),
+              ));
+            }
+          });
+        } else {
+          _rightPanelChildren.add(new Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: subHeadingValues.map((headingVal) {
+              levelValMap[_lvl + "_" + key2].putIfAbsent(headingVal, () => "");
+              //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
+              Radio radioElement = new Radio(
+                  value: headingVal,
+                  groupValue: levelValMap[_lvl + "_" + key2][headingVal],
+                  onChanged: (String radioVal) {
+                    //print(radioVal);
+                    setState(() {
+                      levelValMap[_lvl + "_" + key2][headingVal] = radioVal;
+                    });
+                    //print(levelValMap[key+"_"+val][headingVal]);
+                  }
+              );
+
+              return new Container(
+                  width: subColumnTreshold,
+                  //color: Colors.amber,
+                  child: new InkWell(
+                    onTap: () {
+                      String catVal = levelValMap[_lvl + "_" +
+                          key2][headingVal];
+                      if (!catVal.isEmpty && catVal == headingVal) {
+                        catVal = "";
+                      } else {
+                        catVal = headingVal;
+                      }
+                      radioElement.onChanged(catVal);
+                    },
                     child: new Container(
+                      //color: smoothBgs[headingVal],
                       alignment: Alignment.center,
-                      child: radioElement,
+                      height: 42.0,
+                      child: new Container(
+                        alignment: Alignment.center,
+                        child: radioElement,
+                      ),
                     ),
-                  ),
-                )
-            );
-          }).toList(),
-        ));
+                  )
+              );
+            }).toList(),
+          ));
+        }
       });
-    });
+    }
 
     _rightPanelTabColumns.add(new Flexible(
         child: new NotificationListener(
@@ -298,6 +506,14 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       "Full Silver", "Pre Gold", "Int. Gold",
       "Full Gold", "Open Gold"
     ];
+    double scrn_width = MediaQuery.of(context).size.width;
+    double allowableRPanel = (scrn_width - 300.0) + minMaxDiffRpanel;
+
+    if(rPanelWidth < allowableRPanel) {
+      rPanelWidth = allowableRPanel;
+    }
+    //print("rpanelwidth: $rPanelWidth");
+    //print("screen: ${MediaQuery.of(context).size.width}");
 
     if(danceLevels != null) {
       levels = <String>[];
@@ -332,7 +548,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       alignment: Alignment.center,
       height: 50.0,
       child: new Text(
-          "AGE",
+          triggerCategory ? "AGE/CAT" : "AGE",
           style: new TextStyle(
               fontSize: 15.0,
               fontWeight: FontWeight.bold
@@ -340,17 +556,85 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       ),
     ));
 
+    //print(levelValMap);
+    //print("levelMap: $_levelMap");
     for(String level in levels) {
-      if(!levelMap.containsKey(level)) {
+      if(!_levelMap.containsKey(level)) {
         _children.add(_buildLevelColumn(level));
         _childrenAdd.add(_buildAgeColumn(level));
       } else {
-        levelMap[level].forEach((val) {
-          List<String> ageValues = val.split(" ");
-          _children.add(_buildLevelColumn(level));
-          _childrenAdd.add(_buildAgeColumn(level, buttonTxt: ageValues[0]));
+        _levelMap[level].forEach((key, val) {
+          //print("level: $level key: $key");
+          List<String> ageValues = key.split(" ");
+          if(triggerCategory && val.catOpen == true) {
+            _children.add(_buildLevelColumn(level));
+            _childrenAdd.add(_buildAgeColumn(level, buttonTxt: ageValues[0] + " O"));
+          }
+          if(triggerCategory && val.catClosed == true) {
+            _children.add(_buildLevelColumn(level));
+            _childrenAdd.add(_buildAgeColumn(level, buttonTxt: ageValues[0] + " C"));
+          }
+          if(!triggerCategory) {
+            _children.add(_buildLevelColumn(level));
+            _childrenAdd.add(_buildAgeColumn(level, buttonTxt: ageValues[0]));
+          }
         });
       }
+
+      _levelMap[level]?.forEach((key2, val){
+        List<String> ageValues = key2.split(" ");
+        if(triggerCategory) {
+          [
+            {"op": "O", "catOC": val.catOpen},
+            {"op": "C", "catOC": val.catClosed}
+          ].forEach((_categ) {
+            if(_categ["catOC"]) {
+              _minLPanelChildren.add(new Container(
+                alignment: Alignment.center,
+                decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                        image: new ExactAssetImage(
+                            "mainframe_assets/images/level_row_divider.png"),
+                        fit: BoxFit.contain,
+                        alignment: Alignment.bottomCenter
+                    ),
+                    color: const Color(0xff1983A8)
+                ),
+                padding: const EdgeInsets.all(5.0),
+                height: 42.0,
+                child: new Text(
+                    level + " " + ageValues[0] + " " + _categ["op"],
+                    style: new TextStyle(
+                        fontSize: 15.0,
+                        fontFamily: "Montserrat-Light"
+                    )
+                ),
+              ));
+            }
+          });
+        } else {
+          _minLPanelChildren.add(new Container(
+            alignment: Alignment.center,
+            decoration: new BoxDecoration(
+                image: new DecorationImage(
+                    image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
+                    fit: BoxFit.contain,
+                    alignment: Alignment.bottomCenter
+                ),
+                color: const Color(0xff1983A8)
+            ),
+            padding: const EdgeInsets.all(5.0),
+            height: 42.0,
+            child: new Text(
+                level+" "+ageValues[0],
+                style: new TextStyle(
+                    fontSize: 15.0,
+                    fontFamily: "Montserrat-Light"
+                )
+            ),
+          ));
+        }
+      });
     }
 
     // minimized left panel children
@@ -358,37 +642,15 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
     //_rightPanelChildren.addAll(_buildRightTable("SMOOTH", smoothHeadings));
 
-    levelMap.forEach((key, values){
-      values.forEach((val){
-        List<String> ageValues = val.split(" ");
-        _minLPanelChildren.add(new Container(
-          alignment: Alignment.center,
-          decoration: new BoxDecoration(
-              image: new DecorationImage(
-                  image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
-                  fit: BoxFit.contain,
-                  alignment: Alignment.bottomCenter
-              ),
-              color: const Color(0xff1983A8)
-          ),
-          padding: const EdgeInsets.all(5.0),
-          height: 42.0,
-          child: new Text(
-              key+" - "+ageValues[0],
-              style: new TextStyle(
-                  fontSize: 15.0,
-                  fontFamily: "Montserrat-Light"
-              )
-          ),
-        ));
-      });
-    });
+    /*_levelMap.forEach((key, values){
+
+    });*/
 
     // right panel table
-    List<Widget> rightPanelTabs = _buildRightPanelTabs();
+    List<Widget> rightPanelTabs = _buildRightPanelTabs(levels);
 
     return new Scaffold(
-      appBar: new MFAppBar("ENTRY FORM", context, backButtonFunc: _handleSaving),
+      appBar: new MFAppBar(_titlePage, context, backButtonFunc: _handleSaving),
       body: new CompetitionForm(
         maximizedLeftPanel: new Container(
           child: new ListView(

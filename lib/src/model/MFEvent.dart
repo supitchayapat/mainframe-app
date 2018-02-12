@@ -132,7 +132,7 @@ class MFEvent {
         FormEntry entry = new FormEntry.fromSnapshot(val);
         formEntries.add(entry);
         formEntries.sort((a, b) => (a.order).compareTo(b.order));
-        //print(entry.toJson());
+        print(entry.toJson());
       });
     }
   }

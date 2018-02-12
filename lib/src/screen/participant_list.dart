@@ -131,7 +131,7 @@ class _participant_listState extends State<participant_list> {
                 bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
             ),
           ),
-          child: new Text("Add New Solo Participant ...", style: new TextStyle(fontSize: 18.0)),
+          child: new Text("Create New Solo Participant ...", style: new TextStyle(fontSize: 18.0)),
         ),
       ),
     ));
@@ -154,7 +154,7 @@ class _participant_listState extends State<participant_list> {
                 bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
             ),
           ),
-          child: new Text("Add New Couple Participant...", style: new TextStyle(fontSize: 18.0)),
+          child: new Text("Create New Couple Participant...", style: new TextStyle(fontSize: 18.0)),
         ),
       ),
     ));

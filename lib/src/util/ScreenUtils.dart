@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:facebook_sign_in/facebook_sign_in.dart';
+import 'package:myapp/src/model/FormAgeCat.dart';
 
 /*
   Author: Art
@@ -1250,12 +1251,17 @@ Future<Null> showMainFrameDialogWithCancel(BuildContext context, String title, S
   A method that shows a dialog screen
   the dialog contains a selection of Age categories
  */
-Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _selectedButtons, VoidCallback onComplete, {List<int> ages}) async {
+Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<String> _agesTextArr, _selectedButtons, VoidCallback onComplete, {List<int> ages}) async {
   List<String> _agesText = <String>[
     "J1 up to 8", "J2 8 to 12",
     "Youth 16 to 18", "Teen 13 to 15",
     "A1 18 to 35", "A2 36 to 50", "B1 51 to 65"
   ];
+
+  if(_agesTextArr?.length != null && _agesTextArr.length > 0) {
+    _agesText = [];
+    _agesText.addAll(_agesTextArr);
+  }
   List<String> _enabledAges = [];
 
   if(ages != null && ages.length > 0) {
@@ -1288,34 +1294,111 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
   }
 
   List<Widget> _ages = <Widget>[];
+  Widget _catOpenClose = new Container();
+
   _ages.addAll(_agesText.map((str) {
-    return new MaterialButton(
-        padding: const EdgeInsets.all(5.0),
-        onPressed: (){
-          if(_enabledAges.contains(str)) {
-            if (_selectedButtons.contains(str)) {
-              _selectedButtons.remove(str);
-            } else {
-              _selectedButtons.add(str);
-            }
-            Navigator.of(context).pop();
-            showAgeCategoryDialog(context, _selectedButtons, onComplete, ages: ages);
-          }
-        },
-        child: new Container(
-          decoration: new BoxDecoration(
-              borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
-              color: _selectedButtons.contains(str) ? new Color(0xff249A9E) : (_enabledAges.contains(str) ? new Color(0xff335577) : new Color(0xff556c8f)),
-              //color: _filteredColor(str, _selectedButtons, _enabledAges)
-              /*image: new DecorationImage(
+    bool _openVal = false;
+    bool _closedVal = false;
+    //print("$str ${_selectedButtons}");
+    FormAgeCat _fAgeCat = _selectedButtons[str];
+
+    if(_fAgeCat != null) {
+      _openVal = _fAgeCat.catOpen;
+      _closedVal = _fAgeCat.catClosed;
+    }
+
+    if(hasCat) {
+      _catOpenClose = new Expanded(
+        child: new Row(
+          children: <Widget>[
+            new Container(
+              margin: const EdgeInsets.only(right: 5.0),
+              child: new Row(
+                children: <Widget>[
+                  new Container(
+                    width: 15.0,
+                    margin: const EdgeInsets.only(right: 5.0),
+                    //color: Colors.amber,
+                    child: new Checkbox(activeColor: const Color(0xFF324261),value: _openVal,
+                        onChanged: (bool val){
+                          //_openVal=val;
+                          if(_enabledAges.contains(str)) {
+                            if (_selectedButtons.containsKey(str)) {
+                              FormAgeCat _formAgeCat = _selectedButtons[str];
+                              _formAgeCat.catOpen = !_formAgeCat.catOpen;
+                              Navigator.of(context).pop();
+                              showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
+                            }
+                          }
+                        }),
+                  ),
+                  new Text("Open"),
+                ],
+              ),
+            ),
+            new Container(
+              child: new Row(
+                children: <Widget>[
+                  new Container(
+                    width: 15.0,
+                    margin: const EdgeInsets.only(right: 5.0),
+                    //color: Colors.amber,
+                    child: new Checkbox(activeColor: const Color(0xFF324261),value: _closedVal,
+                        onChanged: (bool val){
+                          if(_enabledAges.contains(str)) {
+                            if (_selectedButtons.containsKey(str)) {
+                              FormAgeCat _formAgeCat = _selectedButtons[str];
+                              _formAgeCat.catClosed = !_formAgeCat.catClosed;
+                              Navigator.of(context).pop();
+                              showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
+                            }
+                          }
+                        }),
+                  ),
+                  new Text("Closed"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+
+    return new Row(
+      children: <Widget>[
+        new Expanded(
+            child: new MaterialButton(
+                padding: const EdgeInsets.all(5.0),
+                onPressed: (){
+                  if(_enabledAges.contains(str)) {
+                    if (_selectedButtons.containsKey(str)) {
+                      _selectedButtons.remove(str);
+                    } else {
+                      _selectedButtons.putIfAbsent(str, () => new FormAgeCat());
+                    }
+                    Navigator.of(context).pop();
+                    showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
+                  }
+                },
+                child: new Container(
+                  decoration: new BoxDecoration(
+                    borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+                    color: _selectedButtons.containsKey(str) ? new Color(0xff249A9E) : (_enabledAges.contains(str) ? new Color(0xff335577) : new Color(0xff556c8f)),
+                    //color: _filteredColor(str, _selectedButtons, _enabledAges)
+                    /*image: new DecorationImage(
                   image: new ExactAssetImage("mainframe_assets/images/age_modal_btn.png"),
                   fit: BoxFit.cover,
               )*/
-          ),
-          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
-          child: new Text(str),
-          alignment: Alignment.centerLeft,
-        )
+                  ),
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                  child: new Center(child: new Text(str)),
+                  alignment: Alignment.centerLeft,
+                )
+            ),
+        ),
+        _catOpenClose
+      ],
     );
   }).toList());
 
@@ -1349,16 +1432,37 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
               child: new Row(
                 children: <Widget>[
                   new Container(
-                      width: 80.0,
-                      child: new IconButton(
-                          icon: new Icon(Icons.arrow_back_ios),
-                          onPressed: () {
-                            _selectedButtons = <String>[];
-                            Navigator.of(context).pop();
-                          }
+                      margin: const EdgeInsets.only(left: 5.0),
+                      child: new InkWell(
+                        onTap: (){
+                          _selectedButtons = {};
+                          Navigator.of(context).pop();
+                        },
+                        child: new Icon(Icons.arrow_back_ios),
                       )
                   ),
-                  new Text("SELECT AGE[S]", style: new TextStyle(fontSize: 18.0))
+                  new Flexible(
+                      child: new Center(
+                        child: new Text(hasCat ? "SELECT AGE/CATEGORY" : "SELECT AGE", overflow: TextOverflow.ellipsis, style: new TextStyle(fontSize: 16.0)),
+                      )
+                  ),
+                  new InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      onComplete();
+                    },
+                    child: new Container(
+                      margin: const EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0),
+                      height: 80.0,
+                      constraints: const BoxConstraints(maxWidth: 45.0),
+                      decoration: new BoxDecoration(
+                          borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+                          color: new Color(0xff335577)
+                      ),
+                      child: new Text("OK", style: new TextStyle(fontWeight: FontWeight.bold)),
+                      alignment: Alignment.center,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -1368,15 +1472,55 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                 children: <Widget>[
                   new Row(
                     children: <Widget>[
-                      new Container(
-                        width: 215.0,
-                        child: new Column(
-                          children: _ages,
-                        ),
-                      ),
                       new Expanded(
+                          child: new Container(
+                            width: 155.0,
+                            constraints: const BoxConstraints(minWidth: 55.0),
+                            child: new Column(
+                              children: _ages,
+                            ),
+                          )
+                      ),
+                      /*new Expanded(
+                        child: new Row(
+                          children: <Widget>[
+                            new Container(
+                              margin: const EdgeInsets.only(right: 5.0),
+                              child: new Row(
+                                children: <Widget>[
+                                  new Container(
+                                    width: 15.0,
+                                    margin: const EdgeInsets.only(right: 5.0),
+                                    //color: Colors.amber,
+                                    child: new Checkbox(activeColor: const Color(0xFF324261),value: _openVal,
+                                        onChanged: (bool val){
+                                          _openVal=val;
+                                        }),
+                                  ),
+                                  new Text("Open"),
+                                ],
+                              ),
+                            ),
+                            new Container(
+                              child: new Row(
+                                children: <Widget>[
+                                  new Container(
+                                    width: 15.0,
+                                    margin: const EdgeInsets.only(right: 5.0),
+                                    //color: Colors.amber,
+                                    child: new Checkbox(activeColor: const Color(0xFF324261),value: _closedVal,
+                                        onChanged: (bool val){
+                                          _closedVal = val;
+                                        }),
+                                  ),
+                                  new Text("Closed"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                         //color: Colors.amber,
-                        child: new Column(
+                        /*child: new Column(
                           children: <Widget>[
                             new Container(
                               child: new MaterialButton(
@@ -1429,8 +1573,8 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, List<String> _select
                               ),
                             )*/
                           ],
-                        )
-                      )
+                        )*/
+                      )*/
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   )
