@@ -270,7 +270,7 @@ class FormEntry {
     return {
       "formName": formName,
       "order": order,
-      "formType": formType,
+      "formType": formType != null ? formType.toString().replaceAll("FormType.", "") : null,
       "participants": participants?.map((val) => val?.toJson())?.toList(),
       "prices": prices?.map((val) => val?.toJson())?.toList(),
       "structure": structure != null ? structure.toJson() : null,

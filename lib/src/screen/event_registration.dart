@@ -156,6 +156,7 @@ class _event_registrationState extends State<event_registration> {
                             print(_participantEntries);
                             */
                             formScreen.formEntry = val;
+                            formScreen.formParticipant = _evtParticipant.user;
                             Navigator.of(context).pushNamed("/entryForm");
                           }
                         },

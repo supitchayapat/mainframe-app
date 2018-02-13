@@ -40,6 +40,7 @@ class MFEvent {
   final formatterOut = new DateFormat("MMM dd");
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
+  String competitionId;
   String eventTitle;
   String thumbnail;
   String thumbnailBg;
@@ -57,7 +58,7 @@ class MFEvent {
   List<EventLevel> levels;
   List<FormEntry> formEntries;
 
-  MFEvent({this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
+  MFEvent({this.competitionId, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
 
   /*MFEvent.fromSnapshot(var s)
       : eventTitle = s["eventTitle"],
@@ -68,6 +69,7 @@ class MFEvent {
         year = s["year"],
         danceCategories = (s["danceCategories"] as List).map((val) => val).toList();*/
   MFEvent.fromSnapshot(var s) {
+    competitionId = (s["info"]["competitionId"]).toString();
     eventTitle = s["info"]["name"];
     thumbnail = s["info"]["imgFilename"];
     thumbnailBg = s["info"]["thumbnailBg"];
@@ -139,6 +141,7 @@ class MFEvent {
 
   toJson() {
     return {
+      "competitionId": competitionId,
       "eventTitle": eventTitle,
       "thumbnail": thumbnail,
       "thumbnailBg": thumbnailBg,

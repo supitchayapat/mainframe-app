@@ -19,6 +19,7 @@ const double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
 
 var formEntry;
+var formParticipant;
 
 class EntryForm extends StatefulWidget {
   @override
@@ -154,11 +155,11 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       if (val == "OK") {
         //print("Saving changes");
         EventEntry entry = new EventEntry(
-          formName: formEntry.formName,
-          eventTitle: registration.eventItem.eventTitle,
-          startDate: registration.eventItem.startDate,
-          deadline: registration.eventItem.deadline
+          formEntry: formEntry,
+          event: registration.eventItem,
+          participant: formParticipant,
         );
+        print(entry.toJson());
         entry.levels = [];
         _levelMap.forEach((key, values) {
           LevelEntry levelEntry = new LevelEntry();

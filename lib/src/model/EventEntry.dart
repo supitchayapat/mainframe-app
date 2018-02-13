@@ -1,28 +1,25 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:myapp/src/model/MFEvent.dart';
 
 class EventEntry {
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
-  String eventTitle;
-  DateTime startDate;
-  DateTime stopDate;
-  DateTime deadline;
-  String formName;
+  dynamic event;
+  dynamic formEntry;
+  dynamic participant;
   List<LevelEntry> levels;
 
-  EventEntry({this.formName, this.levels, this.eventTitle, this.startDate, this.stopDate, this.deadline});
+  EventEntry({this.event, this.formEntry, this.levels, this.participant});
 
   EventEntry.fromSnapshot();
 
   toJson() {
     return {
-      "eventTitle": eventTitle,
-      "startDate": startDate!= null ? formatterSrc.format(startDate) : formatterSrc.format(new DateTime.now()),
-      "stopDate": stopDate!= null ? formatterSrc.format(stopDate) : formatterSrc.format(new DateTime.now()),
-      "deadline": deadline!= null ? formatterSrc.format(deadline) : formatterSrc.format(new DateTime.now()),
-      "formName": formName,
-      "levels": levels.map((val) => val.toJson()).toList()
+      "event": event.toJson(),
+      "form": formEntry.toJson(),
+      "participant": participant.toJson(),
+      "levels": levels?.map((val) => val?.toJson())?.toList()
     };
   }
 }
