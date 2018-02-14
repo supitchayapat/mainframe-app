@@ -29,6 +29,9 @@ class Couple {
       "couple": couple.map((val) => val.toJson()).toList(),
     };
   }
+
+  bool operator ==(o) => o is Couple && o.coupleName == coupleName && o.couple[0]?.last_name == couple[0]?.last_name && o.couple[1]?.last_name == couple[1]?.last_name;
+  int get hashCode => hash2(coupleName.hashCode, couple.hashCode);
 }
 
 class User {

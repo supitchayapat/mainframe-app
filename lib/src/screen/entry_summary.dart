@@ -37,7 +37,7 @@ class _entry_summaryState extends State<entry_summary> {
           _priceMap.putIfAbsent(_p.code, () => _entry.getPriceFromList(_p.price));
         });
         //print("pricemap: $_priceMap");
-        _entryForms.putIfAbsent(_entry.formName, () => _priceMap);
+        _entryForms.putIfAbsent(_entry.name, () => _priceMap);
       });
     }
     //print(_entryForms.length);

@@ -20,6 +20,8 @@ const double minMaxDiffRpanel = 185.0;
 
 var formEntry;
 var formParticipant;
+var formData;
+var formPushId;
 
 class EntryForm extends StatefulWidget {
   @override
@@ -50,8 +52,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     danceLevels = [];
 
     super.initState();
-    if(formEntry != null && formEntry.formName != null) {
-      _titlePage = formEntry.formName;
+    if(formEntry != null && formEntry.name != null) {
+      _titlePage = formEntry.name;
     }
 
     // check if form entry has levels as verticals
@@ -141,6 +143,41 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         }
       });
     });*/
+    //print("Data length: ${formData?.length}");
+    //print("pushId: ${formPushId}");
+    // build data if formData is not null
+    if(formData != null) {
+      for(var _lvData in formData) {
+        String _lvlName = _lvData.levelName;
+        Map<String, FormAgeCat> _lvAgeMap = {};
+        for(var _subCat in _lvData.ageMap) {
+          //print("age: ${_subCat.ageCategory}");
+          //print("categoryMap: ${_subCat.subCategoryMap}");
+          FormAgeCat _ageCat = new FormAgeCat(
+              age: _subCat.ageCategory,
+              catOpen: _subCat.catOpen,
+              catClosed: _subCat.catClosed
+          );
+          _lvAgeMap.putIfAbsent(_subCat.ageCategory, () => _ageCat);
+          if(_subCat.subCategoryMap != null) {
+            Map<String, String> _lvValAgeMap = {};
+            _subCat.subCategoryMap.forEach((_k, _v){
+              if(_v) {
+                _lvValAgeMap.putIfAbsent(_k, () => _k);
+              } else {
+                _lvValAgeMap.putIfAbsent(_k, () => "");
+              }
+            });
+            String _catOpenClose = "";
+            if(triggerCategory) {
+              _catOpenClose = (_subCat.catOpen) ? "O" : "C";
+            }
+            levelValMap.putIfAbsent(_lvlName+"_"+_subCat.ageCategory+_catOpenClose, () => _lvValAgeMap);
+          }
+        }
+        _levelMap.putIfAbsent(_lvlName, () => _lvAgeMap);
+      }
+    }
   }
 
   @override
@@ -151,7 +188,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   Future _handleSaving() async {
     if(_levelMap.length > 0) {
       var val = await showMainFrameDialogWithCancel(
-          context, "Entry Changed", "Save Changes on ${formEntry.formName}?");
+          context, "Entry Changed", "Save Changes on ${formEntry.name}?");
       if (val == "OK") {
         //print("Saving changes");
         EventEntry entry = new EventEntry(
@@ -159,7 +196,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           event: registration.eventItem,
           participant: formParticipant,
         );
-        print(entry.toJson());
+        int danceEntries = 0;
         entry.levels = [];
         _levelMap.forEach((key, values) {
           LevelEntry levelEntry = new LevelEntry();
@@ -171,37 +208,53 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             subEntry.subCategoryMap = {};
             //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
 
-            if(triggerCategory) {
-              [{"op": "O", "catOC": val.catOpen},{"op": "C", "catOC": val.catClosed}].forEach((_categ){
-                if(_categ["catOC"]) {
-                  levelValMap[key+"_"+key2+_categ["op"]].forEach((key3, value){
-                    if(value != null && !value.isEmpty)
+            if (triggerCategory) {
+              subEntry.catOpen = val.catOpen;
+              subEntry.catClosed = val.catClosed;
+              [
+                {"op": "O", "catOC": val.catOpen},
+                {"op": "C", "catOC": val.catClosed}
+              ].forEach((_categ) {
+                if (_categ["catOC"]) {
+                  levelValMap[key + "_" + key2 + _categ["op"]].forEach((key3,
+                      value) {
+                    if (value != null && !value.isEmpty) {
                       subEntry.subCategoryMap.putIfAbsent(key3, () => true);
-                    else
+                      danceEntries += 1;
+                    } else {
                       subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                    }
                   });
                 }
               });
             }
             else {
-              levelValMap[key+"_"+key2].forEach((key3, value){
-                if(value != null && !value.isEmpty)
+              levelValMap[key + "_" + key2].forEach((key3, value) {
+                if (value != null && !value.isEmpty) {
                   subEntry.subCategoryMap.putIfAbsent(key3, () => true);
-                else
+                  danceEntries += 1;
+                } else {
                   subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                }
               });
             }
 
-            if(subEntry.subCategoryMap.length > 0)
+            if (subEntry.subCategoryMap.length > 0)
               levelEntry.ageMap.add(subEntry);
           });
-          if(levelEntry.ageMap.length > 0)
+          if (levelEntry.ageMap.length > 0)
             entry.levels.add(levelEntry);
         });
 
+        entry.danceEntries = danceEntries;
         //print(entry.toJson());
-        if(entry.levels.length > 0)
-          EventEntryDao.saveEventEntry(entry);
+        if (entry.levels.length > 0) {
+          if(formPushId != null) {
+            EventEntryDao.updateEventEntry(formPushId, entry);
+          } else {
+            EventEntryDao.saveEventEntry(entry);
+          }
+        }
         Navigator.of(context).maybePop();
       }
       else {

@@ -9,6 +9,7 @@ import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
+import 'package:myapp/src/dao/EventEntryDao.dart';
 
 var eventItem;
 var participant;
@@ -36,9 +37,11 @@ class event_registration extends StatefulWidget {
 }
 
 class _event_registrationState extends State<event_registration> {
+  var entryListener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Map<EventParticipant, Map<String, int>> _participantEntries = {};
   Set<EventParticipant> _participants = new Set();
+  Map<String, dynamic> _eventEntries = {};
   /*Map<String, String> _entryForms = {
     'Showdance Solo': 'couple',
     'Future Celebrities Competition Kids': 'couple',
@@ -58,6 +61,63 @@ class _event_registrationState extends State<event_registration> {
       _entryForms = eventItem.formEntries;
       print("entry forms: ${_entryForms.length}");
     }
+
+    // retrieve participants with entries
+    EventEntryDao.getEventEntry(eventItem.competitionId, (_evtParticipantEntries){
+      setState((){
+        _eventEntries = {};
+        _participantEntries = {};
+        if(_evtParticipantEntries != null) {
+          _evtParticipantEntries.forEach((_pushId, _partEntries) {
+            /*print("Participant Event:");
+        print(_partEntries?.event?.toJson());
+        print("Participant Form:");
+        print(_partEntries?.formEntry?.toJson());
+        print("Participant user:");
+        print(_partEntries?.participant?.toJson());*/
+            // add participant(s)
+            if (_partEntries?.participant != null) {
+              String evtPartName = "";
+              var _usr = _partEntries.participant;
+              var _type;
+              if (_usr is Couple) {
+                _type = FormParticipantType.COUPLE;
+                evtPartName = _usr.coupleName;
+              }
+              else {
+                _type = FormParticipantType.SOLO;
+                evtPartName = "${_usr?.first_name} ${_usr?.last_name}";
+              }
+              EventParticipant _p = new EventParticipant(
+                  name: evtPartName,
+                  user: _usr,
+                  type: _type);
+              _participants.add(_p);
+
+              // add participant entries
+              String _frmName = _partEntries?.formEntry?.name;
+              int _danceEntries = _partEntries?.danceEntries;
+              Map<String, int> _pe = {};
+              if (!_participantEntries.containsKey(_p)) {
+                _pe.putIfAbsent(_frmName, () => _danceEntries);
+                _participantEntries.putIfAbsent(_p, () => _pe);
+              } else {
+                _pe = _participantEntries[_p];
+                _pe.putIfAbsent(_frmName, () => _danceEntries);
+              }
+            }
+
+            _eventEntries.putIfAbsent(_pushId, () => _partEntries);
+          });
+        }
+      });
+    }).then((listener) {entryListener = listener;});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    entryListener.cancel();
   }
 
   void _handleAddEventParticipant() {
@@ -92,6 +152,7 @@ class _event_registrationState extends State<event_registration> {
 
   Widget _generateEntryItem(EventParticipant _evtParticipant) {
     Map<String, int> _entryItems = {};
+    Map<String, dynamic> _entryData = {};
     Widget _entryChild;
 
     if(_participantEntries.containsKey(_evtParticipant)) {
@@ -137,7 +198,7 @@ class _event_registrationState extends State<event_registration> {
                         minWidth: 5.0, height: 40.0,
                         color: Colors.white,
                         onPressed: () {
-                          if(val.formType == FormType.STANDARD) {
+                          if(val.type == FormType.STANDARD) {
                             /*int numItem = _entryItems.containsKey(val.formName)
                                 ? _entryItems[val.formName]
                                 : 0;
@@ -157,6 +218,21 @@ class _event_registrationState extends State<event_registration> {
                             */
                             formScreen.formEntry = val;
                             formScreen.formParticipant = _evtParticipant.user;
+                            //formScreen.formData = _entryData[val.name] != null ? _entryData[val.name] : null;
+                            bool hasDataEntry = false;
+                            if(_eventEntries != null) {
+                              _eventEntries.forEach((_pushId, _entryVal){
+                                if(_entryVal.formEntry.name == val.name) {
+                                  formScreen.formData = _entryVal.levels;
+                                  formScreen.formPushId = _pushId;
+                                  hasDataEntry = true;
+                                }
+                              });
+                            }
+                            if(!hasDataEntry) {
+                              formScreen.formData = null;
+                              formScreen.formPushId = null;
+                            }
                             Navigator.of(context).pushNamed("/entryForm");
                           }
                         },
@@ -165,17 +241,17 @@ class _event_registrationState extends State<event_registration> {
                           child: new Row(
                             children: <Widget>[
                               new Expanded(
-                                  child: new Text("${val.formName}",
+                                  child: new Text("${val.name}",
                                     style: new TextStyle(
                                       fontSize: 15.0,
                                       color: Colors.black,
                                     ),
                                   )
                               ),
-                              _entryItems.containsKey(val.formName) ? new CircleAvatar(
+                              _entryItems.containsKey(val.name) ? new CircleAvatar(
                                 radius: 14.0,
                                 backgroundColor: const Color(0xFF778198),
-                                child: new Text("1",
+                                child: new Text(_entryItems[val.name].toString(),
                                   style: new TextStyle(
                                     fontSize: 15.0,
                                     color: Colors.black,

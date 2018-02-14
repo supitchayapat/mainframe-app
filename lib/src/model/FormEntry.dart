@@ -3,7 +3,12 @@ import 'package:myapp/src/enumeration/FormType.dart';
 
 dynamic _setListObject(s, objName) {
   if(s["${objName}s"] != null) {
-    var _objects = s["${objName}s"][objName];
+    var _objects;
+    try {
+      _objects = s["${objName}s"][objName];
+    } catch(e){
+      _objects = s["${objName}s"];
+    }
     //print(_objects);
     var objArr = [];
     if(_objects is List) {
@@ -108,8 +113,8 @@ class FormLookup {
     //print(s);
     id = s["id"];
     description = s["description"];
-    if(s["element"] != null) {
-      var _elems = s["element"];
+    if(s["element"] != null || s["elements"] != null) {
+      var _elems = (s["element"] != null) ? s["element"] : s["elements"];
       //print(_elems);
       if(_elems is List) {
         elements = [];
@@ -219,22 +224,23 @@ class FormStructure {
 }
 
 class FormEntry {
-  String formName;
+  String name;
   int order;
-  FormType formType;
+  FormType type;
   List prices;
   List participants;
   FormStructure structure;
   List lookups;
   List exclusions;
 
-  FormEntry({this.formName, this.order, this.formType, this.prices,
+  FormEntry({this.name, this.order, this.type, this.prices,
     this.participants, this.structure, this.lookups, this.exclusions});
 
   FormEntry.fromSnapshot(var s) {
-    formName = s["name"];
+    //print(s);
+    name = s["name"];
     order = s["order"];
-    formType = getFormTypeFromString(s["type"]);
+    type = getFormTypeFromString(s["type"]);
 
     participants = _setListObject(s, "participant");
     prices = _setListObject(s, "price");
@@ -268,9 +274,9 @@ class FormEntry {
 
   toJson() {
     return {
-      "formName": formName,
+      "name": name,
       "order": order,
-      "formType": formType != null ? formType.toString().replaceAll("FormType.", "") : null,
+      "type": type != null ? type.toString().replaceAll("FormType.", "") : null,
       "participants": participants?.map((val) => val?.toJson())?.toList(),
       "prices": prices?.map((val) => val?.toJson())?.toList(),
       "structure": structure != null ? structure.toJson() : null,

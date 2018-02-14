@@ -139,12 +139,33 @@ class MFEvent {
     }
   }
 
+  MFEvent.fromSnapshotEntry(var s) {
+    //print(s);
+    competitionId = (s["competitionId"]).toString();
+    eventTitle = s["eventTitle"];
+    thumbnail = s["imgFilename"];
+    thumbnailBg = s["thumbnailBg"];
+    statusName = s["statusName"];
+    //dateRange = s["dateRange"];
+    startDate = s["dateStart"] != null ? formatterSrc.parse(s["dateStart"]) : null;
+    stopDate = s["dateStop"] != null ? formatterSrc.parse(s["dateStop"]) : null;
+    deadline = s["deadline"] != null ? formatterSrc.parse(s["deadline"]) : null;
+    if(startDate != null && stopDate != null) {
+      dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
+    }
+    hasAttended = (s["hasAttended"]?.toString()?.toLowerCase() == 'true') ? true : false;
+    year = s["eventyear"];
+  }
+
   toJson() {
     return {
       "competitionId": competitionId,
       "eventTitle": eventTitle,
       "thumbnail": thumbnail,
       "thumbnailBg": thumbnailBg,
+      "startDate": startDate!= null ? formatterSrc.format(startDate) : formatterSrc.format(new DateTime.now()),
+      "stopDate": stopDate!= null ? formatterSrc.format(stopDate) : formatterSrc.format(new DateTime.now()),
+      "deadline": deadline!= null ? formatterSrc.format(deadline) : formatterSrc.format(new DateTime.now()),
       "dateRange": dateRange,
       "hasAttended": hasAttended.toString(),
       "year": year.toString(),
