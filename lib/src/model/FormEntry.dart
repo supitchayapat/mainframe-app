@@ -2,12 +2,17 @@ import 'package:quiver/core.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 
 dynamic _setListObject(s, objName) {
-  if(s["${objName}s"] != null) {
+  String objNames = objName+"s";
+  if(objName == "exclude") {
+    objNames = "exclusions";
+  }
+
+  if(s[objNames] != null) {
     var _objects;
     try {
-      _objects = s["${objName}s"][objName];
+      _objects = s[objNames][objName];
     } catch(e){
-      _objects = s["${objName}s"];
+      _objects = s[objNames];
     }
     //print(_objects);
     var objArr = [];
@@ -50,8 +55,64 @@ dynamic _initFromSnapshot(String objName, val) {
       FormLookupElement _formLookupElement = new FormLookupElement.fromSnapshot(
           val);
       return _formLookupElement;
+    case 'exclude':
+      FormExclude _formExclude = new FormExclude.fromSnapshot(
+          val);
+      return _formExclude;
+    case 'exclude_hv':
+      FormExcludeHV _formExcludeHV = new FormExcludeHV.fromSnapshot(
+          val);
+      return _formExcludeHV;
     default:
       return null;
+  }
+}
+
+class FormExclude {
+  FormExcludeHV horizontal;
+  List<FormExcludeHV> vertical;
+
+  FormExclude({this.horizontal, this.vertical});
+
+  FormExclude.fromSnapshot(var s) {
+    horizontal = new FormExcludeHV.fromSnapshot(s["horizontal"]);
+    if(s["vertical"] != null) {
+      vertical = [];
+      var _vert = s["vertical"];
+      if(_vert is List) {
+        _vert.forEach((_obj){
+          vertical.add(_initFromSnapshot("exclude_hv", _obj));
+        });
+      } else {
+        vertical.add(_initFromSnapshot("exclude_hv", _vert));
+      }
+    }
+  }
+
+  toJson() {
+    return {
+      "horizontal": horizontal.toJson(),
+      "vertical": vertical?.map((val) => val?.toJson())?.toList(),
+    };
+  }
+}
+
+class FormExcludeHV {
+  String content;
+  String lookup;
+
+  FormExcludeHV({this.content, this.lookup});
+
+  FormExcludeHV.fromSnapshot(var s) {
+    content = s["content"].toString();
+    lookup = s["lookup"];
+  }
+
+  toJson() {
+    return {
+      "content": content,
+      "lookup": lookup
+    };
   }
 }
 
@@ -248,6 +309,13 @@ class FormEntry {
       structure = new FormStructure.fromSnapshot(s["structure"]);
     }
     lookups = _setListObject(s, "lookup");
+    exclusions = _setListObject(s, "exclude");
+
+    /*if(exclusions != null) {
+      exclusions.forEach((_ex) {
+        print(_ex.toJson());
+      });
+    }*/
   }
 
   FormPrice getPriceFromList(int priceId) {
@@ -281,6 +349,7 @@ class FormEntry {
       "prices": prices?.map((val) => val?.toJson())?.toList(),
       "structure": structure != null ? structure.toJson() : null,
       "lookups": lookups?.map((val) => val?.toJson())?.toList(),
+      "exclusions": exclusions?.map((val) => val?.toJson())?.toList(),
     };
   }
 }

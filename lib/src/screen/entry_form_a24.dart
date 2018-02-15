@@ -23,6 +23,26 @@ var formParticipant;
 var formData;
 var formPushId;
 
+class EntryFormExclude {
+  String level;
+  String age;
+  String dance;
+  String danceCategory;
+
+  EntryFormExclude({this.level : "", this.age : "", this.dance : "", this.danceCategory : ""});
+
+  bool operator ==(o) => o is EntryFormExclude && o.level == level && o.age == age && o.dance == dance && o.danceCategory == danceCategory;
+  int get hashCode => hash2(level.hashCode, age.hashCode);
+
+  toJson() {
+    return {
+      "level": level,
+      "age": age,
+      "dance": dance
+    };
+  }
+}
+
 class EntryForm extends StatefulWidget {
   @override
   _EntryFormState createState() => new _EntryFormState();
@@ -34,6 +54,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   ScrollController _minLeftScrollController = new ScrollController();
   ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
+  Set<EntryFormExclude> excludes = new Set<EntryFormExclude>();
   double rPanelWidth;
   List danceCategories = [];
   List danceLevels = [];
@@ -113,7 +134,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         }
         if(_horizon.position == "subheader") {
           var _formLookup = formEntry.getFormLookup(_horizon.link);
-          print(_formLookup.toJson());
+          //print(_formLookup.toJson());
           var _headLookup;
           if(isVerticalLvl)
             _headLookup = formEntry.getFormLookup("HEADERS");
@@ -164,6 +185,64 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       //print(danceCategories.map((val) => val.toJson()));
       //danceCategories.forEach((val) => print(val.toJson()));
     }
+    // build exclusions
+    if(formEntry?.exclusions != null && formEntry.exclusions.length > 0) {
+      formEntry.exclusions.forEach((val){
+        //print(val.toJson());
+        // compose the vertical exclusions
+        String _age = "";
+        String _level = "";
+        String _danceCat = "";
+        for(var _vert in val.vertical) {
+          //print(_vert.toJson());
+          var _formLookup = formEntry.getFormLookup(_vert.lookup);
+          for(var elem in _formLookup.elements) {
+            if(elem.id.toString() == _vert.content) {
+              if(_vert.lookup.toLowerCase() == "levels") {
+                _level = elem.content;
+                break;
+              }
+              else if(_vert.lookup.toLowerCase() == "ages") {
+                _age = elem.content;
+                break;
+              }
+              else if(_vert.lookup.toLowerCase() == "dancecat") {
+                _age = elem.code;
+                break;
+              }
+            }
+          }
+        }
+        //print("AGE: $_age");
+        //print("LEVEL: $_level");
+        // compose horizontal
+        var _horizontal = val.horizontal;
+        List<String> danceIds = _horizontal.content.split(",");
+        if(danceIds != null && danceIds.length > 0) {
+          for(String danceId in danceIds) {
+            EntryFormExclude _exclude;
+            if(!triggerCategory) {
+              _exclude = new EntryFormExclude(level: _level.toLowerCase(), age: _age);
+            }
+            else {
+              _exclude = new EntryFormExclude(level: _level.toLowerCase(), age: _age, danceCategory: _danceCat);
+            }
+            var _formLookup = formEntry.getFormLookup(_horizontal.lookup);
+            for(var elem in _formLookup.elements) {
+              if(elem.id.toString() == danceId) {
+                _exclude.dance = elem.code+elem.order.toString();
+                break;
+              }
+            }
+
+            excludes.add(_exclude);
+          }
+        }
+      });
+
+      //excludes.forEach((val) => print(val.toJson()));
+    }
+
     /*EventDao.getEvents().then((events){
       events.forEach((event) {
         if(event.danceCategories != null) {
@@ -522,16 +601,20 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                     levelValMap[_lvl + "_" + key2 + _categ["op"]].putIfAbsent(
                         headingVal, () => "");
                     //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
+                    EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal, danceCategory: _categ["op"]);
+
                     Radio radioElement = new Radio(
                         value: headingVal,
                         groupValue: levelValMap[_lvl + "_" + key2 +
                             _categ["op"]][headingVal],
                         onChanged: (String radioVal) {
                           //print(radioVal);
-                          setState(() {
-                            levelValMap[_lvl + "_" + key2 +
-                                _categ["op"]][headingVal] = radioVal;
-                          });
+                          if(!excludes.contains(_exclude)) {
+                            setState(() {
+                              levelValMap[_lvl + "_" + key2 +
+                                  _categ["op"]][headingVal] = radioVal;
+                            });
+                          }
                           //print(levelValMap[key+"_"+val][headingVal]);
                         }
                     );
@@ -541,14 +624,16 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                         //color: Colors.amber,
                         child: new InkWell(
                           onTap: () {
-                            String catVal = levelValMap[_lvl + "_" +
-                                key2 + _categ["op"]][headingVal];
-                            if (!catVal.isEmpty && catVal == headingVal) {
-                              catVal = "";
-                            } else {
-                              catVal = headingVal;
+                            if(!excludes.contains(_exclude)) {
+                              String catVal = levelValMap[_lvl + "_" +
+                                  key2 + _categ["op"]][headingVal];
+                              if (!catVal.isEmpty && catVal == headingVal) {
+                                catVal = "";
+                              } else {
+                                catVal = headingVal;
+                              }
+                              radioElement.onChanged(catVal);
                             }
-                            radioElement.onChanged(catVal);
                           },
                           child: new Container(
                             //color: smoothBgs[headingVal],
@@ -556,7 +641,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                             height: 42.0,
                             child: new Container(
                               alignment: Alignment.center,
-                              child: radioElement,
+                              child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
                             ),
                           ),
                         )
@@ -572,31 +657,39 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                 levelValMap[_lvl + "_" + key2].putIfAbsent(
                     headingVal, () => "");
                 //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
+
+                EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal);
+
                 Radio radioElement = new Radio(
                     value: headingVal,
                     groupValue: levelValMap[_lvl + "_" + key2][headingVal],
                     onChanged: (String radioVal) {
-                      //print(radioVal);
-                      setState(() {
-                        levelValMap[_lvl + "_" + key2][headingVal] = radioVal;
-                      });
+                      if(!excludes.contains(_exclude)) {
+                        //print(radioVal);
+                        setState(() {
+                          levelValMap[_lvl + "_" + key2][headingVal] = radioVal;
+                        });
+                      }
                       //print(levelValMap[key+"_"+val][headingVal]);
                     }
                 );
+                //print("EXCLUDE: ${_exclude.toJson()}");
 
                 return new Container(
                     width: subColumnTreshold,
                     //color: Colors.amber,
                     child: new InkWell(
                       onTap: () {
-                        String catVal = levelValMap[_lvl + "_" +
-                            key2][headingVal];
-                        if (!catVal.isEmpty && catVal == headingVal) {
-                          catVal = "";
-                        } else {
-                          catVal = headingVal;
+                        if(!excludes.contains(_exclude)) {
+                          String catVal = levelValMap[_lvl + "_" +
+                              key2][headingVal];
+                          if (!catVal.isEmpty && catVal == headingVal) {
+                            catVal = "";
+                          } else {
+                            catVal = headingVal;
+                          }
+                          radioElement.onChanged(catVal);
                         }
-                        radioElement.onChanged(catVal);
                       },
                       child: new Container(
                         //color: smoothBgs[headingVal],
@@ -604,7 +697,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                         height: 42.0,
                         child: new Container(
                           alignment: Alignment.center,
-                          child: radioElement,
+                          child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
                         ),
                       ),
                     )
@@ -623,31 +716,38 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               }
               //print("level: $_lvl idx: $_idx headingVal: $headingVal");
               //print("valMap: ${levelValMap[_idx]}");
+              EntryFormExclude _exclude = new EntryFormExclude(level: "", age: _lvl, dance: headingVal);
 
               Radio radioElement = new Radio(
                   value: headingVal,
                   groupValue: levelValMap[_idx][headingVal],
                   onChanged: (String radioVal) {
                     //print(radioVal);
-                    setState(() {
-                      levelValMap[_idx][headingVal] = radioVal;
-                    });
+                    if(!excludes.contains(_exclude)) {
+                      setState(() {
+                        levelValMap[_idx][headingVal] = radioVal;
+                      });
+                    }
                     //print(levelValMap[key+"_"+val][headingVal]);
                   }
               );
+
+              //print("EXCLUDE: ${_exclude.toJson()}");
 
               return new Container(
                   width: subColumnTreshold,
                   //color: Colors.amber,
                   child: new InkWell(
                     onTap: () {
-                      String catVal = levelValMap[_idx][headingVal];
-                      if (!catVal.isEmpty && catVal == headingVal) {
-                        catVal = "";
-                      } else {
-                        catVal = headingVal;
+                      if(!excludes.contains(_exclude)) {
+                        String catVal = levelValMap[_idx][headingVal];
+                        if (!catVal.isEmpty && catVal == headingVal) {
+                          catVal = "";
+                        } else {
+                          catVal = headingVal;
+                        }
+                        radioElement.onChanged(catVal);
                       }
-                      radioElement.onChanged(catVal);
                     },
                     child: new Container(
                       //color: smoothBgs[headingVal],
@@ -655,7 +755,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                       height: 42.0,
                       child: new Container(
                         alignment: Alignment.center,
-                        child: radioElement,
+                        child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
                       ),
                     ),
                   )
