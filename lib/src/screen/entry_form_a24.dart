@@ -142,7 +142,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             _headLookup = formEntry.getFormLookup("LEVELS");
 
           for(var elem in _formLookup.elements) {
-            DanceSubCategory subCategory = new DanceSubCategory(subCategory: elem.code, order: elem.order, code: elem.code);
+            DanceSubCategory subCategory = new DanceSubCategory(subCategory: elem.code, order: elem.order, code: elem.code, id: elem.id);
             for(var elem2 in _headLookup.elements) {
               if(elem2.id == elem.grouping) {
                 if(danceCatMap[elem2.code].subCategories == null) {
@@ -167,7 +167,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               //print("_lvl: $_lvl");
               if(_lvl == ((key).toString().toLowerCase())) {
                 for(var _subCat in val.subCategories) {
-                  _val.putIfAbsent("${_subCat.subCategory}${_subCat.order}", () => "");
+                  _val.putIfAbsent("${_subCat.subCategory}${_subCat.id}", () => "");
                 }
               }
             });
@@ -230,7 +230,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             var _formLookup = formEntry.getFormLookup(_horizontal.lookup);
             for(var elem in _formLookup.elements) {
               if(elem.id.toString() == danceId) {
-                _exclude.dance = elem.code+elem.order.toString();
+                _exclude.dance = elem.code+elem.id.toString();
                 break;
               }
             }
@@ -322,84 +322,87 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         entry.levels = [];
 
         // for vertical levels
-        _levelMap.forEach((key, values) {
-          LevelEntry levelEntry = new LevelEntry();
-          levelEntry.levelName = key;
-          levelEntry.ageMap = [];
-          values.forEach((key2, val) {
-            SubCategoryEntry subEntry = new SubCategoryEntry();
-            subEntry.ageCategory = key2;
-            subEntry.subCategoryMap = {};
-            //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
+        if(isVerticalLvl) {
+          _levelMap.forEach((key, values) {
+            LevelEntry levelEntry = new LevelEntry();
+            levelEntry.levelName = key;
+            levelEntry.ageMap = [];
+            values.forEach((key2, val) {
+              SubCategoryEntry subEntry = new SubCategoryEntry();
+              subEntry.ageCategory = key2;
+              subEntry.subCategoryMap = {};
+              //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
 
-            if (triggerCategory) {
-              subEntry.catOpen = val.catOpen;
-              subEntry.catClosed = val.catClosed;
-              [
-                {"op": "O", "catOC": val.catOpen},
-                {"op": "C", "catOC": val.catClosed}
-              ].forEach((_categ) {
-                if (_categ["catOC"]) {
-                  levelValMap[key + "_" + key2 + _categ["op"]].forEach((key3,
-                      value) {
-                    if (value != null && !value.isEmpty) {
-                      subEntry.subCategoryMap.putIfAbsent(key3, () => true);
-                      danceEntries += 1;
-                    } else {
-                      subEntry.subCategoryMap.putIfAbsent(key3, () => false);
-                    }
-                  });
-                }
-              });
-            }
-            else {
-              levelValMap[key + "_" + key2].forEach((key3, value) {
+              if (triggerCategory) {
+                subEntry.catOpen = val.catOpen;
+                subEntry.catClosed = val.catClosed;
+                [
+                  {"op": "O", "catOC": val.catOpen},
+                  {"op": "C", "catOC": val.catClosed}
+                ].forEach((_categ) {
+                  if (_categ["catOC"]) {
+                    levelValMap[key + "_" + key2 + _categ["op"]].forEach((key3,
+                        value) {
+                      if (value != null && !value.isEmpty) {
+                        subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                        danceEntries += 1;
+                      } else {
+                        subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                      }
+                    });
+                  }
+                });
+              }
+              else {
+                levelValMap[key + "_" + key2].forEach((key3, value) {
+                  if (value != null && !value.isEmpty) {
+                    subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                    danceEntries += 1;
+                  } else {
+                    subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                  }
+                });
+              }
+
+              if (subEntry.subCategoryMap.length > 0)
+                levelEntry.ageMap.add(subEntry);
+            });
+            if (levelEntry.ageMap.length > 0)
+              entry.levels.add(levelEntry);
+          });
+        }
+        // for levels on horizontal
+        else {
+          _ageMap.forEach((key, values) {
+            values.forEach((val) {
+              LevelEntry levelEntry = new LevelEntry();
+              levelEntry.levelName = val.toLowerCase();
+              levelEntry.ageMap = [];
+              SubCategoryEntry subEntry = new SubCategoryEntry();
+              subEntry.ageCategory = key;
+              subEntry.subCategoryMap = {};
+              //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
+
+              var _idx = "${val.toLowerCase()}_$key";
+              bool _hasCategoryEntry = false;
+              levelValMap[_idx].forEach((key3, value) {
                 if (value != null && !value.isEmpty) {
                   subEntry.subCategoryMap.putIfAbsent(key3, () => true);
                   danceEntries += 1;
+                  _hasCategoryEntry = true;
                 } else {
                   subEntry.subCategoryMap.putIfAbsent(key3, () => false);
                 }
               });
-            }
 
-            if (subEntry.subCategoryMap.length > 0)
-              levelEntry.ageMap.add(subEntry);
-          });
-          if (levelEntry.ageMap.length > 0)
-            entry.levels.add(levelEntry);
-        });
+              if (subEntry.subCategoryMap.length > 0 && _hasCategoryEntry)
+                levelEntry.ageMap.add(subEntry);
 
-        // for levels on horizontal
-        _ageMap.forEach((key, values) {
-          values.forEach((val) {
-            LevelEntry levelEntry = new LevelEntry();
-            levelEntry.levelName = val.toLowerCase();
-            levelEntry.ageMap = [];
-            SubCategoryEntry subEntry = new SubCategoryEntry();
-            subEntry.ageCategory = key;
-            subEntry.subCategoryMap = {};
-            //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
-
-            var _idx = "${val.toLowerCase()}_$key";
-            bool _hasCategoryEntry = false;
-            levelValMap[_idx].forEach((key3, value) {
-              if (value != null && !value.isEmpty) {
-                subEntry.subCategoryMap.putIfAbsent(key3, () => true);
-                danceEntries += 1;
-                _hasCategoryEntry = true;
-              } else {
-                subEntry.subCategoryMap.putIfAbsent(key3, () => false);
-              }
+              if (levelEntry.ageMap.length > 0)
+                entry.levels.add(levelEntry);
             });
-
-            if (subEntry.subCategoryMap.length > 0 && _hasCategoryEntry)
-              levelEntry.ageMap.add(subEntry);
-
-            if (levelEntry.ageMap.length > 0)
-              entry.levels.add(levelEntry);
           });
-        });
+        }
 
         entry.danceEntries = danceEntries;
         //print(entry.toJson());
@@ -497,7 +500,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               _selButtons.putIfAbsent(_lm, () => new FormAgeCat());
             }*/
             _levelMap[levelTxt].forEach((key,val){
-              _selButtons.putIfAbsent(key, () => val);
+              FormAgeCat _temp = new FormAgeCat(age: val.age, catOpen: val.catOpen, catClosed: val.catClosed);
+              _selButtons.putIfAbsent(key, () => _temp);
             });
           }
           showAgeCategoryDialog(context, triggerCategory, agesText, _selButtons, () {
@@ -578,7 +582,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
       danceCategories.forEach((danceCategory) {
         danceCategory.subCategories.forEach((val) {
-          subHeadingValues.add(val.subCategory + val.order.toString());
+          subHeadingValues.add(val.subCategory + val.id.toString());
         });
       });
     }

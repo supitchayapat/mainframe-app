@@ -33,16 +33,19 @@ class DanceSubCategory {
   String subCategory;
   String code;
   int order;
+  int id;
 
-  DanceSubCategory({this.subCategory, this.code, this.order});
+  DanceSubCategory({this.id, this.subCategory, this.code, this.order});
 
   DanceSubCategory.fromSnapshot(var s) :
+        id = s["id"],
         subCategory = s["subCategory"],
         code = s["code"],
         order = s["order"];
 
   toJson() {
     return {
+      "id": id,
       "subCategory": subCategory,
       "code": code,
       "order": order

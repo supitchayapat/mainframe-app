@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:myapp/src/model/MFEvent.dart';
 import 'package:myapp/src/model/FormEntry.dart';
 import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/enumeration/FormType.dart';
+import 'package:myapp/src/freeform/ShowDanceSolo.dart';
 
 class EventEntry {
   final formatterSrc = new DateFormat("yyyy-MM-dd");
@@ -11,9 +13,10 @@ class EventEntry {
   dynamic formEntry;
   dynamic participant;
   List<LevelEntry> levels;
+  dynamic freeForm;
   int danceEntries;
 
-  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries});
+  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm});
 
   EventEntry.fromSnapshot(var s) {
     event = new MFEvent.fromSnapshotEntry(s["event"]);
@@ -32,6 +35,14 @@ class EventEntry {
       });
     }
     danceEntries = s["danceEntries"];
+    if(formEntry.type == FormType.SOLO) {
+      //print(s["freeForm"]);
+      freeForm = new ShowDanceSolo.fromSnapshot(s["freeForm"]);
+      //print("FREEFORM: ${freeForm.toJson()}");
+    }
+    else if (formEntry.type == FormType.GROUP) {
+      freeForm = null;
+    }
   }
 
   toJson() {
@@ -40,7 +51,8 @@ class EventEntry {
       "form": formEntry.toJson(),
       "participant": participant.toJson(),
       "danceEntries": danceEntries,
-      "levels": levels?.map((val) => val?.toJson())?.toList()
+      "freeForm": freeForm.toJson(),
+      "levels": levels?.map((val) => val?.toJson())?.toList(),
     };
   }
 }

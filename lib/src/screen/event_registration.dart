@@ -4,12 +4,14 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:quiver/core.dart';
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 import 'package:myapp/src/screen/entry_form_a24.dart' as formScreen;
+import 'package:myapp/src/screen/entry_freeform.dart' as freeFormScreen;
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/freeform/ShowDanceSolo.dart';
 
 var eventItem;
 var participant;
@@ -198,6 +200,27 @@ class _event_registrationState extends State<event_registration> {
                         minWidth: 5.0, height: 40.0,
                         color: Colors.white,
                         onPressed: () {
+                          bool hasDataEntry = false;
+                          if(_eventEntries != null) {
+                            _eventEntries.forEach((_pushId, _entryVal){
+                              if(_entryVal.formEntry.name == val.name) {
+                                if(val.type == FormType.STANDARD) {
+                                  formScreen.formData = _entryVal.levels;
+                                  formScreen.formPushId = _pushId;
+                                } else {
+                                  freeFormScreen.formData = _entryVal.freeForm;
+                                  freeFormScreen.formPushId = _pushId;
+                                }
+                                hasDataEntry = true;
+                              }
+                            });
+                          }
+                          if(!hasDataEntry) {
+                            formScreen.formData = null;
+                            formScreen.formPushId = null;
+                            freeFormScreen.formData = null;
+                            freeFormScreen.formPushId = null;
+                          }
                           if(val.type == FormType.STANDARD) {
                             /*int numItem = _entryItems.containsKey(val.formName)
                                 ? _entryItems[val.formName]
@@ -219,21 +242,15 @@ class _event_registrationState extends State<event_registration> {
                             formScreen.formEntry = val;
                             formScreen.formParticipant = _evtParticipant.user;
                             //formScreen.formData = _entryData[val.name] != null ? _entryData[val.name] : null;
-                            bool hasDataEntry = false;
-                            if(_eventEntries != null) {
-                              _eventEntries.forEach((_pushId, _entryVal){
-                                if(_entryVal.formEntry.name == val.name) {
-                                  formScreen.formData = _entryVal.levels;
-                                  formScreen.formPushId = _pushId;
-                                  hasDataEntry = true;
-                                }
-                              });
-                            }
-                            if(!hasDataEntry) {
-                              formScreen.formData = null;
-                              formScreen.formPushId = null;
-                            }
                             Navigator.of(context).pushNamed("/entryForm");
+                          }
+                          else {
+                            freeFormScreen.formEntry = val;
+                            freeFormScreen.formParticipant = _evtParticipant.user;
+                            if(val.type == FormType.SOLO) {
+                              freeFormScreen.freeFormObj = new ShowDanceSolo();
+                            }
+                            Navigator.of(context).pushNamed("/entryFreeForm");
                           }
                         },
                         child: new Container(

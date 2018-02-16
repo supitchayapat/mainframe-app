@@ -19,6 +19,7 @@ import 'src/screen/couple_management.dart';
 import 'src/screen/participant_list.dart';
 import 'src/screen/entry_summary.dart';
 import 'src/screen/checkout_entry.dart';
+import 'src/screen/entry_freeform.dart';
 
 /*
   Author: Art
@@ -109,6 +110,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new EntryForm(),
         settings: settings,
       );
+    case '/entryFreeForm':
+      return new MainFrameRoute(
+        builder: (_) => new entry_freeform(),
+        settings: settings,
+      );
     case '/addPartner':
       return new MainFrameRoute(
         builder: (_) => new AddDancePartner(),
@@ -168,6 +174,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/emailRegistry': (BuildContext context) => new EmailRegistry(),
     '/emailLogin': (BuildContext context) => new EmailLogin(),
     '/entryForm': (BuildContext context) => new EntryForm(),
+    '/entryFreeForm': (BuildContext context) => new entry_freeform(),
     '/addPartner': (BuildContext context) => new AddDancePartner(),
     '/eventInfo': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
