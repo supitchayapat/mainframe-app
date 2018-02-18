@@ -17,11 +17,11 @@ class EventEntryDao {
     reference.child(fUser.uid).child("entry_forms").child(pushId).set(entry.toJson());
   }
 
-  static Future<StreamSubscription> getEventEntry(competitionId, Function p) async {
+  static Future<StreamSubscription> getEventEntry(eventId, Function p) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
     return reference.child(fUser.uid).child("entry_forms")
-          .orderByChild("event/competitionId")
-          .equalTo(competitionId)
+          .orderByChild("event/id")
+          .equalTo(eventId)
           .onValue.listen((event){
       //print(event.snapshot.value);
       if(event.snapshot?.value != null) {
@@ -30,12 +30,12 @@ class EventEntryDao {
           //print(dataVal["levels"]);
           //print("pushId: $dataKey");
           //_evtEntries.add(new EventEntry.fromSnapshot(dataVal));
-          try {
+          //try {
             _evtEntries.putIfAbsent(dataKey, () => new EventEntry.fromSnapshot(dataVal));
-          } catch(e) {
+          /*} catch(e) {
             print("EventEntryDao error: $e");
             print("snapshot: $dataVal");
-          }
+          }*/
           Function.apply(p, [_evtEntries]);
         });
       }

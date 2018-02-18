@@ -51,21 +51,21 @@ class _EventDetailsState extends State<EventDetails> {
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Text("Venue:  ${eventItem.venue.venueName}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Venue:  ${eventItem?.venue?.venueName}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Address:  ${eventItem.venue.address}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Address:  ${eventItem?.venue?.address}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Province:  ${eventItem.venue.province}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Province:  ${eventItem?.venue?.province}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("City:  ${eventItem.venue.city} ${eventItem.venue.zip}", style: new TextStyle(fontSize: 16.0)),
+          new Text("City:  ${eventItem?.venue?.city} ${eventItem?.venue?.zip}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Country:  ${eventItem.venue.country}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Country:  ${eventItem?.venue?.country}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Phone:  ${eventItem.venue.phone}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Phone:  ${eventItem?.venue?.phone}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Fax:  ${eventItem.venue.fax}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Fax:  ${eventItem?.venue?.fax}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Web:  ${eventItem.venue.website}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Web:  ${eventItem?.venue?.website}", style: new TextStyle(fontSize: 16.0)),
         ],
       ),
     );
@@ -77,19 +77,19 @@ class _EventDetailsState extends State<EventDetails> {
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Text("Address:  ${eventItem.contact.address}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Address:  ${eventItem?.contact?.address}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Province:  ${eventItem.contact.province}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Province:  ${eventItem?.contact?.province}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("City:  ${eventItem.contact.city} ${eventItem.venue.zip}", style: new TextStyle(fontSize: 16.0)),
+          new Text("City:  ${eventItem?.contact?.city} ${eventItem?.contact?.zip}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Country:  ${eventItem.contact.country}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Country:  ${eventItem?.contact?.country}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Phone:  ${eventItem.contact.phone}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Phone:  ${eventItem?.contact?.phone}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Fax:  ${eventItem.contact.fax}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Fax:  ${eventItem?.contact?.fax}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Email:  ${eventItem.contact.email}", style: new TextStyle(fontSize: 16.0)),
+          new Text("Email:  ${eventItem?.contact?.email}", style: new TextStyle(fontSize: 16.0)),
         ],
       ),
     );
@@ -185,6 +185,7 @@ class _EventDetailsState extends State<EventDetails> {
       floatingActionButton: new InkWell(
         onTap: (){
           eventInfo.eventItem = eventItem;
+          eventInfo.participant = null;
           if(_floatText == "Register")
             Navigator.of(context).pushNamed("/registration");
         },

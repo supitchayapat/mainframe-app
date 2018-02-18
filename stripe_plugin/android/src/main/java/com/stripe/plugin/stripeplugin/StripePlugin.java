@@ -57,19 +57,20 @@ public class StripePlugin implements MethodCallHandler {
         // Show errors
         result.error("INVALID", "Invalid Card. Please check card number, expiry date and CVC", null);
       }
-      Stripe stripe = new Stripe(context, stripeKey);
-      stripe.createToken(
-              card,
-              new TokenCallback() {
-                public void onSuccess(Token token) {
-                  // Send token to your server
-                  Log.i("stripe", "SUCCESS TOKEN");
-                  ImmutableMap.Builder<String, Object> cardMap = ImmutableMap.<String, Object>builder();
-                  cardMap.put("token", token.getId());
-                  //cardMap.put("fingerprint", card.getFingerprint());
-                  //cardMap.put("brand", card.getBrand());
-                  //cardMap.put("lastdigits", card.getLast4());
-                  //result.success(cardMap.build());
+      else {
+        Stripe stripe = new Stripe(context, stripeKey);
+        stripe.createToken(
+                card,
+                new TokenCallback() {
+                  public void onSuccess(Token token) {
+                    // Send token to your server
+                    Log.i("stripe", "SUCCESS TOKEN");
+                    ImmutableMap.Builder<String, Object> cardMap = ImmutableMap.<String, Object>builder();
+                    cardMap.put("token", token.getId());
+                    //cardMap.put("fingerprint", card.getFingerprint());
+                    cardMap.put("brand", card.getBrand());
+                    cardMap.put("lastdigits", card.getLast4());
+                    result.success(cardMap.build());
                   /*Map<String, Object> customerParams = new HashMap<String, Object>();
                   customerParams.put("email", "paying.user@example.com");
                   customerParams.put("source", token.getId());
@@ -78,16 +79,18 @@ public class StripePlugin implements MethodCallHandler {
                   HashMap<String, Object> sourcesParams = new HashMap<String, Object>();
                   sourcesParams.put("object", "card");
                   customer.getSources().all(sourcesParams);*/
-                  Log.i("stripe CARD", token.getCard().toJson().toString());
+                    Log.i("stripe CARD", token.getCard().toJson().toString());
 
-                  result.success(token.getId());
+                    //result.success(token.getId());
+                  }
+
+                  public void onError(Exception error) {
+                    // Show localized error message
+                    result.error("Create Token Error", error.getMessage(), error);
+                  }
                 }
-                public void onError(Exception error) {
-                  // Show localized error message
-                  result.error("Create Token Error", error.getMessage(), error);
-                }
-              }
-      );
+        );
+      }
     } else {
       result.notImplemented();
     }

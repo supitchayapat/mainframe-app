@@ -5,6 +5,7 @@ import 'package:quiver/core.dart';
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 import 'package:myapp/src/screen/entry_form_a24.dart' as formScreen;
 import 'package:myapp/src/screen/entry_freeform.dart' as freeFormScreen;
+import 'package:myapp/src/screen/GroupDance.dart' as groupFormScreen;
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
@@ -12,6 +13,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/freeform/ShowDanceSolo.dart';
+import 'participant_list.dart' as partList;
 
 var eventItem;
 var participant;
@@ -61,11 +63,11 @@ class _event_registrationState extends State<event_registration> {
     if(eventItem.formEntries != null) {
       //eventItem.formEntries.forEach((val) => print(val.toJson()));
       _entryForms = eventItem.formEntries;
-      print("entry forms: ${_entryForms.length}");
+      print("Event Id: ${eventItem.id} entry forms: ${_entryForms.length}");
     }
 
     // retrieve participants with entries
-    EventEntryDao.getEventEntry(eventItem.competitionId, (_evtParticipantEntries){
+    EventEntryDao.getEventEntry(eventItem.id, (_evtParticipantEntries){
       setState((){
         _eventEntries = {};
         _participantEntries = {};
@@ -86,7 +88,10 @@ class _event_registrationState extends State<event_registration> {
                 _type = FormParticipantType.COUPLE;
                 evtPartName = _usr.coupleName;
               }
-              else {
+              else if (_usr is Group) {
+                _type = FormParticipantType.GROUP;
+                evtPartName = _usr.groupName;
+              } else {
                 _type = FormParticipantType.SOLO;
                 evtPartName = "${_usr?.first_name} ${_usr?.last_name}";
               }
@@ -130,12 +135,16 @@ class _event_registrationState extends State<event_registration> {
         if(_usr is Couple) {
           _type = FormParticipantType.COUPLE;
         }
+        else if(_usr is Group) {
+          _type = FormParticipantType.GROUP;
+        }
         else {
           _type = FormParticipantType.SOLO;
         }
         EventParticipant _p = new EventParticipant(
             name: participant["name"], user: participant["user"], type: _type);
         int _entryFormCount = 0;
+
         _entryForms.forEach((_form){
           if(EntryFormUtil.isFormApplicable(_form, _p.user, _p.type)) {
             _entryFormCount += 1;
@@ -207,9 +216,12 @@ class _event_registrationState extends State<event_registration> {
                                 if(val.type == FormType.STANDARD) {
                                   formScreen.formData = _entryVal.levels;
                                   formScreen.formPushId = _pushId;
-                                } else {
+                                } else if(val.type == FormType.SOLO) {
                                   freeFormScreen.formData = _entryVal.freeForm;
                                   freeFormScreen.formPushId = _pushId;
+                                } else {
+                                  groupFormScreen.formData = _entryVal.freeForm;
+                                  groupFormScreen.formPushId = _pushId;
                                 }
                                 hasDataEntry = true;
                               }
@@ -220,6 +232,8 @@ class _event_registrationState extends State<event_registration> {
                             formScreen.formPushId = null;
                             freeFormScreen.formData = null;
                             freeFormScreen.formPushId = null;
+                            groupFormScreen.formData = null;
+                            groupFormScreen.formPushId = null;
                           }
                           if(val.type == FormType.STANDARD) {
                             /*int numItem = _entryItems.containsKey(val.formName)
@@ -244,13 +258,18 @@ class _event_registrationState extends State<event_registration> {
                             //formScreen.formData = _entryData[val.name] != null ? _entryData[val.name] : null;
                             Navigator.of(context).pushNamed("/entryForm");
                           }
-                          else {
+                          else if(val.type == FormType.SOLO) {
                             freeFormScreen.formEntry = val;
                             freeFormScreen.formParticipant = _evtParticipant.user;
-                            if(val.type == FormType.SOLO) {
+                            //if(val.type == FormType.SOLO) {
                               freeFormScreen.freeFormObj = new ShowDanceSolo();
-                            }
+                            //}
                             Navigator.of(context).pushNamed("/entryFreeForm");
+                          }
+                          else {
+                            groupFormScreen.formEntry = val;
+                            groupFormScreen.formParticipant = _evtParticipant.user;
+                            Navigator.of(context).pushNamed("/entryGroupForm");
                           }
                         },
                         child: new Container(
@@ -381,6 +400,7 @@ class _event_registrationState extends State<event_registration> {
                       padding: const EdgeInsets.all(0.0),
                       onPressed: (){
                         participant = null;
+                        partList.participants = _participants;
                         Navigator.of(context).pushNamed("/participants");
                       },
                       child: new Container(
@@ -447,6 +467,7 @@ class _event_registrationState extends State<event_registration> {
         onTap: (){
           if(_participantEntries.length > 0) {
             summary.participantEntries = _participantEntries;
+            summary.eventEntries = _eventEntries;
             Navigator.of(context).pushNamed("/registrationSummary");
           }
         },

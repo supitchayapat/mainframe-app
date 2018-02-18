@@ -69,7 +69,11 @@ class _entry_freeformState extends State<entry_freeform> {
           danceEntries: 1,
           freeForm: freeFormObj
         );
-        EventEntryDao.saveEventEntry(entry);
+        if(formPushId != null) {
+          EventEntryDao.updateEventEntry(formPushId, entry);
+        } else {
+          EventEntryDao.saveEventEntry(entry);
+        }
         Navigator.of(context).maybePop();
       }
       else {

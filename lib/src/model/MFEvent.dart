@@ -40,7 +40,7 @@ class MFEvent {
   final formatterOut = new DateFormat("MMM dd");
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
-  String competitionId;
+  String id;
   String eventTitle;
   String thumbnail;
   String thumbnailBg;
@@ -58,7 +58,7 @@ class MFEvent {
   List<EventLevel> levels;
   List<FormEntry> formEntries;
 
-  MFEvent({this.competitionId, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
+  MFEvent({this.id, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
 
   /*MFEvent.fromSnapshot(var s)
       : eventTitle = s["eventTitle"],
@@ -69,7 +69,7 @@ class MFEvent {
         year = s["year"],
         danceCategories = (s["danceCategories"] as List).map((val) => val).toList();*/
   MFEvent.fromSnapshot(var s) {
-    competitionId = (s["info"]["competitionId"]).toString();
+    id = (s["info"]["id"]).toString();
     eventTitle = s["info"]["name"];
     thumbnail = s["info"]["imgFilename"];
     thumbnailBg = s["info"]["thumbnailBg"];
@@ -83,29 +83,33 @@ class MFEvent {
     year = s["info"]["eventyear"];
 
     // Venue
-    this.venue = new Venue();
-    venue.venueName = s["venue"]["name"] ?? "";
-    venue.phone = s["venue"]["phone"] ?? "";
-    venue.fax = s["venue"]["fax"] ?? "";
-    venue.address = s["venue"]["address"] ?? "";
-    venue.address2 = s["venue"]["address2"] ?? "";
-    venue.city = s["venue"]["city"] ?? "";
-    venue.province = s["venue"]["province"] ?? "";
-    venue.country = s["venue"]["country"] ?? "";
-    venue.zip = s["venue"]["zip"] ?? "";
-    venue.website = s["venue"]["website"] ?? "";
+    if(s["venue"] != null) {
+      this.venue = new Venue();
+      venue.venueName = s["venue"]["name"] ?? "";
+      venue.phone = s["venue"]["phone"] ?? "";
+      venue.fax = s["venue"]["fax"] ?? "";
+      venue.address = s["venue"]["address"] ?? "";
+      venue.address2 = s["venue"]["address2"] ?? "";
+      venue.city = s["venue"]["city"] ?? "";
+      venue.province = s["venue"]["province"] ?? "";
+      venue.country = s["venue"]["country"] ?? "";
+      venue.zip = s["venue"]["zip"] ?? "";
+      venue.website = s["venue"]["website"] ?? "";
+    }
 
     // Contact
-    this.contact = new ContactInfo();
-    contact.phone = s["contact"]["phone"] ?? "";
-    contact.fax = s["contact"]["fax"] ?? "";
-    contact.address = s["contact"]["address"] ?? "";
-    contact.address2 = s["contact"]["address2"] ?? "";
-    contact.city = s["contact"]["city"] ?? "";
-    contact.province = s["contact"]["province"] ?? "";
-    contact.country = s["contact"]["country"] ?? "";
-    contact.zip = s["contact"]["zip"] ?? "";
-    contact.email = s["contact"]["email"] ?? "";
+    if(s["contact"] != null) {
+      this.contact = new ContactInfo();
+      contact.phone = s["contact"]["phone"] ?? "";
+      contact.fax = s["contact"]["fax"] ?? "";
+      contact.address = s["contact"]["address"] ?? "";
+      contact.address2 = s["contact"]["address2"] ?? "";
+      contact.city = s["contact"]["city"] ?? "";
+      contact.province = s["contact"]["province"] ?? "";
+      contact.country = s["contact"]["country"] ?? "";
+      contact.zip = s["contact"]["zip"] ?? "";
+      contact.email = s["contact"]["email"] ?? "";
+    }
 
     // Organizers
     this.organizers = [];
@@ -141,7 +145,7 @@ class MFEvent {
 
   MFEvent.fromSnapshotEntry(var s) {
     //print(s);
-    competitionId = (s["competitionId"]).toString();
+    id = (s["id"]).toString();
     eventTitle = s["eventTitle"];
     thumbnail = s["imgFilename"];
     thumbnailBg = s["thumbnailBg"];
@@ -159,7 +163,7 @@ class MFEvent {
 
   toJson() {
     return {
-      "competitionId": competitionId,
+      "id": id,
       "eventTitle": eventTitle,
       "thumbnail": thumbnail,
       "thumbnailBg": thumbnailBg,

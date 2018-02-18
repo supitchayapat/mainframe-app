@@ -5,6 +5,7 @@ import 'package:myapp/src/screen/checkout_entry.dart' as checkout;
 import 'package:myapp/src/screen/event_registration.dart' as reg;
 
 var participantEntries;
+var eventEntries;
 
 class entry_summary extends StatefulWidget {
   @override
@@ -44,21 +45,53 @@ class _entry_summaryState extends State<entry_summary> {
   }
 
   Widget generateContentItem(eventParticipant, Map entries){
+    //print("key: $eventParticipant");
+    //print(entries);
     List<Widget> _children = [];
     entries.forEach((key, val){
       double _price = EntryFormUtil.getPriceFromForm(_entryForms[key], eventParticipant.user, eventParticipant.type);
-      //print("price: $_price");
+      //print("price from form: \$${_price}");
+      _price = _price * val;
+      //print("$key: ${EntryFormUtil.isPaid(eventEntries, key)}");
+      //print("price * entries: ${_price/val} * ${val} = $_price");
+      Widget _priceText = new Text("Fee: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0));
+      if(EntryFormUtil.isPaid(eventEntries, key)) {
+        _priceText = new Text("Paid: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)));
+      }
+
+      new Table(children: <TableRow>[],);
       _children.add(
           new Row(
             children: <Widget>[
               new Expanded(child: new Text(eventParticipant.name, style: new TextStyle(fontSize: 22.0))),
-              new Text("Fee: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0))
+              _priceText
             ],
           )
       );
       // add to total
-      _total += _price;
-      _children.add(new Text(key, style: new TextStyle(fontFamily: "Montserrat-Light")));
+      if(!EntryFormUtil.isPaid(eventEntries, key)) {
+        _total += _price;
+      }
+      _children.add(
+        new Wrap(
+          children: <Widget>[
+            new Text(key, style: new TextStyle(fontFamily: "Montserrat-Light")),
+            /*new Container(
+              decoration: new BoxDecoration(
+                  borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                  color: Colors.white,
+                  border: new Border.all(
+                    width: 2.0,
+                    color: const Color(0xFF313746),
+                    style: BorderStyle.solid,
+                  ),
+              ),
+              margin: const EdgeInsets.only(left: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: new Text("Entries: ${val}", style: new TextStyle(fontFamily: "Montserrat-Light", color: Colors.black, fontWeight: FontWeight.bold)),
+            )*/
+          ],
+        ));
       _children.add(new Padding(padding: const EdgeInsets.only(bottom: 20.0)));
     });
 
@@ -109,17 +142,19 @@ class _entry_summaryState extends State<entry_summary> {
               ),
               new InkWell(
                 onTap: (){
-                  checkout.totalAmount = _total;
-                  Navigator.of(context).pushNamed("/checkoutEntry");
+                  if(_total > 0.0) {
+                    checkout.totalAmount = _total;
+                    Navigator.of(context).pushNamed("/checkoutEntry");
+                  }
                 },
-                child: new Container(
+                child: _total > 0 ? new Container(
                   decoration: new BoxDecoration(
                     image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
                   ),
                   width: 115.0,
                   height: 40.0,
                   child: new Center(child: new Text("Pay Fees", style: new TextStyle(fontSize: 17.0))),
-                ),
+                ) : new Wrap(),
               )
             ],
           ),

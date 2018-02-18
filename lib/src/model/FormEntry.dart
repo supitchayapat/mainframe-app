@@ -141,17 +141,47 @@ class FormParticipant {
   int get hashCode => hash2(code.hashCode, price.hashCode);
 }
 
+class FormPriceRange {
+  double content;
+  int max;
+  int min;
+
+  FormPriceRange({this.content, this.max, this.min});
+
+  FormPriceRange.fromSnapshot(var s) {
+    content = (s["content"]).toDouble();
+    min = s["min"];
+    max = s["max"];
+  }
+
+  toJson() {
+    return {
+      "content": content,
+      "min": min,
+      "max": max,
+    };
+  }
+}
+
 class FormPrice {
   int id;
-  int content;
+  double content;
   String type;
+  Set<FormPriceRange> row;
 
   FormPrice({this.id, this.content, this.type});
 
   FormPrice.fromSnapshot(var s) {
     id = s["id"];
-    content = s["content"];
+    content = (s["content"])?.toDouble();
     type = s["type"];
+
+    if(s["row"] != null) {
+      row = new Set();
+      s["row"].forEach((_row){
+        row.add(new FormPriceRange.fromSnapshot(_row));
+      });
+    }
   }
 
   toJson() {
@@ -266,8 +296,8 @@ class FormHorizontal {
 
 
 class FormStructure {
-  List<FormVertical> horizontals;
-  List<FormHorizontal> verticals;
+  List<FormHorizontal> horizontals;
+  List<FormVertical> verticals;
 
   FormStructure({this.horizontals, this.verticals});
 

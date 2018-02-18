@@ -11,6 +11,7 @@ import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
+import 'package:myapp/src/screen/GroupDance.dart' as group;
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -161,6 +162,13 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         });
       }
       Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
+    } else if(participant.participantType == "group") {
+      if(group.formParticipant.members == null)
+        group.formParticipant.members = new Set();
+      setState((){
+        group.formParticipant.members.add(usr);
+        Navigator.maybePop(context);
+      });
     } else {
       Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
     }

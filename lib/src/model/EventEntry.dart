@@ -5,6 +5,7 @@ import 'package:myapp/src/model/FormEntry.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 import 'package:myapp/src/freeform/ShowDanceSolo.dart';
+import 'package:stripe_plugin/stripe_plugin.dart';
 
 class EventEntry {
   final formatterSrc = new DateFormat("yyyy-MM-dd");
@@ -14,9 +15,11 @@ class EventEntry {
   dynamic participant;
   List<LevelEntry> levels;
   dynamic freeForm;
+  StripeCard payment;
+
   int danceEntries;
 
-  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm});
+  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm, this.payment});
 
   EventEntry.fromSnapshot(var s) {
     event = new MFEvent.fromSnapshotEntry(s["event"]);
@@ -24,7 +27,9 @@ class EventEntry {
     if(s["participant"] != null && s["participant"]["coupleName"] != null) {
       participant = new Couple.fromSnapshot(s["participant"]);
     }
-    else if(s["participant"] != null) {
+    else if(s["participant"] != null && s["participant"]["groupName"] != null) {
+      participant = new Group.fromSnapshot(s["participant"]);
+    } else if(s["participant"] != null) {
       participant = new User.fromDataSnapshot(s["participant"]);
     }
     if(s["levels"] != null) {
@@ -41,18 +46,29 @@ class EventEntry {
       //print("FREEFORM: ${freeForm.toJson()}");
     }
     else if (formEntry.type == FormType.GROUP) {
-      freeForm = null;
+      freeForm = s["freeForm"];
+    }
+
+    if(s["payment"] != null) {
+      payment = new StripeCard.fromSnapshot(s["payment"]);
     }
   }
 
   toJson() {
+    var _freeFormData;
+    if(freeForm is ShowDanceSolo)
+      _freeFormData = freeForm?.toJson();
+    else
+      _freeFormData = freeForm;
+
     return {
       "event": event.toJson(),
       "form": formEntry.toJson(),
       "participant": participant.toJson(),
       "danceEntries": danceEntries,
-      "freeForm": freeForm.toJson(),
+      "freeForm": _freeFormData,
       "levels": levels?.map((val) => val?.toJson())?.toList(),
+      "payment": payment?.toJson(),
     };
   }
 }

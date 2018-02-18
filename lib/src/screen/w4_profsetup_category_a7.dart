@@ -9,6 +9,7 @@ import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
+import 'package:myapp/src/screen/GroupDance.dart' as group;
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -84,6 +85,13 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
             });
           }
           Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
+        } else if(participant.participantType == "group") {
+          if(group.formParticipant.members == null)
+            group.formParticipant.members = new Set();
+          setState((){
+            group.formParticipant.members.add(_user);
+            Navigator.of(context).popUntil(ModalRoute.withName("/entryGroupForm"));
+          });
         } else {
           Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
         }

@@ -7,10 +7,46 @@ import 'package:myapp/src/model/User.dart';
 
 class EntryFormUtil {
 
+  static bool _between(x, min, max) {
+    if (x >= min && x <= max) {
+      return true;
+    }
+    return false;
+  }
+
+  static bool isPaid(eventEntries, keyValue) {
+    //for (Iterator iter = eventEntries.iterator; iter.moveNext();) {
+    for(var _entry in eventEntries.values) {
+      //var _entry = iter.current;
+      if(_entry?.formEntry?.name == keyValue) {
+        if(_entry?.payment != null) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   static double getPriceFromForm(priceMap, participant, type) {
+    //print(priceMap);
     FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);
     var _price = priceMap[(userCode.toString().replaceAll("FormParticipantCode.", "")).replaceAll("_", "-")];
-    return (_price.content).toDouble();
+    //print(participant.toJson());
+    //print(_price.toJson());
+    if(_price?.row != null) {
+      if(userCode == FormParticipantCode.GROUP) {
+        int _numParticipants = participant.members.length;
+        for(var _row in _price.row) {
+          if(_between(_numParticipants, _row.min, _row.max)) {
+            return _row.content;
+          }
+        }
+      }
+      else { // price range unknown
+        return 0.0;
+      }
+    }
+    return _price?.content != null ? _price.content : 0.00;
   }
 
   static bool isFormApplicable(FormEntry form, participant, type) {

@@ -26,12 +26,40 @@ class Couple {
   toJson() {
     return {
       "coupleName": coupleName,
-      "couple": couple.map((val) => val.toJson()).toList(),
+      "couple": couple?.map((val) => val?.toJson())?.toList(),
     };
   }
 
   bool operator ==(o) => o is Couple && o.coupleName == coupleName && o.couple[0]?.last_name == couple[0]?.last_name && o.couple[1]?.last_name == couple[1]?.last_name;
   int get hashCode => hash2(coupleName.hashCode, couple.hashCode);
+}
+
+class Group {
+  int groupNumber;
+  String groupName;
+  Set<User> members;
+
+  Group({this.groupName, this.groupNumber, this.members});
+
+  Group.fromSnapshot(var s) {
+    groupNumber = s["groupNumber"];
+    groupName = s["groupName"];
+    if(s["members"]?.length != null && s["members"].length > 0) {
+      members = new Set();
+      var _members = s["members"];
+      _members.forEach((member){
+        members.add(new User.fromDataSnapshot(member));
+      });
+    }
+  }
+
+  toJson() {
+    return {
+      "groupName": groupName,
+      "groupNumber": groupNumber,
+      "members": members?.map((val) => val?.toJson())?.toList(),
+    };
+  }
 }
 
 class User {

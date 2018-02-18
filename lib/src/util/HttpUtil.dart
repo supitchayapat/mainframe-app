@@ -74,12 +74,4 @@ class MFHttpUtil {
     print(resp.body);
     return resp;
   }
-
-  static createStripeToken() {
-    /*StripePlugin.createToken("4242-4242-4242-4242", "12", "2019", "123", "pk_test_I3QbZv331ioLsVDcw4LXxM82")
-        .then((token){
-      print("API TOKEN ID: $token");
-    });*/
-    PaymentDao.createPayment();
-  }
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 
 var participantType;
+var groupCounter;
+var participants;
 
 class participant_list extends StatefulWidget {
   @override
@@ -50,6 +54,16 @@ class _participant_listState extends State<participant_list> {
         });
       });
     }).then((listener){coupleListener=listener;});
+
+    // get group counter from list
+    int _ctr = 0;
+    participants.forEach((_entryVal){
+      //print(_entryVal.type);
+      if(_entryVal?.type != null && _entryVal?.type == FormParticipantType.GROUP) {
+        _ctr = _entryVal?.user?.groupNumber > _ctr ? _entryVal?.user?.groupNumber : _ctr;
+      }
+    });
+    groupCounter = _ctr;
   }
 
   @override
@@ -155,6 +169,36 @@ class _participant_listState extends State<participant_list> {
             ),
           ),
           child: new Text("Create New Couple Participant...", style: new TextStyle(fontSize: 18.0)),
+        ),
+      ),
+    ));
+
+    _participants.add(new InkWell(
+      onTap: () {
+        setState((){
+          groupCounter = groupCounter != null ? groupCounter+1 : 1;
+          registration.participant = {
+            "name": "Group ($groupCounter)",
+            "user": new Group(groupName: "Group ($groupCounter)", groupNumber: groupCounter)
+          };
+        });
+        Navigator.of(context).maybePop();
+      },
+      child: new Container(
+        padding: const EdgeInsets.symmetric(vertical: 1.0),
+        decoration: new BoxDecoration(
+          border: const Border(
+              bottom: const BorderSide(width: 1.0, color: const Color(0xFF53617C))
+          ),
+        ),
+        child: new Container(
+          padding: const EdgeInsets.only(left: 50.0, right: 20.0, bottom: 10.0, top: 10.0),
+          decoration: new BoxDecoration(
+            border: const Border(
+                bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
+            ),
+          ),
+          child: new Text("Group Participant", style: new TextStyle(fontSize: 18.0)),
         ),
       ),
     ));

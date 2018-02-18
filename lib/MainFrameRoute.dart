@@ -20,6 +20,8 @@ import 'src/screen/participant_list.dart';
 import 'src/screen/entry_summary.dart';
 import 'src/screen/checkout_entry.dart';
 import 'src/screen/entry_freeform.dart';
+import 'src/screen/GroupDance.dart';
+import 'src/screen/payment_success.dart';
 
 /*
   Author: Art
@@ -115,6 +117,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new entry_freeform(),
         settings: settings,
       );
+    case '/entryGroupForm':
+      return new MainFrameRoute(
+        builder: (_) => new GroupDance(),
+        settings: settings,
+      );
     case '/addPartner':
       return new MainFrameRoute(
         builder: (_) => new AddDancePartner(),
@@ -155,6 +162,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new checkout_entry(),
         settings: settings,
       );
+    case '/paymentSuccess':
+      return new MainFrameRoute(
+        builder: (_) => new payment_success(),
+        settings: settings,
+      );
     default:
       return null;
   }
@@ -175,6 +187,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/emailLogin': (BuildContext context) => new EmailLogin(),
     '/entryForm': (BuildContext context) => new EntryForm(),
     '/entryFreeForm': (BuildContext context) => new entry_freeform(),
+    '/entryGroupForm': (BuildContext context) => new GroupDance(),
     '/addPartner': (BuildContext context) => new AddDancePartner(),
     '/eventInfo': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
@@ -183,5 +196,6 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/participants': (BuildContext context) => new participant_list(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
     '/checkoutEntry': (BuildContext context) => new checkout_entry(),
+    '/paymentSuccess': (BuildContext context) => new payment_success(),
   };
 }
