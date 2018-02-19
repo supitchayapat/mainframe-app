@@ -116,7 +116,7 @@ class _EventDetailsState extends State<EventDetails> {
   Widget _buildSchedule() {
     List<Widget> _scheduleChildren = [];
     _scheduleChildren.add(new Center(
-      child: new Text(eventItem.schedule.title, style: new TextStyle(fontSize: 18.0)),
+      child: new Text("${eventItem?.schedule?.title}", style: new TextStyle(fontSize: 18.0)),
     ));
 
     for(var _sched in eventItem.schedule.schedules) {
@@ -162,6 +162,50 @@ class _EventDetailsState extends State<EventDetails> {
       _floatText = "Results";
     }
 
+    List<PageSelectData> _pages = [];
+    _pages.add(new PageSelectData(
+        tabName: 'Event',
+        description: '',
+        demoWidget: _buildEventInfo(),
+        loadMoreCallback: (){}
+    ));
+
+    if(eventItem?.venue != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Venue',
+          description: '',
+          demoWidget: _buildVenueInfo(),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.contact != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Contact Info',
+          description: '',
+          demoWidget: _buildContactInfo(),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.organizers != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Organizer',
+          description: '',
+          demoWidget: _buildOrganizers(),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.schedule != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Schedule',
+          description: '',
+          demoWidget: _buildSchedule(),
+          loadMoreCallback: (){}
+      ));
+    }
+
     return new Scaffold(
       appBar: new MFAppBar(eventTitle, context),
       body: new Column(
@@ -176,12 +220,15 @@ class _EventDetailsState extends State<EventDetails> {
                 ),
                 //color: Colors.amber,
                 child: new Container(
-                  height: 55.0,
+                  alignment: Alignment.bottomLeft,
+                  //color: Colors.amber,
+                  //height: 55.0,
                   width: 300.0,
                   child: new Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new Text(eventTitle, style: new TextStyle(fontSize: 22.0)),
+                      new Container(child: new Text(eventTitle, style: new TextStyle(fontSize: 22.0))),
                       new Text(eventRange, style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)))
                     ],
                   )
@@ -192,38 +239,7 @@ class _EventDetailsState extends State<EventDetails> {
               ),
           ),
           new Flexible(
-              child: new MFPageSelector(pageWidgets: <PageSelectData>[
-                new PageSelectData(
-                    tabName: 'Event',
-                    description: '',
-                    demoWidget: _buildEventInfo(),
-                    loadMoreCallback: (){}
-                ),
-                new PageSelectData(
-                    tabName: 'Venue',
-                    description: '',
-                    demoWidget: _buildVenueInfo(),
-                    loadMoreCallback: (){}
-                ),
-                new PageSelectData(
-                    tabName: 'Contact Info',
-                    description: '',
-                    demoWidget: _buildContactInfo(),
-                    loadMoreCallback: (){}
-                ),
-                new PageSelectData(
-                    tabName: 'Organizer',
-                    description: '',
-                    demoWidget: _buildOrganizers(),
-                    loadMoreCallback: (){}
-                ),
-                new PageSelectData(
-                    tabName: 'Schedule',
-                    description: '',
-                    demoWidget: _buildSchedule(),
-                    loadMoreCallback: (){}
-                ),
-              ])
+              child: new MFPageSelector(pageWidgets: _pages)
           )
           /*new Flexible(
               child: new MFTabbedComponentDemoScaffold(
