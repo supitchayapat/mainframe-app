@@ -169,6 +169,11 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         group.formParticipant.members.add(usr);
         Navigator.maybePop(context);
       });
+    } else if(participant.participantType == "coach") {
+      setState((){
+        group.formCoach = usr;
+        Navigator.maybePop(context);
+      });
     } else {
       Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
     }

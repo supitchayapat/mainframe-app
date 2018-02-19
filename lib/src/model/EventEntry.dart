@@ -18,8 +18,9 @@ class EventEntry {
   StripeCard payment;
 
   int danceEntries;
+  int paidEntries;
 
-  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm, this.payment});
+  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm, this.payment, this.paidEntries});
 
   EventEntry.fromSnapshot(var s) {
     event = new MFEvent.fromSnapshotEntry(s["event"]);
@@ -40,6 +41,7 @@ class EventEntry {
       });
     }
     danceEntries = s["danceEntries"];
+    paidEntries = s["paidEntries"];
     if(formEntry.type == FormType.SOLO) {
       //print(s["freeForm"]);
       freeForm = new ShowDanceSolo.fromSnapshot(s["freeForm"]);
@@ -47,6 +49,7 @@ class EventEntry {
     }
     else if (formEntry.type == FormType.GROUP) {
       freeForm = s["freeForm"];
+      print("freeForm: $freeForm");
     }
 
     if(s["payment"] != null) {
@@ -66,6 +69,7 @@ class EventEntry {
       "form": formEntry.toJson(),
       "participant": participant.toJson(),
       "danceEntries": danceEntries,
+      "paidEntries": paidEntries,
       "freeForm": _freeFormData,
       "levels": levels?.map((val) => val?.toJson())?.toList(),
       "payment": payment?.toJson(),

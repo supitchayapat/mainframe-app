@@ -221,6 +221,7 @@ class _event_registrationState extends State<event_registration> {
                                   freeFormScreen.formPushId = _pushId;
                                 } else {
                                   groupFormScreen.formData = _entryVal.freeForm;
+                                  print("reg: ${_entryVal.freeForm}");
                                   groupFormScreen.formPushId = _pushId;
                                 }
                                 hasDataEntry = true;
@@ -269,6 +270,7 @@ class _event_registrationState extends State<event_registration> {
                           else {
                             groupFormScreen.formEntry = val;
                             groupFormScreen.formParticipant = _evtParticipant.user;
+                            groupFormScreen.formCoach = null;
                             Navigator.of(context).pushNamed("/entryGroupForm");
                           }
                         },

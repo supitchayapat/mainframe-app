@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/widget/MFPageSelector.dart';
 import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 
 var eventItem;
@@ -112,6 +113,45 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
+  Widget _buildSchedule() {
+    List<Widget> _scheduleChildren = [];
+    _scheduleChildren.add(new Center(
+      child: new Text(eventItem.schedule.title, style: new TextStyle(fontSize: 18.0)),
+    ));
+
+    for(var _sched in eventItem.schedule.schedules) {
+      _scheduleChildren.add(new Container(
+        //color: Colors.amber,
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            new Padding(padding: const EdgeInsets.only(bottom: 5.0), child: new Text(_sched.headerName, style: new TextStyle(fontSize: 16.0))),
+            new Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: new Column(
+                  //mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _sched.timedata.map((_timedata){
+                    return new Container(
+                      child: new Text("(${(_timedata?.timeValue != null && _timedata.timeValue.isNotEmpty) ? _timedata.timeValue : "--:--" })  ${_timedata.description}"),
+                    );
+                  }).toList(),
+                ),
+            )
+          ],
+        ),
+      ));
+    }
+
+    return new Padding(
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _scheduleChildren,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
@@ -134,6 +174,7 @@ class _EventDetailsState extends State<EventDetails> {
                         fit: BoxFit.cover
                     )
                 ),
+                //color: Colors.amber,
                 child: new Container(
                   height: 55.0,
                   width: 300.0,
@@ -151,6 +192,40 @@ class _EventDetailsState extends State<EventDetails> {
               ),
           ),
           new Flexible(
+              child: new MFPageSelector(pageWidgets: <PageSelectData>[
+                new PageSelectData(
+                    tabName: 'Event',
+                    description: '',
+                    demoWidget: _buildEventInfo(),
+                    loadMoreCallback: (){}
+                ),
+                new PageSelectData(
+                    tabName: 'Venue',
+                    description: '',
+                    demoWidget: _buildVenueInfo(),
+                    loadMoreCallback: (){}
+                ),
+                new PageSelectData(
+                    tabName: 'Contact Info',
+                    description: '',
+                    demoWidget: _buildContactInfo(),
+                    loadMoreCallback: (){}
+                ),
+                new PageSelectData(
+                    tabName: 'Organizer',
+                    description: '',
+                    demoWidget: _buildOrganizers(),
+                    loadMoreCallback: (){}
+                ),
+                new PageSelectData(
+                    tabName: 'Schedule',
+                    description: '',
+                    demoWidget: _buildSchedule(),
+                    loadMoreCallback: (){}
+                ),
+              ])
+          )
+          /*new Flexible(
               child: new MFTabbedComponentDemoScaffold(
                 demos: <MFComponentDemoTabData>[
                   new MFComponentDemoTabData(
@@ -179,7 +254,7 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                 ],
               )
-          )
+          )*/
         ],
       ),
       floatingActionButton: new InkWell(

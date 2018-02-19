@@ -35,6 +35,82 @@ class ContactInfo {
     this.city, this.province, this.country, this.zip, this.email});
 }
 
+class TimeData {
+  String description;
+  String timeValue;
+  int tvalOrder;
+
+  TimeData({this.description, this.timeValue, this.tvalOrder});
+
+  TimeData.fromSnapshot(var s) {
+    description = s["description"];
+    timeValue = s["timeValue"];
+    tvalOrder = s["tvalOrder"];
+  }
+
+  toJson() {
+    return {
+      "description": description,
+      "timeValue": timeValue,
+      "tvalOrder": tvalOrder,
+    };
+  }
+}
+
+class Schedule {
+  int hdrOrder;
+  String headerName;
+  List<TimeData> timedata;
+
+  Schedule({this.hdrOrder, this.headerName, this.timedata});
+
+  Schedule.fromSnapshot(var s) {
+    hdrOrder = s["hdrOrder"];
+    headerName = s["headerName"];
+    if(s["timedata"] != null && s["timedata"].length > 0) {
+      timedata = [];
+      for(var _timeData in s["timedata"]) {
+        timedata.add(new TimeData.fromSnapshot(_timeData));
+      }
+    }
+  }
+
+  toJson() {
+    return {
+      "hdrOrder": hdrOrder,
+      "headerName": headerName,
+      "timedata": timedata?.map((val) => val?.toJson())?.toList(),
+    };
+  }
+}
+
+class EventSchedule {
+  int id;
+  String title;
+  List<Schedule> schedules;
+
+  EventSchedule({this.id, this.title, this.schedules});
+  
+  EventSchedule.fromSnapshot(var s) {
+    id = s["id"];
+    title = s["title"];
+    if(s["schedules"] != null && s["schedules"].length > 0) {
+      schedules = [];
+      for(var _schedule in s["schedules"]) {
+        schedules.add(new Schedule.fromSnapshot(_schedule));
+      }
+    }
+  }
+
+  toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "schedules": schedules?.map((val) => val?.toJson())?.toList(),
+    };
+  }
+}
+
 class MFEvent {
 
   final formatterOut = new DateFormat("MMM dd");
@@ -57,6 +133,7 @@ class MFEvent {
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
   List<FormEntry> formEntries;
+  EventSchedule schedule;
 
   MFEvent({this.id, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
 
@@ -140,6 +217,10 @@ class MFEvent {
         formEntries.sort((a, b) => (a.order).compareTo(b.order));
         print(entry.toJson());
       });
+    }
+    if(s["schedule"] != null) {
+      schedule = new EventSchedule.fromSnapshot(s["schedule"]);
+      //print(schedule.toJson());
     }
   }
 

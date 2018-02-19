@@ -5,6 +5,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/model/User.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
 
@@ -12,6 +13,7 @@ var formEntry;
 var formParticipant;
 var formData;
 var formPushId;
+var formCoach;
 
 class GroupDance extends StatefulWidget {
   @override
@@ -21,19 +23,23 @@ class GroupDance extends StatefulWidget {
 class _GroupDanceState extends State<GroupDance> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  TextEditingController _danceCtrl = new TextEditingController();
   String titlePage = "";
-  HashMap<String, String> _dataMap = new HashMap<String, String>();
+  HashMap<String, dynamic> _dataMap = new HashMap<String, dynamic>();
 
   @override
   void initState() {
     super.initState();
+    _dataMap = new HashMap<String, String>();
 
     if (formEntry != null && formEntry.name != null) {
       titlePage = formEntry.name;
     }
 
     if(formData != null) {
+      print("formData: $formData");
       _dataMap = formData;
+      _danceCtrl.text = _dataMap["danceTitle"];
     }
   }
 
@@ -47,28 +53,42 @@ class _GroupDanceState extends State<GroupDance> {
       else {
         Navigator.of(context).maybePop();
       }
+    } else {
+      Navigator.of(context).maybePop();
     }
   }
 
   void _handleSaving() {
-    EventEntry entry = new EventEntry(
-        formEntry: formEntry,
-        event: registration.eventItem,
-        participant: formParticipant,
-        levels: [],
-        danceEntries: 1,
-        freeForm: _dataMap
-    );
-    if(formPushId != null) {
-      EventEntryDao.updateEventEntry(formPushId, entry);
-    } else {
-      EventEntryDao.saveEventEntry(entry);
+    if((_dataMap["danceTitle"] != null && _dataMap["danceTitle"].isNotEmpty)
+        && _dataMap["danceCoach"] != null) {
+      print("saving datamap: $_dataMap");
+
+      if(_dataMap["danceCoach"]?.toJson() != null) {
+        _dataMap["danceCoach"] = _dataMap["danceCoach"].toJson();
+      }
+
+      EventEntry entry = new EventEntry(
+          formEntry: formEntry,
+          event: registration.eventItem,
+          participant: formParticipant,
+          levels: [],
+          danceEntries: 1,
+          freeForm: _dataMap
+      );
+      if(formPushId != null) {
+        EventEntryDao.updateEventEntry(formPushId, entry);
+      } else {
+        EventEntryDao.saveEventEntry(entry);
+      }
+      Navigator.of(context).maybePop();
     }
-    Navigator.of(context).maybePop();
+    else {
+      showMainFrameDialog(context, "Save Entry Failed", "Must assign Dance Coach and Dance Title.");
+    }
   }
 
   List<Widget> _generateGroupMembers() {
-    if(formParticipant?.members != null) {
+    if(formParticipant?.members != null && formParticipant?.members?.length > 0) {
       return formParticipant.members.map((member){
         return new Container(
           padding: const EdgeInsets.all(5.0),
@@ -212,6 +232,89 @@ class _GroupDanceState extends State<GroupDance> {
           )
       ),
     ));
+
+    // dance coach
+    if(formCoach != null) {
+      if (!_dataMap.containsKey("danceCoach"))
+        _dataMap.putIfAbsent("danceCoach", () => formCoach);
+      else
+        _dataMap["danceCoach"] = formCoach;
+    }
+    else if(formCoach == null && _dataMap["danceCoach"] != null) {
+      setState((){
+        formCoach = new User.fromDataSnapshot(_dataMap["danceCoach"]);
+      });
+    }
+    print(_dataMap);
+
+    _children.add(
+      new Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(top: 10.0),
+        child: new Text("Dance Coach", style: new TextStyle(fontSize: 18.0)),
+      ),
+    );
+    _children.add(new Container(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: new Container(
+        decoration: new BoxDecoration(
+            borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+            border: new Border.all(
+              width: 2.0,
+              color: const Color(0xFF313746),
+              style: BorderStyle.solid,
+            )
+        ),
+        child: new MaterialButton(
+          padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 10.0, left: 20.0),
+          minWidth: 5.0, height: 5.0,
+          color: Colors.white,
+          onPressed: () {
+            participantList.participantType = "coach";
+            Navigator.of(context).pushNamed("/addPartner");
+          },
+          child: new Container(
+            alignment: Alignment.centerLeft,
+            child: new Text(formCoach == null ? "ASSIGN" : "${formCoach.first_name} ${formCoach.last_name}",
+              style: new TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black
+              ),
+            ),
+          )
+        ),
+      )
+    ));
+
+    // dance title
+    _children.add(
+      new Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(top: 10.0),
+        child: new Text("Dance Title", style: new TextStyle(fontSize: 18.0)),
+      ),
+    );
+    _children.add(
+      new Container(
+        color: Colors.white,
+        alignment: Alignment.centerLeft,
+        margin: const EdgeInsets.only(top: 10.0),
+        padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 10.0, left: 20.0),
+        child: new TextField(
+          controller: _danceCtrl,
+          style: new TextStyle(color: Colors.black, fontSize: 18.0),
+          decoration: null,
+          onChanged: (String val) {
+            setState((){
+              if(!_dataMap.containsKey("danceTitle"))
+                _dataMap.putIfAbsent("danceTitle", () => val);
+              else
+                _dataMap["danceTitle"] = val;
+            });
+          },
+        ),
+      ),
+    );
 
     // generate inputs
     _children.addAll(_generateInputs());

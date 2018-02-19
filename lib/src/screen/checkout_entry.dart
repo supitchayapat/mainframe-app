@@ -47,6 +47,7 @@ class _checkout_entryState extends State<checkout_entry> {
         if(val?.payment == null) {
           // pay this entry
           val.payment = data;
+          val.paidEntries = val?.danceEntries;
           EventEntryDao.updateEventEntry(key, val);
         }
       });

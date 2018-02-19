@@ -92,6 +92,11 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
             group.formParticipant.members.add(_user);
             Navigator.of(context).popUntil(ModalRoute.withName("/entryGroupForm"));
           });
+        } else if(participant.participantType == "coach") {
+          setState((){
+            group.formCoach = _user;
+            Navigator.of(context).popUntil(ModalRoute.withName("/entryGroupForm"));
+          });
         } else {
           Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));
         }
