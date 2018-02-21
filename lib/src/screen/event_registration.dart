@@ -216,15 +216,19 @@ class _event_registrationState extends State<event_registration> {
                                 if(val.type == FormType.STANDARD) {
                                   formScreen.formData = _entryVal.levels;
                                   formScreen.formPushId = _pushId;
+                                  hasDataEntry = true;
                                 } else if(val.type == FormType.SOLO) {
                                   freeFormScreen.formData = _entryVal.freeForm;
                                   freeFormScreen.formPushId = _pushId;
+                                  hasDataEntry = true;
                                 } else {
-                                  groupFormScreen.formData = _entryVal.freeForm;
-                                  print("reg: ${_entryVal.freeForm}");
-                                  groupFormScreen.formPushId = _pushId;
+                                  if(_entryItems[val.name] != null) {
+                                    groupFormScreen.formData = _entryVal.freeForm;
+                                    print("reg: ${_entryVal.freeForm}");
+                                    groupFormScreen.formPushId = _pushId;
+                                    hasDataEntry = true;
+                                  }
                                 }
-                                hasDataEntry = true;
                               }
                             });
                           }

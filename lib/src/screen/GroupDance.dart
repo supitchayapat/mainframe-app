@@ -25,7 +25,7 @@ class _GroupDanceState extends State<GroupDance> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   TextEditingController _danceCtrl = new TextEditingController();
   String titlePage = "";
-  HashMap<String, dynamic> _dataMap = new HashMap<String, dynamic>();
+  HashMap<String, String> _dataMap = new HashMap<String, dynamic>();
 
   @override
   void initState() {
@@ -39,6 +39,9 @@ class _GroupDanceState extends State<GroupDance> {
     if(formData != null) {
       print("formData: $formData");
       _dataMap = formData;
+      if(_dataMap.containsKey("danceCoach")) {
+        formCoach = new User.fromDataSnapshot(_dataMap["danceCoach"]);
+      }
       _danceCtrl.text = _dataMap["danceTitle"];
     }
   }
@@ -60,12 +63,12 @@ class _GroupDanceState extends State<GroupDance> {
 
   void _handleSaving() {
     if((_dataMap["danceTitle"] != null && _dataMap["danceTitle"].isNotEmpty)
-        && _dataMap["danceCoach"] != null) {
+        && formCoach != null) {
       print("saving datamap: $_dataMap");
 
-      if(_dataMap["danceCoach"]?.toJson() != null) {
-        _dataMap["danceCoach"] = _dataMap["danceCoach"].toJson();
-      }
+      Map freeform = {};
+      freeform.addAll(_dataMap);
+      freeform["danceCoach"] = formCoach.toJson();
 
       EventEntry entry = new EventEntry(
           formEntry: formEntry,
@@ -73,18 +76,27 @@ class _GroupDanceState extends State<GroupDance> {
           participant: formParticipant,
           levels: [],
           danceEntries: 1,
-          freeForm: _dataMap
+          freeForm: freeform
       );
       if(formPushId != null) {
         EventEntryDao.updateEventEntry(formPushId, entry);
       } else {
         EventEntryDao.saveEventEntry(entry);
       }
+      _clearInputs();
       Navigator.of(context).maybePop();
     }
     else {
       showMainFrameDialog(context, "Save Entry Failed", "Must assign Dance Coach and Dance Title.");
     }
+  }
+
+  void _clearInputs() {
+    formEntry = null;
+    formParticipant = null;
+    formData = null;
+    formPushId = null;
+    formCoach = null;
   }
 
   List<Widget> _generateGroupMembers() {
@@ -234,18 +246,21 @@ class _GroupDanceState extends State<GroupDance> {
     ));
 
     // dance coach
-    if(formCoach != null) {
-      if (!_dataMap.containsKey("danceCoach"))
-        _dataMap.putIfAbsent("danceCoach", () => formCoach);
-      else
-        _dataMap["danceCoach"] = formCoach;
+    //print("before: $_dataMap");
+    /*if(formCoach != null) {
+      if (!_dataMap.containsKey("danceCoach")) {
+        print("formCoach: $formCoach");
+        _dataMap.putIfAbsent("danceCoach", () => 11);
+      } else {
+        _dataMap["danceCoach"] = 11;
+      }
     }
     else if(formCoach == null && _dataMap["danceCoach"] != null) {
       setState((){
         formCoach = new User.fromDataSnapshot(_dataMap["danceCoach"]);
       });
-    }
-    print(_dataMap);
+    }*/
+    //print(_dataMap);
 
     _children.add(
       new Container(
