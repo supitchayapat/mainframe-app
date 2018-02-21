@@ -28,7 +28,7 @@
     STPSourceParams *sourceParams = [STPSourceParams cardParamsWithCard:cardParams];
 
     [[STPAPIClient sharedClient] createSourceWithParams:sourceParams completion:^(STPSource *source, NSError *error) {
-        NSLog(@"IOS: source = %@", source.flow);
+        NSLog(@"IOS: source = %@", @(source.flow));
         if (error) {
             NSLog(@"IOS Error: failed to create token");
             NSLog(@"IOS Error: %@", error.localizedDescription);
@@ -40,7 +40,17 @@
             && source.status == STPSourceStatusChargeable) {
             //[self createBackendChargeWithSourceID:source.stripeID];
             NSLog(@"IOS: token - %@", source.stripeID);
-            result(source.stripeID);
+            NSString *last4 = [NSString stringWithFormat:@"%@", source.cardDetails.last4];
+            NSLog(@"IOS: last 4 - %ld", last4);
+            NSString *brand = [STPCard stringFromBrand:source.cardDetails.brand];
+            NSLog(@"IOS: brand - %@", brand);
+            NSDictionary<NSString *, NSString *> *cardBuilder = @{
+                @"token" : source.stripeID ?: [NSNull null],
+                @"brand" : brand ?: [NSNull null],
+                @"lastdigits" : last4 ?: [NSNull null],
+            };
+            //result(source.stripeID);
+            result(cardBuilder);
         }
         else {
             NSLog(@"IOS: source might have additional auth");
