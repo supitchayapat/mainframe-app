@@ -132,8 +132,24 @@ class _EventDetailsState extends State<EventDetails> {
                   //mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _sched.timedata.map((_timedata){
-                    return new Container(
-                      child: new Text("(${(_timedata?.timeValue != null && _timedata.timeValue.isNotEmpty) ? _timedata.timeValue : "--:--" })  ${_timedata.description}"),
+                    return new Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Container(
+                          //color: Colors.amber,
+                          //margin: const EdgeInsets.only(right: 10.0),
+                          alignment: Alignment.topLeft,
+                          constraints: new BoxConstraints(minWidth: 80.0),
+                          child: new Text((_timedata?.timeValue != null && _timedata.timeValue.isNotEmpty) ? _timedata.timeValue : ""),
+                        ),
+                        new Expanded(
+                            child: new Container(
+                              //color: Colors.amber,
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              child: new Text("${_timedata.description}"),
+                            ),
+                        )
+                      ],
                     );
                   }).toList(),
                 ),
