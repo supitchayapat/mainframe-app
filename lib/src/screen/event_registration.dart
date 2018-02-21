@@ -104,6 +104,10 @@ class _event_registrationState extends State<event_registration> {
               // add participant entries
               String _frmName = _partEntries?.formEntry?.name;
               int _danceEntries = _partEntries?.danceEntries;
+              /*if(_partEntries?.paidEntries != null) {
+                print("paid: ${_partEntries?.paidEntries}");
+                _danceEntries -= _partEntries?.paidEntries;
+              }*/
               Map<String, int> _pe = {};
               if (!_participantEntries.containsKey(_p)) {
                 _pe.putIfAbsent(_frmName, () => _danceEntries);
@@ -472,6 +476,7 @@ class _event_registrationState extends State<event_registration> {
       floatingActionButton: new InkWell(
         onTap: (){
           if(_participantEntries.length > 0) {
+            //print(_participantEntries);
             summary.participantEntries = _participantEntries;
             summary.eventEntries = _eventEntries;
             Navigator.of(context).pushNamed("/registrationSummary");

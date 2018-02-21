@@ -9,4 +9,12 @@ class FormAgeCat {
 
   bool operator ==(o) => o is FormAgeCat && o.age == age && o.catOpen == catOpen && o.catClosed == catClosed;
   int get hashCode => hash2(age.hashCode, catOpen.hashCode);
+
+  toJson() {
+    return {
+      "age": age,
+      "catOpen": catOpen,
+      "catClosed": catClosed,
+    };
+  }
 }

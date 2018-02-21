@@ -106,13 +106,24 @@ class SubCategoryEntry {
   String ageCategory;
   bool catOpen;
   bool catClosed;
-  Map<String, bool> subCategoryMap;
+  Map<String, Map<String, bool>> subCategoryMap;
 
   SubCategoryEntry({this.subCategoryMap, this.catOpen : false, this.catClosed : false, this.ageCategory});
 
   SubCategoryEntry.fromSnapshot(var s) {
     ageCategory = s["ageCategory"];
-    subCategoryMap = s["subCategoryValues"];
+    //subCategoryMap = s["subCategoryValues"];
+    if(s["subCategoryValues"] != null) {
+      subCategoryMap = {};
+      s["subCategoryValues"].forEach((key, val){
+        subCategoryMap.putIfAbsent(key, () {
+          return {
+            "selected": val["selected"],
+            "paid": val["paid"]
+          };
+        });
+      });
+    }
     catOpen = s["catOpen"];
     catClosed = s["catClosed"];
   }
@@ -123,6 +134,25 @@ class SubCategoryEntry {
       "catOpen": catOpen,
       "catClosed": catClosed,
       "subCategoryValues": subCategoryMap
+    };
+  }
+}
+
+class SubCategoryEntryVal {
+  bool selected;
+  bool paid;
+
+  SubCategoryEntryVal({this.selected, this.paid});
+
+  SubCategoryEntryVal.fromSnapshot(var s) {
+    selected = s["selected"];
+    paid = s["paid"];
+  }
+
+  toJson() {
+    return {
+      "selected": selected,
+      "paid": paid,
     };
   }
 }

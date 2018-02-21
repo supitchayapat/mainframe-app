@@ -48,6 +48,17 @@ class _checkout_entryState extends State<checkout_entry> {
           // pay this entry
           val.payment = data;
           val.paidEntries = val?.danceEntries;
+          if(val?.levels != null) {
+            for(var _lvl in val.levels) {
+              for(var _ageMap in _lvl.ageMap) {
+                _ageMap.subCategoryMap.forEach((_k, _v){
+                  if(_v["selected"]) {
+                    _v["paid"] = true;
+                  }
+                });
+              }
+            }
+          }
           EventEntryDao.updateEventEntry(key, val);
         }
       });
@@ -102,9 +113,16 @@ class _checkout_entryState extends State<checkout_entry> {
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/button_mds.png";
     var _totalEntries = 0;
-    summary.participantEntries.forEach((key, val){
+    summary.participantEntries.forEach((key1, val){
       if(val.length > 0) {
-        val.forEach((key, _entCount){
+        val.forEach((key2, _entCount){
+          for(var _entry in summary.eventEntries.values) {
+            if(_entry?.formEntry?.name == key2) {
+              if(_entry?.paidEntries != null) {
+                _entCount -= _entry.paidEntries;
+              }
+            }
+          }
           _totalEntries += _entCount;
         });
       }

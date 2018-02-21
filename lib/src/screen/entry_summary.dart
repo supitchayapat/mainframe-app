@@ -42,6 +42,7 @@ class _entry_summaryState extends State<entry_summary> {
       });
     }
     //print(_entryForms.length);
+    //print(_entryForms);
   }
 
   Widget generateContentItem(eventParticipant, Map entries){
@@ -51,11 +52,25 @@ class _entry_summaryState extends State<entry_summary> {
     entries.forEach((key, val){
       double _price = EntryFormUtil.getPriceFromForm(_entryForms[key], eventParticipant.user, eventParticipant.type);
       //print("price from form: \$${_price}");
-      _price = _price * val;
+      //print("val = $val");
+      var _numEntries;
+      for(var _entry in eventEntries.values) {
+        if(_entry?.formEntry?.name == key) {
+          if(_entry?.paidEntries != null) {
+            _numEntries = val - _entry.paidEntries;
+          }
+        }
+      }
+      //print("$key : $val");
+      if(_price * _numEntries <= 0.0)
+        _price = _price * val;
+      else
+        _price = _price * _numEntries;
       //print("$key: ${EntryFormUtil.isPaid(eventEntries, key)}");
       //print("price * entries: ${_price/val} * ${val} = $_price");
       Widget _priceText = new Text("Fee: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0));
-      if(EntryFormUtil.isPaid(eventEntries, key)) {
+      //if(EntryFormUtil.isPaid(eventEntries, key)) {
+      if(_price * _numEntries <= 0.0) {
         _priceText = new Text("Paid: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)));
       }
 
@@ -69,7 +84,7 @@ class _entry_summaryState extends State<entry_summary> {
           )
       );
       // add to total
-      if(!EntryFormUtil.isPaid(eventEntries, key)) {
+      if(_price * _numEntries > 0.0) {
         _total += _price;
       }
       _children.add(

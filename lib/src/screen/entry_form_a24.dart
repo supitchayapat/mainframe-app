@@ -54,6 +54,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   ScrollController _minLeftScrollController = new ScrollController();
   ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
+  Map<String, Map<String, String>> levelValPaidMap = {};
   Set<EntryFormExclude> excludes = new Set<EntryFormExclude>();
   double rPanelWidth;
   List danceCategories = [];
@@ -258,11 +259,12 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         }
       });
     });*/
-    //print("Data length: ${formData?.length}");
+    //print("Data length: ${formData}");
     //print("pushId: ${formPushId}");
     // build data if formData is not null
     if(formData != null) {
       for(var _lvData in formData) {
+        print(_lvData.toJson());
         String _lvlName = _lvData.levelName;
         Map<String, FormAgeCat> _lvAgeMap = {};
         for(var _subCat in _lvData.ageMap) {
@@ -273,16 +275,35 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               catOpen: _subCat.catOpen,
               catClosed: _subCat.catClosed
           );
-          _lvAgeMap.putIfAbsent(_subCat.ageCategory, () => _ageCat);
+
+          if(!_lvAgeMap.containsKey(_subCat.ageCategory))
+            _lvAgeMap.putIfAbsent(_subCat.ageCategory, () => _ageCat);
+          else {
+            //print("CONTAINS");
+            var _tempAgeCat = _lvAgeMap[_subCat.ageCategory];
+            if(_tempAgeCat.catOpen || _ageCat.catOpen)
+              _tempAgeCat.catOpen = true;
+            if(_tempAgeCat.catClosed || _ageCat.catClosed)
+              _tempAgeCat.catClosed = true;
+            //print(_lvAgeMap[_subCat.ageCategory].toJson());
+          }
           if(_subCat.subCategoryMap != null) {
             Map<String, String> _lvValAgeMap = {};
+            Map<String, String> _lvValPaidMap = {};
             _subCat.subCategoryMap.forEach((_k, _v){
-              if(_v) {
+              //print("$_k : $_v");
+              if(_v["selected"]) {
                 _lvValAgeMap.putIfAbsent(_k, () => _k);
               } else {
                 _lvValAgeMap.putIfAbsent(_k, () => "");
               }
+              if(_v["paid"]) {
+                _lvValPaidMap.putIfAbsent(_k, () => _k);
+              } else {
+                _lvValPaidMap.putIfAbsent(_k, () => "");
+              }
             });
+            //print("lvValAgeMap: $_lvValAgeMap");
             String _catOpenClose = "";
             if(triggerCategory) {
               _catOpenClose = (_subCat.catOpen) ? "O" : "C";
@@ -295,6 +316,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                 levelValMap[_lvlName + "_" + _subCat.ageCategory + _catOpenClose] = _lvValAgeMap;
               }
             }
+            levelValPaidMap.putIfAbsent(_lvlName + "_" + _subCat.ageCategory + _catOpenClose, () => _lvValPaidMap);
           }
         }
         _levelMap.putIfAbsent(_lvlName, () => _lvAgeMap);
@@ -319,6 +341,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           participant: formParticipant,
         );
         int danceEntries = 0;
+        int paidEntries = 0;
         entry.levels = [];
 
         // for vertical levels
@@ -328,44 +351,68 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             levelEntry.levelName = key;
             levelEntry.ageMap = [];
             values.forEach((key2, val) {
-              SubCategoryEntry subEntry = new SubCategoryEntry();
-              subEntry.ageCategory = key2;
-              subEntry.subCategoryMap = {};
               //print("${key}_$key2 levelValMap: ${levelValMap[key+"_"+key2]}");
 
               if (triggerCategory) {
-                subEntry.catOpen = val.catOpen;
-                subEntry.catClosed = val.catClosed;
                 [
                   {"op": "O", "catOC": val.catOpen},
                   {"op": "C", "catOC": val.catClosed}
                 ].forEach((_categ) {
                   if (_categ["catOC"]) {
+                    SubCategoryEntry subEntry = new SubCategoryEntry();
+                    subEntry.ageCategory = key2;
+                    subEntry.subCategoryMap = {};
+                    if(_categ["op"] == "O")
+                      subEntry.catOpen = _categ["catOC"];
+                    else
+                      subEntry.catClosed = _categ["catOC"];
+
                     levelValMap[key + "_" + key2 + _categ["op"]].forEach((key3,
                         value) {
+
+                      bool isPaid = isPaidSubCategory(key + "_" + key2 + _categ["op"], key3);
                       if (value != null && !value.isEmpty) {
-                        subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                        subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": true, "paid": isPaid });
                         danceEntries += 1;
                       } else {
-                        subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                        subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": false, "paid": isPaid });
+                      }
+
+                      if(isPaid) {
+                        paidEntries += 1;
                       }
                     });
+
+                    print(subEntry.toJson());
+
+                    if (subEntry.subCategoryMap.length > 0)
+                      levelEntry.ageMap.add(subEntry);
                   }
                 });
               }
               else {
+                SubCategoryEntry subEntry = new SubCategoryEntry();
+                subEntry.ageCategory = key2;
+                subEntry.subCategoryMap = {};
+
                 levelValMap[key + "_" + key2].forEach((key3, value) {
+                  bool isPaid = isPaidSubCategory(key + "_" + key2, value);
                   if (value != null && !value.isEmpty) {
-                    subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                    subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": true, "paid": isPaid });
                     danceEntries += 1;
                   } else {
-                    subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                    subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": false, "paid": isPaid });
+                  }
+
+                  if(isPaid) {
+                    paidEntries += 1;
                   }
                 });
+
+                if (subEntry.subCategoryMap.length > 0)
+                  levelEntry.ageMap.add(subEntry);
               }
 
-              if (subEntry.subCategoryMap.length > 0)
-                levelEntry.ageMap.add(subEntry);
             });
             if (levelEntry.ageMap.length > 0)
               entry.levels.add(levelEntry);
@@ -386,12 +433,17 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               var _idx = "${val.toLowerCase()}_$key";
               bool _hasCategoryEntry = false;
               levelValMap[_idx].forEach((key3, value) {
+                bool isPaid = isPaidSubCategory(_idx, value);
                 if (value != null && !value.isEmpty) {
-                  subEntry.subCategoryMap.putIfAbsent(key3, () => true);
+                  subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": true, "paid": isPaid });
                   danceEntries += 1;
                   _hasCategoryEntry = true;
                 } else {
-                  subEntry.subCategoryMap.putIfAbsent(key3, () => false);
+                  subEntry.subCategoryMap.putIfAbsent(key3, () => { "selected": false, "paid": isPaid });
+                }
+
+                if(isPaid) {
+                  paidEntries += 1;
                 }
               });
 
@@ -405,6 +457,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         }
 
         entry.danceEntries = danceEntries;
+        entry.paidEntries = paidEntries;
         //print(entry.toJson());
         if (entry.levels.length > 0) {
           if(formPushId != null) {
@@ -571,6 +624,17 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     ];
   }
 
+  bool isPaidSubCategory(idx, headingVal) {
+    if(levelValPaidMap[idx] != null) {
+      if (levelValPaidMap[idx][headingVal] != null &&
+          levelValPaidMap[idx][headingVal].isNotEmpty) {
+        //print("$idx ${levelValPaidMap[idx][headingVal]}");
+        return true;
+      }
+    }
+    return false;
+  }
+
   List<Widget> _buildRightPanelTabs(levels) {
     List<Widget> rightPanelTabs = <Widget>[];
     List<Widget> _rightPanelChildren = <Widget>[];
@@ -608,12 +672,13 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                     EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal, danceCategory: _categ["op"]);
 
                     Radio radioElement = new Radio(
+                        activeColor: isPaidSubCategory(_lvl + "_" + key2 + _categ["op"], headingVal) ? new Color(0xff00e5ff) : Colors.white,
                         value: headingVal,
                         groupValue: levelValMap[_lvl + "_" + key2 +
                             _categ["op"]][headingVal],
                         onChanged: (String radioVal) {
                           //print(radioVal);
-                          if(!excludes.contains(_exclude)) {
+                          if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvl + "_" + key2 + _categ["op"], headingVal)) {
                             setState(() {
                               levelValMap[_lvl + "_" + key2 +
                                   _categ["op"]][headingVal] = radioVal;
@@ -665,10 +730,11 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                 EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal);
 
                 Radio radioElement = new Radio(
+                    activeColor: isPaidSubCategory(_lvl + "_" + key2, headingVal) ? new Color(0xff00e5ff) : Colors.white,
                     value: headingVal,
                     groupValue: levelValMap[_lvl + "_" + key2][headingVal],
                     onChanged: (String radioVal) {
-                      if(!excludes.contains(_exclude)) {
+                      if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvl + "_" + key2, headingVal)) {
                         //print(radioVal);
                         setState(() {
                           levelValMap[_lvl + "_" + key2][headingVal] = radioVal;
@@ -723,11 +789,12 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               EntryFormExclude _exclude = new EntryFormExclude(level: "", age: _lvl, dance: headingVal);
 
               Radio radioElement = new Radio(
+                  activeColor: isPaidSubCategory(_idx, headingVal) ? new Color(0xff00e5ff) : Colors.white,
                   value: headingVal,
                   groupValue: levelValMap[_idx][headingVal],
                   onChanged: (String radioVal) {
                     //print(radioVal);
-                    if(!excludes.contains(_exclude)) {
+                    if(!excludes.contains(_exclude) && !isPaidSubCategory(_idx, headingVal)) {
                       setState(() {
                         levelValMap[_idx][headingVal] = radioVal;
                       });
@@ -852,6 +919,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
     //print(levelValMap);
     //print("levelMap: $_levelMap");
+    //print("paidMap: $levelValPaidMap");
     for(String level in levels) {
       if(!_levelMap.containsKey(level)) {
         _children.add(_buildLevelColumn(level));
