@@ -95,7 +95,14 @@ class _checkout_entryState extends State<checkout_entry> {
             setDefault,
             saveToken, (tokenId) {
           print("The token: ${tokenId?.toJson()}");
-          PaymentDao.submitPayment(tokenId.tokenId, totalAmount.toDouble());
+          // amount must be converted to dollar since it is in cents
+          // lowest amount would be 50 and is equivalent to $0.50
+          // https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+          // total amount * 100
+          double _total = (totalAmount.toDouble() * 100);
+          if(_total <= 50.0)
+            _total = 50.00;
+          PaymentDao.submitPayment(tokenId.tokenId, _total);
         }
         ).catchError((err) {
           print('PAYMENT ERROR.... $err');

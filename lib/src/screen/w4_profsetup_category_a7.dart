@@ -9,6 +9,7 @@ import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
+import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
 
 class ProfileSetupCategory extends StatefulWidget {
@@ -65,10 +66,13 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
         //check wether add as couple or solo participant
         if(participant.participantType == "solo") {
           // save participant
-          saveUserSoloParticipants(_user).then((_val){
+          /*saveUserSoloParticipants(_user).then((_val){
             MainFrameLoadingIndicator.hideLoading(context);
             Navigator.of(context).popUntil(ModalRoute.withName("/participants"));
-          });
+          });*/
+          MainFrameLoadingIndicator.hideLoading(context);
+          solo.participantUser = _user;
+          Navigator.of(context).popUntil(ModalRoute.withName("/soloManagement"));
         }
         else if(participant.participantType == "couple") {
           // navigate couple management screen

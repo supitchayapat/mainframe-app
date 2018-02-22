@@ -22,6 +22,7 @@ import 'src/screen/checkout_entry.dart';
 import 'src/screen/entry_freeform.dart';
 import 'src/screen/GroupDance.dart';
 import 'src/screen/payment_success.dart';
+import 'src/screen/solo_management.dart';
 
 /*
   Author: Art
@@ -147,6 +148,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new couple_management(),
         settings: settings,
       );
+    case '/soloManagement':
+      return new MainFrameRoute(
+        builder: (_) => new solo_management(),
+        settings: settings,
+      );
     case '/participants':
       return new MainFrameRoute(
         builder: (_) => new participant_list(),
@@ -193,6 +199,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
     '/registration': (BuildContext context) => new event_registration(),
     '/coupleManagement': (BuildContext context) => new couple_management(),
+    '/soloManagement': (BuildContext context) => new solo_management(),
     '/participants': (BuildContext context) => new participant_list(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
     '/checkoutEntry': (BuildContext context) => new checkout_entry(),

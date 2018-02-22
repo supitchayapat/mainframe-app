@@ -11,6 +11,7 @@ import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
+import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
 
 class AddDancePartner extends StatefulWidget {
@@ -141,12 +142,14 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   void _handleTapExisting(usr) {
     // TODO: will implement saving of entry form
     if(participant.participantType == "solo") {
-      MainFrameLoadingIndicator.showLoading(context);
+      //MainFrameLoadingIndicator.showLoading(context);
       // save participant
-      saveUserSoloParticipants(usr).then((_val){
+      /*saveUserSoloParticipants(usr).then((_val){
         MainFrameLoadingIndicator.hideLoading(context);
         Navigator.of(context).popUntil(ModalRoute.withName("/participants"));
-      });
+      });*/
+      solo.participantUser = usr;
+      Navigator.of(context).popUntil(ModalRoute.withName("/soloManagement"));
     }
     else if(participant.participantType == "couple") {
       // navigate couple management screen

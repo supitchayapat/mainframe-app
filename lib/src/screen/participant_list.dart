@@ -3,6 +3,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
+import 'package:myapp/src/screen/solo_management.dart' as solo;
 
 var participantType;
 var groupCounter;
@@ -129,7 +130,9 @@ class _participant_listState extends State<participant_list> {
     _participants.add(new InkWell(
       onTap: () {
         participantType = "solo";
-        Navigator.of(context).pushNamed("/addPartner");
+        //Navigator.of(context).pushNamed("/addPartner");
+        solo.participantUser = null;
+        Navigator.of(context).pushNamed("/soloManagement");
       },
       child: new Container(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
