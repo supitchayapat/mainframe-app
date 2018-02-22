@@ -39,6 +39,14 @@ class _EventsWidgetState extends State<EventsWidget> {
   void _renderEvents() {
     _events.forEach((e){
       //print(e.thumbnail);
+      double _padd = 0.0;
+      double _width = 100.0;
+      //print("${e.eventTitle} >> ${e.eventTitle.length}");
+      if(e.eventTitle.length >= 46) {
+        _padd = 10.0;
+        _width = 60.0;
+      }
+
       listTiles.add(
           new InkWell(
               onTap: () {
@@ -55,8 +63,35 @@ class _EventsWidgetState extends State<EventsWidget> {
                     //child: new Image.network(e.thumbnail),
                     child: (_thumbImages != null && _thumbImages.containsKey(e.thumbnail)) ? _thumbImages[e.thumbnail] : new Container()
                 ),
-                title: new ListTileText(e.eventTitle),
-                subtitle: new Column(
+                title: new Container(
+                    //color: Colors.amber,
+                    child: new Wrap(
+                      children: <Widget>[
+                        new Container(
+                          //color: Colors.amber,
+                          constraints: new BoxConstraints(maxHeight: 50.0),
+                          child: new ListTileText(e.eventTitle),
+                        ),
+                        new Wrap(
+                          //crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new Text(e.dateRange,
+                                style: new TextStyle(color: new Color(0xff00e5ff))),
+                            new Container(
+                              //color: Colors.amber,
+                              padding: new EdgeInsets.only(left: _padd),
+                              width: _width,
+                              //padding: const EdgeInsets.only(left: 20.0),
+                              child: new Text(e.year.toString(),
+                                  style: new TextStyle(color: new Color(0xff00e5ff))),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    //child: new ListTileText(e.eventTitle)
+                ),
+                /*subtitle: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(e.dateRange,
@@ -64,7 +99,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                     new Text(e.year.toString(),
                         style: new TextStyle(color: new Color(0xff00e5ff)))
                   ],
-                ),
+                ),*/
                 trailing: e.hasAttended ? new Image.asset(
                   "mainframe_assets/images/attended_before@2x.png",
                   height: 60.0,

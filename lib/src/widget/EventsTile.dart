@@ -186,6 +186,9 @@ class ListTileText extends StatelessWidget {
           fontSize: 14.0
       );
     }
+    if(data.length >= 68) {
+      data = "${data.substring(0, 65)}...";
+    }
     return new Text(data,
         style: style,
         overflow: overflow,
