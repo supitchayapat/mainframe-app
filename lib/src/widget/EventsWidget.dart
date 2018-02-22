@@ -37,10 +37,12 @@ class _EventsWidgetState extends State<EventsWidget> {
   }
 
   void _renderEvents() {
+    double scrnWidth = MediaQuery.of(context).size.width;
+
     _events.forEach((e){
       //print(e.thumbnail);
       double _padd = 0.0;
-      double _width = 100.0;
+      double _width = scrnWidth;//100.0;
       //print("${e.eventTitle} >> ${e.eventTitle.length}");
       if(e.eventTitle.length >= 46) {
         _padd = 10.0;
@@ -65,7 +67,8 @@ class _EventsWidgetState extends State<EventsWidget> {
                 ),
                 title: new Container(
                     //color: Colors.amber,
-                    child: new Wrap(
+                    child: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         new Container(
                           //color: Colors.amber,
