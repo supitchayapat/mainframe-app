@@ -1,6 +1,7 @@
 package com.yourcompany.mframeplugins;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.Context;
 import android.util.Log;
 import android.database.Cursor;
@@ -94,6 +95,12 @@ public class MframePluginsPlugin implements MethodCallHandler {
     if (call.method.equals("getContacts")) {
       ImmutableMap<String, Object> userMap = showContacts();
       result.success(userMap);
+    } else if(call.method.equals("setLandscape")) {
+      this.activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+      result.success("landscape");
+    } else if(call.method.equals("setPortrait")) {
+      this.activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+      result.success("portrait");
     } else {
       result.notImplemented();
     }

@@ -24,4 +24,12 @@ class MframePlugins {
     }
     return _contacts;
   }
+
+  static void setToLandscape() {
+    _channel.invokeMethod('setLandscape');
+  }
+
+  static void setToPortrait() {
+    _channel.invokeMethod('setPortrait');
+  }
 }

@@ -14,6 +14,7 @@ import 'package:myapp/src/model/EventDanceCategory.dart';
 import 'package:myapp/src/model/EventLevel.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
+import 'package:mframe_plugins/mframe_plugins.dart';
 
 const double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
@@ -62,6 +63,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   String _titlePage = "ENTRY FORM";
   bool triggerCategory = false;
   bool isVerticalLvl = false;
+  Map<String, int> subheadingIdx = {};
   Map<String, Color> smoothBgs = {
     "SMOOTH": Colors.amber,
     "RHYTHM": Colors.lightBlueAccent,
@@ -73,6 +75,9 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   void initState() {
     danceCategories = [];
     danceLevels = [];
+
+    // set landscape
+    MframePlugins.setToLandscape();
 
     super.initState();
     if(formEntry != null && formEntry.name != null) {
@@ -327,6 +332,12 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   @override
   Future<Null> handlePopRoute() async {
     print("pop handled");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    MframePlugins.setToPortrait();
   }
 
   Future _handleSaving() async {
@@ -592,32 +603,40 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   }
 
   List<Widget> _buildRightTable() {
+    subheadingIdx = {};
     int idx = 0;
+    int col = 0;
     return <Widget>[
       new Row(
         children: danceCategories.map((danceCategory){
-          return new Column(
-            children: <Widget>[
-              new Container(
-                child: new Text(danceCategory.category.toUpperCase()),
-                alignment: Alignment.bottomCenter,
-                height: 30.0,
-              ),
-              new Row(
-                children: danceCategory.subCategories.map((sub){
-                  //print("idx: $idx mod: "+(idx % 2).toString());
-                  idx += 1;
-                  return new Container(
-                    //color: (idx % 2) != 0 ? Colors.amber : Colors.cyanAccent,
-                    width: subColumnTreshold,
-                    height: 20.0,
-                    alignment: Alignment.center,
-                    child: new Text(sub.subCategory),
-                  );
-                }).toList(),
-              )
-            ],
-            crossAxisAlignment: CrossAxisAlignment.center,
+          //print(col % 2);
+          return new Container(
+            color: (col++ % 2 == 1) ? const Color(0xff1e5484) : Colors.transparent,
+            child: new Column(
+              children: <Widget>[
+                new Container(
+                  //color: Colors.amber,
+                  child: new Text(danceCategory.category.toUpperCase()),
+                  alignment: Alignment.bottomCenter,
+                  height: 30.0,
+                ),
+                new Row(
+                  children: danceCategory.subCategories.map((sub){
+                    //print("idx: $idx mod: "+(idx % 2).toString());
+                    subheadingIdx.putIfAbsent("${danceCategory.code.toUpperCase()} ${sub.subCategory}${sub.id}", () => (col-1) % 2);
+                    idx += 1;
+                    return new Container(
+                      //color: (idx % 2) != 0 ? Colors.amber : Colors.cyanAccent,
+                      width: subColumnTreshold,
+                      height: 20.0,
+                      alignment: Alignment.center,
+                      child: new Text(sub.subCategory),
+                    );
+                  }).toList(),
+                )
+              ],
+              crossAxisAlignment: CrossAxisAlignment.center,
+            ),
           );
         }).toList(),
       )
@@ -635,21 +654,76 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     return false;
   }
 
+  Widget _generateRadioContainer(_lvlValMapIdx, headingVal, _exclude, _key) {
+    if (levelValMap[_lvlValMapIdx] == null) {
+      levelValMap[_lvlValMapIdx] = {};
+    }
+    levelValMap[_lvlValMapIdx].putIfAbsent(headingVal, () => "");
+
+    Radio _rPanelRadio = new Radio(
+        activeColor: isPaidSubCategory(_lvlValMapIdx, headingVal) ? new Color(0xff00e5ff) : Colors.white,
+        value: headingVal,
+        groupValue: levelValMap[_lvlValMapIdx][headingVal],
+        onChanged: (String radioVal) {
+          if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvlValMapIdx, headingVal)) {
+            setState(() {
+              levelValMap[_lvlValMapIdx][headingVal] = radioVal;
+            });
+          }
+        }
+    );
+
+    Widget _container = new Container(
+        width: subColumnTreshold,
+        color: subheadingIdx["${_key} ${headingVal}"] == 1 ? const Color(0xff1e5484) : Colors.transparent,
+        child: new InkWell(
+          onTap: () {
+            if(!excludes.contains(_exclude)) {
+              String catVal = levelValMap[_lvlValMapIdx][headingVal];
+              if (!catVal.isEmpty && catVal == headingVal) {
+                catVal = "";
+              } else {
+                catVal = headingVal;
+              }
+              _rPanelRadio.onChanged(catVal);
+            }
+          },
+          child: new Container(
+            alignment: Alignment.center,
+            height: 42.0,
+            child: new Container(
+              alignment: Alignment.center,
+              child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : _rPanelRadio,
+            ),
+          ),
+        )
+    );
+
+    return _container;
+  }
+
   List<Widget> _buildRightPanelTabs(levels) {
     List<Widget> rightPanelTabs = <Widget>[];
     List<Widget> _rightPanelChildren = <Widget>[];
-    List<String> subHeadingValues = <String>[];
+    //List<String> subHeadingValues = <String>[];
+    Map<String, List<String>> subHeadingValues = {};
     List<Widget> _rightPanelTabColumns = <Widget>[];
 
     if(danceCategories != null) {
       _rightPanelTabColumns.addAll(_buildRightTable());
 
       danceCategories.forEach((danceCategory) {
+        List<String> _subValues = [];
         danceCategory.subCategories.forEach((val) {
-          subHeadingValues.add(val.subCategory + val.id.toString());
+          _subValues.add(val.subCategory + val.id.toString());
+          //subHeadingValues.add(val.subCategory + val.id.toString());
         });
+        subHeadingValues.putIfAbsent(danceCategory.code.toUpperCase(), () => _subValues);
       });
     }
+
+    //print(subheadingIdx);
+    //print(subHeadingValues);
 
     for(var _lvl in levels) {
       if(isVerticalLvl) {
@@ -660,180 +734,45 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               {"op": "C", "catOC": val.catClosed}
             ].forEach((_categ) {
               if (_categ["catOC"]) {
-                _rightPanelChildren.add(new Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: subHeadingValues.map((headingVal) {
-                    if (levelValMap[_lvl + "_" + key2 + _categ["op"]] == null) {
-                      levelValMap[_lvl + "_" + key2 + _categ["op"]] = {};
-                    }
-                    levelValMap[_lvl + "_" + key2 + _categ["op"]].putIfAbsent(
-                        headingVal, () => "");
-                    //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
+                List<Widget> _rPanelContainers = [];
+                subHeadingValues.forEach((_key, subValues){
+                  for(var headingVal in subValues) {
+                    String _lvlValMapIdx = _lvl + "_" + key2 + _categ["op"];
                     EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal, danceCategory: _categ["op"]);
-
-                    Radio radioElement = new Radio(
-                        activeColor: isPaidSubCategory(_lvl + "_" + key2 + _categ["op"], headingVal) ? new Color(0xff00e5ff) : Colors.white,
-                        value: headingVal,
-                        groupValue: levelValMap[_lvl + "_" + key2 +
-                            _categ["op"]][headingVal],
-                        onChanged: (String radioVal) {
-                          //print(radioVal);
-                          if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvl + "_" + key2 + _categ["op"], headingVal)) {
-                            setState(() {
-                              levelValMap[_lvl + "_" + key2 +
-                                  _categ["op"]][headingVal] = radioVal;
-                            });
-                          }
-                          //print(levelValMap[key+"_"+val][headingVal]);
-                        }
-                    );
-
-                    return new Container(
-                        width: subColumnTreshold,
-                        //color: Colors.amber,
-                        child: new InkWell(
-                          onTap: () {
-                            if(!excludes.contains(_exclude)) {
-                              String catVal = levelValMap[_lvl + "_" +
-                                  key2 + _categ["op"]][headingVal];
-                              if (!catVal.isEmpty && catVal == headingVal) {
-                                catVal = "";
-                              } else {
-                                catVal = headingVal;
-                              }
-                              radioElement.onChanged(catVal);
-                            }
-                          },
-                          child: new Container(
-                            //color: smoothBgs[headingVal],
-                            alignment: Alignment.center,
-                            height: 42.0,
-                            child: new Container(
-                              alignment: Alignment.center,
-                              child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
-                            ),
-                          ),
-                        )
-                    );
-                  }).toList(),
-                ));
+                    _rPanelContainers.add(_generateRadioContainer(_lvlValMapIdx, headingVal, _exclude, _key));
+                  }
+                });
+                _rightPanelChildren.add(new Row(children: _rPanelContainers));
               }
             });
           } else {
-            _rightPanelChildren.add(new Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: subHeadingValues.map((headingVal) {
-                levelValMap[_lvl + "_" + key2].putIfAbsent(
-                    headingVal, () => "");
-                //print("[$key $val] $headingVal -- ${levelValMap[key+"_"+val]}");
-
+            List<Widget> _rPanelContainers = [];
+            subHeadingValues.forEach((_key, subValues){
+              for(var headingVal in subValues) {
+                String _lvlValMapIdx = _lvl + "_" + key2;
                 EntryFormExclude _exclude = new EntryFormExclude(level: _lvl.toLowerCase(), age: key2, dance: headingVal);
-
-                Radio radioElement = new Radio(
-                    activeColor: isPaidSubCategory(_lvl + "_" + key2, headingVal) ? new Color(0xff00e5ff) : Colors.white,
-                    value: headingVal,
-                    groupValue: levelValMap[_lvl + "_" + key2][headingVal],
-                    onChanged: (String radioVal) {
-                      if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvl + "_" + key2, headingVal)) {
-                        //print(radioVal);
-                        setState(() {
-                          levelValMap[_lvl + "_" + key2][headingVal] = radioVal;
-                        });
-                      }
-                      //print(levelValMap[key+"_"+val][headingVal]);
-                    }
-                );
-                //print("EXCLUDE: ${_exclude.toJson()}");
-
-                return new Container(
-                    width: subColumnTreshold,
-                    //color: Colors.amber,
-                    child: new InkWell(
-                      onTap: () {
-                        if(!excludes.contains(_exclude)) {
-                          String catVal = levelValMap[_lvl + "_" +
-                              key2][headingVal];
-                          if (!catVal.isEmpty && catVal == headingVal) {
-                            catVal = "";
-                          } else {
-                            catVal = headingVal;
-                          }
-                          radioElement.onChanged(catVal);
-                        }
-                      },
-                      child: new Container(
-                        //color: smoothBgs[headingVal],
-                        alignment: Alignment.center,
-                        height: 42.0,
-                        child: new Container(
-                          alignment: Alignment.center,
-                          child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
-                        ),
-                      ),
-                    )
-                );
-              }).toList(),
-            ));
+                _rPanelContainers.add(_generateRadioContainer(_lvlValMapIdx, headingVal, _exclude, _key));
+              }
+            });
+            _rightPanelChildren.add(new Row(children: _rPanelContainers));
           }
         });
       } else {
-        _rightPanelChildren.add(new Row(
-          children: subHeadingValues.map((headingVal) {
+        List<Widget> _rPanelContainers = [];
+        subHeadingValues.forEach((_key, subValues){
+          for(var headingVal in subValues) {
+            //print(headingVal);
             for(var val in _ageMap[_lvl]) {
               var _idx = "${val.toLowerCase()}_$_lvl";
               if(!levelValMap[_idx].containsKey(headingVal)) {
                 continue;
               }
-              //print("level: $_lvl idx: $_idx headingVal: $headingVal");
-              //print("valMap: ${levelValMap[_idx]}");
               EntryFormExclude _exclude = new EntryFormExclude(level: "", age: _lvl, dance: headingVal);
-
-              Radio radioElement = new Radio(
-                  activeColor: isPaidSubCategory(_idx, headingVal) ? new Color(0xff00e5ff) : Colors.white,
-                  value: headingVal,
-                  groupValue: levelValMap[_idx][headingVal],
-                  onChanged: (String radioVal) {
-                    //print(radioVal);
-                    if(!excludes.contains(_exclude) && !isPaidSubCategory(_idx, headingVal)) {
-                      setState(() {
-                        levelValMap[_idx][headingVal] = radioVal;
-                      });
-                    }
-                    //print(levelValMap[key+"_"+val][headingVal]);
-                  }
-              );
-
-              //print("EXCLUDE: ${_exclude.toJson()}");
-
-              return new Container(
-                  width: subColumnTreshold,
-                  //color: Colors.amber,
-                  child: new InkWell(
-                    onTap: () {
-                      if(!excludes.contains(_exclude)) {
-                        String catVal = levelValMap[_idx][headingVal];
-                        if (!catVal.isEmpty && catVal == headingVal) {
-                          catVal = "";
-                        } else {
-                          catVal = headingVal;
-                        }
-                        radioElement.onChanged(catVal);
-                      }
-                    },
-                    child: new Container(
-                      //color: smoothBgs[headingVal],
-                      alignment: Alignment.center,
-                      height: 42.0,
-                      child: new Container(
-                        alignment: Alignment.center,
-                        child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : radioElement,
-                      ),
-                    ),
-                  )
-              );
+              _rPanelContainers.add(_generateRadioContainer(_idx, headingVal, _exclude, _key));
             }
-          }).toList(),
-        ));
+          }
+        });
+        _rightPanelChildren.add(new Row(children: _rPanelContainers));
       }
     }
 

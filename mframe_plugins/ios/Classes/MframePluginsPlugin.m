@@ -84,6 +84,10 @@
             result(nil);
         }
     }];
+  } else if ([@"setLandscape" isEqualToString:call.method]) {
+    [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationLandscapeLeft) forKey:@"orientation"];
+  } else if ([@"setPortrait" isEqualToString:call.method]) {
+    [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
   } else {
     result(FlutterMethodNotImplemented);
   }
