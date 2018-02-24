@@ -16,7 +16,7 @@ import 'package:myapp/src/model/FormAgeCat.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:mframe_plugins/mframe_plugins.dart';
 
-const double subColumnTreshold = 40.0;
+double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
 
 var formEntry;
@@ -147,8 +147,14 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           else
             _headLookup = formEntry.getFormLookup("LEVELS");
 
+          bool _changeTreshold = false;
+
           for(var elem in _formLookup.elements) {
             DanceSubCategory subCategory = new DanceSubCategory(subCategory: elem.code, order: elem.order, code: elem.code, id: elem.id);
+            if(subCategory.code.length > 4 && !_changeTreshold) {
+              _changeTreshold = true;
+            }
+
             for(var elem2 in _headLookup.elements) {
               if(elem2.id == elem.grouping) {
                 if(danceCatMap[elem2.code].subCategories == null) {
@@ -157,6 +163,12 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                 danceCatMap[elem2.code].subCategories.add(subCategory);
               }
             }
+          }
+
+          if(_changeTreshold) {
+            setState((){subColumnTreshold = 60.0;});
+          } else {
+            setState((){subColumnTreshold = 40.0;});
           }
         }
       }
@@ -625,12 +637,23 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                     //print("idx: $idx mod: "+(idx % 2).toString());
                     subheadingIdx.putIfAbsent("${danceCategory.code.toUpperCase()} ${sub.subCategory}${sub.id}", () => (col-1) % 2);
                     idx += 1;
+                    Text _subText;
+                    Color _contColor;
+                    if(sub?.subCategory?.length > 6) {
+                      _contColor = Colors.amber;
+                      _subText = new Text(sub.subCategory, style: new TextStyle(fontSize: 12.0), textAlign: TextAlign.justify);
+                    }
+                    else {
+                      _contColor = Colors.transparent;
+                      _subText = new Text(sub.subCategory);
+                    }
                     return new Container(
                       //color: (idx % 2) != 0 ? Colors.amber : Colors.cyanAccent,
                       width: subColumnTreshold,
+                      //color: _contColor,
                       height: 20.0,
                       alignment: Alignment.center,
-                      child: new Text(sub.subCategory),
+                      child: _subText,
                     );
                   }).toList(),
                 )
