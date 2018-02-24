@@ -59,9 +59,10 @@ class _EventsWidgetState extends State<EventsWidget> {
                     int.parse(e.thumbnailBg)) : Theme
                     .of(context)
                     .primaryColor,
-                leading: new SizedBox(
+                leading: new Container(
                     height: 78.0,
                     width: 140.0,
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
                     //child: new Image.network(e.thumbnail),
                     child: (_thumbImages != null && _thumbImages.containsKey(e.thumbnail)) ? _thumbImages[e.thumbnail] : new Container()
                 ),

@@ -216,7 +216,7 @@ class _event_registrationState extends State<event_registration> {
                           bool hasDataEntry = false;
                           if(_eventEntries != null) {
                             _eventEntries.forEach((_pushId, _entryVal){
-                              if(_entryVal.formEntry.name == val.name) {
+                              if(_entryVal.formEntry.name == val.name && _entryItems[val.name] != null) {
                                 if(val.type == FormType.STANDARD) {
                                   formScreen.formData = _entryVal.levels;
                                   formScreen.formPushId = _pushId;
@@ -226,12 +226,10 @@ class _event_registrationState extends State<event_registration> {
                                   freeFormScreen.formPushId = _pushId;
                                   hasDataEntry = true;
                                 } else {
-                                  if(_entryItems[val.name] != null) {
-                                    groupFormScreen.formData = _entryVal.freeForm;
-                                    print("reg: ${_entryVal.freeForm}");
-                                    groupFormScreen.formPushId = _pushId;
-                                    hasDataEntry = true;
-                                  }
+                                  groupFormScreen.formData = _entryVal.freeForm;
+                                  print("reg: ${_entryVal.freeForm}");
+                                  groupFormScreen.formPushId = _pushId;
+                                  hasDataEntry = true;
                                 }
                               }
                             });

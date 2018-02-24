@@ -149,15 +149,21 @@ class EventsListTile extends ListTile {
         onLongPress: enabled ? onLongPress : null,
         child: new Container(
           decoration: new BoxDecoration(
-            border: new Border(
-              bottom: new BorderSide(
-                  color: Colors.black
-              ),
+            border: const Border(
+              top: const BorderSide(width: 2.0, color: const Color(0xFF212D44)),
             ),
           ),
+          //padding: const EdgeInsets.symmetric(vertical: 1.0),
           height: 80.0,
           //padding: const EdgeInsets.only(top: 1.5, bottom: 1.5),
-          child: new Row(children: children),
+          child: new Container(
+            decoration: new BoxDecoration(
+              border: const Border(
+                top: const BorderSide(width: 1.0, color: const Color(0xFF53617C)),
+              ),
+            ),
+            child: new Row(children: children),
+          ),
         )
     );
   }

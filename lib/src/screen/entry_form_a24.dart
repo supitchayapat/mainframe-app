@@ -344,6 +344,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   @override
   Future<Null> handlePopRoute() async {
     print("pop handled");
+    MframePlugins.setToPortrait();
   }
 
   @override
@@ -517,21 +518,36 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   Widget _buildLevelColumn(String levelTxt) {
     return new Container(
       alignment: Alignment.center,
-      decoration: new BoxDecoration(
+      /*decoration: new BoxDecoration(
           image: new DecorationImage(
               image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
               fit: BoxFit.contain,
               alignment: Alignment.bottomCenter
           )
+      ),*/
+      decoration: new BoxDecoration(
+          border: const Border(
+            bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+          ),
+          //color: const Color(0xff1983A8)
       ),
-      padding: const EdgeInsets.all(5.0),
+      //padding: const EdgeInsets.all(5.0),
       height: 42.0,
-      child: new Text(
-          levelTxt,
-          style: new TextStyle(
-              fontSize: 18.0,
-              fontFamily: "Montserrat-Light"
-          )
+      child: new Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        decoration: new BoxDecoration(
+          border: const Border(
+            bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+          ),
+        ),
+        child: new Text(
+            levelTxt,
+            style: new TextStyle(
+                fontSize: 18.0,
+                fontFamily: "Montserrat-Light"
+            )
+        ),
       ),
     );
   }
@@ -716,7 +732,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             height: 42.0,
             child: new Container(
               alignment: Alignment.center,
-              child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : _rPanelRadio,
+              //child: excludes.contains(_exclude) ? new Icon(Icons.highlight_off) : _rPanelRadio,
+              child: excludes.contains(_exclude) ? new Container() : _rPanelRadio,
             ),
           ),
         )
@@ -848,21 +865,35 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     List<Widget> _minLPanelChildren = <Widget>[];
 
     _children.add(new Container(
-      decoration: new BoxDecoration(
+      /*decoration: new BoxDecoration(
           image: new DecorationImage(
               image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png"),
               fit: BoxFit.contain,
               alignment: Alignment.bottomCenter
           ),
+      ),*/
+      decoration: new BoxDecoration(
+          border: const Border(
+            bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+          ),
       ),
       alignment: Alignment.center,
       height: 50.0,
-      child: new Text(
-          isVerticalLvl ? "LEVEL" : "AGE",
-          style: new TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.bold
-          )
+      child: new Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        decoration: new BoxDecoration(
+          border: const Border(
+            bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+          ),
+        ),
+        child: new Text(
+            isVerticalLvl ? "LEVEL" : "AGE",
+            style: new TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold
+            )
+        ),
       ),
     ));
     if(isVerticalLvl) {
@@ -920,7 +951,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               if (_categ["catOC"]) {
                 _minLPanelChildren.add(new Container(
                   alignment: Alignment.center,
-                  decoration: new BoxDecoration(
+                  /*decoration: new BoxDecoration(
                       image: new DecorationImage(
                           image: new ExactAssetImage(
                               "mainframe_assets/images/level_row_divider.png"),
@@ -928,15 +959,30 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                           alignment: Alignment.bottomCenter
                       ),
                       color: const Color(0xff1983A8)
+                  ),*/
+                  //padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: new BoxDecoration(
+                      border: const Border(
+                        bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+                      ),
+                      color: const Color(0xff1983A8)
                   ),
-                  padding: const EdgeInsets.all(5.0),
                   height: 42.0,
-                  child: new Text(
-                      level + " " + ageValues[0] + " " + _categ["op"],
-                      style: new TextStyle(
-                          fontSize: 15.0,
-                          fontFamily: "Montserrat-Light"
-                      )
+                  child: new Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    decoration: new BoxDecoration(
+                      border: const Border(
+                        bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+                      ),
+                    ),
+                    child: new Text(
+                        level + " " + ageValues[0] + " " + _categ["op"],
+                        style: new TextStyle(
+                            fontSize: 15.0,
+                            fontFamily: "Montserrat-Light"
+                        )
+                    ),
                   ),
                 ));
               }
@@ -944,7 +990,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           } else {
             _minLPanelChildren.add(new Container(
               alignment: Alignment.center,
-              decoration: new BoxDecoration(
+              /*decoration: new BoxDecoration(
                   image: new DecorationImage(
                       image: new ExactAssetImage(
                           "mainframe_assets/images/level_row_divider.png"),
@@ -952,15 +998,30 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                       alignment: Alignment.bottomCenter
                   ),
                   color: const Color(0xff1983A8)
+              ),*/
+              decoration: new BoxDecoration(
+                  border: const Border(
+                    bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+                  ),
+                  color: const Color(0xff1983A8)
               ),
-              padding: const EdgeInsets.all(5.0),
+              //padding: const EdgeInsets.symmetric(horizontal: 5.0),
               height: 42.0,
-              child: new Text(
-                  level + " " + ageValues[0],
-                  style: new TextStyle(
-                      fontSize: 15.0,
-                      fontFamily: "Montserrat-Light"
-                  )
+              child: new Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                decoration: new BoxDecoration(
+                  border: const Border(
+                    bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+                  ),
+                ),
+                child: new Text(
+                    level + " " + ageValues[0],
+                    style: new TextStyle(
+                        fontSize: 15.0,
+                        fontFamily: "Montserrat-Light"
+                    )
+                ),
               ),
             ));
           }
@@ -968,7 +1029,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       } else {
         _minLPanelChildren.add(new Container(
           alignment: Alignment.center,
-          decoration: new BoxDecoration(
+          /*decoration: new BoxDecoration(
               image: new DecorationImage(
                   image: new ExactAssetImage(
                       "mainframe_assets/images/level_row_divider.png"),
@@ -976,15 +1037,30 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                   alignment: Alignment.bottomCenter
               ),
               color: const Color(0xff1983A8)
+          ),*/
+          decoration: new BoxDecoration(
+              border: const Border(
+                bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+              ),
+              color: const Color(0xff1983A8)
           ),
-          padding: const EdgeInsets.all(5.0),
+          //padding: const EdgeInsets.all(5.0),
           height: 42.0,
-          child: new Text(
-              level,
-              style: new TextStyle(
-                  fontSize: 15.0,
-                  fontFamily: "Montserrat-Light"
-              )
+          child: new Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            decoration: new BoxDecoration(
+              border: const Border(
+                bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+              ),
+            ),
+            child: new Text(
+                level,
+                style: new TextStyle(
+                    fontSize: 15.0,
+                    fontFamily: "Montserrat-Light"
+                )
+            ),
           ),
         ));
       }
@@ -1063,24 +1139,41 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               )
           ),
           child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               new Container(
-                decoration: new BoxDecoration(
+                /*decoration: new BoxDecoration(
                     image: new DecorationImage(
                         image: new ExactAssetImage("mainframe_assets/images/level_row_divider.png", scale: 1.0),
                         fit: BoxFit.contain,
                         alignment: Alignment.bottomCenter
                     ),
                     color: const Color(0xff1983A8)
+                ),*/
+                decoration: new BoxDecoration(
+                  border: const Border(
+                    bottom: const BorderSide(width: 1.0, color: const Color(0xFF72a7c1)),
+                  ),
+                  color: const Color(0xff1983A8)
                 ),
                 alignment: Alignment.center,
                 height: 50.0,
-                child: new Text(
+                child: new Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  constraints: new BoxConstraints.expand(),
+                  decoration: new BoxDecoration(
+                    border: const Border(
+                      bottom: const BorderSide(width: 2.0, color: const Color(0xFF1d6f9f)),
+                    ),
+                  ),
+                  child: new Text(
                     isVerticalLvl ? "LEVEL - AGE" : "AGE",
                     style: new TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold
-                    )
+                    ),
+                  )
                 ),
               ),
               new Flexible(
