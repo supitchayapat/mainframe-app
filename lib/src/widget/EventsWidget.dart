@@ -67,8 +67,10 @@ class _EventsWidgetState extends State<EventsWidget> {
                 ),
                 title: new Container(
                     //color: Colors.amber,
+                    alignment: Alignment.centerLeft,
                     child: new Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         new Container(
                           //color: Colors.amber,
