@@ -3,6 +3,8 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/enumeration/Gender.dart';
 
 var participantUser;
 
@@ -12,7 +14,7 @@ class solo_management extends StatefulWidget {
 }
 
 class _solo_managementState extends State<solo_management> {
-  List<String> _listItems = [];
+  List _listItems = [];
   Map<String, User> _solos = {};
   var soloListener;
 
@@ -25,7 +27,8 @@ class _solo_managementState extends State<solo_management> {
         _solos = {};
         _listItems = [];
         users.forEach((val){
-          _listItems.add("${val.first_name} ${val.last_name}");
+          //_listItems.add("${val.first_name} ${val.last_name}");
+          _listItems.add(val);
           _solos.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
         });
       });
@@ -40,6 +43,17 @@ class _solo_managementState extends State<solo_management> {
 
   Widget _generateItem(val) {
     Widget _entryChild;
+    String _categoryGender = "";
+
+    if(val.category == DanceCategory.PROFESSIONAL)
+      _categoryGender = "PRO";
+    else
+      _categoryGender = "AM";
+
+    if(val.gender == Gender.MAN)
+      _categoryGender += " GUY";
+    else
+      _categoryGender += " GIRL";
 
     _entryChild = new Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,7 +61,7 @@ class _solo_managementState extends State<solo_management> {
         new Expanded(
             child: new Padding(
               padding: const EdgeInsets.only(left: 5.0),
-              child: new Text(val, style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+              child: new Text("${val.first_name} ${val.last_name} - $_categoryGender", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
             )
         ),
         new Container(
@@ -56,8 +70,10 @@ class _solo_managementState extends State<solo_management> {
           child: new IconButton(
               icon: new Icon(Icons.cancel, color: Colors.black),
               onPressed: (){
-                if(_solos.containsKey(val))
-                  removeSoloParticipant(_solos[val]);
+                if(_solos.containsKey("${val.first_name} ${val.last_name}")) {
+                  removeSoloParticipant(_solos["${val.first_name} ${val.last_name}"]);
+                  _solos.remove("${val.first_name} ${val.last_name}");
+                }
               }
           ),
         )
@@ -81,6 +97,18 @@ class _solo_managementState extends State<solo_management> {
   }
 
   Widget _generateInputContainer() {
+    String _categoryGender = "";
+
+    if(participantUser?.category == DanceCategory.PROFESSIONAL)
+      _categoryGender = "PRO";
+    else
+      _categoryGender = "AM";
+
+    if(participantUser?.gender == Gender.MAN)
+      _categoryGender += " GUY";
+    else
+      _categoryGender += " GIRL";
+
     return new Container(
       child: new Column(
         children: <Widget>[
@@ -112,7 +140,7 @@ class _solo_managementState extends State<solo_management> {
                       //couple1 = "_assignCoupleParticipant";
                       Navigator.of(context).pushNamed("/addPartner");
                     },
-                    child: new Text((participantUser == null || participantUser is String) ? "ASSIGN" : "${participantUser.first_name} ${participantUser.last_name}",
+                    child: new Text((participantUser == null || participantUser is String) ? "ASSIGN" : "${participantUser.first_name} ${participantUser.last_name} - $_categoryGender",
                       style: new TextStyle(
                           fontSize: 17.0,
                           color: Colors.black
@@ -130,7 +158,8 @@ class _solo_managementState extends State<solo_management> {
               child: new Text("ADD PARTICIPANT"),
               onPressed: (){
                 if(participantUser != null) {
-                  if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
+                  //if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
+                  if(!_listItems.contains(participantUser))
                     saveUserSoloParticipants(participantUser);
                   else
                     print("FAIL ADD");

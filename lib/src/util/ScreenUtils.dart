@@ -55,6 +55,105 @@ Future<Null> showMainFrameDialog(BuildContext context, String title, String msg)
   );
 }
 
+Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, Map<String, String> options) async {
+  List<Widget> _opts = [];
+
+  options?.forEach((_key, _val){
+    _opts.add(new Row(
+      children: <Widget>[
+        new Expanded(
+          child: new MaterialButton(
+              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+              onPressed: (){
+                Navigator.of(context).pop(_val);
+              },
+              child: new Container(
+                decoration: new BoxDecoration(
+                  borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+                  color: new Color(0xff335577),
+                ),
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                child: new Center(child: new Text(_key)),
+                alignment: Alignment.centerLeft,
+              )
+          ),
+        ),
+      ],
+    ));
+  });
+
+  return showDialog<Null>(
+      context: context,
+      //barrierDismissible: false,
+      child: new Dialog(
+        child: new Container(
+            decoration: new BoxDecoration(
+                borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+                color: new Color(0xff364864),
+                boxShadow: <BoxShadow>[
+                  new BoxShadow(
+                      blurRadius: 1.0,
+                      spreadRadius: 1.0
+                  )
+                ]
+            ),
+            height: 220.0,
+            width: 180.0,
+            constraints: new BoxConstraints(minHeight: 220.0, maxHeight: 390.0),
+            child: new Column(
+              children: <Widget>[
+                new Container(
+                  //color: Colors.amber,
+                  height: 45.0,
+                  child: new Row(
+                    children: <Widget>[
+                      /*new Container(
+                          margin: const EdgeInsets.only(left: 5.0),
+                          child: new InkWell(
+                            onTap: (){
+                              Navigator.of(context).pop();
+                            },
+                            child: new Icon(Icons.arrow_back_ios),
+                          )
+                      ),*/
+                      new Flexible(
+                          child: new Center(
+                            child: new Text(titleMsg, overflow: TextOverflow.ellipsis, style: new TextStyle(fontSize: 16.0)),
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+                new Expanded(
+                  child: new Container(
+                    //color: Colors.amber,
+                    child: new ListView(
+                      children: <Widget>[
+                        new Row(
+                          children: <Widget>[
+                            new Expanded(
+                                child: new Container(
+                                  width: 155.0,
+                                  constraints: const BoxConstraints(minWidth: 55.0),
+                                  child: new Column(
+                                    children: _opts,
+                                  ),
+                                )
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        )
+                      ],
+                    ),
+                  )
+                )
+              ],
+            )
+        ),
+      )
+  );
+}
+
 Future<Null> showSummaryDialog(BuildContext context) async {
   double _scrWidth = MediaQuery.of(context).size.width;
 

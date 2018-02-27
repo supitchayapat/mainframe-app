@@ -29,7 +29,7 @@ class EntryFormUtil {
 
   static double getPriceFromForm(priceMap, participant, type) {
     //print(priceMap);
-    FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);
+    FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);
     var _price = priceMap[(userCode.toString().replaceAll("FormParticipantCode.", "")).replaceAll("_", "-")];
     //print(participant.toJson());
     //print(_price.toJson());
@@ -51,7 +51,7 @@ class EntryFormUtil {
 
   static bool isFormApplicable(FormEntry form, participant, type) {
     bool retVal = false;
-    FormParticipantCode userCode = _getParticipantCodeOnUser(participant, type);
+    FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);
     //print("USER: ${userCode}");
     List<FormParticipantCode> _participants = [];
 
@@ -65,7 +65,7 @@ class EntryFormUtil {
     return retVal;
   }
 
-  static FormParticipantCode _getParticipantCodeOnUser(participant, type) {
+  static FormParticipantCode getParticipantCodeOnUser(participant, type) {
     FormParticipantCode retVal;
     FormParticipantType participantType;
     if(type is String)
@@ -95,7 +95,8 @@ class EntryFormUtil {
         String user1 = _getUserParticipantCode(couple.couple[0]);
         String user2 = _getUserParticipantCode(couple.couple[1]);
 
-        if(user1.contains("AMATEUR") && user2.contains("AMATEUR")) {
+        if(c1.category == DanceCategory.AMATEUR && c2.category == DanceCategory.AMATEUR) {
+          //print("${c1.gender} = ${c2.gender}");
           if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
             retVal = FormParticipantCode.AM_GIRL;
           }
@@ -105,7 +106,7 @@ class EntryFormUtil {
             retVal = FormParticipantCode.AM;
           }
         }
-        else if(user1.contains("PROFESSIONAL") && user2.contains("PROFESSIONAL")) {
+        else if(c1.category == DanceCategory.PROFESSIONAL && c2.category == DanceCategory.PROFESSIONAL) {
           if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
             retVal = FormParticipantCode.PRO_GIRL;
           }
@@ -115,10 +116,10 @@ class EntryFormUtil {
             retVal = FormParticipantCode.PRO;
           }
         }
-        else if(user1.contains("AMATEUR")) {
+        else if(c1.category == DanceCategory.AMATEUR) {
           retVal = getParticipantCodeFromString("PRO"+user1.replaceAll("ATEUR", ""));
         }
-        else if(user2.contains("AMATEUR")){
+        else if(c2.category == DanceCategory.AMATEUR){
           retVal = getParticipantCodeFromString("PRO"+user2.replaceAll("ATEUR", ""));
         }
         break;

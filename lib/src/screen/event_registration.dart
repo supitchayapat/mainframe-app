@@ -13,6 +13,8 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/freeform/ShowDanceSolo.dart';
+import 'package:myapp/src/enumeration/Gender.dart';
+import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'participant_list.dart' as partList;
 
 var eventItem;
@@ -169,6 +171,23 @@ class _event_registrationState extends State<event_registration> {
     Map<String, int> _entryItems = {};
     Map<String, dynamic> _entryData = {};
     Widget _entryChild;
+    String _categoryGender = "";
+
+    if(_evtParticipant.user is User) {
+      if(_evtParticipant.user.category == DanceCategory.PROFESSIONAL)
+        _categoryGender = "PRO";
+      else
+        _categoryGender = "AM";
+
+      if(_evtParticipant.user.gender == Gender.MAN)
+        _categoryGender += " GUY";
+      else
+        _categoryGender += " GIRL";
+    }
+    else {
+      _categoryGender = EntryFormUtil.getParticipantCodeOnUser(_evtParticipant.user, "couple").toString();
+      _categoryGender = _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+    }
 
     if(_participantEntries.containsKey(_evtParticipant)) {
       _entryItems = _participantEntries[_evtParticipant];
@@ -178,7 +197,17 @@ class _event_registrationState extends State<event_registration> {
       _entryChild = new Row(
         crossAxisAlignment: _evtParticipant.toggle ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: <Widget>[
-          new Expanded(child: new Padding(padding: const EdgeInsets.only(left: 10.0, top: 15.0, bottom: 15.0), child: new Text(_evtParticipant.name, style: new TextStyle(fontSize: 16.0, color: Colors.black)))),
+          new Expanded(
+              child: new Padding(
+                padding: const EdgeInsets.only(left: 10.0, top: 15.0, bottom: 15.0),
+                child: new Wrap(
+                  children: <Widget>[
+                    new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                    new Text("(${_categoryGender})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                  ],
+                ),
+              )
+          ),
           new Container(
             width: 25.0,
             child: _evtParticipant.toggle ? new Icon(Icons.keyboard_arrow_down, color: Colors.black) : new Icon(Icons.keyboard_arrow_right, color: Colors.black),
@@ -334,7 +363,18 @@ class _event_registrationState extends State<event_registration> {
           new Row(
             crossAxisAlignment: _evtParticipant.toggle ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: <Widget>[
-              new Expanded(child: new Padding(padding: const EdgeInsets.only(left: 10.0, top: 10.0), child: new Text(_evtParticipant.name, style: new TextStyle(fontSize: 16.0, color: Colors.black)))),
+              new Expanded(
+                  child: new Padding(
+                    padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+                    //child: new Text(_evtParticipant.name, style: new TextStyle(fontSize: 16.0, color: Colors.black))
+                    child: new Wrap(
+                      children: <Widget>[
+                        new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                        new Text("(${_categoryGender})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                      ],
+                    ),
+                  )
+              ),
               new Container(
                 width: 25.0,
                 child: _evtParticipant.toggle ? new Icon(Icons.keyboard_arrow_down, color: Colors.black) : new Icon(Icons.keyboard_arrow_right, color: Colors.black),
@@ -373,6 +413,28 @@ class _event_registrationState extends State<event_registration> {
   @override
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
+    String _categoryGender = "";
+
+    if(participant != null) {
+      var _participant = participant["user"];
+      if (_participant is User) {
+        if (_participant.category == DanceCategory.PROFESSIONAL)
+          _categoryGender = "PRO";
+        else
+          _categoryGender = "AM";
+
+        if (_participant.gender == Gender.MAN)
+          _categoryGender += " GUY";
+        else
+          _categoryGender += " GIRL";
+      }
+      else {
+        _categoryGender = EntryFormUtil.getParticipantCodeOnUser(
+            _participant, "couple").toString();
+        _categoryGender =
+            _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+      }
+    }
 
     return new Scaffold(
       key: _scaffoldKey,
@@ -428,7 +490,7 @@ class _event_registrationState extends State<event_registration> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               new Expanded(
-                                child: new Text(participant != null ? participant["name"] : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
+                                child: new Text(participant != null ? participant["name"] +" - " + _categoryGender : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
                               ),
                               new Icon(Icons.search, color: Colors.black)
                             ],

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/enumeration/Gender.dart';
+import 'package:myapp/src/util/EntryFormUtil.dart';
 
 var couple1;
 var couple2;
@@ -13,7 +16,7 @@ class couple_management extends StatefulWidget {
 
 class _couple_managementState extends State<couple_management> {
   String _dropValue = "COUPLE";
-  List<String> _listItems = [];
+  List _listItems = [];
   Map<String, List> _couples = {};
   var coupleListener;
 
@@ -29,7 +32,8 @@ class _couple_managementState extends State<couple_management> {
         //_couples.addAll(couples);
         couples.forEach((val){
           //_users.putIfAbsent("${val.coupleName}", () => "couple");
-          _listItems.add("${val.coupleName}");
+          //_listItems.add("${val.coupleName}");
+          _listItems.add(val);
           _couples.putIfAbsent(val.coupleName, () => val.couple);
         });
       });
@@ -50,6 +54,10 @@ class _couple_managementState extends State<couple_management> {
 
   Widget _generateItem(val) {
     Widget _entryChild;
+    String _categoryGender = "";
+
+    _categoryGender = EntryFormUtil.getParticipantCodeOnUser(val, "couple").toString();
+    _categoryGender = _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
 
     _entryChild = new Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,7 +65,7 @@ class _couple_managementState extends State<couple_management> {
         new Expanded(
             child: new Padding(
                 padding: const EdgeInsets.only(left: 5.0),
-                child: new Text(val, style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                child: new Text("${val.coupleName} - ${_categoryGender}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
             )
         ),
         new Container(
@@ -66,8 +74,9 @@ class _couple_managementState extends State<couple_management> {
           child: new IconButton(
               icon: new Icon(Icons.cancel, color: Colors.black),
               onPressed: (){
-                List usrs = _couples[val];
+                List usrs = _couples[val.coupleName];
                 removeUserCoupleParticipants(usrs[0], usrs[1]);
+                _couples.remove(val.coupleName);
               }
           ),
         )
@@ -97,6 +106,33 @@ class _couple_managementState extends State<couple_management> {
   }
 
   Widget _generateInputContainer() {
+    String _categoryGender1 = "";
+    String _categoryGender2 = "";
+
+    if(couple1 != null && !(couple1 is String)) {
+      if (couple1?.category == DanceCategory.PROFESSIONAL)
+        _categoryGender1 = "PRO";
+      else
+        _categoryGender1 = "AM";
+
+      if (couple1?.gender == Gender.MAN)
+        _categoryGender1 += " GUY";
+      else
+        _categoryGender1 += " GIRL";
+    }
+
+    if(couple2 != null && !(couple2 is String)) {
+      if (couple2?.category == DanceCategory.PROFESSIONAL)
+        _categoryGender2 = "PRO";
+      else
+        _categoryGender2 = "AM";
+
+      if (couple2?.gender == Gender.MAN)
+        _categoryGender2 += " GUY";
+      else
+        _categoryGender2 += " GIRL";
+    }
+
     //if(_dropValue == "COUPLE") {
       return new Container(
         child: new Column(
@@ -129,7 +165,7 @@ class _couple_managementState extends State<couple_management> {
                         couple1 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name}",
+                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name} - $_categoryGender1",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
@@ -163,7 +199,7 @@ class _couple_managementState extends State<couple_management> {
                         couple2 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name}",
+                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name} - $_categoryGender2",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
@@ -181,7 +217,9 @@ class _couple_managementState extends State<couple_management> {
                 child: new Text("ADD COUPLE"),
                 onPressed: (){
                   if(couple1 != null && couple2 != null) {
-                    saveUserCoupleParticipants(couple1, couple2);
+                    if(couple1 != couple2) {
+                      saveUserCoupleParticipants(couple1, couple2);
+                    }
                   }
                   else {
                     print("FAIL ADD");

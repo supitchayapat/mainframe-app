@@ -4,6 +4,10 @@ import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/enumeration/Gender.dart';
+import 'package:myapp/src/util/EntryFormUtil.dart';
 
 var participantType;
 var groupCounter;
@@ -95,39 +99,54 @@ class _participant_listState extends State<participant_list> {
         ),
       ),
     ));
-    //_participants.addAll(
-        _users.forEach((key, val){
-          _participants.add(new InkWell(
-            onTap: () {
-              setState((){
-                registration.participant = {
-                  "name": key,
-                  "user": val
-                };
-              });
-              Navigator.of(context).maybePop();
-            },
-            child: new Container(
-              padding: const EdgeInsets.symmetric(vertical: 1.0),
-              decoration: new BoxDecoration(
-                border: const Border(
-                    bottom: const BorderSide(width: 1.0, color: const Color(0xFF53617C))
-                ),
-              ),
-              child: new Container(
-                padding: const EdgeInsets.only(left: 50.0, right: 20.0, bottom: 10.0, top: 10.0),
-                decoration: new BoxDecoration(
-                  border: const Border(
-                      bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
-                  ),
-                ),
-                child: new Text("${key}", style: new TextStyle(fontSize: 18.0)),
+    _users.forEach((key, val){
+      String _categoryGender = "";
+      if(val is User) {
+        if(val.category == DanceCategory.PROFESSIONAL)
+          _categoryGender = "PRO";
+        else
+          _categoryGender = "AM";
+
+        if(val.gender == Gender.MAN)
+          _categoryGender += " GUY";
+        else
+          _categoryGender += " GIRL";
+      }
+      else {
+        _categoryGender = EntryFormUtil.getParticipantCodeOnUser(val, "couple").toString();
+        _categoryGender = _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+      }
+
+      _participants.add(new InkWell(
+        onTap: () {
+          setState((){
+            registration.participant = {
+              "name": key,
+              "user": val
+            };
+          });
+          Navigator.of(context).maybePop();
+        },
+        child: new Container(
+          padding: const EdgeInsets.symmetric(vertical: 1.0),
+          decoration: new BoxDecoration(
+            border: const Border(
+                bottom: const BorderSide(width: 1.0, color: const Color(0xFF53617C))
+            ),
+          ),
+          child: new Container(
+            padding: const EdgeInsets.only(left: 30.0, right: 20.0, bottom: 10.0, top: 10.0),
+            decoration: new BoxDecoration(
+              border: const Border(
+                  bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
               ),
             ),
-          ));
-        });
-    //);
-    _participants.add(new InkWell(
+            child: new Text("${key} - $_categoryGender", style: new TextStyle(fontSize: 18.0)),
+          ),
+        ),
+      ));
+    });
+    /*_participants.add(new InkWell(
       onTap: () {
         participantType = "solo";
         //Navigator.of(context).pushNamed("/addPartner");
@@ -204,7 +223,7 @@ class _participant_listState extends State<participant_list> {
           child: new Text("Group Participant", style: new TextStyle(fontSize: 18.0)),
         ),
       ),
-    ));
+    ));*/
 
 
     return new Scaffold(
@@ -262,6 +281,41 @@ class _participant_listState extends State<participant_list> {
       ),
       body: new ListView(
         children: _participants,
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: (){
+          showSelectionDialog(context, "CREATE NEW", {
+            "Solo Participant": "solo",
+            "Couple Participant": "couple",
+            "Group Participant": "group"
+          }).then((selectVal){
+            switch(selectVal) {
+              case 'solo':
+                participantType = "solo";
+                solo.participantUser = null;
+                Navigator.of(context).pushNamed("/soloManagement");
+                break;
+              case 'couple':
+                participantType = "couple";
+                Navigator.of(context).pushNamed("/coupleManagement");
+                break;
+              case 'group':
+                setState((){
+                  groupCounter = groupCounter != null ? groupCounter+1 : 1;
+                  registration.participant = {
+                    "name": "Group ($groupCounter)",
+                    "user": new Group(groupName: "Group ($groupCounter)", groupNumber: groupCounter)
+                  };
+                });
+                Navigator.of(context).maybePop();
+                break;
+              default:
+                break;
+            }
+          });
+        },
+        tooltip: 'New',
+        child: new Icon(Icons.person_add),
       ),
     );
   }
