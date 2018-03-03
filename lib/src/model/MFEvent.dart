@@ -133,6 +133,7 @@ class MFEvent {
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
   List<FormEntry> formEntries;
+  Admission admission;
   EventSchedule schedule;
 
   MFEvent({this.id, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
@@ -210,13 +211,20 @@ class MFEvent {
     // form
     if(s["forms"] != null) {
       var _forms = s["forms"]["form"];
-      formEntries = [];
-      _forms.forEach((val){
-        FormEntry entry = new FormEntry.fromSnapshot(val);
-        formEntries.add(entry);
-        formEntries.sort((a, b) => (a.order).compareTo(b.order));
-        print(entry.toJson());
-      });
+      var _admission = s["forms"]["admission"];
+      if(_forms != null) {
+        formEntries = [];
+        _forms.forEach((val) {
+          FormEntry entry = new FormEntry.fromSnapshot(val);
+          formEntries.add(entry);
+          formEntries.sort((a, b) => (a.order).compareTo(b.order));
+          print(entry.toJson());
+        });
+      }
+      if(_admission != null) {
+        admission = new Admission.fromSnapshot(_admission);
+        //print(admission.toJson());
+      }
     }
     if(s["schedule"] != null) {
       schedule = new EventSchedule.fromSnapshot(s["schedule"]);

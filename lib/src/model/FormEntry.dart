@@ -1,5 +1,6 @@
 import 'package:quiver/core.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
+import 'package:intl/intl.dart';
 
 dynamic _setListObject(s, objName) {
   String objNames = objName+"s";
@@ -63,8 +64,77 @@ dynamic _initFromSnapshot(String objName, val) {
       FormExcludeHV _formExcludeHV = new FormExcludeHV.fromSnapshot(
           val);
       return _formExcludeHV;
+    case 'ticket':
+      Ticket _formTicket = new Ticket.fromSnapshot(val);
+      return _formTicket;
     default:
       return null;
+  }
+}
+
+class Ticket {
+  final formatterSrc = new DateFormat("yyyy/MM/dd");
+  String id;
+  double amount;
+  String code;
+  String content;
+  DateTime date;
+  String dinner;
+  int order;
+  String section;
+  String sessionCode;
+  bool isPaid;
+
+  Ticket({this.id, this.amount, this.code, this.content,
+    this.date, this.dinner, this.order, this.section, this.sessionCode, this.isPaid : false});
+
+  Ticket.fromSnapshot(var s) {
+    id = (s["id"]).toString();
+    amount = (s["amount"])?.toDouble();
+    code = s["code"];
+    content = s["content"];
+    if(s["date"] != null)
+      date = formatterSrc.parse(s["date"]);
+    dinner = (s["dinner"]).toString();
+    order = s["order"];
+    section = s["section"];
+    sessionCode = s["sessionCode"];
+    isPaid = s["isPaid"];
+  }
+
+  toJson() {
+    return {
+      "id": id,
+      "amount": amount,
+      "code": code,
+      "content": content,
+      "date": date != null ? formatterSrc.format(date) : formatterSrc.format(new DateTime.now()),
+      "dinner": dinner,
+      "order": order,
+      "section": section,
+      "sessionCode": sessionCode,
+      "isPaid": isPaid,
+    };
+  }
+}
+
+
+class Admission {
+  bool legend;
+  List<Ticket> tickets;
+
+  Admission({this.legend, this.tickets});
+
+  Admission.fromSnapshot(var s) {
+    legend = s["legend"];
+    tickets = _setListObject(s, "ticket");
+  }
+
+  toJson() {
+    return {
+      "legend": legend,
+      "tickets": tickets?.map((val) => val?.toJson())?.toList(),
+    };
   }
 }
 
@@ -118,13 +188,15 @@ class FormExcludeHV {
 
 class FormParticipant {
   String code;
+  String ticketCode;
   String content;
   int price;
 
-  FormParticipant({this.code, this.content, this.price});
+  FormParticipant({this.code, this.ticketCode, this.content, this.price});
 
   FormParticipant.fromSnapshot(var s) {
     code = s["code"];
+    ticketCode = s["ticketCode"];
     content = s["content"];
     price = s["price"];
   }
@@ -132,6 +204,7 @@ class FormParticipant {
   toJson() {
     return {
       "code": code,
+      "ticketCode": ticketCode,
       "content": content,
       "price": price,
     };

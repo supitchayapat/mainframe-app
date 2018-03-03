@@ -284,7 +284,7 @@ class _participant_listState extends State<participant_list> {
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: (){
-          showSelectionDialog(context, "CREATE NEW", {
+          showSelectionDialog(context, "CREATE NEW", 220.0, {
             "Solo Participant": "solo",
             "Couple Participant": "couple",
             "Group Participant": "group"

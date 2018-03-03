@@ -82,7 +82,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         Navigator.of(context).pushNamed("/profilesetup-1");
       }
     });*/
-    global.setDancePartner = _searchCtrl.text;
+    //global.setDancePartner = _searchCtrl.text;
+    global.setDancePartner = "";
     Navigator.of(context).pushNamed("/profilesetup-1");
   }
 
@@ -483,7 +484,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       appBar: new MFAppBar("ADD PARTICIPANT", context),
       body: new Column(
         children: <Widget>[
-          new Row(
+          /*new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               new Container(
                   //color: Colors.cyanAccent,
@@ -527,17 +529,24 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   )
               ),
               new Container(
-                  //color: Colors.amber,
+                  color: Colors.amber,
                   width: _screenWidth * 0.4,
                   padding: const EdgeInsets.only(left: 0.0, top: 5.0, bottom: 10.0, right: 15.0),
                   child: new MainFrameButton(
-                    child: new Text("ADD VIA EMAIL", style: new TextStyle(fontSize: 14.0)),
-                    imgAsset: _imgAsset,
+                    child: new Text("ADD VIA EMAIL"),
+                    //imgAsset: _imgAsset,
                     onPressed: _handleAddViaEmail,
                   )
               )
             ],
             //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          ),*/
+          new Container(
+            margin: const EdgeInsets.only(bottom: 10.0),
+            child: new MainFrameButton(
+              child: new Text("ADD VIA EMAIL"),
+              onPressed: _inviteWithEmail,
+            )
           ),
           new Flexible(
             child: new MFTabbedComponentDemoScaffold(

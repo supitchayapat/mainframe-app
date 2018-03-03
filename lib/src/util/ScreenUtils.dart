@@ -55,7 +55,7 @@ Future<Null> showMainFrameDialog(BuildContext context, String title, String msg)
   );
 }
 
-Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, Map<String, String> options) async {
+Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, double height, Map<String, dynamic> options) async {
   List<Widget> _opts = [];
 
   options?.forEach((_key, _val){
@@ -72,7 +72,7 @@ Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, Map<S
                   borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
                   color: new Color(0xff335577),
                 ),
-                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 5.0),
                 child: new Center(child: new Text(_key)),
                 alignment: Alignment.centerLeft,
               )
@@ -97,7 +97,7 @@ Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, Map<S
                   )
                 ]
             ),
-            height: 220.0,
+            height: height,
             width: 180.0,
             constraints: new BoxConstraints(minHeight: 220.0, maxHeight: 390.0),
             child: new Column(

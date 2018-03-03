@@ -6,6 +6,7 @@ import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/PaymentDao.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 
@@ -30,6 +31,11 @@ class _checkout_entryState extends State<checkout_entry> {
   @override
   void initState() {
     super.initState();
+
+    // save tickets
+    summary.participantTickets.forEach((_participant, _ticketMap){
+      TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem);
+    });
 
     /*PaymentDao.getExistingCard().then((cardData){
       print("token: "+cardData["token"]);
@@ -61,6 +67,11 @@ class _checkout_entryState extends State<checkout_entry> {
           }
           EventEntryDao.updateEventEntry(key, val);
         }
+      });
+
+      // save tickets
+      summary.participantTickets.forEach((_participant, _ticketMap){
+        TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem,isPaid: true);
       });
 
       //print("SOURCE: ${data["charge"]["source"]}");

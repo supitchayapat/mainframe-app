@@ -117,6 +117,7 @@ class SubCategoryEntry {
       subCategoryMap = {};
       s["subCategoryValues"].forEach((key, val){
         subCategoryMap.putIfAbsent(key, () {
+          //print("selected: ${val}");
           return {
             "selected": val["selected"],
             "paid": val["paid"]

@@ -33,7 +33,15 @@ class EventParticipant {
     formEntries.add(entry);
   }
 
-  bool operator ==(o) => o is EventParticipant && o.name == name && o.type == type;
+  toJson() {
+    return {
+      "name": name,
+      "type": type,
+      "user": user.toJson(),
+    };
+  }
+
+  bool operator ==(o) => o is EventParticipant && o.name == name && o.type == type && o.user == user;
   int get hashCode => hash2(name.hashCode, type.hashCode);
 }
 
@@ -175,18 +183,18 @@ class _event_registrationState extends State<event_registration> {
 
     if(_evtParticipant.user is User) {
       if(_evtParticipant.user.category == DanceCategory.PROFESSIONAL)
-        _categoryGender = "PRO";
+        _categoryGender = "(PRO";
       else
-        _categoryGender = "AM";
+        _categoryGender = "(AM";
 
       if(_evtParticipant.user.gender == Gender.MAN)
-        _categoryGender += " GUY";
+        _categoryGender += " GUY)";
       else
-        _categoryGender += " GIRL";
+        _categoryGender += " GIRL)";
     }
-    else {
+    else if(_evtParticipant.user is Couple) {
       _categoryGender = EntryFormUtil.getParticipantCodeOnUser(_evtParticipant.user, "couple").toString();
-      _categoryGender = _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+      _categoryGender = "("+_categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ")+")";
     }
 
     if(_participantEntries.containsKey(_evtParticipant)) {
@@ -203,7 +211,7 @@ class _event_registrationState extends State<event_registration> {
                 child: new Wrap(
                   children: <Widget>[
                     new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                    new Text("(${_categoryGender})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                    new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
                   ],
                 ),
               )
@@ -370,7 +378,7 @@ class _event_registrationState extends State<event_registration> {
                     child: new Wrap(
                       children: <Widget>[
                         new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                        new Text("(${_categoryGender})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                        new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
                       ],
                     ),
                   )
@@ -419,20 +427,19 @@ class _event_registrationState extends State<event_registration> {
       var _participant = participant["user"];
       if (_participant is User) {
         if (_participant.category == DanceCategory.PROFESSIONAL)
-          _categoryGender = "PRO";
+          _categoryGender = " - PRO";
         else
-          _categoryGender = "AM";
+          _categoryGender = " - AM";
 
         if (_participant.gender == Gender.MAN)
           _categoryGender += " GUY";
         else
           _categoryGender += " GIRL";
       }
-      else {
+      else if(_participant is Couple) {
         _categoryGender = EntryFormUtil.getParticipantCodeOnUser(
             _participant, "couple").toString();
-        _categoryGender =
-            _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+        _categoryGender = " - " + _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
       }
     }
 
@@ -490,7 +497,7 @@ class _event_registrationState extends State<event_registration> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               new Expanded(
-                                child: new Text(participant != null ? participant["name"] +" - " + _categoryGender : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
+                                child: new Text(participant != null ? participant["name"] + _categoryGender : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
                               ),
                               new Icon(Icons.search, color: Colors.black)
                             ],
