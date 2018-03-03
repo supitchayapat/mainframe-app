@@ -21,6 +21,8 @@ class TicketDao {
       );
       ticketRef.push().set(_ticket.toJson());
     } else {
+      //print(ticketOwner?.toJson());
+      //print(participantTicket);
       participantTicket.forEach((pushId, pTicket){
         pTicket.ticket = ticket;
         ticketRef.child(pushId).set(pTicket.toJson());
@@ -94,9 +96,13 @@ class TicketDao {
             }
           }
         });
-        return {
-          pushId: ticketSelected
-        };
+        if(pushId.isNotEmpty) {
+          return {
+            pushId: ticketSelected
+          };
+        } else {
+          return null;
+        }
       }
     });
   }
