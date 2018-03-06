@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
@@ -6,6 +7,9 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFPageSelector.dart';
 import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:validator/validator.dart';
 
 var eventItem;
 
@@ -18,6 +22,7 @@ class _EventDetailsState extends State<EventDetails> {
   DateFormat format = new DateFormat("MMM dd, yyyy");
   String eventTitle = "EVENT TITLE";
   String eventRange = "";
+  bool isRegisterOpen = false;
 
   @override
   void initState() {
@@ -25,6 +30,17 @@ class _EventDetailsState extends State<EventDetails> {
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
       eventRange = eventItem.dateRange;
+    }
+
+    // check if registration is open
+    isRegisterOpen = true;
+  }
+
+  Future _launchUrl(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -41,6 +57,26 @@ class _EventDetailsState extends State<EventDetails> {
             new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
             new Text("Registration ends:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
+            new Padding(padding: const EdgeInsets.only(top: 10.0)),
+            new Wrap(
+              children: <Widget>[
+                new Text("Web:  ", style: new TextStyle(fontSize: 16.0)),
+                new InkWell(
+                  onTap: (){
+                    if(isURL(eventItem?.website))
+                      _launchUrl(eventItem?.website);
+                    else
+                      _launchUrl("https://${eventItem?.website}");
+                  },
+                  child: new Wrap(
+                    children: <Widget>[
+                      new Text("${eventItem?.website}", style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
+                      new Padding(padding: const EdgeInsets.only(left: 5.0), child: new Icon(FontAwesomeIcons.externalLinkAlt, color: new Color(0xff00e5ff), size: 16.0))
+                    ],
+                  ),
+                )
+              ],
+            )
           ],
         ),
     );
@@ -65,8 +101,6 @@ class _EventDetailsState extends State<EventDetails> {
           new Text("Phone:  ${eventItem?.venue?.phone}", style: new TextStyle(fontSize: 16.0)),
           new Padding(padding: const EdgeInsets.only(top: 10.0)),
           new Text("Fax:  ${eventItem?.venue?.fax}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Web:  ${eventItem?.venue?.website}", style: new TextStyle(fontSize: 16.0)),
         ],
       ),
     );
@@ -293,8 +327,24 @@ class _EventDetailsState extends State<EventDetails> {
         onTap: (){
           eventInfo.eventItem = eventItem;
           eventInfo.participant = null;
-          if(_floatText == "Register")
-            Navigator.of(context).pushNamed("/registration");
+          if(_floatText == "Register") {
+            if(isRegisterOpen) {
+              Navigator.of(context).pushNamed("/registration");
+            } else {
+              showMainFrameDialogWithCancel(
+                  context,
+                  "Registration Status",
+                  "Registration phase not yet open. Would you like to proceed to event website?"
+              ).then((ans) {
+                if (ans == "OK") {
+                  if (isURL(eventItem?.website))
+                    _launchUrl(eventItem?.website);
+                  else
+                    _launchUrl("https://${eventItem?.website}");
+                }
+              });
+            }
+          }
         },
         child: new Container(
           //color: Colors.amber,

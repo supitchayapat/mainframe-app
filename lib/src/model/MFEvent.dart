@@ -14,10 +14,9 @@ class Venue {
   String province;
   String country;
   String zip;
-  String website;
 
   Venue({this.venueName, this.phone, this.fax, this.address, this.address2,
-        this.city, this.province, this.country, this.zip, this.website});
+        this.city, this.province, this.country, this.zip});
 }
 
 class ContactInfo {
@@ -127,6 +126,7 @@ class MFEvent {
   DateTime deadline;
   bool hasAttended;
   int year;
+  String website;
   Venue venue;
   ContactInfo contact;
   List<String> organizers;
@@ -159,6 +159,7 @@ class MFEvent {
     dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
+    website = s["info"]["website"] ?? "";
 
     // Venue
     if(s["venue"] != null) {
@@ -172,7 +173,6 @@ class MFEvent {
       venue.province = s["venue"]["province"] ?? "";
       venue.country = s["venue"]["country"] ?? "";
       venue.zip = s["venue"]["zip"] ?? "";
-      venue.website = s["venue"]["website"] ?? "";
     }
 
     // Contact
