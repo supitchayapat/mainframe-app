@@ -33,7 +33,7 @@ class _EventDetailsState extends State<EventDetails> {
     }
 
     // check if registration is open
-    isRegisterOpen = true;
+    isRegisterOpen = eventItem.uberRegister;
   }
 
   Future _launchUrl(url) async {
@@ -334,7 +334,7 @@ class _EventDetailsState extends State<EventDetails> {
               showMainFrameDialogWithCancel(
                   context,
                   "Registration Status",
-                  "Registration phase not yet open. Would you like to proceed to event website?"
+                  "Mobile Registration is not currently available for this Competition. Would you instead wish to goto their website now ?"
               ).then((ans) {
                 if (ans == "OK") {
                   if (isURL(eventItem?.website))

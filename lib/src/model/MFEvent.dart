@@ -127,6 +127,7 @@ class MFEvent {
   bool hasAttended;
   int year;
   String website;
+  bool uberRegister;
   Venue venue;
   ContactInfo contact;
   List<String> organizers;
@@ -160,6 +161,7 @@ class MFEvent {
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
     website = s["info"]["website"] ?? "";
+    uberRegister = s["info"]["uberRegister"];
 
     // Venue
     if(s["venue"] != null) {
