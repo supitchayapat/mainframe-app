@@ -6,6 +6,7 @@ import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/PaymentDao.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
@@ -23,6 +24,9 @@ class _checkout_entryState extends State<checkout_entry> {
   TextEditingController _expDateCtrl = new TextEditingController();
   TextEditingController _cvvCtrl = new TextEditingController();
   TextEditingController _holderNameCtrl = new TextEditingController();
+  double financeCharge = 0.0;
+  String financeText = "";
+  String defaultCardholder = "";
   bool saveToken = true;
   bool setDefault = true;
   var listener;
@@ -31,6 +35,21 @@ class _checkout_entryState extends State<checkout_entry> {
   @override
   void initState() {
     super.initState();
+
+    // get finance charge
+    if(event_details.eventItem?.finance != null) {
+      financeText = event_details.eventItem.finance.description;
+      financeCharge = event_details.eventItem?.finance.surcharge / 100;
+    }
+
+    // get current user
+    getCurrentUserProfile().then((_user){
+      defaultCardholder = _user.first_name + " " + _user.last_name;
+      setState((){
+        if(defaultCardholder != null && defaultCardholder.isNotEmpty)
+          _holderNameCtrl.text = defaultCardholder;
+      });
+    });
 
     // save tickets
     summary.participantTickets.forEach((_participant, _ticketMap){
@@ -110,7 +129,8 @@ class _checkout_entryState extends State<checkout_entry> {
           // lowest amount would be 50 and is equivalent to $0.50
           // https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
           // total amount * 100
-          double _total = (totalAmount.toDouble() * 100);
+          double _sumAmount = (totalAmount.toDouble() * financeCharge) + totalAmount.toDouble();
+          double _total = (_sumAmount * 100);
           if(_total <= 50.0)
             _total = 50.00;
           PaymentDao.submitPayment(tokenId.tokenId, _total);
@@ -149,6 +169,7 @@ class _checkout_entryState extends State<checkout_entry> {
     Widget _cardContainer = new Column(
       children: <Widget>[
         new Container(
+          //color: Colors.blueAccent,
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(left: 20.0, right: 20.0),
           child: new TextField(
@@ -259,7 +280,8 @@ class _checkout_entryState extends State<checkout_entry> {
       body: new ListView(
         children: <Widget>[
           new Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              //color: Colors.amber,
+              margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -274,8 +296,15 @@ class _checkout_entryState extends State<checkout_entry> {
                   new Padding(padding: const EdgeInsets.only(top: 10.0)),
                   new Row(
                     children: <Widget>[
+                      new Expanded(child: new Text("$financeText", style: new TextStyle(fontSize: 20.0))),
+                      new Text("\$${(totalAmount * financeCharge).toStringAsFixed(2)}", style: new TextStyle(fontSize: 20.0))
+                    ],
+                  ),
+                  new Padding(padding: const EdgeInsets.only(top: 10.0)),
+                  new Row(
+                    children: <Widget>[
                       new Expanded(child: new Text("Total Amount", style: new TextStyle(fontSize: 20.0))),
-                      new Text("\$${(totalAmount).toStringAsFixed(2)}", style: new TextStyle(fontSize: 20.0))
+                      new Text("\$${(totalAmount * financeCharge + totalAmount).toStringAsFixed(2)}", style: new TextStyle(fontSize: 20.0))
                     ],
                   ),
                 ],

@@ -110,6 +110,28 @@ class EventSchedule {
   }
 }
 
+class Finance {
+  String description;
+  String id;
+  double surcharge;
+
+  Finance({this.description, this.id, this.surcharge});
+
+  Finance.fromSnapshot(var s) {
+    description = s["description"];
+    id = (s["id"]).toString();
+    surcharge = (s["surcharge"])?.toDouble();
+  }
+
+  toJson() {
+    return {
+      "description": description,
+      "id": id,
+      "surcharge": surcharge,
+    };
+  }
+}
+
 class MFEvent {
 
   final formatterOut = new DateFormat("MMM dd");
@@ -130,6 +152,7 @@ class MFEvent {
   bool uberRegister;
   Venue venue;
   ContactInfo contact;
+  Finance finance;
   List<String> organizers;
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
@@ -228,9 +251,15 @@ class MFEvent {
         //print(admission.toJson());
       }
     }
+
     if(s["schedule"] != null) {
       schedule = new EventSchedule.fromSnapshot(s["schedule"]);
       //print(schedule.toJson());
+    }
+
+    if(s["finance"] != null) {
+      finance = new Finance.fromSnapshot(s["finance"]);
+      //print(finance?.toJson());
     }
   }
 
