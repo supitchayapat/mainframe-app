@@ -18,6 +18,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
   void initState() {
     super.initState();
 
+    // set portrait mode
     MframePlugins.setToPortrait();
 
     // set firebase instance offline

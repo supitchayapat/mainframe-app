@@ -16,6 +16,7 @@ target 'Runner' do
   pod 'FBSDKLoginKit'
   pod 'APAddressBook'
   pod 'Stripe'
+  pod 'Firebase/DynamicLinks'
 
   if File.exists? '../.flutter-plugins'
       flutter_root = File.expand_path('..')

@@ -11,6 +11,18 @@ class EventDao {
   static List<MFEvent> future_events = <MFEvent>[];
   static List<MFEvent> past_events = <MFEvent>[];
 
+  static Future<MFEvent> getEvent(eventId) async {
+    return getEvents().then((_evnts){
+      if(_evnts.length > 0) {
+        for(var _evt in _evnts) {
+          if(_evt.id == eventId) {
+            return _evt;
+          }
+        }
+      }
+    });
+  }
+
   static Future<List<MFEvent>> getEvents() async {
     /*if(evt_listener == null) {
       evt_listener = reference.onValue.listen((event) {

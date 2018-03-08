@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/EventsWidget.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:firebase_dynamic_link/firebase_dynamic_link.dart';
+import 'package:myapp/src/dao/EventDao.dart';
+import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 
 class MainScreen extends StatefulWidget {
 
@@ -25,6 +28,24 @@ class _MainScreenState extends State<MainScreen> {
       //_mainFrameDrawer = new MainFrameDrawer(_scaffoldKey);
       MainFrameDrawer.currentUser=usr;
     });*/
+
+    // get dynamic link with firebase
+    FirebaseDynamicLink.getDynamicLink().then((String _link){
+      if(_link != null) {
+        if(_link.contains("/")) {
+          List<String> nav = _link.split("/");
+          if(nav.length > 2) {
+            String _navId = nav[2];
+            EventDao.getEvent(nav[2]).then((evt){
+              eventInfo.eventItem = evt;
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushNamed("/${nav[1]}");
+              });
+            });
+          }
+        }
+      }
+    });
 
     // check user is deleted on firebase console
     remove_listener = removeUserListener((event){

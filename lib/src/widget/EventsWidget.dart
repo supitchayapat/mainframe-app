@@ -28,7 +28,7 @@ class _EventsWidgetState extends State<EventsWidget> {
 
   void _handleEventTap(event) {
     eventInfo.eventItem = event;
-    Navigator.of(context).pushNamed("/eventInfo");
+    Navigator.of(context).pushNamed("/event");
   }
 
   void _buildListTiles() {

@@ -10,7 +10,7 @@ class payment_success extends StatefulWidget {
 class _payment_successState extends State<payment_success> {
 
   void _handleBackBtn() {
-    Navigator.of(context).popUntil(ModalRoute.withName("/eventInfo"));
+    Navigator.of(context).popUntil(ModalRoute.withName("/event"));
   }
 
   @override

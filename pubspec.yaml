@@ -10,6 +10,8 @@ dependencies:
   #firebase_database: "^0.1.4"
   firebase_database:
     path: firebase_plugins/firebase_database
+  firebase_dynamic_link:
+    path: firebase_plugins/firebase_dynamic_link
   firebase_storage: "^0.0.8"
   validator: ">=0.0.4 <0.1.0"
   intl: "^0.15.2"

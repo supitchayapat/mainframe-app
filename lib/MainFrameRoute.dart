@@ -128,7 +128,7 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new AddDancePartner(),
         settings: settings,
       );
-    case '/eventInfo':
+    case '/event':
       return new MainFrameRoute(
         builder: (_) => new EventDetails(),
         settings: settings,
@@ -195,7 +195,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/entryFreeForm': (BuildContext context) => new entry_freeform(),
     '/entryGroupForm': (BuildContext context) => new GroupDance(),
     '/addPartner': (BuildContext context) => new AddDancePartner(),
-    '/eventInfo': (BuildContext context) => new EventDetails(),
+    '/event': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
     '/registration': (BuildContext context) => new event_registration(),
     '/coupleManagement': (BuildContext context) => new couple_management(),
