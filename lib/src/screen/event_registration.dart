@@ -41,8 +41,15 @@ class EventParticipant {
     };
   }
 
-  bool operator ==(o) => o is EventParticipant && o.name == name && o.type == type && o.user == user;
-  int get hashCode => hash2(name.hashCode, type.hashCode);
+  bool operator ==(o) {
+    return o is EventParticipant && o.name == name && o.type == type && o.user == user;
+  }
+
+  int get hashCode {
+    //print("name hash: ${name.hashCode}");
+    //print("type hash: ${type.hashCode}");
+    return hash2(name.hashCode, type.hashCode);
+  }
 }
 
 class event_registration extends StatefulWidget {
@@ -78,9 +85,11 @@ class _event_registrationState extends State<event_registration> {
 
     // retrieve participants with entries
     EventEntryDao.getEventEntry(eventItem.id, (_evtParticipantEntries){
+      print("participant Entries: ${_evtParticipantEntries.length}");
       setState((){
         _eventEntries = {};
         _participantEntries = {};
+        _participants = new Set();
         if(_evtParticipantEntries != null) {
           _evtParticipantEntries.forEach((_pushId, _partEntries) {
             /*print("Participant Event:");
@@ -109,7 +118,10 @@ class _event_registrationState extends State<event_registration> {
                   name: evtPartName,
                   user: _usr,
                   type: _type);
+              print(_p?.toJson());
+              print(_participants.contains(_p));
               _participants.add(_p);
+              print(_participants.length);
 
               // add participant entries
               String _frmName = _partEntries?.formEntry?.name;
@@ -443,6 +455,8 @@ class _event_registrationState extends State<event_registration> {
       }
     }
 
+    //print("_partLength: ${_participants.length}");
+
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new MFAppBar("REGISTRATION", context),
@@ -547,6 +561,9 @@ class _event_registrationState extends State<event_registration> {
             summary.participantEntries = _participantEntries;
             summary.eventEntries = _eventEntries;
             Navigator.of(context).pushNamed("/registrationSummary");
+          }
+          else {
+            showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
           }
         },
         child: new Container(

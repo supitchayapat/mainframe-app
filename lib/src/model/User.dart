@@ -60,6 +60,9 @@ class Group {
       "members": members?.map((val) => val?.toJson())?.toList(),
     };
   }
+
+  bool operator ==(o) => o is Group && o.groupNumber == groupNumber && o.groupName == groupName;
+  int get hashCode => hash2(groupName.hashCode, groupNumber.hashCode);
 }
 
 class User {
