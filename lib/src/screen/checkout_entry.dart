@@ -12,6 +12,10 @@ import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
 import 'package:stripe_plugin/stripe_plugin.dart';
+import 'package:myapp/src/model/InvoiceInfo.dart';
+import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/util/EntryFormUtil.dart';
+import 'package:myapp/src/enumeration/FormParticipantType.dart';
 
 var totalAmount;
 
@@ -69,7 +73,7 @@ class _checkout_entryState extends State<checkout_entry> {
       });
     });*/
 
-    PaymentDao.stripePaymentListener((data){
+    PaymentDao.stripePaymentListener((data, pushId){
       print("PAYMENT DONE");
       
       // check if error
@@ -81,23 +85,77 @@ class _checkout_entryState extends State<checkout_entry> {
         showMainFrameDialog(context, "Transaction Failed", "Unable to process payment. Please contact application support.");
       }
       else {
+        double _sumAmount = (totalAmount.toDouble() * financeCharge) + totalAmount.toDouble();
+        Surcharge surcharge = new Surcharge.fromFinance(event_details.eventItem.finance);
+        surcharge.amount = (totalAmount.toDouble() * financeCharge);
+        // create new invoice info
+        InvoiceInfo info = new InvoiceInfo(
+          event: event_details.eventItem,
+          totalAmount: _sumAmount,
+          surcharge: surcharge,
+        );
+        info.entries = [];
+        info.billingInfo = new BillingInfo(name: _holderNameCtrl.text);
+
+        // update event entry
         summary.eventEntries?.forEach((key, val) {
           //print(key);
-          print(val.toJson());
+          //print(val.toJson());
           if (val?.payment == null) {
+            bool isInvoice = val.paidEntries != val?.danceEntries;
+            print("${val.paidEntries} != ${val.danceEntries}");
             // pay this entry
-            val.payment = data;
             val.paidEntries = val?.danceEntries;
+            val.payment = data;
+            // new Invoice Participants
+            InvoiceParticipants invParticipants = new InvoiceParticipants(formName: val?.formEntry?.name);
+            invParticipants.participants = [];
+            invParticipants.participantEntries = [];
+            FormParticipantType fType;
+            if(val?.participant != null) {
+              if(val.participant is Couple) {
+                invParticipants.participants.addAll(val.participant.couple);
+                fType = FormParticipantType.COUPLE;
+              } else if(val.participant is Group) {
+                invParticipants.participants.addAll(val.participant.members);
+                fType = FormParticipantType.GROUP;
+              } else if(val.participant is User){
+                invParticipants.participants.add(val.participant);
+                fType = FormParticipantType.SOLO;
+              }
+
+            }
+
+            double _price = EntryFormUtil.getPriceFromForm(summary.entryForms[val?.formEntry?.name], val.participant, fType);
             if (val?.levels != null) {
               for (var _lvl in val.levels) {
                 for (var _ageMap in _lvl.ageMap) {
                   _ageMap.subCategoryMap.forEach((_k, _v) {
                     if (_v["selected"]) {
+                      //print("key: $_k paid: ${_v["paid"]}");
+                      if(!_v["paid"]) {
+                        String _content = EntryFormUtil.getLookupDescription(val.formEntry, _k, "DANCES");
+                        ParticipantEntry _pEntry = new ParticipantEntry(name: "${_ageMap.ageCategory} ${_lvl.levelName.toUpperCase()} $_content", price: _price);
+                        //print(_pEntry.toJson());
+                        invParticipants.participantEntries.add(_pEntry);
+                      }
+
                       _v["paid"] = true;
                     }
                   });
                 }
               }
+            }
+            else if(val?.freeForm != null) {
+              // free form
+              ParticipantEntry _pEntry = new ParticipantEntry(name: "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}", price: _price);
+              invParticipants.participantEntries.add(_pEntry);
+            }
+
+            if(isInvoice) {
+              //print("INV PARTICIPANTS");
+              //print(invParticipants.toJson());
+              info.entries.add(invParticipants);
             }
             EventEntryDao.updateEventEntry(key, val);
           }
@@ -110,6 +168,9 @@ class _checkout_entryState extends State<checkout_entry> {
         });
 
         //print("SOURCE: ${data["charge"]["source"]}");
+        //print("INVOICE INFO");
+        //print(info.toJson());
+        PaymentDao.savePaymentInvoiceInfo(pushId, info);
 
 
         if (MainFrameLoadingIndicator.isOpened) {

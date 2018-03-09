@@ -67,12 +67,14 @@ class PaymentDao {
         .listen((event) {
       if(event.snapshot.value != null && event.snapshot.value.length > 0) {
         print(event.snapshot.value);
+        print(event.snapshot.key);
         var s = event.snapshot.value;
-        if(s["charge"] != null) {
+        var pushId = event.snapshot.key;
+        if(s["charge"] != null && s["invoiceInfo"] == null) {
           StripeCard _card = new StripeCard.fromDataSnapshot(s["charge"]["source"]);
           _card.tokenId = s["tokenId"];
-          Function.apply(p, [_card]);
-        } else {
+          Function.apply(p, [_card, pushId]);
+        } else if(s["charge"] == null) {
           // error
           if(s["error"] != null){
             Function.apply(p, [s["error"]]);
@@ -80,6 +82,11 @@ class PaymentDao {
         }
       }
     });
+  }
+  
+  static Future savePaymentInvoiceInfo(pushId, invoiceInfo) async {
+    FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+    return reference.child(fuser.uid).child(pushId).child("invoiceInfo").set(invoiceInfo.toJson());
   }
 
   static Future<dynamic> getExistingCard() async {

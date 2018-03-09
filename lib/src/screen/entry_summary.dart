@@ -12,6 +12,7 @@ import 'package:myapp/src/dao/TicketDao.dart';
 var participantEntries;
 var eventEntries;
 Map participantTickets;
+Map<String, Map<String, double>> entryForms = {};
 
 class entry_summary extends StatefulWidget {
   @override
@@ -29,7 +30,6 @@ class _entry_summaryState extends State<entry_summary> {
     'Amateur Competition': 25.0,
     'Adult Multi-Dance Competition': 100.0,
   };*/
-  Map<String, Map<String, double>> _entryForms = {};
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _entry_summaryState extends State<entry_summary> {
       });*/
     });
 
-    _entryForms = {};
+    entryForms = {};
     if(reg.eventItem.formEntries != null) {
       var _formEntries = reg.eventItem.formEntries;
       var _admission = reg.eventItem.admission;
@@ -68,7 +68,7 @@ class _entry_summaryState extends State<entry_summary> {
           _priceMap.putIfAbsent(_p.code, () => _entry.getPriceFromList(_p.price));
         });
         //print("pricemap: $_priceMap");
-        _entryForms.putIfAbsent(_entry.name, () => _priceMap);
+        entryForms.putIfAbsent(_entry.name, () => _priceMap);
       });
       if(_admission?.tickets != null && _admission.tickets.length > 0) {
         admissionTickets = [];
@@ -127,7 +127,7 @@ class _entry_summaryState extends State<entry_summary> {
     //print(entries);
     List<Widget> _children = [];
     entries.forEach((key, val){
-      double _price = EntryFormUtil.getPriceFromForm(_entryForms[key], eventParticipant.user, eventParticipant.type);
+      double _price = EntryFormUtil.getPriceFromForm(entryForms[key], eventParticipant.user, eventParticipant.type);
       //print("val = $val");
       var _numEntries = 0;
       //print(eventEntries);
@@ -141,10 +141,10 @@ class _entry_summaryState extends State<entry_summary> {
           }
         }
       }
-      print("$key : $val == numEntries: $_numEntries");
+      //print("$key : $val == numEntries: $_numEntries");
       //print("price from form: \$${_price}");
       if(_price * _numEntries <= 0.0) {
-        print("numentries == 0");
+        //print("numentries == 0");
         _price = _price * val;
       } else {
         _price = _price * _numEntries;

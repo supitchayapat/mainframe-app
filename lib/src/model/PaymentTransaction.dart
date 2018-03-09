@@ -1,7 +1,7 @@
 
 class PaymentTransaction {
   String tokenId;
-  double amount;
+  int amount;
 
   PaymentTransaction({this.tokenId, this.amount});
 

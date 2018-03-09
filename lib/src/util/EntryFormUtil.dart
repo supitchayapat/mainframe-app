@@ -27,6 +27,21 @@ class EntryFormUtil {
     return false;
   }
 
+  static String getLookupDescription(form, elemCode, link) {
+    String retVal = "";
+
+    var _formLookup = form.getFormLookup(link);
+    for(var elem in _formLookup.elements) {
+      String _eCode = elem.code + elem.id.toString();
+      if(_eCode == elemCode) {
+        retVal = elem.content;
+        break;
+      }
+    }
+
+    return retVal;
+  }
+
   static double getPriceFromForm(priceMap, participant, type) {
     //print(priceMap);
     FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);

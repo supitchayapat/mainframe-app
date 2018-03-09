@@ -85,7 +85,7 @@ class _event_registrationState extends State<event_registration> {
 
     // retrieve participants with entries
     EventEntryDao.getEventEntry(eventItem.id, (_evtParticipantEntries){
-      print("participant Entries: ${_evtParticipantEntries.length}");
+      //print("participant Entries: ${_evtParticipantEntries.length}");
       setState((){
         _eventEntries = {};
         _participantEntries = {};
