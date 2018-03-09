@@ -133,7 +133,7 @@ class _checkout_entryState extends State<checkout_entry> {
           double _total = (_sumAmount * 100);
           if(_total <= 50.0)
             _total = 50.00;
-          PaymentDao.submitPayment(tokenId.tokenId, _total);
+          PaymentDao.submitPayment(tokenId.tokenId, _total.round());
         }
         ).catchError((err) {
           print('PAYMENT ERROR.... $err');
