@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
+import 'package:stripe_plugin/stripe_plugin.dart';
 
 var totalAmount;
 
@@ -35,6 +37,10 @@ class _checkout_entryState extends State<checkout_entry> {
   @override
   void initState() {
     super.initState();
+
+    /*Timer periodic = new Timer.periodic(new Duration(seconds: 5), (timer){
+      print(timer);
+    });*/
 
     // get finance charge
     if(event_details.eventItem?.finance != null) {
@@ -65,42 +71,53 @@ class _checkout_entryState extends State<checkout_entry> {
 
     PaymentDao.stripePaymentListener((data){
       print("PAYMENT DONE");
-
-      summary.eventEntries?.forEach((key, val){
-        //print(key);
-        print(val.toJson());
-        if(val?.payment == null) {
-          // pay this entry
-          val.payment = data;
-          val.paidEntries = val?.danceEntries;
-          if(val?.levels != null) {
-            for(var _lvl in val.levels) {
-              for(var _ageMap in _lvl.ageMap) {
-                _ageMap.subCategoryMap.forEach((_k, _v){
-                  if(_v["selected"]) {
-                    _v["paid"] = true;
-                  }
-                });
+      
+      // check if error
+      if(!(data is StripeCard)) {
+        print(data["message"]);
+        if (MainFrameLoadingIndicator.isOpened) {
+          MainFrameLoadingIndicator.hideLoading(context);
+        }
+        showMainFrameDialog(context, "Transaction Failed", "Unable to process payment. Please contact application support.");
+      }
+      else {
+        summary.eventEntries?.forEach((key, val) {
+          //print(key);
+          print(val.toJson());
+          if (val?.payment == null) {
+            // pay this entry
+            val.payment = data;
+            val.paidEntries = val?.danceEntries;
+            if (val?.levels != null) {
+              for (var _lvl in val.levels) {
+                for (var _ageMap in _lvl.ageMap) {
+                  _ageMap.subCategoryMap.forEach((_k, _v) {
+                    if (_v["selected"]) {
+                      _v["paid"] = true;
+                    }
+                  });
+                }
               }
             }
+            EventEntryDao.updateEventEntry(key, val);
           }
-          EventEntryDao.updateEventEntry(key, val);
+        });
+
+        // save tickets
+        summary.participantTickets.forEach((_participant, _ticketMap) {
+          TicketDao.saveTicket(
+              _participant, _ticketMap, event_details.eventItem, isPaid: true);
+        });
+
+        //print("SOURCE: ${data["charge"]["source"]}");
+
+
+        if (MainFrameLoadingIndicator.isOpened) {
+          MainFrameLoadingIndicator.hideLoading(context);
         }
-      });
 
-      // save tickets
-      summary.participantTickets.forEach((_participant, _ticketMap){
-        TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem,isPaid: true);
-      });
-
-      //print("SOURCE: ${data["charge"]["source"]}");
-
-
-      if(MainFrameLoadingIndicator.isOpened) {
-        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.of(context).pushNamed("/paymentSuccess");
       }
-
-      Navigator.of(context).pushNamed("/paymentSuccess");
     }).then((val){ listener = val; });
   }
 

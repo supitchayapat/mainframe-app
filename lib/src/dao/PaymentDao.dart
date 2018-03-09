@@ -68,9 +68,16 @@ class PaymentDao {
       if(event.snapshot.value != null && event.snapshot.value.length > 0) {
         print(event.snapshot.value);
         var s = event.snapshot.value;
-        StripeCard _card = new StripeCard.fromDataSnapshot(s["charge"]["source"]);
-        _card.tokenId = s["tokenId"];
-        Function.apply(p, [_card]);
+        if(s["charge"] != null) {
+          StripeCard _card = new StripeCard.fromDataSnapshot(s["charge"]["source"]);
+          _card.tokenId = s["tokenId"];
+          Function.apply(p, [_card]);
+        } else {
+          // error
+          if(s["error"] != null){
+            Function.apply(p, [s["error"]]);
+          }
+        }
       }
     });
   }
