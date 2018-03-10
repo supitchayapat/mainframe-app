@@ -8,7 +8,7 @@ final reference = FirebaseDatabase.instance.reference().child("users");
 
 class TicketDao {
 
-  static retrieveAndSave(event, ticket, ticketOwner) async {
+  static Future retrieveAndSave(event, ticket, ticketOwner) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
     final ticketRef = reference.child(fUser.uid).child("tickets");
     EventTicket _ticket;
@@ -19,40 +19,45 @@ class TicketDao {
           ticket: ticket,
           ticketOwner: ticketOwner
       );
-      ticketRef.push().set(_ticket.toJson());
+      return ticketRef.push().set(_ticket.toJson()).then((_nil){
+        return _ticket;
+      });
     } else {
       //print(ticketOwner?.toJson());
       //print(participantTicket);
       participantTicket.forEach((pushId, pTicket){
         pTicket.ticket = ticket;
         ticketRef.child(pushId).set(pTicket.toJson());
+        _ticket = pTicket;
       });
+      return _ticket;
     }
   }
 
-  static saveTicket(evtParticipant, ticketMap, event, {isPaid}) async {
-    var participant = evtParticipant.user;
-    print(participant.toJson());
-    if(participant is Couple) {
+  static Future saveTicket(evtParticipant, ticketMap, event, {isPaid}) async {
+    //var participant = evtParticipant.user;
+    //print(evtParticipant.toJson());
+    print("SAVING TICKET:");
+    /*if(evtParticipant is Couple) {
       [0,1].forEach((_idx) async {
         if(isPaid != null)
-          ticketMap[participant.couple[_idx]].isPaid = isPaid;
+          ticketMap[evtParticipant.couple[_idx]].isPaid = isPaid;
         // find user
-        retrieveAndSave(event, ticketMap[participant.couple[_idx]], participant.couple[_idx]);
+        retrieveAndSave(event, ticketMap[evtParticipant.couple[_idx]], evtParticipant.couple[_idx]);
       });
-    } else if(participant is Group) {
-      participant.members.forEach((_user){
+    } else if(evtParticipant is Group) {
+      evtParticipant.members.forEach((_user){
         if(isPaid != null)
           ticketMap[_user].isPaid = isPaid;
         // find user
         retrieveAndSave(event, ticketMap[_user], _user);
       });
-    }
-    else if(participant is User) {
+    }*/
+    if(evtParticipant is User) {
       if(isPaid != null)
         ticketMap.isPaid = isPaid;
       // find user
-      retrieveAndSave(event, ticketMap, participant);
+      return retrieveAndSave(event, ticketMap, evtParticipant);
     }
   }
 

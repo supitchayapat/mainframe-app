@@ -95,6 +95,7 @@ class _checkout_entryState extends State<checkout_entry> {
           surcharge: surcharge,
         );
         info.entries = [];
+        info.tickets = [];
         info.billingInfo = new BillingInfo(name: _holderNameCtrl.text);
 
         // update event entry
@@ -163,8 +164,9 @@ class _checkout_entryState extends State<checkout_entry> {
 
         // save tickets
         summary.participantTickets.forEach((_participant, _ticketMap) {
-          TicketDao.saveTicket(
-              _participant, _ticketMap, event_details.eventItem, isPaid: true);
+          //_saveTickets(pushId, info, _participant, _ticketMap);
+          info.tickets.add(_ticketMap);
+          TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem, isPaid: true);
         });
 
         //print("SOURCE: ${data["charge"]["source"]}");

@@ -21,6 +21,7 @@ class entry_summary extends StatefulWidget {
 
 class _entry_summaryState extends State<entry_summary> {
   List admissionTickets = [];
+  var listener;
   double _total = 0.0;
   /*Map<String, Map<String, double>> _entryForms = {
     'Showdance Solo': 100.0,
@@ -39,23 +40,37 @@ class _entry_summaryState extends State<entry_summary> {
       if(_evtTickets != null && _evtTickets.length > 0) {
         Map _ticketUsers = {};
         _evtTickets.forEach((_pushId, _evtTicket){
-          if(_evtTicket.ticketOwner != null)
+          //("owner: ${_evtTicket.ticketOwner}");
+          //print("isPaid: ${_evtTicket?.ticket?.isPaid}");
+          if(_evtTicket.ticketOwner != null && _evtTicket?.ticket?.isPaid != null && _evtTicket.ticket.isPaid) {
             _ticketUsers.putIfAbsent(_evtTicket.ticketOwner, () => _evtTicket.ticket);
+          }
         });
+        /*print("TICKET USERS: ${_ticketUsers}");
+        _ticketUsers.forEach((_k,_v){
+          print("_k: ${_k?.toJson()}");
+          print("_v: ${_v?.toJson()}");
+        });*/
 
+        //print("POPULATE TICKETS");
         if(participantEntries != null) {
           participantTickets = {};
           participantEntries.forEach((_participant, val) {
-              _populateParticipantTickets(_participant, _ticketUsers);
+            //print("participant: ${_participant?.toJson()}");
+            _populateParticipantTickets(_participant, _ticketUsers);
+
           });
         }
+        /*print("PTICKETS:");
+        participantTickets.forEach((part,val){
+          print(part?.toJson());
+          if(!(val is Map))
+            print(val?.toJson());
+          else
+            print(val);
+        });*/
       }
-
-      /*print("TICKETS: ");
-      participantTickets.forEach((key, val){
-        print(key?.toJson());
-      });*/
-    });
+    }).then((val) { listener = val; });
 
     entryForms = {};
     if(reg.eventItem.formEntries != null) {
@@ -79,45 +94,44 @@ class _entry_summaryState extends State<entry_summary> {
 
     if(participantEntries != null) {
       participantTickets = {};
+      print("INITIALIZE TICKETS");
       participantEntries.forEach((_participant, val) {
         _populateParticipantTickets(_participant, null);
       });
-      //print(participantTickets);
     }
     //print(_entryForms.length);
     //print(_entryForms);
   }
 
-  void _populateParticipantTickets(_participant, ticketMap) {
+  @override
+  void dispose() {
+    super.dispose();
+    listener.cancel();
+  }
+
+  void _populateParticipantTickets(_participant, Map ticketMap) {
     if(_participant.user is Couple) {
       Map _couple = {};
-      var ticketCouple1 = ticketMap != null ? ticketMap[_participant.user.couple[0]] : null;
-      var ticketCouple2 = ticketMap != null ? ticketMap[_participant.user.couple[1]] : null;
-      _couple.putIfAbsent(_participant.user.couple[0], () => (ticketCouple1 != null ? ticketCouple1 : admissionTickets[0]));
-      _couple.putIfAbsent(_participant.user.couple[1], () => (ticketCouple2 != null ? ticketCouple2 : admissionTickets[0]));
-      if(participantTickets.containsKey(_participant))
-        participantTickets[_participant] = _couple;
-      else
-        participantTickets.putIfAbsent(_participant, () => _couple);
+      var ticketCouple1 = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user.couple[0]] : null;
+      var ticketCouple2 = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user.couple[1]] : null;
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user.couple[0]))
+        participantTickets.putIfAbsent(_participant.user.couple[0], () => (ticketCouple1 != null ? ticketCouple1 : admissionTickets[0]));
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user.couple[1]))
+        participantTickets.putIfAbsent(_participant.user.couple[1], () => (ticketCouple2 != null ? ticketCouple2 : admissionTickets[0]));
     }
     else if(_participant.user is Group) {
       Map _members = {};
       for(var _member in _participant.user.members) {
-        var memberTicket = ticketMap != null ? ticketMap[_member] : null;
-        _members.putIfAbsent(_member, () => (memberTicket != null ? memberTicket : admissionTickets[0]));
+        var memberTicket = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_member] : null;
+        if(ticketMap == null || !ticketMap.containsKey(_member))
+          participantTickets.putIfAbsent(_member, () => (memberTicket != null ? memberTicket : admissionTickets[0]));
       }
-      if(participantTickets.containsKey(_participant))
-        participantTickets[_participant] = _members;
-      else
-        participantTickets.putIfAbsent(_participant, () => _members);
     } else {
       //print("participant: ${_participant?.user?.toJson()}");
-      var participantTicket = ticketMap != null ? ticketMap[_participant.user] : null;
+      var participantTicket = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user] : null;
       //print("participantTicket: ${participantTicket?.toJson()}");
-      if(participantTickets.containsKey(_participant))
-        participantTickets[_participant] = (participantTicket != null ? participantTicket : admissionTickets[0]);
-      else
-        participantTickets.putIfAbsent(_participant, () => (participantTicket != null ? participantTicket : admissionTickets[0]));
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user))
+        participantTickets.putIfAbsent(_participant.user, () => (participantTicket != null ? participantTicket : admissionTickets[0]));
       //print("THE TICKET: ${participantTickets[_participant]?.toJson()}");
     }
   }
@@ -157,48 +171,41 @@ class _entry_summaryState extends State<entry_summary> {
         _priceText = new Text("Paid: \$${(_price).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)));
       }
 
-      _children.add(
-          new Row(
-            children: <Widget>[
-              new Expanded(child: new Text(eventParticipant.name, style: new TextStyle(fontSize: 22.0))),
-              _priceText
-            ],
-          )
-      );
       // add to total
       if(!isPaidFee) {
+        _children.add(
+            new Row(
+              children: <Widget>[
+                new Expanded(child: new Text(eventParticipant.name, style: new TextStyle(fontSize: 22.0))),
+                _priceText
+              ],
+            )
+        );
+
         _total += _price;
+
+        _children.add(
+            new Wrap(
+              children: <Widget>[
+                new Text(key, style: new TextStyle(fontFamily: "Montserrat-Light")),
+              ],
+            ));
+        _children.add(new Padding(padding: const EdgeInsets.only(bottom: 20.0)));
       }
-      _children.add(
-        new Wrap(
-          children: <Widget>[
-            new Text(key, style: new TextStyle(fontFamily: "Montserrat-Light")),
-            /*new Container(
-              decoration: new BoxDecoration(
-                  borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
-                  color: Colors.white,
-                  border: new Border.all(
-                    width: 2.0,
-                    color: const Color(0xFF313746),
-                    style: BorderStyle.solid,
-                  ),
-              ),
-              margin: const EdgeInsets.only(left: 10.0),
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: new Text("Entries: ${val}", style: new TextStyle(fontFamily: "Montserrat-Light", color: Colors.black, fontWeight: FontWeight.bold)),
-            )*/
-          ],
-        ));
-      _children.add(new Padding(padding: const EdgeInsets.only(bottom: 20.0)));
     });
 
-    return new Container(
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 10.0),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _children,
-      ),
-    );
+    if(_children.isNotEmpty) {
+      return new Container(
+        margin: const EdgeInsets.only(
+            left: 20.0, right: 20.0, top: 20.0, bottom: 10.0),
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _children,
+        ),
+      );
+    } else {
+      return null;
+    }
   }
 
   Future _handleSelect() {
@@ -251,96 +258,50 @@ class _entry_summaryState extends State<entry_summary> {
     );
   }
 
-  Widget generateAdmissionTickets(eventParticipant, Map entries) {
+  Widget generateAdmissionTickets(_user, _ticket) {
     List<Widget> _children = [];
     List<Widget> _rowItems = [];
     double _ticketFee = 0.0;
     bool isPaid = false;
 
-    if(eventParticipant.user is Couple || eventParticipant.user is Group) {
-      List<Widget> wrapChildren = [];
-      List _users = [];
+    //print(_user?.toJson());
 
-      //print(eventParticipant?.toJson());
-
-      if(eventParticipant.user is Couple) {
-        _users = eventParticipant.user.couple;
-      } else if(eventParticipant.user is Group) {
-        _users.addAll(eventParticipant.user.members);
-      }
-      wrapChildren.addAll(_users.map((_user){
-        var _ticketMap = participantTickets[eventParticipant];
-        //_ticketMap.forEach((key, val) => print(key?.toJson()));
-        var _ticket = _ticketMap[_user];
-        //print(_ticket?.toJson());
-        var ticketPaid = _ticket?.isPaid != null ? _ticket.isPaid : false;
-        _ticketFee += _ticket?.amount != null ? _ticket.amount : 0.0;
-
-        if(!isPaid || (isPaid && !ticketPaid)) {
-          isPaid = ticketPaid;
-        }
-
-        return _generateTicketItem(_ticket, ticketPaid, (selected){
-          if(selected != null) {
-            setState(() {
-              _ticketMap[_user] = selected;
+    _ticketFee = _ticket.amount;
+    _rowItems.add(new Expanded(
+      child: new InkWell(
+        onTap: () {
+          if(!isPaid) {
+            _handleSelect().then((selected){
+              if(selected != null) {
+                setState(() {
+                  participantTickets[_user] = selected;
+                });
+              }
             });
           }
-        });
-      }).toList());
-
-      _rowItems.add(
-          new Expanded(
-            child: new Wrap(
-              runSpacing: 4.0,
-              spacing: 4.0,
-              children: wrapChildren,
-            )
-          )
-      );
-    }
-    else if(eventParticipant.user is User) {
-      var _ticket = participantTickets[eventParticipant];
-      isPaid = _ticket?.isPaid != null ? _ticket.isPaid : false;
-      _ticketFee += _ticket?.amount != null ? _ticket.amount : 0.0;
-      _rowItems.add(new Expanded(
-        child: new InkWell(
-          onTap: () {
-            if(!isPaid) {
-              _handleSelect().then((selected){
-                if(selected != null) {
-                  setState(() {
-                    participantTickets[eventParticipant] = selected;
-                  });
-                }
-              });
-            }
-          },
-          child: new Text(_ticket.content,
-              overflow: TextOverflow.clip,
-              style: new TextStyle(fontFamily: "Montserrat-Light", color: Colors.black)
-          ),
+        },
+        child: new Text(_ticket.content,
+            overflow: TextOverflow.clip,
+            style: new TextStyle(fontFamily: "Montserrat-Light", color: Colors.black)
         ),
-      ));
-      _rowItems.add(
-          new Padding(
-              padding: const EdgeInsets.only(right: 5.0),
-              child: new Container(
-                alignment: Alignment.centerRight,
-                child: new Icon(FontAwesomeIcons.ticketAlt, color: !isPaid ? Colors.black : new Color(0xff00e5ff)),
-              )
-          )
-      );
-    }
+      ),
+    ));
+    _rowItems.add(
+        new Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: new Container(
+              alignment: Alignment.centerRight,
+              child: new Icon(FontAwesomeIcons.ticketAlt, color: !isPaid ? Colors.black : new Color(0xff00e5ff)),
+            )
+        )
+    );
 
     Widget _priceText = new Text("Fee: \$${_ticketFee.toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0));
-    if(isPaid)
-      _priceText = new Text("Paid: \$${(_ticketFee).toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)));
 
     _children.add(
         new Row(
           children: <Widget>[
-            new Expanded(child: new Text(eventParticipant.name, style: new TextStyle(fontSize: 22.0))),
+            new Expanded(child: new Text("${_user.first_name} ${_user.last_name}", style: new TextStyle(fontSize: 22.0))),
             _priceText
           ],
         )
@@ -369,42 +330,6 @@ class _entry_summaryState extends State<entry_summary> {
           )
         ],
       )
-      /*new Row(
-        children: <Widget>[
-          new Expanded(
-            child: new DropdownButtonHideUnderline(
-              child: new Container(
-                padding: const EdgeInsets.only(left: 5.0),
-                height: 35.0,
-                color: Colors.white,
-                child: new Theme(
-                  data: new ThemeData.light(),
-                  child: new DropdownButton(
-                      style: new TextStyle(fontFamily: "Montserrat-Light", color: Colors.black, fontSize: 13.0),
-                      iconSize: 30.0,
-                      value: "DA",
-                      items: admissionTickets.map((value) {
-                        return new DropdownMenuItem<String>(
-                            value: value.code,
-                            child: new Container(
-                              width: 285.0,
-                              child: new Text(value.content),
-                            )
-                        );
-                      }).toList(),
-                      onChanged: (val){
-                        /*setState(() {
-                            if (val != null)
-                              _dropValue = val;
-                          });*/
-                      }
-                  ),
-                ),
-              )
-            )
-          )
-        ],
-      )*/
     );
 
     // add admission Fees to total
@@ -428,15 +353,38 @@ class _entry_summaryState extends State<entry_summary> {
     List<Widget> _children = [];
     if(participantEntries != null){
       participantEntries.forEach((key, val){
-        _children.add(generateContentItem(key, val));
+        Widget _entryFeeContent = generateContentItem(key, val);
+        if(_entryFeeContent != null)
+          _children.add(_entryFeeContent);
         // display admission ticket(s)
+        //_children.add(generateAdmissionTickets(key, val));
+      });
+
+      if(_children.isEmpty) {
+        _children.add(new Container(
+          //color: Colors.amber,
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0, top: 20.0),
+          child: new Text("All Entry fees are paid.", style: new TextStyle(fontSize: 18.0)),
+        ));
+      }
+    }
+
+    if(participantTickets != null && participantTickets.isNotEmpty) {
+      _children.add(new Container(
+        //color: Colors.amber,
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0, top: 20.0),
+        child: new Text("Admission Fees", style: new TextStyle(fontSize: 22.0)),
+      ));
+
+      participantTickets.forEach((key, val){
         _children.add(generateAdmissionTickets(key, val));
       });
     }
 
     /*print("ticket owners:");
     participantTickets.forEach((part,val){
-      print(part?.user?.toJson());
+      //print(part?.user?.toJson());
+      print(part?.toJson());
       if(!(val is Map))
         print(val?.toJson());
       else
