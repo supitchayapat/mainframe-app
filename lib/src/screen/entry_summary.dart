@@ -13,6 +13,8 @@ var participantEntries;
 var eventEntries;
 Map participantTickets;
 Map<String, Map<String, double>> entryForms = {};
+List admissionTickets;
+Map ticketUsers;
 
 class entry_summary extends StatefulWidget {
   @override
@@ -20,8 +22,6 @@ class entry_summary extends StatefulWidget {
 }
 
 class _entry_summaryState extends State<entry_summary> {
-  List admissionTickets = [];
-  var listener;
   double _total = 0.0;
   /*Map<String, Map<String, double>> _entryForms = {
     'Showdance Solo': 100.0,
@@ -36,46 +36,10 @@ class _entry_summaryState extends State<entry_summary> {
   void initState() {
     super.initState();
 
-    TicketDao.getTickets(reg.eventItem.id, (_evtTickets){
-      if(_evtTickets != null && _evtTickets.length > 0) {
-        Map _ticketUsers = {};
-        _evtTickets.forEach((_pushId, _evtTicket){
-          //("owner: ${_evtTicket.ticketOwner}");
-          //print("isPaid: ${_evtTicket?.ticket?.isPaid}");
-          if(_evtTicket.ticketOwner != null && _evtTicket?.ticket?.isPaid != null && _evtTicket.ticket.isPaid) {
-            _ticketUsers.putIfAbsent(_evtTicket.ticketOwner, () => _evtTicket.ticket);
-          }
-        });
-        /*print("TICKET USERS: ${_ticketUsers}");
-        _ticketUsers.forEach((_k,_v){
-          print("_k: ${_k?.toJson()}");
-          print("_v: ${_v?.toJson()}");
-        });*/
-
-        //print("POPULATE TICKETS");
-        if(participantEntries != null) {
-          participantTickets = {};
-          participantEntries.forEach((_participant, val) {
-            //print("participant: ${_participant?.toJson()}");
-            _populateParticipantTickets(_participant, _ticketUsers);
-
-          });
-        }
-        /*print("PTICKETS:");
-        participantTickets.forEach((part,val){
-          print(part?.toJson());
-          if(!(val is Map))
-            print(val?.toJson());
-          else
-            print(val);
-        });*/
-      }
-    }).then((val) { listener = val; });
-
     entryForms = {};
     if(reg.eventItem.formEntries != null) {
       var _formEntries = reg.eventItem.formEntries;
-      var _admission = reg.eventItem.admission;
+      //var _admission = reg.eventItem.admission;
       _formEntries.forEach((_entry){
         Map<String, double> _priceMap = {};
         _entry.participants.forEach((_p){
@@ -85,31 +49,29 @@ class _entry_summaryState extends State<entry_summary> {
         //print("pricemap: $_priceMap");
         entryForms.putIfAbsent(_entry.name, () => _priceMap);
       });
-      if(_admission?.tickets != null && _admission.tickets.length > 0) {
+      /*if(_admission?.tickets != null && _admission.tickets.length > 0) {
         admissionTickets = [];
         admissionTickets.addAll(_admission.tickets);
         //admissionTickets.forEach((val) => print(val.toJson()));
-      }
+      }*/
     }
 
+    //print("participantTickets $participantTickets");
+    //print("ticketUsers $ticketUsers");
     if(participantEntries != null) {
-      participantTickets = {};
+      if(participantTickets == null)
+        participantTickets = {};
+
       print("INITIALIZE TICKETS");
       participantEntries.forEach((_participant, val) {
-        _populateParticipantTickets(_participant, null);
+        populateParticipantTickets(_participant, (ticketUsers == null || ticketUsers.isEmpty) ? null : ticketUsers);
       });
     }
     //print(_entryForms.length);
     //print(_entryForms);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    listener.cancel();
-  }
-
-  void _populateParticipantTickets(_participant, Map ticketMap) {
+  void populateParticipantTickets(_participant, Map ticketMap) {
     if(_participant.user is Couple) {
       Map _couple = {};
       var ticketCouple1 = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user.couple[0]] : null;
@@ -134,6 +96,11 @@ class _entry_summaryState extends State<entry_summary> {
         participantTickets.putIfAbsent(_participant.user, () => (participantTicket != null ? participantTicket : admissionTickets[0]));
       //print("THE TICKET: ${participantTickets[_participant]?.toJson()}");
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget generateContentItem(eventParticipant, Map entries){

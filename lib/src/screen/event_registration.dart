@@ -15,6 +15,7 @@ import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/freeform/ShowDanceSolo.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
 
 var eventItem;
@@ -59,6 +60,7 @@ class event_registration extends StatefulWidget {
 
 class _event_registrationState extends State<event_registration> {
   var entryListener;
+  var ticketListener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Map<EventParticipant, Map<String, int>> _participantEntries = {};
   Set<EventParticipant> _participants = new Set();
@@ -77,10 +79,18 @@ class _event_registrationState extends State<event_registration> {
   void initState() {
     super.initState();
 
+    print("participantTickets ${summary.participantTickets}");
+
     if(eventItem.formEntries != null) {
       //eventItem.formEntries.forEach((val) => print(val.toJson()));
       _entryForms = eventItem.formEntries;
       print("Event Id: ${eventItem.id} entry forms: ${_entryForms.length}");
+      var _admission = eventItem.admission;
+      if(_admission?.tickets != null && _admission.tickets.length > 0) {
+        summary.admissionTickets = [];
+        summary.admissionTickets.addAll(_admission.tickets);
+        //summary.admissionTickets.forEach((val) => print(val.toJson()));
+      }
     }
 
     // retrieve participants with entries
@@ -118,10 +128,10 @@ class _event_registrationState extends State<event_registration> {
                   name: evtPartName,
                   user: _usr,
                   type: _type);
-              print(_p?.toJson());
-              print(_participants.contains(_p));
+              //print(_p?.toJson());
+              //print(_participants.contains(_p));
               _participants.add(_p);
-              print(_participants.length);
+              //print(_participants.length);
 
               // add participant entries
               String _frmName = _partEntries?.formEntry?.name;
@@ -142,15 +152,104 @@ class _event_registrationState extends State<event_registration> {
 
             _eventEntries.putIfAbsent(_pushId, () => _partEntries);
           });
+
+          // listener
+          _handleTicketListen();
         }
       });
     }).then((listener) {entryListener = listener;});
+  }
+
+  void _handleTicketListen() {
+    if(_participantEntries != null && _participantEntries.isNotEmpty && ticketListener == null) {
+      TicketDao.getTickets(eventItem.id, (_evtTickets){
+        if(_evtTickets != null && _evtTickets.length > 0) {
+          summary.ticketUsers = {}; // paid tickets
+          Map unpaidTicketUsers = {};
+          _evtTickets.forEach((_pushId, _evtTicket){
+            //("owner: ${_evtTicket.ticketOwner}");
+            //print("isPaid: ${_evtTicket?.ticket?.isPaid}");
+            if(_evtTicket.ticketOwner != null && _evtTicket?.ticket?.isPaid != null && _evtTicket.ticket.isPaid) {
+              summary.ticketUsers.putIfAbsent(_evtTicket.ticketOwner, () => _evtTicket.ticket);
+            } else if(_evtTicket?.ticket?.isPaid == null || !_evtTicket.ticket.isPaid) {
+              unpaidTicketUsers.putIfAbsent(_evtTicket.ticketOwner, () => _evtTicket.ticket);
+            }
+          });
+          print("TICKET USERS: ${summary.ticketUsers}");
+          /*_ticketUsers.forEach((_k,_v){
+            print("_k: ${_k?.toJson()}");
+            print("_v: ${_v?.toJson()}");
+          });*/
+
+          //print("POPULATE TICKETS");
+          if(_participantEntries != null && _participantEntries.isNotEmpty) {
+            summary.participantTickets = {};
+            _participantEntries.forEach((_participant, val) {
+              //print("participant: ${_participant?.toJson()}");
+              populateParticipantTickets(_participant, summary.ticketUsers);
+            });
+            // populate unpaid
+            unpaidTicketUsers.forEach((_usr, _tck){
+              summary.participantTickets[_usr] = _tck;
+            });
+            /*if(summary.participantTickets.isEmpty && summary.ticketUsers.isNotEmpty) {
+              summary.participantTickets = {};
+            } else if(summary.participantTickets.isEmpty) {
+              summary.participantTickets = null;
+            }*/
+          }
+          /*print("PTICKETS:");
+          if(summary.participantTickets != null) {
+            summary.participantTickets.forEach((part, val) {
+              print(part?.toJson());
+              if (!(val is Map))
+                print(val?.toJson());
+              else
+                print(val);
+            });
+          }*/
+        }
+      }).then((val) { ticketListener = val; });
+    } else {
+      if((_participantEntries == null || _participantEntries.isEmpty) && ticketListener != null) {
+        ticketListener.cancel();
+      }
+    }
+  }
+
+  void populateParticipantTickets(_participant, Map ticketMap) {
+    if(_participant.user is Couple) {
+      Map _couple = {};
+      var ticketCouple1 = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user.couple[0]] : null;
+      var ticketCouple2 = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user.couple[1]] : null;
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user.couple[0]))
+        summary.participantTickets.putIfAbsent(_participant.user.couple[0], () => (ticketCouple1 != null ? ticketCouple1 : summary.admissionTickets[0]));
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user.couple[1]))
+        summary.participantTickets.putIfAbsent(_participant.user.couple[1], () => (ticketCouple2 != null ? ticketCouple2 : summary.admissionTickets[0]));
+    }
+    else if(_participant.user is Group) {
+      Map _members = {};
+      for(var _member in _participant.user.members) {
+        var memberTicket = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_member] : null;
+        if(ticketMap == null || !ticketMap.containsKey(_member))
+          summary.participantTickets.putIfAbsent(_member, () => (memberTicket != null ? memberTicket : summary.admissionTickets[0]));
+      }
+    } else {
+      //print("participant: ${_participant?.user?.toJson()}");
+      var participantTicket = (ticketMap != null && ticketMap.isNotEmpty) ? ticketMap[_participant.user] : null;
+      //print("participantTicket: ${participantTicket?.toJson()}");
+      if(ticketMap == null || !ticketMap.containsKey(_participant.user))
+        summary.participantTickets.putIfAbsent(_participant.user, () => (participantTicket != null ? participantTicket : summary.admissionTickets[0]));
+      //print("THE TICKET: ${participantTickets[_participant]?.toJson()}");
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
     entryListener.cancel();
+    if(ticketListener != null)
+      ticketListener.cancel();
   }
 
   void _handleAddEventParticipant() {
@@ -184,6 +283,8 @@ class _event_registrationState extends State<event_registration> {
           showMainFrameDialog(context, "Entry not allowed", "Selected Participant has no available entries for the event.");
         }
       });
+    } else {
+      showMainFrameDialog(context, "Participant(s) field empty", "No Selected Participant(s).");
     }
   }
 
@@ -276,7 +377,7 @@ class _event_registrationState extends State<event_registration> {
                                   hasDataEntry = true;
                                 } else {
                                   groupFormScreen.formData = _entryVal.freeForm;
-                                  print("reg: ${_entryVal.freeForm}");
+                                  //print("reg: ${_entryVal.freeForm}");
                                   groupFormScreen.formPushId = _pushId;
                                   hasDataEntry = true;
                                 }
