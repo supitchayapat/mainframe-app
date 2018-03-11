@@ -5,6 +5,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
+import 'package:strings/strings.dart';
 
 var couple1;
 var couple2;
@@ -65,7 +66,7 @@ class _couple_managementState extends State<couple_management> {
         new Expanded(
             child: new Padding(
                 padding: const EdgeInsets.only(left: 5.0),
-                child: new Text("${val.coupleName} - ${_categoryGender}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                child: new Text("${val.coupleName} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
             )
         ),
         new Container(
@@ -165,7 +166,7 @@ class _couple_managementState extends State<couple_management> {
                         couple1 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name} - $_categoryGender1",
+                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name} - ${camelize(_categoryGender1)}",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
@@ -199,7 +200,7 @@ class _couple_managementState extends State<couple_management> {
                         couple2 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name} - $_categoryGender2",
+                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name} - ${camelize(_categoryGender2)}",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
@@ -219,6 +220,8 @@ class _couple_managementState extends State<couple_management> {
                   if(couple1 != null && couple2 != null) {
                     if(couple1 != couple2) {
                       saveUserCoupleParticipants(couple1, couple2);
+                      couple1 = null;
+                      couple2 = null;
                     }
                   }
                   else {

@@ -290,14 +290,14 @@ Future<Couple> saveUserCoupleParticipants(User user, User user2) async {
       });
       if(couple == null) {
         couple = new Couple(
-            coupleName: "${user.first_name} and ${user2.first_name}",
+            coupleName: "${user.first_name} & ${user2.first_name}",
             couple: [user, user2]);
         return partnerRef.child(fuser.uid).child("couple_participants")
             .push()
             .set(couple.toJson());
       }
     } else {
-      Couple couple = new Couple(coupleName: "${user.first_name} and ${user2.first_name}", couple: [user, user2]);
+      Couple couple = new Couple(coupleName: "${user.first_name} & ${user2.first_name}", couple: [user, user2]);
       return partnerRef.child(fuser.uid).child("couple_participants").push().set(couple.toJson());
     }
   });

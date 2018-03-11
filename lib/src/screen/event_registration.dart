@@ -17,6 +17,7 @@ import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
+import 'package:strings/strings.dart';
 
 var eventItem;
 var participant;
@@ -175,7 +176,7 @@ class _event_registrationState extends State<event_registration> {
               unpaidTicketUsers.putIfAbsent(_evtTicket.ticketOwner, () => _evtTicket.ticket);
             }
           });
-          print("TICKET USERS: ${summary.ticketUsers}");
+          //print("TICKET USERS: ${summary.ticketUsers}");
           /*_ticketUsers.forEach((_k,_v){
             print("_k: ${_k?.toJson()}");
             print("_v: ${_v?.toJson()}");
@@ -324,7 +325,7 @@ class _event_registrationState extends State<event_registration> {
                 child: new Wrap(
                   children: <Widget>[
                     new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                    new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                    new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
                   ],
                 ),
               )
@@ -338,9 +339,25 @@ class _event_registrationState extends State<event_registration> {
     }
     else {
       List<Widget> _formButtons = [];
+      bool grpDisable = false;
+      if(_evtParticipant.user is Group) {
+        _eventEntries.forEach((_pushId, _entryVal){
+          if(_entryVal.formEntry.type == FormType.GROUP && _evtParticipant.name == _entryVal.participant.groupName) {
+            //print("evtParticipant: ${_evtParticipant.name} = ${_entryVal.participant.groupName}");
+            grpDisable = true;
+          }
+        });
+      }
+
       _entryForms.forEach((val){
+        bool grpBtnDisable = false;
+        if(val.type == FormType.GROUP && grpDisable && !_entryItems.containsKey(val.name)) {
+          //print("${val.name} contains = ${_entryItems.containsKey(val.name)}");
+          grpBtnDisable = true;
+        }
+
         //print("${val.formName} --- ${_evtParticipant.type}");
-        if(EntryFormUtil.isFormApplicable(val, _evtParticipant.user, _evtParticipant.type)) {
+        if(!grpBtnDisable && EntryFormUtil.isFormApplicable(val, _evtParticipant.user, _evtParticipant.type)) {
           _formButtons.add(new Row(
             crossAxisAlignment: _evtParticipant.toggle ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: <Widget>[
@@ -377,8 +394,9 @@ class _event_registrationState extends State<event_registration> {
                                   hasDataEntry = true;
                                 } else {
                                   groupFormScreen.formData = _entryVal.freeForm;
-                                  //print("reg: ${_entryVal.freeForm}");
+                                  //print("reg: ${_entryVal.paidEntries}");
                                   groupFormScreen.formPushId = _pushId;
+                                  groupFormScreen.paidEntries = _entryVal.paidEntries;
                                   hasDataEntry = true;
                                 }
                               }
@@ -391,6 +409,7 @@ class _event_registrationState extends State<event_registration> {
                             freeFormScreen.formPushId = null;
                             groupFormScreen.formData = null;
                             groupFormScreen.formPushId = null;
+                            groupFormScreen.paidEntries = null;
                           }
                           if(val.type == FormType.STANDARD) {
                             /*int numItem = _entryItems.containsKey(val.formName)
@@ -612,7 +631,7 @@ class _event_registrationState extends State<event_registration> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               new Expanded(
-                                child: new Text(participant != null ? participant["name"] + _categoryGender : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
+                                child: new Text(participant != null ? participant["name"] + camelize(_categoryGender) : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
                               ),
                               new Icon(Icons.search, color: Colors.black)
                             ],

@@ -25,6 +25,7 @@ dependencies:
       path: stripe_plugin
   font_awesome_flutter: "^6.0.0"
   url_launcher: "1.0.3"
+  strings: "^0.0.6"
     #path: firebase_plugins/url_launcher
   #facebook_sign_in:
     #git: https://github.com/bramvbilsen/Flutter-Facebook-Sign-In-Plugin.git

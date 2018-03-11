@@ -14,6 +14,7 @@ var formParticipant;
 var formData;
 var formPushId;
 var formCoach;
+var paidEntries;
 
 class GroupDance extends StatefulWidget {
   @override
@@ -26,6 +27,7 @@ class _GroupDanceState extends State<GroupDance> {
   TextEditingController _danceCtrl = new TextEditingController();
   String titlePage = "";
   HashMap<String, String> _dataMap = new HashMap<String, dynamic>();
+  bool isPaid = false;
 
   @override
   void initState() {
@@ -34,6 +36,10 @@ class _GroupDanceState extends State<GroupDance> {
 
     if (formEntry != null && formEntry.name != null) {
       titlePage = formEntry.name;
+    }
+
+    if(paidEntries != null && paidEntries > 0) {
+      isPaid = true;
     }
 
     if(formData != null) {
@@ -47,7 +53,7 @@ class _GroupDanceState extends State<GroupDance> {
   }
 
   Future _handleBackButton() async {
-    if(formParticipant?.members != null) {
+    if(!isPaid && formParticipant?.members != null) {
       var val = await showMainFrameDialogWithCancel(
           context, "Form Entry", "Save Changes on ${formEntry.name}?");
       if (val == "OK") {
@@ -211,8 +217,10 @@ class _GroupDanceState extends State<GroupDance> {
     _children.add(new MaterialButton(
       padding: const EdgeInsets.all(0.0),
       onPressed: (){
-        participantList.participantType = "group";
-        Navigator.of(context).pushNamed("/addPartner");
+        if(!isPaid) {
+          participantList.participantType = "group";
+          Navigator.of(context).pushNamed("/addPartner");
+        }
       },
       child: new Container(
           constraints: const BoxConstraints(minHeight: 50.0),
@@ -344,7 +352,7 @@ class _GroupDanceState extends State<GroupDance> {
             children: _children,
           )
       ),
-      floatingActionButton: new InkWell(
+      floatingActionButton: !isPaid ? new InkWell(
         onTap: () {
           _handleSaving();
         },
@@ -358,7 +366,7 @@ class _GroupDanceState extends State<GroupDance> {
           ),
           child: new Text("Save Entry", style: new TextStyle(fontSize: 17.0)),
         ),
-      )
+      ) : new Container()
     );
   }
 }

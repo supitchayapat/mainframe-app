@@ -5,6 +5,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
+import 'package:strings/strings.dart';
 
 var participantUser;
 
@@ -61,7 +62,7 @@ class _solo_managementState extends State<solo_management> {
         new Expanded(
             child: new Padding(
               padding: const EdgeInsets.only(left: 5.0),
-              child: new Text("${val.first_name} ${val.last_name} - $_categoryGender", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+              child: new Text("${val.first_name} ${val.last_name} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
             )
         ),
         new Container(
@@ -140,7 +141,7 @@ class _solo_managementState extends State<solo_management> {
                       //couple1 = "_assignCoupleParticipant";
                       Navigator.of(context).pushNamed("/addPartner");
                     },
-                    child: new Text((participantUser == null || participantUser is String) ? "ASSIGN" : "${participantUser.first_name} ${participantUser.last_name} - $_categoryGender",
+                    child: new Text((participantUser == null || participantUser is String) ? "ASSIGN" : "${participantUser.first_name} ${participantUser.last_name} - ${camelize(_categoryGender)}",
                       style: new TextStyle(
                           fontSize: 17.0,
                           color: Colors.black
@@ -159,8 +160,10 @@ class _solo_managementState extends State<solo_management> {
               onPressed: (){
                 if(participantUser != null) {
                   //if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
-                  if(!_listItems.contains(participantUser))
+                  if(!_listItems.contains(participantUser)) {
                     saveUserSoloParticipants(participantUser);
+                    participantUser = null;
+                  }
                   else
                     print("FAIL ADD");
                 }

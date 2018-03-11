@@ -4,10 +4,12 @@ import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
+import 'package:myapp/src/screen/couple_management.dart' as coupleMgt;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
+import 'package:strings/strings.dart';
 
 var participantType;
 var groupCounter;
@@ -141,7 +143,7 @@ class _participant_listState extends State<participant_list> {
                   bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
               ),
             ),
-            child: new Text("${key} - $_categoryGender", style: new TextStyle(fontSize: 18.0)),
+            child: new Text("${key} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 18.0)),
           ),
         ),
       ));
@@ -297,14 +299,16 @@ class _participant_listState extends State<participant_list> {
                 break;
               case 'couple':
                 participantType = "couple";
+                coupleMgt.couple1 = null;
+                coupleMgt.couple2 = null;
                 Navigator.of(context).pushNamed("/coupleManagement");
                 break;
               case 'group':
                 setState((){
                   groupCounter = groupCounter != null ? groupCounter+1 : 1;
                   registration.participant = {
-                    "name": "Group ($groupCounter)",
-                    "user": new Group(groupName: "Group ($groupCounter)", groupNumber: groupCounter)
+                    "name": "Group #$groupCounter",
+                    "user": new Group(groupName: "Group #$groupCounter", groupNumber: groupCounter)
                   };
                 });
                 Navigator.of(context).maybePop();
