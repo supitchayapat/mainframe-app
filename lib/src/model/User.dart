@@ -74,6 +74,8 @@ class User {
   String first_name;
   String last_name;
   String email;
+  String studioName;
+  String invoiceAddress;
   DateTime birthday;
   Gender gender;
   DanceCategory category;
@@ -88,6 +90,8 @@ class User {
                         first_name = s.value["first_name"],
                         last_name = s.value["last_name"],
                         email = s.value["email"],
+                        studioName = s.value["studioName"],
+                        invoiceAddress = s.value["invoiceAddress"],
                         birthday = new DateFormat("MM/dd/yyyy").parse(s.value["birthday"]),
                         gender = getGenderFromString(s.value["gender"]),
                         category = getDanceCategoryFromString(s.value["category"]),
@@ -99,6 +103,8 @@ class User {
         first_name = s["first_name"],
         last_name = s["last_name"],
         email = s["email"],
+        studioName = s["studioName"],
+        invoiceAddress = s["invoiceAddress"],
         birthday = new DateFormat("MM/dd/yyyy").parse(s["birthday"]),
         gender = getGenderFromString(s["gender"]),
         category = getDanceCategoryFromString(s["category"]),
@@ -112,6 +118,8 @@ class User {
       "first_name": first_name,
       "last_name": last_name,
       "email": email,
+      "studioName": studioName,
+      "invoiceAddress": invoiceAddress,
       "birthday": birthday!= null ? formatter.format(birthday) : formatter.format(new DateTime.now()),
       "gender": gender != null ? gender.toString().replaceAll("Gender.", "") : null,
       "category": category != null ? category.toString().replaceAll("DanceCategory.", "") : null,

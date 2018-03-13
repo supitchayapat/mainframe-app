@@ -16,6 +16,7 @@ import 'package:myapp/src/model/InvoiceInfo.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
+import 'package:myapp/src/enumeration/FormType.dart';
 
 var totalAmount;
 
@@ -30,11 +31,14 @@ class _checkout_entryState extends State<checkout_entry> {
   TextEditingController _expDateCtrl = new TextEditingController();
   TextEditingController _cvvCtrl = new TextEditingController();
   TextEditingController _holderNameCtrl = new TextEditingController();
+  TextEditingController _studioCtrl = new TextEditingController();
+  TextEditingController _addressCtrl = new TextEditingController();
   double financeCharge = 0.0;
   String financeText = "";
   String defaultCardholder = "";
   bool saveToken = true;
   bool setDefault = true;
+  User user;
   var listener;
   var token;
 
@@ -54,10 +58,15 @@ class _checkout_entryState extends State<checkout_entry> {
 
     // get current user
     getCurrentUserProfile().then((_user){
+      user = _user;
       defaultCardholder = _user.first_name + " " + _user.last_name;
       setState((){
         if(defaultCardholder != null && defaultCardholder.isNotEmpty)
           _holderNameCtrl.text = defaultCardholder;
+        if(_user.invoiceAddress != null)
+          _addressCtrl.text = _user.invoiceAddress;
+        if(_user.studioName != null)
+          _studioCtrl.text = _user.studioName;
       });
     });
 
@@ -96,7 +105,11 @@ class _checkout_entryState extends State<checkout_entry> {
         );
         info.entries = [];
         info.tickets = [];
-        info.billingInfo = new BillingInfo(name: _holderNameCtrl.text);
+        info.billingInfo = new BillingInfo(name: _studioCtrl.text, address: _addressCtrl.text);
+        // save user details with info
+        user.studioName = _studioCtrl.text;
+        user.invoiceAddress = _addressCtrl.text;
+        saveUser(user);
 
         // update event entry
         summary.eventEntries?.forEach((key, val) {
@@ -148,9 +161,18 @@ class _checkout_entryState extends State<checkout_entry> {
               }
             }
             else if(val?.freeForm != null) {
-              // free form
-              ParticipantEntry _pEntry = new ParticipantEntry(name: "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}", price: _price);
-              invParticipants.participantEntries.add(_pEntry);
+              // free form GROUP
+              if(val.formEntry.type == FormType.GROUP || val.formEntry.type == FormType.SOLO) {
+                String _entryName = "";
+                if(val.formEntry.type == FormType.GROUP)
+                  _entryName = "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}";
+                if(val.formEntry.type == FormType.SOLO)
+                  _entryName = val.freeForm.dance;
+
+                ParticipantEntry _pEntry = new ParticipantEntry(
+                    name: _entryName, price: _price);
+                invParticipants.participantEntries.add(_pEntry);
+              }
             }
 
             if(isInvoice) {
@@ -191,38 +213,43 @@ class _checkout_entryState extends State<checkout_entry> {
   }
 
   void _handlePayment() {
-    if(token == null && (_cardCtrl.text.isEmpty || _expDateCtrl.text.isEmpty
-      || _cvvCtrl.text.isEmpty || _holderNameCtrl.text.isEmpty)) {
-      showInSnackBar(_scaffoldKey, "Please Input Card Number, Exp. date, CVV and Holder's Name");
+    if(_studioCtrl.text.isEmpty || _addressCtrl.text.isEmpty) {
+      showMainFrameDialog(context, "Missing Info", "Please Input Studio Name and Address");
     } else {
-      MainFrameLoadingIndicator.showLoading(context);
-      if(token == null) {
-        PaymentDao.createToken(
-            _cardCtrl.text,
-            _expDateCtrl.text,
-            _cvvCtrl.text,
-            _holderNameCtrl.text,
-            setDefault,
-            saveToken, (tokenId) {
-          print("The token: ${tokenId?.toJson()}");
-          // amount must be converted to dollar since it is in cents
-          // lowest amount would be 50 and is equivalent to $0.50
-          // https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
-          // total amount * 100
-          double _sumAmount = (totalAmount.toDouble() * financeCharge) + totalAmount.toDouble();
-          double _total = (_sumAmount * 100);
-          if(_total <= 50.0)
-            _total = 50.00;
-          PaymentDao.submitPayment(tokenId.tokenId, _total.round());
+      if (token == null && (_cardCtrl.text.isEmpty || _expDateCtrl.text.isEmpty
+          || _cvvCtrl.text.isEmpty || _holderNameCtrl.text.isEmpty)) {
+        showMainFrameDialog(context, "Missing Card Info", "Please Input Card Number, Exp. date, CVV and Holder's Name");
+      } else {
+        MainFrameLoadingIndicator.showLoading(context);
+        if (token == null) {
+          PaymentDao.createToken(
+              _cardCtrl.text,
+              _expDateCtrl.text,
+              _cvvCtrl.text,
+              _holderNameCtrl.text,
+              setDefault,
+              saveToken, (tokenId) {
+            print("The token: ${tokenId?.toJson()}");
+            // amount must be converted to dollar since it is in cents
+            // lowest amount would be 50 and is equivalent to $0.50
+            // https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+            // total amount * 100
+            double _sumAmount = (totalAmount.toDouble() * financeCharge) +
+                totalAmount.toDouble();
+            double _total = (_sumAmount * 100);
+            if (_total <= 50.0)
+              _total = 50.00;
+            PaymentDao.submitPayment(tokenId.tokenId, _total.round());
+          }
+          ).catchError((err) {
+            print('PAYMENT ERROR.... $err');
+            MainFrameLoadingIndicator.hideLoading(context);
+            showMainFrameDialog(context, "Payment Error", "${err.message}");
+          });
         }
-        ).catchError((err) {
-          print('PAYMENT ERROR.... $err');
-          MainFrameLoadingIndicator.hideLoading(context);
-          showMainFrameDialog(context, "Payment Error", "${err.message}");
-        });
-      }
-      else {
-        PaymentDao.submitPayment(token["token"], totalAmount.toDouble());
+        else {
+          PaymentDao.submitPayment(token["token"], totalAmount.toDouble());
+        }
       }
     }
   }
@@ -248,6 +275,30 @@ class _checkout_entryState extends State<checkout_entry> {
 
     Widget _cardContainer = new Column(
       children: <Widget>[
+        new Container(
+          alignment: Alignment.centerLeft,
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+          child: new TextField(
+            decoration: new InputDecoration(
+              labelText: "Studio Name",
+            ),
+            style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
+            keyboardType: TextInputType.text,
+            controller: _studioCtrl,
+          ),
+        ),
+        new Container(
+          alignment: Alignment.centerLeft,
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+          child: new TextField(
+            decoration: new InputDecoration(
+              labelText: "Address",
+            ),
+            style: new TextStyle(fontSize: 20.0, fontFamily: "Montserrat-Regular"),
+            keyboardType: TextInputType.text,
+            controller: _addressCtrl,
+          ),
+        ),
         new Container(
           //color: Colors.blueAccent,
           alignment: Alignment.centerLeft,
