@@ -114,7 +114,7 @@ class _entry_summaryState extends State<entry_summary> {
       //print(eventEntries);
       bool isPaidFee = false;
       for(var _entry in eventEntries.values) {
-        if(_entry?.formEntry?.name == key) {
+        if(_entry?.formEntry?.name == key && eventParticipant.user == _entry?.participant) {
           if(_entry?.paidEntries != null && _entry?.paidEntries > 0) {
             _numEntries = val - _entry.paidEntries;
             if(val == _entry.paidEntries)
@@ -320,6 +320,7 @@ class _entry_summaryState extends State<entry_summary> {
     List<Widget> _children = [];
     if(participantEntries != null){
       participantEntries.forEach((key, val){
+        //print("participantEntries val: $val");
         Widget _entryFeeContent = generateContentItem(key, val);
         if(_entryFeeContent != null)
           _children.add(_entryFeeContent);

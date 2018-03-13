@@ -76,9 +76,16 @@ class _event_registrationState extends State<event_registration> {
   };*/
   List _entryForms = [];
 
+  void _initSummary() {
+    summary.participantTickets = null;
+    summary.admissionTickets = null;
+    summary.ticketUsers = null;
+  }
+
   @override
   void initState() {
     super.initState();
+    _initSummary();
 
     print("participantTickets ${summary.participantTickets}");
 
@@ -279,6 +286,7 @@ class _event_registrationState extends State<event_registration> {
 
         if(_entryFormCount > 0) {
           _participants.add(_p);
+          participant = null;
         }
         else {
           showMainFrameDialog(context, "Entry not allowed", "Selected Participant has no available entries for the event.");
