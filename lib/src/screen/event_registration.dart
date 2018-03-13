@@ -383,7 +383,9 @@ class _event_registrationState extends State<event_registration> {
                           bool hasDataEntry = false;
                           if(_eventEntries != null) {
                             _eventEntries.forEach((_pushId, _entryVal){
-                              if(_entryVal.formEntry.name == val.name && _entryItems[val.name] != null) {
+                              if(_entryVal.formEntry.name == val.name
+                                  && _entryItems[val.name] != null
+                                  && _evtParticipant.user == _entryVal.participant) {
                                 if(val.type == FormType.STANDARD) {
                                   formScreen.formData = _entryVal.levels;
                                   formScreen.formPushId = _pushId;
@@ -510,7 +512,7 @@ class _event_registrationState extends State<event_registration> {
                     child: new Wrap(
                       children: <Widget>[
                         new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                        new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                        new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
                       ],
                     ),
                   )

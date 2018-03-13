@@ -32,6 +32,32 @@ class ContactInfo {
 
   ContactInfo({this.phone, this.fax, this.address, this.address2,
     this.city, this.province, this.country, this.zip, this.email});
+
+  ContactInfo.fromSnapshot(var s) {
+    phone = s["phone"];
+    fax = s["fax"];
+    address = s["address"];
+    address2 = s["address2"];
+    city = s["city"];
+    province = s["province"];
+    country = s["country"];
+    zip = s["zip"];
+    email = s["email"];
+  }
+
+  toJson() {
+    return {
+      "phone": phone,
+      "fax": fax,
+      "address": address,
+      "address2": address2,
+      "city": city,
+      "province": province,
+      "country": country,
+      "zip": zip,
+      "email": email
+    };
+  }
 }
 
 class TimeData {
@@ -279,6 +305,9 @@ class MFEvent {
     }
     hasAttended = (s["hasAttended"]?.toString()?.toLowerCase() == 'true') ? true : false;
     year = s["eventyear"];
+    if(s["contact"] != null) {
+      contact = new ContactInfo.fromSnapshot(s["contact"]);
+    }
   }
 
   toJson() {
@@ -292,6 +321,7 @@ class MFEvent {
       "deadline": deadline!= null ? formatterSrc.format(deadline) : formatterSrc.format(new DateTime.now()),
       "dateRange": dateRange,
       "hasAttended": hasAttended.toString(),
+      "contact": contact?.toJson(),
       "year": year.toString(),
     };
   }
