@@ -236,7 +236,7 @@ class MFEvent {
       contact.city = s["contact"]["city"] ?? "";
       contact.province = s["contact"]["province"] ?? "";
       contact.country = s["contact"]["country"] ?? "";
-      contact.zip = s["contact"]["zip"] ?? "";
+      contact.zip = s["contact"]["zipcode"] ?? "";
       contact.email = s["contact"]["email"] ?? "";
     }
 

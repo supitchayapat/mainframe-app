@@ -50,23 +50,21 @@ class _EventDetailsState extends State<EventDetails> {
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text("Event:  $eventTitle", style: new TextStyle(fontSize: 16.0)),
+            /*new Text("Event:  $eventTitle", style: new TextStyle(fontSize: 16.0)),
+            new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
+            new Text("${format.format(eventItem.startDate)} to ${format.format(eventItem.stopDate)}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            new Text("When:  ${format.format(eventItem.startDate)} to ${format.format(eventItem.stopDate)}", style: new TextStyle(fontSize: 16.0)),
-            new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
-            new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            new Text("Registration ends:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
+            /*new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
+            new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
+            new Text("Registration deadline:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
             new Wrap(
               children: <Widget>[
-                new Text("Web:  ", style: new TextStyle(fontSize: 16.0)),
+                new Text("Website:  ", style: new TextStyle(fontSize: 16.0)),
                 new InkWell(
                   onTap: (){
-                    if(isURL(eventItem?.website))
+                    if(eventItem?.website != null)
                       _launchUrl(eventItem?.website);
-                    else
-                      _launchUrl("https://${eventItem?.website}");
                   },
                   child: new Wrap(
                     children: <Widget>[
@@ -82,50 +80,60 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
+  List<Widget> _addIfNotEmpty(prop, {label}) {
+    List<Widget> _children = [];
+    if(prop != null && prop != "") {
+      if(label == null || label.toString().isEmpty) {
+        _children.addAll([
+          new Text("${prop}", style: new TextStyle(fontSize: 16.0)),
+          new Padding(padding: const EdgeInsets.only(top: 10.0)),
+        ]);
+      } else {
+        _children.addAll([
+          new Text("$label:  ${prop}", style: new TextStyle(fontSize: 16.0)),
+          new Padding(padding: const EdgeInsets.only(top: 10.0)),
+        ]);
+      }
+    }
+    return _children;
+  }
+
   Widget _buildVenueInfo() {
+    List<Widget> _children = [];
+
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.venueName));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.address));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.city));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.country));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.phone, label: "Phone"));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.fax, label: "Fax"));
+
     return new Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Text("Venue:  ${eventItem?.venue?.venueName}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Address:  ${eventItem?.venue?.address}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Province:  ${eventItem?.venue?.province}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("City:  ${eventItem?.venue?.city} ${eventItem?.venue?.zip}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Country:  ${eventItem?.venue?.country}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Phone:  ${eventItem?.venue?.phone}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Fax:  ${eventItem?.venue?.fax}", style: new TextStyle(fontSize: 16.0)),
-        ],
+        children: _children,
       ),
     );
   }
 
   Widget _buildContactInfo() {
+    List<Widget> _children = [];
+
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.address));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.city));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.country));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.phone, label: "Phone"));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.fax, label: "Fax"));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.email, label: "Email"));
+
     return new Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Text("Address:  ${eventItem?.contact?.address}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Province:  ${eventItem?.contact?.province}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("City:  ${eventItem?.contact?.city} ${eventItem?.contact?.zip}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Country:  ${eventItem?.contact?.country}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Phone:  ${eventItem?.contact?.phone}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Fax:  ${eventItem?.contact?.fax}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
-          new Text("Email:  ${eventItem?.contact?.email}", style: new TextStyle(fontSize: 16.0)),
-        ],
+        children: _children,
       ),
     );
   }
@@ -134,7 +142,7 @@ class _EventDetailsState extends State<EventDetails> {
     List<Widget> _organizerChildren = [];
 
     eventItem.organizers.forEach((itm){
-      _organizerChildren.add(new Text("Name:  ${eventItem.contact.address}", style: new TextStyle(fontSize: 16.0)));
+      _organizerChildren.add(new Text("${itm}", style: new TextStyle(fontSize: 16.0)));
       _organizerChildren.add(new Padding(padding: const EdgeInsets.only(top: 10.0)));
     });
 
@@ -220,6 +228,15 @@ class _EventDetailsState extends State<EventDetails> {
         loadMoreCallback: (){}
     ));
 
+    if(eventItem?.schedule != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Schedule',
+          description: '',
+          demoWidget: _buildSchedule(),
+          loadMoreCallback: (){}
+      ));
+    }
+
     if(eventItem?.venue != null) {
       _pages.add(new PageSelectData(
           tabName: 'Venue',
@@ -247,15 +264,6 @@ class _EventDetailsState extends State<EventDetails> {
       ));
     }
 
-    if(eventItem?.schedule != null) {
-      _pages.add(new PageSelectData(
-          tabName: 'Schedule',
-          description: '',
-          demoWidget: _buildSchedule(),
-          loadMoreCallback: (){}
-      ));
-    }
-
     return new Scaffold(
       appBar: new MFAppBar(eventTitle, context),
       body: new Column(
@@ -279,7 +287,7 @@ class _EventDetailsState extends State<EventDetails> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       new Container(child: new Text(eventTitle, style: new TextStyle(fontSize: 22.0))),
-                      new Text(eventRange, style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)))
+                      new Text("$eventRange  ${eventItem.year}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)))
                     ],
                   )
                 ),
