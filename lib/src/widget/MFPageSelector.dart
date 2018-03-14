@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'MFTabPageSelector.dart';
 
 class PageSelectData {
   PageSelectData({
@@ -66,11 +67,16 @@ class _PageSelectorState extends State<_PageSelector> {
                       onPressed: () { _handleArrowButtonPress(context, -1); },
                       tooltip: 'Page back'
                   ),
-                  new Center(
+                  /*new Center(
                       child: new Text(widget.pageWidgets[controller.index].tabName,
                         style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light", fontWeight: FontWeight.bold),
                       )
-                  ),
+                  ),*/
+                  new MFTabPageSelector(
+                      controller: controller,
+                      tabPages: widget.pageWidgets.map((pSelData){
+                        return pSelData.tabName;
+                      }).toList()),
                   new IconButton(
                       icon: const Icon(Icons.chevron_right),
                       color: color,
