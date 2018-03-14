@@ -62,7 +62,15 @@ class _solo_managementState extends State<solo_management> {
         new Expanded(
             child: new Padding(
               padding: const EdgeInsets.only(left: 5.0),
-              child: new Text("${val.first_name} ${val.last_name} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+              child: new Wrap(
+                children: <Widget>[
+                  new Text("${val.first_name} ${val.last_name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                  new Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                  )
+                ],
+              )
             )
         ),
         new Container(
@@ -141,11 +149,19 @@ class _solo_managementState extends State<solo_management> {
                       //couple1 = "_assignCoupleParticipant";
                       Navigator.of(context).pushNamed("/addPartner");
                     },
-                    child: new Text((participantUser == null || participantUser is String) ? "ASSIGN" : "${participantUser.first_name} ${participantUser.last_name} - ${camelize(_categoryGender)}",
+                    child: (participantUser == null || participantUser is String) ? new Text("ASSIGN",
                       style: new TextStyle(
                           fontSize: 17.0,
                           color: Colors.black
                       ),
+                    ) : new Wrap(
+                      children: <Widget>[
+                        new Text("${participantUser.first_name} ${participantUser.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
+                        new Padding(
+                          padding: const EdgeInsets.only(top: 3.0),
+                          child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                        )
+                      ],
                     ),
                   ),
                 )

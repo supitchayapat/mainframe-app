@@ -66,7 +66,15 @@ class _couple_managementState extends State<couple_management> {
         new Expanded(
             child: new Padding(
                 padding: const EdgeInsets.only(left: 5.0),
-                child: new Text("${val.coupleName} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                child: new Wrap(
+                  children: <Widget>[
+                    new Text("${val.coupleName} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+                    new Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                    )
+                  ],
+                )
             )
         ),
         new Container(
@@ -166,11 +174,19 @@ class _couple_managementState extends State<couple_management> {
                         couple1 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple1 == null || couple1 is String) ? "ASSIGN" : "${couple1.first_name} ${couple1.last_name} - ${camelize(_categoryGender1)}",
+                      child: (couple1 == null || couple1 is String) ? new Text("ASSIGN",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
                         ),
+                      ) : new Wrap(
+                        children: <Widget>[
+                          new Text("${couple1.first_name} ${couple1.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
+                          new Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: new Text("(${camelize(_categoryGender1)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                          )
+                        ],
                       ),
                     ),
                   )
@@ -200,11 +216,19 @@ class _couple_managementState extends State<couple_management> {
                         couple2 = "_assignCoupleParticipant";
                         Navigator.of(context).pushNamed("/addPartner");
                       },
-                      child: new Text((couple2 == null || couple2 is String) ? "ASSIGN" : "${couple2.first_name} ${couple2.last_name} - ${camelize(_categoryGender2)}",
+                      child: (couple2 == null || couple2 is String) ? new Text("ASSIGN",
                         style: new TextStyle(
                             fontSize: 17.0,
                             color: Colors.black
                         ),
+                      ) : new Wrap(
+                        children: <Widget>[
+                          new Text("${couple2.first_name} ${couple2.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
+                          new Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: new Text("(${camelize(_categoryGender2)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                          )
+                        ],
                       ),
                     ),
                   )

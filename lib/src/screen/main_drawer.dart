@@ -8,15 +8,15 @@ import 'package:myapp/MainFrameAuth.dart';
  */
 final List<_MenuContent> _drawerContents = <_MenuContent>[
   new _MenuContent("MENU", "", null, true, false),
-  new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
-  new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
-  new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
-  new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
-  new _MenuContent("ACCOUNT", "", null, true, false),
-  new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
+  //new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
+  //new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
+  //new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
+  //new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
+  //new _MenuContent("ACCOUNT", "", null, true, false),
+  //new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
   new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
-  new _MenuContent("TECH SUPPORT", "", null, true, false),
-  new _MenuContent("Contact", "/contactUs", "mainframe_assets/icons/noun_961889_cc@2x.png", false, true),
+  //new _MenuContent("TECH SUPPORT", "", null, true, false),
+  new _MenuContent("About", "/contactUs", "", false, true, menuIcon: Icons.info_outline),
 ];
 
 bool _logoutUser() {
@@ -125,13 +125,20 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
 
     List<Widget> _generateRowChildren(_MenuContent content) {
       List<Widget> children = <Widget>[];
+      Widget _icon;
+      if(content.iconImage != null && content.iconImage.isNotEmpty) {
+        _icon = new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white, size: 16.0,);
+      } else {
+        _icon = new Icon(content.menuIcon, size: 20.0);
+      }
       if(!content.isParent) {
         //children.add(new Icon(content.menuIcon, color: Colors.white));
         children.add(
             new Container(
                 child: new Row(
                   children: <Widget>[
-                    new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white, size: 16.0,),
+                    //new ImageIcon(new ExactAssetImage(content.iconImage), color: Colors.white, size: 16.0,),
+                    _icon,
                     new Padding(padding: const EdgeInsets.only(right: 8.0)),
                     new Text(content.menuLabel)
                   ],

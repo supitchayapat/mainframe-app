@@ -333,7 +333,10 @@ class _event_registrationState extends State<event_registration> {
                 child: new Wrap(
                   children: <Widget>[
                     new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                    new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                    new Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                    )
                   ],
                 ),
               )
@@ -569,9 +572,9 @@ class _event_registrationState extends State<event_registration> {
       var _participant = participant["user"];
       if (_participant is User) {
         if (_participant.category == DanceCategory.PROFESSIONAL)
-          _categoryGender = " - PRO";
+          _categoryGender = "PRO";
         else
-          _categoryGender = " - AM";
+          _categoryGender = "AM";
 
         if (_participant.gender == Gender.MAN)
           _categoryGender += " GUY";
@@ -581,7 +584,7 @@ class _event_registrationState extends State<event_registration> {
       else if(_participant is Couple) {
         _categoryGender = EntryFormUtil.getParticipantCodeOnUser(
             _participant, "couple").toString();
-        _categoryGender = " - " + _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
+        _categoryGender = _categoryGender.replaceAll("FormParticipantCode.", "").replaceAll("_", " ");
       }
     }
 
@@ -641,7 +644,16 @@ class _event_registrationState extends State<event_registration> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               new Expanded(
-                                child: new Text(participant != null ? participant["name"] + camelize(_categoryGender) : "Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
+                                child: participant == null ? new Text("Select Participant(s)", style: new TextStyle(fontSize: 17.0, color: Colors.black)) :
+                                new Wrap(
+                                  children: <Widget>[
+                                    new Text("${participant["name"]} ", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
+                                    new Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    )
+                                  ],
+                                ),
                               ),
                               new Icon(Icons.search, color: Colors.black)
                             ],

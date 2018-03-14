@@ -19,7 +19,8 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> {
-  DateFormat format = new DateFormat("MMM dd, yyyy");
+  DateFormat format = new DateFormat("MMM d, yyyy");
+  final formatterOut = new DateFormat("MMM d");
   String eventTitle = "EVENT TITLE";
   String eventRange = "";
   bool isRegisterOpen = false;
@@ -29,7 +30,8 @@ class _EventDetailsState extends State<EventDetails> {
     super.initState();
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
-      eventRange = eventItem.dateRange;
+      //eventRange = eventItem.dateRange;
+      eventRange = "${formatterOut.format(eventItem.startDate)} - ${formatterOut.format(eventItem.stopDate)}";
     }
 
     // check if registration is open
@@ -40,7 +42,8 @@ class _EventDetailsState extends State<EventDetails> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      //throw 'Could not launch $url';
+      showMainFrameDialog(context, "Website URL", "Could not launch $url");
     }
   }
 
@@ -51,10 +54,10 @@ class _EventDetailsState extends State<EventDetails> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             /*new Text("Event:  $eventTitle", style: new TextStyle(fontSize: 16.0)),
-            new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
+            new Padding(padding: const EdgeInsets.only(top: 10.0)),
             new Text("${format.format(eventItem.startDate)} to ${format.format(eventItem.stopDate)}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            /*new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
+            new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
             new Text("Registration deadline:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
@@ -342,7 +345,7 @@ class _EventDetailsState extends State<EventDetails> {
               showMainFrameDialogWithCancel(
                   context,
                   "Registration Status",
-                  "Mobile Registration is not currently available for this Competition. Would you instead wish to goto their website now ?"
+                  "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now ?"
               ).then((ans) {
                 if (ans == "OK") {
                   if (isURL(eventItem?.website))

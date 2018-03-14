@@ -143,7 +143,16 @@ class _participant_listState extends State<participant_list> {
                   bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44))
               ),
             ),
-            child: new Text("${key} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 18.0)),
+            //child: new Text("${key} - ${camelize(_categoryGender)}", style: new TextStyle(fontSize: 18.0)),
+            child: new Wrap(
+              children: <Widget>[
+                new Text("${key} ", style: new TextStyle(fontSize: 18.0)),
+                new Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                )
+              ],
+            )
           ),
         ),
       ));
@@ -288,8 +297,8 @@ class _participant_listState extends State<participant_list> {
         onPressed: (){
           showSelectionDialog(context, "CREATE NEW", 220.0, {
             "Solo Participant": "solo",
-            "Couple Participant": "couple",
-            "Group Participant": "group"
+            "Couple": "couple",
+            "Group Entry": "group"
           }).then((selectVal){
             switch(selectVal) {
               case 'solo':

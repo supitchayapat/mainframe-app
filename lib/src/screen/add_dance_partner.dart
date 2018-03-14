@@ -544,7 +544,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           new Container(
             margin: const EdgeInsets.only(bottom: 10.0),
             child: new MainFrameButton(
-              child: new Text("ADD VIA EMAIL"),
+              child: new Text("ADD MANUALLY"),
               onPressed: _inviteWithEmail,
             )
           ),
