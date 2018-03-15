@@ -1,28 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/MainFrameAuth.dart';
-
-/*
-  Below is a list of Menu and their corresponding Navigation link.
-  each _MenuContent can be either a Parent menu or a Child menu
- */
-final List<_MenuContent> _drawerContents = <_MenuContent>[
-  new _MenuContent("MENU", "", null, true, false),
-  //new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
-  //new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
-  //new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
-  //new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
-  //new _MenuContent("ACCOUNT", "", null, true, false),
-  //new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
-  new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
-  //new _MenuContent("TECH SUPPORT", "", null, true, false),
-  new _MenuContent("About", "/contactUs", "", false, true, menuIcon: Icons.info_outline),
-];
-
-bool _logoutUser() {
-  logoutUser();
-  return true;
-}
+import 'package:myapp/MFGlobals.dart' as global;
 
 /*
   Author: Art
@@ -56,6 +35,8 @@ class _MenuContent {
 
 class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderStateMixin {
 
+  final List<_MenuContent> _drawerContents = <_MenuContent>[];
+
   GlobalKey<ScaffoldState> _scaffoldKey;
   bool _showDrawerContents = true;
   AnimationController _controller;
@@ -64,6 +45,18 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   User usr;
 
   _MainFrameDrawerState(this._scaffoldKey,this.usr);
+
+  bool _logoutUser() {
+    logoutUser();
+    return true;
+  }
+
+  bool _showTips() {
+    setState((){
+      global.hasTips = !global.hasTips;
+    });
+    return false;
+  }
 
   void _showNotImplementedMessage() {
     _scaffoldKey.currentState.showSnackBar(const SnackBar(
@@ -97,6 +90,25 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   @override
   void initState() {
     super.initState();
+
+    /*
+      Below is a list of Menu and their corresponding Navigation link.
+      each _MenuContent can be either a Parent menu or a Child menu
+     */
+    _drawerContents.addAll([
+      new _MenuContent("MENU", "", null, true, false),
+      //new _MenuContent("Find Service Center", "", "mainframe_assets/icons/noun_1049935_cc@2x.png", false, false),
+      //new _MenuContent("Map View", "", "mainframe_assets/icons/noun_939113_cc@2x.png", false, false),
+      //new _MenuContent("Messages", "", "mainframe_assets/icons/noun_1042992_cc@2x.png", false, false),
+      //new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
+      //new _MenuContent("ACCOUNT", "", null, true, false),
+      //new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
+      new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
+      //new _MenuContent("TECH SUPPORT", "", null, true, false),
+      new _MenuContent("Show Tips "+(global.hasTips ? "[ON]" : "[OFF]"), _showTips, "", false, false, menuIcon: Icons.lightbulb_outline),
+      new _MenuContent("About", "/contactUs", "", false, true, menuIcon: Icons.info_outline),
+    ]);
+
     _controller = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),

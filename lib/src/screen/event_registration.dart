@@ -18,9 +18,11 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
 import 'package:strings/strings.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var eventItem;
 var participant;
+var tipsTimer;
 
 class EventParticipant {
   String name;
@@ -87,12 +89,12 @@ class _event_registrationState extends State<event_registration> {
     super.initState();
     _initSummary();
 
-    print("participantTickets ${summary.participantTickets}");
+    //print("participantTickets ${summary.participantTickets}");
 
     if(eventItem.formEntries != null) {
       //eventItem.formEntries.forEach((val) => print(val.toJson()));
       _entryForms = eventItem.formEntries;
-      print("Event Id: ${eventItem.id} entry forms: ${_entryForms.length}");
+      //print("Event Id: ${eventItem.id} entry forms: ${_entryForms.length}");
       var _admission = eventItem.admission;
       if(_admission?.tickets != null && _admission.tickets.length > 0) {
         summary.admissionTickets = [];
@@ -160,6 +162,14 @@ class _event_registrationState extends State<event_registration> {
 
             _eventEntries.putIfAbsent(_pushId, () => _partEntries);
           });
+
+          if(_participantEntries.length > 0) {
+            if(tipsTimer != null) {
+              tipsTimer.cancel();
+            }
+            //print("show reg entries");
+            tipsTimer = ShowTips.showTips(context, "registrationEntries");
+          }
 
           // listener
           _handleTicketListen();
@@ -256,6 +266,9 @@ class _event_registrationState extends State<event_registration> {
   void dispose() {
     super.dispose();
     entryListener.cancel();
+    if(tipsTimer != null)
+      tipsTimer.cancel();
+    tipsTimer = null;
     if(ticketListener != null)
       ticketListener.cancel();
   }
@@ -567,6 +580,10 @@ class _event_registrationState extends State<event_registration> {
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
     String _categoryGender = "";
+
+    if(tipsTimer == null) {
+      tipsTimer = ShowTips.showTips(context, "registration");
+    }
 
     if(participant != null) {
       var _participant = participant["user"];

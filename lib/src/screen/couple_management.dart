@@ -6,9 +6,13 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:strings/strings.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'add_dance_partner.dart' as addPartner;
 
 var couple1;
 var couple2;
+var tipsTimer;
 
 class couple_management extends StatefulWidget {
   @override
@@ -172,6 +176,7 @@ class _couple_managementState extends State<couple_management> {
                       color: Colors.white,
                       onPressed: () {
                         couple1 = "_assignCoupleParticipant";
+                        addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
                       },
                       child: (couple1 == null || couple1 is String) ? new Text("ASSIGN",
@@ -214,6 +219,7 @@ class _couple_managementState extends State<couple_management> {
                       color: Colors.white,
                       onPressed: () {
                         couple2 = "_assignCoupleParticipant";
+                        addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
                       },
                       child: (couple2 == null || couple2 is String) ? new Text("ASSIGN",
@@ -247,9 +253,12 @@ class _couple_managementState extends State<couple_management> {
                       couple1 = null;
                       couple2 = null;
                     }
+                    else {
+                      showMainFrameDialog(context, "The same Participant", "You cannot assign the same Participant for a Couple. Please choose a different Participant.");
+                    }
                   }
                   else {
-                    print("FAIL ADD");
+                    showMainFrameDialog(context, "Unassigned Participant", "Please tap on ASSIGN to assign a Participant for the Couple.");
                   }
                 },
               ),
@@ -346,6 +355,10 @@ class _couple_managementState extends State<couple_management> {
   @override
   Widget build(BuildContext context) {
     Widget _inputContainer = _generateInputContainer();
+
+    if(tipsTimer == null) {
+      tipsTimer = ShowTips.showTips(context, "coupleParticipant");
+    }
 
     return new Scaffold(
       appBar: new MFAppBar("COUPLE MANAGEMENT", context),

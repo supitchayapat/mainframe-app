@@ -9,10 +9,13 @@ import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+
+var tipsTimer;
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -150,6 +153,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         Navigator.of(context).popUntil(ModalRoute.withName("/participants"));
       });*/
       solo.participantUser = usr;
+      solo.tipsTimer = null;
       Navigator.of(context).popUntil(ModalRoute.withName("/soloManagement"));
     }
     else if(participant.participantType == "couple") {
@@ -165,6 +169,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           couple.couple2 = usr;
         });
       }
+      couple.tipsTimer = null;
       Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
     } else if(participant.participantType == "group") {
       if(group.formParticipant.members == null)
@@ -478,6 +483,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width;
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
+
+    if(tipsTimer == null)
+      tipsTimer = ShowTips.showTips(context, "addParticipant");
 
     return new Scaffold(
       key: _scaffoldKey,

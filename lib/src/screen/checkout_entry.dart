@@ -261,13 +261,15 @@ class _checkout_entryState extends State<checkout_entry> {
     summary.participantEntries.forEach((key1, val){
       if(val.length > 0) {
         val.forEach((key2, _entCount){
+          //print("$key1 PREV: ${_entCount}");
           for(var _entry in summary.eventEntries.values) {
-            if(_entry?.formEntry?.name == key2) {
-              if(_entry?.paidEntries != null) {
+            if(_entry?.formEntry?.name == key2 && key1?.user == _entry?.participant) {
+              if(_entry?.paidEntries != null && _entry?.paidEntries > 0) {
                 _entCount -= _entry.paidEntries;
               }
             }
           }
+          //print("ENTCOUNT: ${_entCount}");
           _totalEntries += _entCount;
         });
       }
@@ -370,6 +372,15 @@ class _checkout_entryState extends State<checkout_entry> {
         ),
         new Container(
             alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0, top: 10.0),
+            child: new Wrap(
+              children: <Widget>[
+                new Text("We dont save your credit card details for your own security", style: new TextStyle(fontSize: 14.0, fontFamily: "Montserrat-Light", fontStyle: FontStyle.italic))
+              ],
+            )
+        ),
+        /*new Container(
+            alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
             child: new Row(
               children: <Widget>[
@@ -393,7 +404,7 @@ class _checkout_entryState extends State<checkout_entry> {
                 new Text("Set default", style: new TextStyle(fontSize: 16.0, fontFamily: "Montserrat-Light"))
               ],
             )
-        ),
+        ),*/
       ],
     );
 

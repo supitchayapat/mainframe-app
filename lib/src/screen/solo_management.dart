@@ -6,8 +6,12 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:strings/strings.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'add_dance_partner.dart' as addPartner;
 
 var participantUser;
+var tipsTimer;
 
 class solo_management extends StatefulWidget {
   @override
@@ -40,6 +44,8 @@ class _solo_managementState extends State<solo_management> {
   void dispose() {
     super.dispose();
     soloListener.cancel();
+    if(tipsTimer != null)
+      tipsTimer.cancel();
   }
 
   Widget _generateItem(val) {
@@ -147,6 +153,7 @@ class _solo_managementState extends State<solo_management> {
                     color: Colors.white,
                     onPressed: () {
                       //couple1 = "_assignCoupleParticipant";
+                      addPartner.tipsTimer = null;
                       Navigator.of(context).pushNamed("/addPartner");
                     },
                     child: (participantUser == null || participantUser is String) ? new Text("ASSIGN",
@@ -181,10 +188,10 @@ class _solo_managementState extends State<solo_management> {
                     participantUser = null;
                   }
                   else
-                    print("FAIL ADD");
+                    showMainFrameDialog(context, "Cannot Add Participant", "Solo Participant already added on the list");
                 }
                 else {
-                  print("FAIL ADD");
+                  showMainFrameDialog(context, "Unassigned Participant", "Please tap ASSIGN to assign a solo participant.");
                 }
               },
             ),
@@ -197,6 +204,9 @@ class _solo_managementState extends State<solo_management> {
   @override
   Widget build(BuildContext context) {
     Widget _inputContainer = _generateInputContainer();
+
+    if(tipsTimer == null)
+      tipsTimer = ShowTips.showTips(context, "soloParticipant");
 
     return new Scaffold(
       appBar: new MFAppBar("SOLO PARTICIPANT MANAGEMENT", context),

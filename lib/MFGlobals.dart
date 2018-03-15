@@ -10,6 +10,7 @@ FirebaseUser currentUser;
 List<User> _taggableFriends = <User>[];
 User dancePartner = null;
 List<MFEvent> events = <MFEvent>[];
+bool hasTips = true;
 
 Future<List<User>> get taggableFriends async {
   if(_taggableFriends.length <= 0) {

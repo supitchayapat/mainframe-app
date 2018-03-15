@@ -10,6 +10,7 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:strings/strings.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var participantType;
 var groupCounter;
@@ -27,10 +28,13 @@ class _participant_listState extends State<participant_list> {
   Map<String, dynamic> _users = {};
   var soloListener;
   var coupleListener;
+  var tipsTimer;
 
   @override
   void initState() {
     super.initState();
+
+    tipsTimer = ShowTips.showTips(context, "participantsList");
 
     soloParticipantsListener((users){
       //print("NUMBER OF USERS: ${users.length}");
@@ -78,6 +82,8 @@ class _participant_listState extends State<participant_list> {
     super.dispose();
     soloListener.cancel();
     coupleListener.cancel();
+    if(tipsTimer != null)
+      tipsTimer.cancel();
   }
 
   @override
@@ -126,6 +132,7 @@ class _participant_listState extends State<participant_list> {
               "name": key,
               "user": val
             };
+            registration.tipsTimer = null;
           });
           Navigator.of(context).maybePop();
         },
@@ -304,12 +311,14 @@ class _participant_listState extends State<participant_list> {
               case 'solo':
                 participantType = "solo";
                 solo.participantUser = null;
+                solo.tipsTimer = null;
                 Navigator.of(context).pushNamed("/soloManagement");
                 break;
               case 'couple':
                 participantType = "couple";
                 coupleMgt.couple1 = null;
                 coupleMgt.couple2 = null;
+                coupleMgt.tipsTimer = null;
                 Navigator.of(context).pushNamed("/coupleManagement");
                 break;
               case 'group':

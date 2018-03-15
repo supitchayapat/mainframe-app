@@ -72,6 +72,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
           });*/
           MainFrameLoadingIndicator.hideLoading(context);
           solo.participantUser = _user;
+          solo.tipsTimer = null;
           Navigator.of(context).popUntil(ModalRoute.withName("/soloManagement"));
         }
         else if(participant.participantType == "couple") {
