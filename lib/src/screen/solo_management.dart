@@ -186,6 +186,7 @@ class _solo_managementState extends State<solo_management> {
                   if(!_listItems.contains(participantUser)) {
                     saveUserSoloParticipants(participantUser);
                     participantUser = null;
+                    Navigator.maybePop(context);
                   }
                   else
                     showMainFrameDialog(context, "Cannot Add Participant", "Solo Participant already added on the list");

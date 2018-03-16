@@ -25,7 +25,7 @@ class ShowTips {
         switch(tip) {
           case 'registration':
             if(registration.participant == null) {
-              showContentTips(context, "Event Registration Screen", false, [
+              showContentTips(context, "Event Registration", false, [
                 new Text("To add participants to this Event. Please Tap on "),
                 new Text("Select Participant(s). ", style: new TextStyle(color: new Color(0xff00e5ff))),
               ]);
@@ -38,7 +38,7 @@ class ShowTips {
             }
             break;
           case 'registrationEntries':
-            showContentTips(context, "Event Registration Screen", true, [
+            showContentTips(context, "Event Registration", true, [
               new RichText(
                 text: new TextSpan(
                   text: "To add participants to this Event. Please Tap on ",
@@ -49,40 +49,46 @@ class ShowTips {
                 )
               )
             ]).then((val){
-              showContentTips(context, "Event Participants", true, [
-                new RichText(
-                  text: new TextSpan(
-                    text: "You may find a list of Participant(s) already added to the Event. You may press the ",
-                    style: tStyle,
-                    children: <TextSpan>[
-                      new TextSpan(text: "Participant Entry Component ", style: new TextStyle(color: new Color(0xff00e5ff))),
-                      new TextSpan(text: " to show a list of buttons."),
-                    ]
-                  ),
-                )
-              ]).then((_val2){
+              if(val != "cancel") {
                 showContentTips(context, "Event Participants", true, [
                   new RichText(
                     text: new TextSpan(
-                      text: "The Buttons listed are the applicable Form Entries in this Event for the Participant.",
-                      style: tStyle
-                    )
+                        text: "You may find a list of Participant(s) already added to the Event. You may press the ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Participant Entry Component ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: " to show a list of buttons."),
+                        ]
+                    ),
                   )
-                ]).then((_val3){
-                  showContentTips(context, "Event Participants", false, [
-                    new RichText(
-                        text: new TextSpan(
-                          text: "Please press the corresponding ",
-                          style: tStyle,
-                          children: <TextSpan>[
-                            new TextSpan(text: "Form Entry Button ", style: new TextStyle(color: new Color(0xff00e5ff))),
-                            new TextSpan(text: " you want the Participant to register to, before you can proceed to the Summary Screen"),
-                          ]
-                        )
-                    )
-                  ]);
+                ]).then((_val2){
+                  if(_val2 != "cancel") {
+                    showContentTips(context, "Event Participants", true, [
+                      new RichText(
+                          text: new TextSpan(
+                              text: "The Buttons listed are the applicable Form Entries in this Event for the Participant.",
+                              style: tStyle
+                          )
+                      )
+                    ]).then((_val3){
+                      if(_val3 != "cancel") {
+                        showContentTips(context, "Event Participants", false, [
+                          new RichText(
+                              text: new TextSpan(
+                                  text: "Please press the corresponding ",
+                                  style: tStyle,
+                                  children: <TextSpan>[
+                                    new TextSpan(text: "Form Entry Button ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                    new TextSpan(text: " you want the Participant to register to, before you can proceed to the Summary Screen"),
+                                  ]
+                              )
+                          )
+                        ]);
+                      }
+                    });
+                  }
                 });
-              });
+              }
             });
             break;
           case 'participantsList':
@@ -140,9 +146,24 @@ class ShowTips {
     if(global.hasTips) {
       return showDialog<Null>(
         context: context,
-        barrierDismissible: false, // user must tap button!
+        barrierDismissible: true, // user must tap button!
         child: new AlertDialog(
-          title: new Text(title),
+          title: new Container(
+            //color: Colors.amber,
+            child: new Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                new Expanded(child: new Text(title)),
+                /*new InkWell(
+                  onTap: (){
+                    //Navigator.popUntil(context, ModalRoute.withName("/registration"));
+                    _closeTipModal(context, btnVal: "cancel");
+                  },
+                  child: new Icon(Icons.cancel),
+                )*/
+              ],
+            )
+          ),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
@@ -153,24 +174,35 @@ class ShowTips {
             ),
           ),
           actions: <Widget>[
-            new FlatButton(
-              child: new Row(
-                children: <Widget>[
-                  new Icon(Icons.notifications_off),
-                  new Text("Turn Off Tips")
-                ],
+            new MaterialButton(
+              child: new Container(
+                //color: Colors.amber,
+                child: new Row(
+                  children: <Widget>[
+                    new Icon(Icons.notifications_off),
+                    new Text("Turn Off" + (!isNext ? " Tips": ""), style: new TextStyle(fontSize: 16.0))
+                  ],
+                ),
               ),
               onPressed: () {
                 _closeTipModal(context, btnVal: "off");
               },
             ),
-            new FlatButton(
+            (isNext) ? new InkWell(
+              onTap: (){
+                _closeTipModal(context, btnVal: "cancel");
+              },
+              child: new Container(
+                child: new Text("Close", style: new TextStyle(fontSize: 16.0)),
+              ),
+            ) : new Container(),
+            new MaterialButton(
               child: new Wrap(
                 children: <Widget>[
                   (isNext) ? new Container(
                       padding: const EdgeInsets.only(top: 2.0),
                       child: new Text(
-                          'Next', style: new TextStyle(fontSize: 16.0))
+                          'More', style: new TextStyle(fontSize: 16.0))
                   ) :
                   new Container(
                       padding: const EdgeInsets.only(top: 2.0),
@@ -202,12 +234,18 @@ class ShowTips {
     if(btnVal == null || btnVal.isEmpty) {
       Navigator.of(context).pop();
     } else {
-      if(btnVal == "off") {
-        global.hasTips = false;
-        Navigator.of(context).pop();
-        _displayOffTips(context);
-      } else {
-        Navigator.of(context).pop(btnVal);
+      switch(btnVal) {
+        case 'off':
+          global.hasTips = false;
+          Navigator.of(context).pop();
+          _displayOffTips(context);
+          break;
+        case 'cancel':
+          Navigator.of(context).pop("cancel");
+          break;
+        default:
+          Navigator.of(context).pop(btnVal);
+          break;
       }
     }
   }

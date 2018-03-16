@@ -252,6 +252,7 @@ class _couple_managementState extends State<couple_management> {
                       saveUserCoupleParticipants(couple1, couple2);
                       couple1 = null;
                       couple2 = null;
+                      Navigator.maybePop(context);
                     }
                     else {
                       showMainFrameDialog(context, "The same Participant", "You cannot assign the same Participant for a Couple. Please choose a different Participant.");

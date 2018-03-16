@@ -90,6 +90,7 @@ class _event_registrationState extends State<event_registration> {
     _initSummary();
 
     //print("participantTickets ${summary.participantTickets}");
+    tipsTimer = ShowTips.showTips(context, "registration");
 
     if(eventItem.formEntries != null) {
       //eventItem.formEntries.forEach((val) => print(val.toJson()));
@@ -166,9 +167,9 @@ class _event_registrationState extends State<event_registration> {
           if(_participantEntries.length > 0) {
             if(tipsTimer != null) {
               tipsTimer.cancel();
+              //print("show reg entries");
+              tipsTimer = ShowTips.showTips(context, "registrationEntries");
             }
-            //print("show reg entries");
-            tipsTimer = ShowTips.showTips(context, "registrationEntries");
           }
 
           // listener
@@ -581,7 +582,8 @@ class _event_registrationState extends State<event_registration> {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
     String _categoryGender = "";
 
-    if(tipsTimer == null) {
+    // show tips
+    if(tipsTimer == null && participant != null) {
       tipsTimer = ShowTips.showTips(context, "registration");
     }
 
@@ -667,7 +669,9 @@ class _event_registrationState extends State<event_registration> {
                                     new Text("${participant["name"]} ", style: new TextStyle(fontSize: 17.0, color: Colors.black)),
                                     new Padding(
                                       padding: const EdgeInsets.only(top: 3.0),
-                                      child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                      child: (participant["user"] is Couple || participant["user"] is User) ?
+                                        new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.bold)) :
+                                        new Container(),
                                     )
                                   ],
                                 ),
@@ -687,6 +691,7 @@ class _event_registrationState extends State<event_registration> {
               child: new Text("ADD TO EVENT"),
               onPressed: (){
                 _handleAddEventParticipant();
+                tipsTimer = ShowTips.showTips(context, "registrationEntries");
               },
             ),
           ),
@@ -716,10 +721,25 @@ class _event_registrationState extends State<event_registration> {
       floatingActionButton: new InkWell(
         onTap: (){
           if(_participantEntries.length > 0) {
-            //print(_participantEntries);
-            summary.participantEntries = _participantEntries;
-            summary.eventEntries = _eventEntries;
-            Navigator.of(context).pushNamed("/registrationSummary");
+            if(_participants.length == _participantEntries.length) {
+              print(_participantEntries);
+              summary.participantEntries = _participantEntries;
+              summary.eventEntries = _eventEntries;
+              Navigator.of(context).pushNamed("/registrationSummary");
+              // deactivate tips for registration
+              participant = null;
+              if (tipsTimer != null)
+                tipsTimer.cancel();
+              tipsTimer = null;
+            } else {
+              // entries are not filled
+              for(var _pEntries in _participants) {
+                if(!_participantEntries.containsKey(_pEntries)) {
+                  showMainFrameDialog(context, "Cannot Proceed", "Please select an Entry for ${_pEntries.name}.");
+                  break;
+                }
+              }
+            }
           }
           else {
             showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
