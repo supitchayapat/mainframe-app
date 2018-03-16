@@ -134,6 +134,368 @@ class ShowTips {
               ]);
             }
             break;
+          case 'standardFormVerticalLevel':
+            showContentTips(context, "Entry Form", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "This is the ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Entry Form ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Screen. The left panel shows a list of "),
+                      new TextSpan(text: "Age(s) ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "selection for this Entry."),
+                    ]
+                ),
+              )
+            ]).then((val){
+              if(val != "cancel") {
+                showContentTips(context, "Entry Form", true, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "To start selecting a ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Dance Entry / Level", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: ", drag the "),
+                          new TextSpan(text: "Left Panel ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "that contains the "),
+                          new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "Column to minimize it until you can see the Columns for the "),
+                          new TextSpan(text: "Dance Entry / Level", style: new TextStyle(color: new Color(0xff00e5ff))),
+                        ]
+                    ),
+                  )
+                ]).then((_val2){
+                  if(_val2 != "cancel") {
+                    showContentTips(context, "Entry Form", true, [
+                      new RichText(
+                        text: new TextSpan(
+                            text: "Once you manage to see the ",
+                            style: tStyle,
+                            children: <TextSpan>[
+                              new TextSpan(text: "Dance Entry / Level ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "Columns, select the appropriate entry or entries you would want the participant to register. Make sure your selection aligned to the appropriate "),
+                              new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "Category for the Participant"),
+                            ]
+                        ),
+                      )
+                    ]).then((_val3){
+                      if(_val3 != "cancel") {
+                        showContentTips(context, "Entry Form", false, [
+                          new RichText(
+                            text: new TextSpan(
+                                text: "After you selected the appropriate ",
+                                style: tStyle,
+                                children: <TextSpan>[
+                                  new TextSpan(text: "Entries", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: ", Press the"),
+                                ]
+                            ),
+                          ),
+                          new Row(
+                            children: <Widget>[
+                              new Icon(Icons.arrow_back_ios, color: new Color(0xff00e5ff)),
+                              new RichText(
+                                text: new TextSpan(
+                                    text: " arrow back button ",
+                                    style: tStyle,
+                                    children: <TextSpan>[
+                                      new TextSpan(text: "(Upper left corner)", style: new TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0, fontFamily: "Montserrat-Light"))
+                                    ]
+                                ),
+                              ),
+                            ],
+                          ),
+                          new Row(
+                            children: <Widget>[
+                              new RichText(
+                                text: new TextSpan(
+                                    text: "To save the ",
+                                    style: tStyle,
+                                    children: <TextSpan>[
+                                      new TextSpan(text: "Entries", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                      new TextSpan(text: "."),
+                                    ]
+                                ),
+                              ),
+                            ],
+                          )
+                        ]);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+            break;
+          case 'standardFormHorizontalLevel':
+            showContentTips(context, "Entry Form", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "This is the ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Entry Form ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Screen. The left panel shows a list of "),
+                      new TextSpan(text: "Level ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "selection Column as well as "),
+                      new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "selection Column for this Entry."),
+                    ]
+                ),
+              )
+            ]).then((val){
+              if(val != "cancel") {
+                showContentTips(context, "Entry Form", true, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "Start by adding an ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "category by pressing the "),
+                          new TextSpan(text: "ADD ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "button according to the "),
+                          new TextSpan(text: "Level(s) ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "you want your Participant to register"),
+                        ]
+                    ),
+                  )
+                ]).then((_val2){
+                  if(_val2 != "cancel") {
+                    showContentTips(context, "Entry Form", false, [
+                      new RichText(
+                        text: new TextSpan(
+                            text: "Pressing ",
+                            style: tStyle,
+                            children: <TextSpan>[
+                              new TextSpan(text: "ADD ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "button will show a pop-up screen "),
+                              new TextSpan(text: "Select Age(s)", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: ". You will then select from the list of "),
+                              new TextSpan(text: "Age(s) ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "for the Participant. After selecting, Press the "),
+                              new TextSpan(text: "OK ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "button."),
+                            ]
+                        ),
+                      )
+                    ]);
+                  }
+                });
+              }
+            });
+            break;
+          case 'standardFormHorizontalLevelCat':
+            showContentTips(context, "Entry Form", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "This is the ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Entry Form ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Screen. The left panel shows a list of "),
+                      new TextSpan(text: "Level ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "selection Column as well as "),
+                      new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "/ "),
+                      new TextSpan(text: "Category ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "selection Column for this Entry."),
+                    ]
+                ),
+              )
+            ]).then((val){
+              if(val != "cancel") {
+                showContentTips(context, "Entry Form", true, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "Start by adding an ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "category by pressing the "),
+                          new TextSpan(text: "ADD ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "button according to the "),
+                          new TextSpan(text: "Level(s) ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "you want your Participant to register"),
+                        ]
+                    ),
+                  )
+                ]).then((_val2){
+                  if(_val2 != "cancel") {
+                    showContentTips(context, "Entry Form", true, [
+                      new RichText(
+                        text: new TextSpan(
+                            text: "Pressing ",
+                            style: tStyle,
+                            children: <TextSpan>[
+                              new TextSpan(text: "ADD ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "button will show a pop-up screen "),
+                              new TextSpan(text: "Select Age(s) / Category", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: ". You will then select from the list of "),
+                              new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: "category for the Participant."),
+                            ]
+                        ),
+                      )
+                    ]).then((_val3){
+                      if(_val3 != "cancel") {
+                        showContentTips(context, "Entry Form", false, [
+                          new RichText(
+                            text: new TextSpan(
+                                text: "After selecting the ",
+                                style: tStyle,
+                                children: <TextSpan>[
+                                  new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: "category, choose the appropriate checkbox if either "),
+                                  new TextSpan(text: "Open ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: "or "),
+                                  new TextSpan(text: "Closed ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: "category. And then Press the "),
+                                  new TextSpan(text: "OK ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: "button."),
+                                ]
+                            ),
+                          )
+                        ]);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+            break;
+          case 'standardFormHorizontalLevelMin':
+            showContentTips(context, "Entry Form", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "To start selecting a ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Dance Entry", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: ", drag the "),
+                      new TextSpan(text: "Left Panel ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "that contains the "),
+                      new TextSpan(text: "Level / Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Column to minimize it until you can see the Columns for the "),
+                      new TextSpan(text: "Dance Entry", style: new TextStyle(color: new Color(0xff00e5ff))),
+                    ]
+                ),
+              )
+            ]).then((val){
+              if(val != "cancel") {
+                showContentTips(context, "Entry Form", true, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "Once you manage to see the ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Dance Entry ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "Columns, select the appropriate entry or entries you would want the participant to register. Make sure your selection aligned to the appropriate "),
+                          new TextSpan(text: "Age ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "Category for the Participant"),
+                        ]
+                    ),
+                  )
+                ]).then((_val2){
+                  if(_val2 != "cancel") {
+                    showContentTips(context, "Entry Form", false, [
+                      new RichText(
+                        text: new TextSpan(
+                            text: "After you selected the appropriate ",
+                            style: tStyle,
+                            children: <TextSpan>[
+                              new TextSpan(text: "Entries", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              new TextSpan(text: ", Press the"),
+                            ]
+                        ),
+                      ),
+                      new Row(
+                        children: <Widget>[
+                          new Icon(Icons.arrow_back_ios, color: new Color(0xff00e5ff)),
+                          new RichText(
+                            text: new TextSpan(
+                                text: " arrow back button ",
+                                style: tStyle,
+                                children: <TextSpan>[
+                                  new TextSpan(text: "(Upper left corner)", style: new TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0, fontFamily: "Montserrat-Light"))
+                                ]
+                            ),
+                          ),
+                        ],
+                      ),
+                      new Row(
+                        children: <Widget>[
+                          new RichText(
+                            text: new TextSpan(
+                                text: "To save the ",
+                                style: tStyle,
+                                children: <TextSpan>[
+                                  new TextSpan(text: "Entries", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  new TextSpan(text: "."),
+                                ]
+                            ),
+                          ),
+                        ],
+                      )
+                    ]);
+                  }
+                });
+              }
+            });
+            break;
+          case 'showdanceSolo':
+            showContentTips(context, "Entry Form", false, [
+              new RichText(
+                text: new TextSpan(
+                    text: "This is the ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Entry Form ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Screen. Fill in the input fields and Press "),
+                      new TextSpan(text: "Save Entry ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "button to save this "),
+                      new TextSpan(text: "Entry", style: new TextStyle(color: new Color(0xff00e5ff))),
+                    ]
+                ),
+              )
+            ]);
+            break;
+          case 'groupDance':
+            showContentTips(context, "Entry Form", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "This is the ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Entry Form ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "Screen. To add group members, press "),
+                      new TextSpan(text: "Add Group Members ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "button. This will show the "),
+                      new TextSpan(text: "Add Participant Screen", style: new TextStyle(color: new Color(0xff00e5ff))),
+                    ]
+                ),
+              )
+            ]).then((_val2){
+              if(_val2 != "cancel") {
+                showContentTips(context, "Entry Form", false, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "Once you have selected the group members, you may then assign the ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Dance Coach ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "and Fill in the remaining fields. To save this entry, press "),
+                          new TextSpan(text: "Save Entry", style: new TextStyle(color: new Color(0xff00e5ff))),
+                        ]
+                    ),
+                  )
+                ]);
+              }
+            });
+            break;
           default:
             break;
         }

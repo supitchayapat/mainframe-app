@@ -6,6 +6,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
 
@@ -28,11 +29,14 @@ class _GroupDanceState extends State<GroupDance> {
   String titlePage = "";
   HashMap<String, String> _dataMap = new HashMap<String, dynamic>();
   bool isPaid = false;
+  var tipsTimer;
 
   @override
   void initState() {
     super.initState();
     _dataMap = new HashMap<String, String>();
+
+    tipsTimer = ShowTips.showTips(context, "groupDance");
 
     if (formEntry != null && formEntry.name != null) {
       titlePage = formEntry.name;
@@ -354,7 +358,11 @@ class _GroupDanceState extends State<GroupDance> {
       ),
       floatingActionButton: !isPaid ? new InkWell(
         onTap: () {
-          _handleSaving();
+          if(!isPaid && formParticipant?.members != null) {
+            _handleSaving();
+          } else {
+            showMainFrameDialog(context, "Save Entry Failed", "Must assign Group Members first.");
+          }
         },
         child: new Container(
           //color: Colors.amber,

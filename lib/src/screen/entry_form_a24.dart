@@ -15,6 +15,7 @@ import 'package:myapp/src/model/EventLevel.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:mframe_plugins/mframe_plugins.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
@@ -64,6 +65,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   bool triggerCategory = false;
   bool isVerticalLvl = false;
   Map<String, int> subheadingIdx = {};
+  var tipsTimer;
   Map<String, Color> smoothBgs = {
     "SMOOTH": Colors.amber,
     "RHYTHM": Colors.lightBlueAccent,
@@ -339,6 +341,15 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         _levelMap.putIfAbsent(_lvlName, () => _lvAgeMap);
       }
     }
+
+    if(!isVerticalLvl) {
+      tipsTimer = ShowTips.showTips(context, "standardFormVerticalLevel");
+    } else {
+      if(!triggerCategory)
+        tipsTimer = ShowTips.showTips(context, "standardFormHorizontalLevel");
+      else
+        tipsTimer = ShowTips.showTips(context, "standardFormHorizontalLevelCat");
+    }
   }
 
   @override
@@ -351,6 +362,9 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     MframePlugins.setToPortrait();
+    if(tipsTimer != null)
+      tipsTimer.cancel();
+    tipsTimer = null;
   }
 
   Future _handleSaving() async {
@@ -623,6 +637,11 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             if(_selButtons.length < 1) {
               _levelMap.remove(levelTxt);
             }
+
+            // trigger tips
+            //if(tipsTimer != null) {
+              tipsTimer = ShowTips.showTips(context, "standardFormHorizontalLevelMin");
+            //}
           });
         },
         child: new Text(buttonTxt, style: new TextStyle(color: buttonTxt == "ADD" ? const Color(0xff4e6686) : Colors.white)),

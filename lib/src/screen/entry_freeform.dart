@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'event_registration.dart' as registration;
 
 var formEntry;
@@ -21,10 +22,13 @@ class _entry_freeformState extends State<entry_freeform> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String titlePage = "";
+  var tipsTimer;
 
   @override
   void initState() {
     super.initState();
+
+    tipsTimer = ShowTips.showTips(context, "showdanceSolo");
 
     if(formEntry != null && formEntry.name != null) {
       titlePage = formEntry.name;
