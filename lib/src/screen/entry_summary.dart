@@ -8,6 +8,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
+import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var participantEntries;
 var eventEntries;
@@ -23,6 +24,7 @@ class entry_summary extends StatefulWidget {
 
 class _entry_summaryState extends State<entry_summary> {
   double _total = 0.0;
+  var tipsTimer;
   /*Map<String, Map<String, double>> _entryForms = {
     'Showdance Solo': 100.0,
     'Future Celebrities Competition Kids': 20.0,
@@ -35,6 +37,8 @@ class _entry_summaryState extends State<entry_summary> {
   @override
   void initState() {
     super.initState();
+
+    tipsTimer = ShowTips.showTips(context, "entrySummary");
 
     entryForms = {};
     if(reg.eventItem.formEntries != null) {

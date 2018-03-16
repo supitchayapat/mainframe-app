@@ -496,6 +496,82 @@ class ShowTips {
               }
             });
             break;
+          case 'entrySummary':
+            showContentTips(context, "Entry Summary", true, [
+              new RichText(
+                text: new TextSpan(
+                    text: "Shows the Summary of the Entries of all Participants added to the Event. The associated Fees for each Entry are displayed as well. The ",
+                    style: tStyle,
+                    children: <TextSpan>[
+                      new TextSpan(text: "Total Fees ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                      new TextSpan(text: "amount is shown on the lower left corner."),
+                    ]
+                ),
+              )
+            ]).then((_val2){
+              if(_val2 != "cancel") {
+                showContentTips(context, "Admission Tickets", true, [
+                  new RichText(
+                    text: new TextSpan(
+                        text: "Tickets for the participants are listed under ",
+                        style: tStyle,
+                        children: <TextSpan>[
+                          new TextSpan(text: "Admission Tickets", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: ". It is listed right after the Entries list. Each participant can select an "),
+                          new TextSpan(text: "Admission Ticket ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                          new TextSpan(text: "for this event. Just press the button with this "),
+                        ]
+                    ),
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      new Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: new Icon(FontAwesomeIcons.ticketAlt, color: new Color(0xff00e5ff)),
+                      ),
+                      new RichText(
+                        text: new TextSpan(
+                            text: " Ticket Icon ",
+                            style: tStyle
+                        ),
+                      ),
+                    ],
+                  ),
+                ]).then((_val3){
+                  showContentTips(context, "Admission Tickets", true, [
+                    new RichText(
+                      text: new TextSpan(
+                          text: "Pressing the ",
+                          style: tStyle,
+                          children: <TextSpan>[
+                            new TextSpan(text: "Ticket Icon ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                            new TextSpan(text: "will show a pop-up screen with a list of available "),
+                            new TextSpan(text: "Admission Tickets ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                            new TextSpan(text: "for this Event. Just select the appropriate Ticket for the Participant."),
+                          ]
+                      ),
+                    ),
+                  ]).then((_val4){
+                    if(_val4 != "cancel") {
+                      showContentTips(context, "Entry Summary", false, [
+                        new RichText(
+                          text: new TextSpan(
+                              text: "Once you have reviewed the Summary of Entries as well as the ",
+                              style: tStyle,
+                              children: <TextSpan>[
+                                new TextSpan(text: "Admission Tickets ", style: new TextStyle(color: new Color(0xff00e5ff))),
+                                new TextSpan(text: "you can now proceed to the payment screen by pressing "),
+                                new TextSpan(text: "Pay Fees", style: new TextStyle(color: new Color(0xff00e5ff))),
+                              ]
+                          ),
+                        ),
+                      ]);
+                    }
+                  });
+                });
+              }
+            });
+            break;
           default:
             break;
         }
