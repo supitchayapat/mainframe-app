@@ -33,7 +33,7 @@
             NSLog(@"IOS Error: failed to create token");
             NSLog(@"IOS Error: %@", error.localizedDescription);
             result([FlutterError errorWithCode:@"STRIPE_ERROR"
-                                                       message:@"Stripe Create Source Error"
+                                                       message:error.localizedDescription
                                                        details:error.localizedDescription]);
         }
         else if (source.flow == STPSourceFlowNone
@@ -55,7 +55,7 @@
         else {
             NSLog(@"IOS: source might have additional auth");
             result([FlutterError errorWithCode:@"STRIPE_ERROR"
-                                                       message:@"Stripe Create Source Error"
+                                                       message:@"Payment Transaction Error. Please contact developer."
                                                        details:nil]);
         }
     }];

@@ -53,6 +53,7 @@ flutter:
     - mainframe_assets/profile/profilePhoto.jpg
     - mainframe_assets/images/m7x5ba.jpg
     - mainframe_assets/images/Mainframe_Dance_System_Logo.png
+    - mainframe_assets/images/DanceFrame-logo.png
     - mainframe_assets/images/powered_by_2x.png
     - mainframe_assets/images/button_mds.png
     - mainframe_assets/images/add_button.png

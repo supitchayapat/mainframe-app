@@ -130,17 +130,17 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   }
 
   void _handleTapFBFriend(usr) {
-    var _ans = showMainFrameDialogWithCancel(
+    /*var _ans = showMainFrameDialogWithCancel(
         context, "Invite Friend",
         "Do you want to send facebook message to ${usr.first_name} ${usr.last_name} as a Participant?")
         .then((_ans){
           if(_ans == "OK") {
             showFacebookAppShareDialog();
-          }
+          }*/
 
           global.setDancePartner = "${usr.first_name}|${usr.last_name}";
           Navigator.of(context).pushNamed("/profilesetup-1");
-    });
+    //});
   }
 
   void _handleTapExisting(usr) {

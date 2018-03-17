@@ -49,6 +49,7 @@ class _AboutUsState extends State<AboutUs> {
               alignment: Alignment.center,
               child: new Image(
                   image: new AssetImage("mainframe_assets/images/powered_by_2x.png")
+                  //image: new AssetImage("mainframe_assets/images/DanceFrame-logo.png")
               )
           ),
           new Container(

@@ -66,8 +66,12 @@ class _EventDetailsState extends State<EventDetails> {
                 new Text("Website:  ", style: new TextStyle(fontSize: 16.0)),
                 new InkWell(
                   onTap: (){
-                    if(eventItem?.website != null)
-                      _launchUrl(eventItem?.website);
+                    if(eventItem?.website != null) {
+                      if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
+                        _launchUrl(eventItem?.website);
+                      else
+                        _launchUrl("http://${eventItem?.website}");
+                    }
                   },
                   child: new Wrap(
                     children: <Widget>[

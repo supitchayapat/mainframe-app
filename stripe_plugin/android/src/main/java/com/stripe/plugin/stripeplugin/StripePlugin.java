@@ -71,14 +71,14 @@ public class StripePlugin implements MethodCallHandler {
                     cardMap.put("brand", card.getBrand());
                     cardMap.put("lastdigits", card.getLast4());
                     result.success(cardMap.build());
-                  /*Map<String, Object> customerParams = new HashMap<String, Object>();
-                  customerParams.put("email", "paying.user@example.com");
-                  customerParams.put("source", token.getId());
-                  Customer customer = Customer.create(customerParams);
+                /*Map<String, Object> customerParams = new HashMap<String, Object>();
+                customerParams.put("email", "paying.user@example.com");
+                customerParams.put("source", token.getId());
+                Customer customer = Customer.create(customerParams);
 
-                  HashMap<String, Object> sourcesParams = new HashMap<String, Object>();
-                  sourcesParams.put("object", "card");
-                  customer.getSources().all(sourcesParams);*/
+                HashMap<String, Object> sourcesParams = new HashMap<String, Object>();
+                sourcesParams.put("object", "card");
+                customer.getSources().all(sourcesParams);*/
                     Log.i("stripe CARD", token.getCard().toJson().toString());
 
                     //result.success(token.getId());
@@ -86,7 +86,8 @@ public class StripePlugin implements MethodCallHandler {
 
                   public void onError(Exception error) {
                     // Show localized error message
-                    result.error("Create Token Error", error.getMessage(), error);
+                    Log.i("Create Token Error", error.getMessage());
+                    result.error("Create Token Error", error.getMessage(), null);
                   }
                 }
         );
