@@ -9,6 +9,7 @@ import 'package:strings/strings.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
+import 'event_registration.dart' as registration;
 
 var participantUser;
 var tipsTimer;
@@ -185,8 +186,16 @@ class _solo_managementState extends State<solo_management> {
                   //if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
                   if(!_listItems.contains(participantUser)) {
                     saveUserSoloParticipants(participantUser);
+                    setState((){
+                      registration.participant = {
+                        "name": "${participantUser.first_name} ${participantUser.last_name}",
+                        "user": participantUser
+                      };
+                      registration.tipsTimer = null;
+                    });
                     participantUser = null;
-                    Navigator.maybePop(context);
+                    //Navigator.maybePop(context);
+                    Navigator.of(context).popUntil(ModalRoute.withName("/registration"));
                   }
                   else
                     showMainFrameDialog(context, "Cannot Add Participant", "Solo Participant already added on the list");

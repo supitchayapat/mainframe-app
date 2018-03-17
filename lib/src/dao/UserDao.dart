@@ -294,11 +294,15 @@ Future<Couple> saveUserCoupleParticipants(User user, User user2) async {
             couple: [user, user2]);
         return partnerRef.child(fuser.uid).child("couple_participants")
             .push()
-            .set(couple.toJson());
+            .set(couple.toJson()).then((_val){
+          return couple;
+        });
       }
     } else {
       Couple couple = new Couple(coupleName: "${user.first_name} & ${user2.first_name}", couple: [user, user2]);
-      return partnerRef.child(fuser.uid).child("couple_participants").push().set(couple.toJson());
+      return partnerRef.child(fuser.uid).child("couple_participants").push().set(couple.toJson()).then((_val){
+        return couple;
+      });
     }
   });
 }

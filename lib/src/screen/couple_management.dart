@@ -9,6 +9,7 @@ import 'package:strings/strings.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
+import 'event_registration.dart' as registration;
 
 var couple1;
 var couple2;
@@ -249,10 +250,20 @@ class _couple_managementState extends State<couple_management> {
                 onPressed: (){
                   if(couple1 != null && couple2 != null) {
                     if(couple1 != couple2) {
-                      saveUserCoupleParticipants(couple1, couple2);
-                      couple1 = null;
-                      couple2 = null;
-                      Navigator.maybePop(context);
+                      saveUserCoupleParticipants(couple1, couple2).then((_coupl){
+                        if(_coupl != null) {
+                            registration.participant = {
+                              "name": "${_coupl.coupleName}",
+                              "user": _coupl
+                            };
+                            registration.tipsTimer = null;
+
+                            couple1 = null;
+                            couple2 = null;
+                            //Navigator.maybePop(context);
+                            Navigator.of(context).popUntil(ModalRoute.withName("/registration"));
+                        }
+                      });
                     }
                     else {
                       showMainFrameDialog(context, "The same Participant", "You cannot assign the same Participant for a Couple. Please choose a different Participant.");

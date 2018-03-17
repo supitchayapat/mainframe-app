@@ -299,8 +299,13 @@ class _event_registrationState extends State<event_registration> {
         });
 
         if(_entryFormCount > 0) {
-          _participants.add(_p);
-          participant = null;
+          if(!_participants.contains(_p)) {
+            _participants.add(_p);
+            participant = null;
+            tipsTimer = ShowTips.showTips(context, "registrationEntries");
+          } else {
+            showMainFrameDialog(context, "Entry not allowed", "Selected Participant already added to the event.");
+          }
         }
         else {
           showMainFrameDialog(context, "Entry not allowed", "Selected Participant has no available entries for the event.");
@@ -691,7 +696,6 @@ class _event_registrationState extends State<event_registration> {
               child: new Text("ADD TO EVENT"),
               onPressed: (){
                 _handleAddEventParticipant();
-                tipsTimer = ShowTips.showTips(context, "registrationEntries");
               },
             ),
           ),

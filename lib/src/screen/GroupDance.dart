@@ -9,6 +9,7 @@ import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
+import 'add_dance_partner.dart' as addPartner;
 
 var formEntry;
 var formParticipant;
@@ -223,6 +224,7 @@ class _GroupDanceState extends State<GroupDance> {
       onPressed: (){
         if(!isPaid) {
           participantList.participantType = "group";
+          addPartner.tipsTimer = null;
           Navigator.of(context).pushNamed("/addPartner");
         }
       },
