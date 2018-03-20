@@ -7,9 +7,11 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>475259608267-hkojcdu2ho60sa9n4j32c806v8dv74ck.apps.googleusercontent.com</string>
+	<string>475259608267-2r47e4l57mpabuj72rc2f4s31chmss3t.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.475259608267-hkojcdu2ho60sa9n4j32c806v8dv74ck</string>
+	<string>com.googleusercontent.apps.475259608267-2r47e4l57mpabuj72rc2f4s31chmss3t</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>475259608267-pcn55pt7eudmn1086u1jc5e2n5nrnv81.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyA3XMvdyj6iTprHdhC-PVFH1KXFKGzC2o4</string>
 	<key>GCM_SENDER_ID</key>
@@ -27,13 +29,13 @@
 	<key>IS_ANALYTICS_ENABLED</key>
 	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
 	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:475259608267:ios:f88054086180b1e1</string>
+	<string>1:475259608267:ios:a5cfec350bb98a86</string>
 	<key>DATABASE_URL</key>
 	<string>https://uberregister-5308a.firebaseio.com</string>
 </dict>

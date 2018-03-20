@@ -10,12 +10,64 @@
       "client_info": {
         "mobilesdk_app_id": "1:475259608267:android:f88054086180b1e1",
         "android_client_info": {
-          "package_name": "com.danceframe.ballroomgo"
+          "package_name": "com.firebaseapp.org.firebaseapp"
         }
       },
       "oauth_client": [
         {
           "client_id": "475259608267-0ksi34tl152lk2amfo1tm1q9pfc1609j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseapp.org.firebaseapp",
+            "certificate_hash": "b9d2e503ba79b8ce8836b314ee47239a0a678e34"
+          }
+        },
+        {
+          "client_id": "475259608267-jhae22t8g27hh0tpsu07sr4hemegbst6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBSWoKqzBwhsuIwwS6L820E5dPFb-jQ3o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475259608267-2r47e4l57mpabuj72rc2f4s31chmss3t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.danceframe.ballroomgo",
+                "app_store_id": "2211334455"
+              }
+            },
+            {
+              "client_id": "475259608267-jhae22t8g27hh0tpsu07sr4hemegbst6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475259608267:android:a5cfec350bb98a86",
+        "android_client_info": {
+          "package_name": "com.danceframe.ballroomgo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475259608267-pcn55pt7eudmn1086u1jc5e2n5nrnv81.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.danceframe.ballroomgo",
@@ -39,6 +91,14 @@
         "appinvite_service": {
           "status": 2,
           "other_platform_oauth_client": [
+            {
+              "client_id": "475259608267-2r47e4l57mpabuj72rc2f4s31chmss3t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.danceframe.ballroomgo",
+                "app_store_id": "2211334455"
+              }
+            },
             {
               "client_id": "475259608267-jhae22t8g27hh0tpsu07sr4hemegbst6.apps.googleusercontent.com",
               "client_type": 3
