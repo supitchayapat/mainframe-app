@@ -35,7 +35,7 @@
 			<string>Bundle ID</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.firebaseapp.org.firebaseapp</string>
+				<string>com.danceframe.ballroomgo</string>
 			</array>
 		</dict>
 	</array>

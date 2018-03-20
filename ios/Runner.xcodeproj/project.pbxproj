@@ -460,7 +460,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.firebaseapp.org.firebaseapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danceframe.ballroomgo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -484,7 +484,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.firebaseapp.org.firebaseapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danceframe.ballroomgo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

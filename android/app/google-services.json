@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:475259608267:android:f88054086180b1e1",
         "android_client_info": {
-          "package_name": "com.firebaseapp.org.firebaseapp"
+          "package_name": "com.danceframe.ballroomgo"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "475259608267-0ksi34tl152lk2amfo1tm1q9pfc1609j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.firebaseapp.org.firebaseapp",
+            "package_name": "com.danceframe.ballroomgo",
             "certificate_hash": "b9d2e503ba79b8ce8836b314ee47239a0a678e34"
           }
         },
