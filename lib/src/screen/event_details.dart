@@ -351,11 +351,13 @@ class _EventDetailsState extends State<EventDetails> {
                   "Registration Status",
                   "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now ?"
               ).then((ans) {
-                if(eventItem?.website != null) {
-                  if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
-                    _launchUrl(eventItem?.website);
-                  else
-                    _launchUrl("http://${eventItem?.website}");
+                if(ans == "OK") {
+                  if(eventItem?.website != null) {
+                    if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
+                      _launchUrl(eventItem?.website);
+                    else
+                      _launchUrl("http://${eventItem?.website}");
+                  }
                 }
               });
             }

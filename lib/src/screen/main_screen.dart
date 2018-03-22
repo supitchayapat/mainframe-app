@@ -45,6 +45,8 @@ class _MainScreenState extends State<MainScreen> {
           }
         }
       }
+    }).catchError((error){
+      print("Error: $error");
     });
 
     // check user is deleted on firebase console
