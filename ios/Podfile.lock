@@ -104,7 +104,7 @@ DEPENDENCIES:
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
   - firebase_storage (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
   - Stripe
@@ -123,7 +123,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios
   Flutter:
-    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
+    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios
   mframe_plugins:
     :path: /Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios
   path_provider:

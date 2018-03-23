@@ -26,6 +26,7 @@ dependencies:
   font_awesome_flutter: "^6.0.0"
   url_launcher: "1.0.3"
   strings: "^0.0.6"
+  flutter_launcher_icons: "^0.2.0"
     #path: firebase_plugins/url_launcher
   #facebook_sign_in:
     #git: https://github.com/bramvbilsen/Flutter-Facebook-Sign-In-Plugin.git
@@ -35,6 +36,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  image_path: "mainframe_assets/images/BallroomGo.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -54,6 +59,7 @@ flutter:
     - mainframe_assets/images/m7x5ba.jpg
     - mainframe_assets/images/Mainframe_Dance_System_Logo.png
     - mainframe_assets/images/DanceFrame-logo.png
+    - mainframe_assets/images/BallroomGo.png
     - mainframe_assets/images/powered_by_2x.png
     - mainframe_assets/images/button_mds.png
     - mainframe_assets/images/add_button.png
