@@ -83,10 +83,13 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: Alignment.center,
             //color: Colors.amber,
             height: 250.0,
-            child: new Text(
+            /*child: new Text(
                 "Logo Placeholder",
                 style: new TextStyle(fontSize: 15.0, color: Colors.white, fontFamily: "Montserrat-Light")
-            ),
+            ),*/
+            child: new Image(
+                image: new AssetImage("mainframe_assets/images/BallroomGo.png")
+            )
           ),
           new Container(
             alignment: Alignment.center,
