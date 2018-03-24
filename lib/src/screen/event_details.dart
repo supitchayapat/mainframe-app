@@ -349,7 +349,7 @@ class _EventDetailsState extends State<EventDetails> {
               showMainFrameDialogWithCancel(
                   context,
                   "Registration Status",
-                  "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now ?"
+                  "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
               ).then((ans) {
                 if(ans == "OK") {
                   if(eventItem?.website != null) {

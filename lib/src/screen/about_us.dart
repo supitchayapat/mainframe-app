@@ -31,7 +31,7 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new MFAppBar("CONTACT US", context),
+      appBar: new MFAppBar("About", context),
       body: new ListView(
         children: <Widget>[
           new Container(

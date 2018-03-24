@@ -107,7 +107,7 @@ class EventDao {
 
   static void _sortEvents() {
     // sort events by start date DESC
-    global.events.sort((a, b) => (b.startDate).compareTo(a.startDate));
+    global.events.sort((a, b) => (a.startDate).compareTo(b.startDate));
   }
 
   static Future<StreamSubscription> pastUserEventListener(Function p) {
