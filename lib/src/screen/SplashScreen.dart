@@ -58,8 +58,9 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
           new Expanded(
               child: new Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(30.0),
+                //padding: const EdgeInsets.all(20.0),
                 //height: 120.0,
+                height: 250.0,
                 child: new Image(
                     //image: new ExactAssetImage("mainframe_assets/images/Mainframe_Dance_System_Logo.png")
                     image: new ExactAssetImage("mainframe_assets/images/DanceFrame-logo.png")

@@ -46,7 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
         .catchError((err) {
       print('SIGN UP ERROR.... $err');
       MainFrameLoadingIndicator.hideLoading(context);
-      showMainFrameDialog(context, "Application Error", "An error occurred during the process. ${err.message}");
+      if(err is AssertionError) {
+        //if(err.message.toString().toLowerCase().contains("accesstoken")){
+        print("did not FB authenticate");
+      } else {
+        showMainFrameDialog(context, "Application Error", "An error occurred during the process. ${err.message}");
+      }
     });
     _nextRoute = "/mainscreen";
   }

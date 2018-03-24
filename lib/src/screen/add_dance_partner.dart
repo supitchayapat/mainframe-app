@@ -39,7 +39,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
     //});
     MframePlugins.phoneContacts().then((val){
       setState(() {
-        contacts = val;
+        contacts = [];
+        contacts.addAll(val);
       });
     });
 
