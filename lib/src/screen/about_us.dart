@@ -32,32 +32,29 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new MFAppBar("About", context),
-      body: new ListView(
+      body: new Column(
         children: <Widget>[
-          new Container(
-            alignment: Alignment.center,
-            //color: Colors.amber,
-            height: 250.0,
-            /*child: new Text(
-                "Logo Placeholder",
-                style: new TextStyle(fontSize: 15.0, color: Colors.white, fontFamily: "Montserrat-Light")
-            ),*/
-            child: new Image(
-              image: new AssetImage("mainframe_assets/images/BallroomGo.png")
-            )
+          new Expanded(
+            child: new Center(
+              child: new Container(
+                  constraints: new BoxConstraints(maxHeight: 350.0),
+                  child: new Image(
+                      image: new AssetImage("mainframe_assets/images/BallroomGo.png")
+                  )
+              ),
+            ),
           ),
           new Container(
               padding: const EdgeInsets.all(20.0),
               height: 120.0,
               alignment: Alignment.center,
               child: new Image(
-                  //image: new AssetImage("mainframe_assets/images/powered_by_2x.png")
                   image: new AssetImage("mainframe_assets/images/DanceFrame-logo.png")
               )
           ),
           new Container(
             alignment: Alignment.center,
-            //padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(bottom: 10.0),
             child: new Column(
               children: <Widget>[
                 new Text(
