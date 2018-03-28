@@ -338,7 +338,7 @@ class _EventDetailsState extends State<EventDetails> {
           )*/
         ],
       ),
-      floatingActionButton: new InkWell(
+      /*floatingActionButton: new InkWell(
         onTap: (){
           eventInfo.eventItem = eventItem;
           eventInfo.participant = null;
@@ -370,10 +370,60 @@ class _EventDetailsState extends State<EventDetails> {
           alignment: Alignment.center,
           decoration: new BoxDecoration(
             image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+            color: Colors.amber
           ),
           child: new Text(_floatText, style: new TextStyle(fontSize: 17.0)),
         ),
-      )
+      )*/
+      bottomNavigationBar: new Container(
+        padding: const EdgeInsets.symmetric(vertical: 1.0),
+        child: new Container(
+          padding: const EdgeInsets.only(left: 20.0, right: 5.0, top: 2.0, bottom: 5.0),
+          height: 40.0,
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Expanded(
+                child: new Container(),
+              ),
+              new InkWell(
+                onTap: (){
+                  eventInfo.eventItem = eventItem;
+                  eventInfo.participant = null;
+                  if(_floatText == "Register") {
+                    if(isRegisterOpen) {
+                      Navigator.of(context).pushNamed("/registration");
+                    } else {
+                      showMainFrameDialogWithCancel(
+                          context,
+                          "Registration Status",
+                          "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
+                      ).then((ans) {
+                        if(ans == "OK") {
+                          if(eventItem?.website != null) {
+                            if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
+                              _launchUrl(eventItem?.website);
+                            else
+                              _launchUrl("http://${eventItem?.website}");
+                          }
+                        }
+                      });
+                    }
+                  }
+                },
+                child: new Container(
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+                  ),
+                  width: 115.0,
+                  height: 40.0,
+                  child: new Center(child: new Text(_floatText, style: new TextStyle(fontSize: 17.0))),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

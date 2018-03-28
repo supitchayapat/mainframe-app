@@ -722,7 +722,7 @@ class _event_registrationState extends State<event_registration> {
           )
         ],
       ),
-      floatingActionButton: new InkWell(
+      /*floatingActionButton: new InkWell(
         onTap: (){
           if(_participantEntries.length > 0) {
             if(_participants.length == _participantEntries.length) {
@@ -759,7 +759,58 @@ class _event_registrationState extends State<event_registration> {
           ),
           child: new Text("Proceed", style: new TextStyle(fontSize: 17.0)),
         ),
-      )
+      )*/
+      bottomNavigationBar: new Container(
+        padding: const EdgeInsets.symmetric(vertical: 1.0),
+        child: new Container(
+          padding: const EdgeInsets.only(left: 20.0, right: 5.0, top: 2.0, bottom: 5.0),
+          height: 40.0,
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Expanded(
+                child: new Container(),
+              ),
+              new InkWell(
+                onTap: (){
+                  if(_participantEntries.length > 0) {
+                    if(_participants.length == _participantEntries.length) {
+                      print(_participantEntries);
+                      summary.participantEntries = _participantEntries;
+                      summary.eventEntries = _eventEntries;
+                      Navigator.of(context).pushNamed("/registrationSummary");
+                      // deactivate tips for registration
+                      participant = null;
+                      if (tipsTimer != null)
+                        tipsTimer.cancel();
+                      tipsTimer = null;
+                    } else {
+                      // entries are not filled
+                      for(var _pEntries in _participants) {
+                        if(!_participantEntries.containsKey(_pEntries)) {
+                          showMainFrameDialog(context, "Cannot Proceed", "Please select an Entry for ${_pEntries.name}.");
+                          break;
+                        }
+                      }
+                    }
+                  }
+                  else {
+                    showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
+                  }
+                },
+                child: new Container(
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+                  ),
+                  width: 115.0,
+                  height: 40.0,
+                  child: new Center(child: new Text("Proceed", style: new TextStyle(fontSize: 17.0))),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
