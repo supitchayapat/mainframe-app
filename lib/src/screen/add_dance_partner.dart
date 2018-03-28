@@ -10,6 +10,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
@@ -30,6 +31,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   List existingUsers = [];
   List contacts = [];
   int _page = 10;
+  var _currentUser;
 
   @override
   void initState() {
@@ -65,6 +67,10 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       setState((){
         existingUsers.addAll(usersData);
       });
+    });
+
+    getCurrentUserProfile().then((_curr){
+      _currentUser = _curr;
     });
   }
 
@@ -552,9 +558,60 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           ),*/
           new Container(
             margin: const EdgeInsets.only(bottom: 10.0),
-            child: new MainFrameButton(
-              child: new Text("ADD MANUALLY"),
-              onPressed: _inviteWithEmail,
+            child: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new InkWell(
+                    onTap: _inviteWithEmail,
+                    child: new Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      decoration: new BoxDecoration(
+                        image: new DecorationImage(image: new ExactAssetImage("mainframe_assets/images/button_mds.png")),
+                      ),
+                      height: 40.0,
+                      child: new Center(child: new Text("ADD MANUALLY", style: new TextStyle(fontSize: 17.0))),
+                    ),
+                  )
+                ),
+                new InkWell(
+                  onTap: (){
+                    if(_currentUser != null) {
+                      _handleTapExisting(_currentUser);
+                    }
+                  },
+                  child: new Container(
+                    margin: new EdgeInsets.only(right: 5.0, left: 5.0),
+                    decoration: new BoxDecoration(
+                        borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                        border: new Border.all(
+                          color: Colors.black,
+                          style: BorderStyle.solid,
+                        )
+                    ),
+                    width: 135.0,
+                    height: 36.0,
+                    child: new Container(
+                      alignment: Alignment.center,
+                      color: const Color(0xffffffff),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          new Icon(Icons.person_add, color: Colors.black),
+                          new Padding(
+                            padding: const EdgeInsets.only(left: 2.0),
+                            child: new Text("ASSIGN ME",
+                              style: new TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.black
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
             )
           ),
           new Flexible(
