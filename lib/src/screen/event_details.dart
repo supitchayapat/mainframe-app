@@ -7,6 +7,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFPageSelector.dart';
 import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validator/validator.dart';
@@ -48,6 +49,12 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Widget _buildEventInfo() {
+    bool displayUrl = true;
+
+    if(global.devicePlatform == "ios" && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
+      displayUrl = false;
+    }
+
     return new Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
         child: new Column(
@@ -61,7 +68,7 @@ class _EventDetailsState extends State<EventDetails> {
             new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
             new Text("Registration deadline:  ${eventItem.deadline != null ? format.format(eventItem.deadline) : ""}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            new Wrap(
+            (displayUrl) ? new Wrap(
               children: <Widget>[
                 new Text("Website:  ", style: new TextStyle(fontSize: 16.0)),
                 new InkWell(
@@ -81,7 +88,7 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                 )
               ],
-            )
+            ) : new Container()
           ],
         ),
     );

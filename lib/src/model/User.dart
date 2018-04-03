@@ -81,9 +81,10 @@ class User {
   DanceCategory category;
   String displayPhotoUrl;
   bool hasProfileSetup;
+  bool ao;
 
   User({this.fbUserId, this.first_name, this.last_name, this.email,
-      this.birthday, this.gender, this.category, this.displayPhotoUrl, this.hasProfileSetup : false});
+      this.birthday, this.gender, this.category, this.displayPhotoUrl, this.hasProfileSetup : false, this.ao : false});
 
   User.fromSnapshot(DataSnapshot s) : fbUserId = s.value["facebook_userId"],
                         stripeId = s.value["stripe_custId"],
@@ -96,6 +97,7 @@ class User {
                         gender = getGenderFromString(s.value["gender"]),
                         category = getDanceCategoryFromString(s.value["category"]),
                         displayPhotoUrl = s.value["displayPhotoUrl"],
+                        ao = s.value["ao"],
                         hasProfileSetup = s.value["hasProfileSetup"];
 
   User.fromDataSnapshot(s) : fbUserId = s["facebook_userId"],
@@ -109,6 +111,7 @@ class User {
         gender = getGenderFromString(s["gender"]),
         category = getDanceCategoryFromString(s["category"]),
         displayPhotoUrl = s["displayPhotoUrl"],
+        ao = s["ao"],
         hasProfileSetup = s["hasProfileSetup"];
 
 

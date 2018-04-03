@@ -21,6 +21,12 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
     // set portrait mode
     MframePlugins.setToPortrait();
 
+    MframePlugins.platform.then((_platform){
+      print("CURRENT PLATFORM: ${_platform}");
+      if(_platform != null)
+        global.devicePlatform = _platform;
+    });
+
     // set firebase instance offline
     FirebaseDatabase.instance.setPersistenceEnabled(true);
 

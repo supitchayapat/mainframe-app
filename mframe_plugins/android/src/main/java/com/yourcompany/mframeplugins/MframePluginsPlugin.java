@@ -101,6 +101,8 @@ public class MframePluginsPlugin implements MethodCallHandler {
     } else if(call.method.equals("setPortrait")) {
       this.activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       result.success("portrait");
+    } else if(call.method.equals("getPlatform")) {
+      result.success("android");
     } else {
       result.notImplemented();
     }

@@ -32,4 +32,7 @@ class MframePlugins {
   static void setToPortrait() {
     _channel.invokeMethod('setPortrait');
   }
+
+  static Future<String> get platform =>
+      _channel.invokeMethod('getPlatform');
 }

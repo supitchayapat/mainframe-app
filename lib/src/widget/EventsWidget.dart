@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'EventsTile.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
 import 'package:myapp/src/dao/EventDao.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
+import 'package:myapp/MFGlobals.dart' as global;
+import 'package:mframe_plugins/mframe_plugins.dart';
 
 const double _kFlexibleSpaceMaxHeight = 186.0;
 
@@ -38,6 +41,10 @@ class _EventsWidgetState extends State<EventsWidget> {
 
   void _renderEvents() {
     double scrnWidth = MediaQuery.of(context).size.width;
+    bool triggerRegistrationFilter = false;
+    if(global.devicePlatform == "ios" && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
+      triggerRegistrationFilter = true;
+    }
 
     _events.forEach((e){
       //print(e.thumbnail);
@@ -49,24 +56,28 @@ class _EventsWidgetState extends State<EventsWidget> {
         _width = 60.0;
       }
 
-      listTiles.add(
-          new InkWell(
-              onTap: () {
-                _handleEventTap(e);
-              },
-              child: new EventsListTile(
-                leadingColor: e.thumbnailBg != null ? new Color(
-                    int.parse(e.thumbnailBg)) : Theme
-                    .of(context)
-                    .primaryColor,
-                leading: new Container(
-                    height: 78.0,
-                    width: 140.0,
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    //child: new Image.network(e.thumbnail),
-                    child: (_thumbImages != null && _thumbImages.containsKey(e.thumbnail)) ? _thumbImages[e.thumbnail] : new Container()
-                ),
-                title: new Container(
+      if(!triggerRegistrationFilter || (e.uberRegister)) {
+        listTiles.add(
+            new InkWell(
+                onTap: () {
+                  _handleEventTap(e);
+                },
+                child: new EventsListTile(
+                  leadingColor: e.thumbnailBg != null ? new Color(
+                      int.parse(e.thumbnailBg)) : Theme
+                      .of(context)
+                      .primaryColor,
+                  leading: new Container(
+                      height: 78.0,
+                      width: 140.0,
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      //child: new Image.network(e.thumbnail),
+                      child: (_thumbImages != null &&
+                          _thumbImages.containsKey(e.thumbnail))
+                          ? _thumbImages[e.thumbnail]
+                          : new Container()
+                  ),
+                  title: new Container(
                     //color: Colors.amber,
                     alignment: Alignment.centerLeft,
                     child: new Column(
@@ -82,22 +93,24 @@ class _EventsWidgetState extends State<EventsWidget> {
                           //crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             new Text(e.dateRange,
-                                style: new TextStyle(color: new Color(0xff00e5ff))),
+                                style: new TextStyle(
+                                    color: new Color(0xff00e5ff))),
                             new Container(
                               //color: Colors.amber,
                               padding: new EdgeInsets.only(left: _padd),
                               width: _width,
                               //padding: const EdgeInsets.only(left: 20.0),
                               child: new Text(e.year.toString(),
-                                  style: new TextStyle(color: new Color(0xff00e5ff))),
+                                  style: new TextStyle(
+                                      color: new Color(0xff00e5ff))),
                             )
                           ],
                         ),
                       ],
                     ),
                     //child: new ListTileText(e.eventTitle)
-                ),
-                /*subtitle: new Column(
+                  ),
+                  /*subtitle: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(e.dateRange,
@@ -106,21 +119,31 @@ class _EventsWidgetState extends State<EventsWidget> {
                         style: new TextStyle(color: new Color(0xff00e5ff)))
                   ],
                 ),*/
-                trailing: e.hasAttended ? new Image.asset(
-                  "mainframe_assets/images/attended_before@2x.png",
-                  height: 60.0,
-                  width: 60.0,
-                ) : new Container(),
-              )
-          )
-      );
-
+                  trailing: e.hasAttended ? new Image.asset(
+                    "mainframe_assets/images/attended_before@2x.png",
+                    height: 60.0,
+                    width: 60.0,
+                  ) : new Container(),
+                )
+            )
+        );
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
+
+    MframePlugins.platform.then((_platform){
+      if(_platform != null)
+        global.devicePlatform = _platform;
+    });
+
+    getCurrentUserProfile().then((_usr){
+      global.currentUserProfile = _usr;
+      print(_usr.email);
+    });
 
     listener = EventDao.eventsListener((events) {
       setState(() {
