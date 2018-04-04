@@ -41,6 +41,9 @@ class _MainScreenState extends State<MainScreen> {
       global.currentUserProfile = _usr;
     });
 
+    // load FB Friends
+    global.taggableFriends.then((val){});
+
     // get dynamic link with firebase
     FirebaseDynamicLink.getDynamicLink().then((String _link){
       if(_link != null) {

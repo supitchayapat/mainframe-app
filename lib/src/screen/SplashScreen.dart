@@ -39,7 +39,6 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       }
       else {
         //FileUtil.loadImages();
-        global.taggableFriends.then((val) {});
       }
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(_navi);

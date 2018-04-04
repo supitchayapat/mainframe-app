@@ -28,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
           /*MFHttpUtil.requestFacebookFriends().then((users){
             global.setTaggableFriends = users;
           });*/
-          global.taggableFriends.then((val){});
           if(str == "success") {
             Navigator.of(context).pushReplacementNamed(_nextRoute);
           }
