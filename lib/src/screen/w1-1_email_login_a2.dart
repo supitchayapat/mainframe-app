@@ -39,7 +39,13 @@ class _EmailLoginState extends State<EmailLogin> {
         Navigator.of(context).pushReplacementNamed("/profilesetup-1");
       }).catchError((err) {
         MainFrameLoadingIndicator.hideLoading(context);
-        showMainFrameDialog(context, "Sign Up Error", err.message);
+        print("ErrorType: ${err.runtimeType}");
+        print("Error Msg: ${err.message}");
+        if(err.message == "FIRAuthErrorDomain") {
+          showMainFrameDialog(context, "Sign Up Error", "Account already exist, make sure you are not using the same email with a facebook account.");
+        } else {
+          showMainFrameDialog(context, "Sign Up Error", err.message);
+        }
       });
     }
   }
