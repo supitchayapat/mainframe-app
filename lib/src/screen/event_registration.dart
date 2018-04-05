@@ -482,6 +482,7 @@ class _event_registrationState extends State<event_registration> {
                           }
                         },
                         child: new Container(
+                          //color: Colors.amber,
                           alignment: Alignment.centerLeft,
                           child: new Row(
                             children: <Widget>[
@@ -502,7 +503,9 @@ class _event_registrationState extends State<event_registration> {
                                     color: Colors.black,
                                   ),
                                 ),
-                              ) : new Container()
+                              ) : new Container(
+                                child: new Icon(Icons.arrow_forward, color: Colors.black),
+                              )
                             ],
                           ),
                         ),

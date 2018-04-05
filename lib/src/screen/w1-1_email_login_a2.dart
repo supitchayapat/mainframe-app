@@ -42,7 +42,7 @@ class _EmailLoginState extends State<EmailLogin> {
         print("ErrorType: ${err.runtimeType}");
         print("Error Msg: ${err.message}");
         if(err.message == "FIRAuthErrorDomain") {
-          showMainFrameDialog(context, "Sign Up Error", "Account already exist, make sure you are not using the same email with a facebook account.");
+          showMainFrameDialog(context, "Sign Up Error", "The email address is already in use bt another account.");
         } else {
           showMainFrameDialog(context, "Sign Up Error", err.message);
         }

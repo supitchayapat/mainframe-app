@@ -227,63 +227,64 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       String _curr = con.contactName[0].toUpperCase();
       ImageProvider _profilePhoto = new AssetImage("mainframe_assets/images/user-avatar.png");
 
-      if(_letter != _curr) {
-        _letter = _curr;
-        _children.add(new InkWell(
-          onTap: () {
-            global.setDancePartner = con.contactName;
-            Navigator.of(context).pushNamed("/profilesetup-1");
-          },
-          child: new Container(
-              height: 80.0,
-              margin: const EdgeInsets.only(left: 20.0),
-              //color: Colors.amber,
-              child: new Row(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  new Container(
-                    padding: new EdgeInsets.only(left: 20.0),
-                    //color: Colors.amber,
-                    child: new Container(
-                      alignment: Alignment.center,
-                      width: 25.0,
-                      //color: Colors.cyanAccent,
-                      child: new Text(_letter,
-                        style:new TextStyle(
-                            fontSize:32.0,
-                            fontFamily: "Montserrat-Light",
-                            color: const Color(0xff1daad2)
+      if(con.contactName != null && !con.contactName.isEmpty) {
+        if(_letter != _curr) {
+          _letter = _curr;
+          _children.add(new InkWell(
+            onTap: () {
+              global.setDancePartner = con.contactName;
+              Navigator.of(context).pushNamed("/profilesetup-1");
+            },
+            child: new Container(
+                height: 80.0,
+                margin: const EdgeInsets.only(left: 20.0),
+                //color: Colors.amber,
+                child: new Row(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Container(
+                      padding: new EdgeInsets.only(left: 20.0),
+                      //color: Colors.amber,
+                      child: new Container(
+                        alignment: Alignment.center,
+                        width: 25.0,
+                        //color: Colors.cyanAccent,
+                        child: new Text(_letter,
+                          style:new TextStyle(
+                              fontSize:32.0,
+                              fontFamily: "Montserrat-Light",
+                              color: const Color(0xff1daad2)
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  new Container(
-                    padding: new EdgeInsets.only(left: 30.0),
-                    //color: Colors.cyanAccent,
-                    child: new CircleAvatar(
-                      backgroundImage: _profilePhoto,
-                      radius: 20.0,
+                    new Container(
+                      padding: new EdgeInsets.only(left: 30.0),
+                      //color: Colors.cyanAccent,
+                      child: new CircleAvatar(
+                        backgroundImage: _profilePhoto,
+                        radius: 20.0,
+                      ),
                     ),
-                  ),
-                  new Container(
-                    padding: new EdgeInsets.only(left: 20.0),
-                    //color: Colors.cyanAccent,
-                    width: _screenWidth * 0.6,
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Container(
-                          //padding: const EdgeInsets.only(left: 7.0),
-                          alignment: Alignment.centerLeft,
-                          child: new Text(con.contactName,
-                            style: new TextStyle(
-                              fontSize: 16.0,
-                              fontFamily: "Montserrat-Light",
-                              color: const Color(0xffffffff),
+                    new Container(
+                        padding: new EdgeInsets.only(left: 20.0),
+                        //color: Colors.cyanAccent,
+                        width: _screenWidth * 0.6,
+                        child: new Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            new Container(
+                              //padding: const EdgeInsets.only(left: 7.0),
+                              alignment: Alignment.centerLeft,
+                              child: new Text(con.contactName,
+                                style: new TextStyle(
+                                  fontSize: 16.0,
+                                  fontFamily: "Montserrat-Light",
+                                  color: const Color(0xffffffff),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        new Container(
+                            /*new Container(
                           alignment: Alignment.centerLeft,
                           child: new Text(con.contactPhone,
                             style: new TextStyle(
@@ -292,55 +293,55 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                               color: const Color(0xffffffff),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ),
-                ],
-              )
-          ),
-        ));
-      } else {
-        _children.add(new InkWell(
-          onTap: () {
-            global.setDancePartner = con.contactName;
-            Navigator.of(context).pushNamed("/profilesetup-1");
-          },
-          child: new Container(
-              height: 80.0,
-              margin: const EdgeInsets.only(left: 20.0),
-              //color: Colors.amber,
-              child: new Row(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  new Padding(padding: const EdgeInsets.only(left: 45.0)),
-                  new Container(
-                    //color: Colors.cyanAccent,
-                    padding: new EdgeInsets.only(left: 30.0),
-                    child: new CircleAvatar(
-                      backgroundImage: _profilePhoto,
-                      radius: 20.0,
+                        ),*/
+                          ],
+                        )
                     ),
-                  ),
-                  new Container(
-                      padding: new EdgeInsets.only(left: 20.0),
+                  ],
+                )
+            ),
+          ));
+        } else {
+          _children.add(new InkWell(
+            onTap: () {
+              global.setDancePartner = con.contactName;
+              Navigator.of(context).pushNamed("/profilesetup-1");
+            },
+            child: new Container(
+                height: 80.0,
+                margin: const EdgeInsets.only(left: 20.0),
+                //color: Colors.amber,
+                child: new Row(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Padding(padding: const EdgeInsets.only(left: 45.0)),
+                    new Container(
                       //color: Colors.cyanAccent,
-                      width: _screenWidth * 0.6,
-                      child: new Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          new Container(
-                            //padding: const EdgeInsets.only(left: 7.0),
-                            alignment: Alignment.centerLeft,
-                            child: new Text(con.contactName,
-                              style: new TextStyle(
-                                fontSize: 16.0,
-                                fontFamily: "Montserrat-Light",
-                                color: const Color(0xffffffff),
+                      padding: new EdgeInsets.only(left: 30.0),
+                      child: new CircleAvatar(
+                        backgroundImage: _profilePhoto,
+                        radius: 20.0,
+                      ),
+                    ),
+                    new Container(
+                        padding: new EdgeInsets.only(left: 20.0),
+                        //color: Colors.cyanAccent,
+                        width: _screenWidth * 0.6,
+                        child: new Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            new Container(
+                              //padding: const EdgeInsets.only(left: 7.0),
+                              alignment: Alignment.centerLeft,
+                              child: new Text(con.contactName,
+                                style: new TextStyle(
+                                  fontSize: 16.0,
+                                  fontFamily: "Montserrat-Light",
+                                  color: const Color(0xffffffff),
+                                ),
                               ),
                             ),
-                          ),
-                          new Container(
+                            /*new Container(
                             alignment: Alignment.centerLeft,
                             child: new Text(con.contactPhone,
                               style: new TextStyle(
@@ -349,14 +350,15 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                                 color: const Color(0xffffffff),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                  ),
-                ],
-              )
-          ),
-        ));
+                          ),*/
+                          ],
+                        )
+                    ),
+                  ],
+                )
+            ),
+          ));
+        }
       }
     });
 
