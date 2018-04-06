@@ -1424,6 +1424,33 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
         }
       }
 
+      Checkbox _tempOpen = new Checkbox(activeColor: const Color(0xFF324261),value: _openVal,
+          onChanged: (bool val){
+            //_openVal=val;
+            if(_enabledAges.contains(str)) {
+              if (_selectedButtons.containsKey(str)) {
+                FormAgeCat _formAgeCat = _selectedButtons[str];
+                _formAgeCat.catOpen = !_formAgeCat.catOpen;
+                Navigator.of(context).pop();
+                showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
+              }
+            }
+          }
+      );
+
+      Checkbox _tempClosed = new Checkbox(activeColor: const Color(0xFF324261),value: _closedVal,
+          onChanged: (bool val){
+            if(_enabledAges.contains(str)) {
+              if (_selectedButtons.containsKey(str)) {
+                FormAgeCat _formAgeCat = _selectedButtons[str];
+                _formAgeCat.catClosed = !_formAgeCat.catClosed;
+                Navigator.of(context).pop();
+                showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
+              }
+            }
+          }
+      );
+
       _catOpenClose = new Expanded(
         child: new Column(
           children: <Widget>[
@@ -1434,51 +1461,42 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
                 children: <Widget>[
                   new Container(
                     margin: const EdgeInsets.only(right: 5.0),
-                    child: new Row(
-                      children: <Widget>[
-                        new Container(
-                          width: 15.0,
-                          margin: const EdgeInsets.only(right: 5.0),
-                          //color: Colors.amber,
-                          child: new Checkbox(activeColor: const Color(0xFF324261),value: _openVal,
-                              onChanged: (bool val){
-                                //_openVal=val;
-                                if(_enabledAges.contains(str)) {
-                                  if (_selectedButtons.containsKey(str)) {
-                                    FormAgeCat _formAgeCat = _selectedButtons[str];
-                                    _formAgeCat.catOpen = !_formAgeCat.catOpen;
-                                    Navigator.of(context).pop();
-                                    showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
-                                  }
-                                }
-                              }),
-                        ),
-                        new Text("Open"),
-                      ],
-                    ),
+                    child: new InkWell(
+                      onTap: () {
+                        print("tapped open ${_tempOpen.value}");
+                        _tempOpen.onChanged(!_tempOpen.value);
+                      },
+                      child: new Row(
+                        children: <Widget>[
+                          new Container(
+                              width: 15.0,
+                              margin: const EdgeInsets.only(right: 5.0),
+                              //color: Colors.amber,
+                              child: _tempOpen
+                          ),
+                          new Text("Open"),
+                        ],
+                      ),
+                    )
                   ),
                   new Container(
-                    child: new Row(
-                      children: <Widget>[
-                        new Container(
-                          width: 15.0,
-                          margin: const EdgeInsets.only(right: 5.0),
-                          //color: Colors.amber,
-                          child: new Checkbox(activeColor: const Color(0xFF324261),value: _closedVal,
-                              onChanged: (bool val){
-                                if(_enabledAges.contains(str)) {
-                                  if (_selectedButtons.containsKey(str)) {
-                                    FormAgeCat _formAgeCat = _selectedButtons[str];
-                                    _formAgeCat.catClosed = !_formAgeCat.catClosed;
-                                    Navigator.of(context).pop();
-                                    showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
-                                  }
-                                }
-                              }),
-                        ),
-                        new Text("Closed"),
-                      ],
-                    ),
+                    child: new InkWell(
+                      onTap: () {
+                        print("tapped closed ${_tempClosed.value}");
+                        _tempClosed.onChanged(!_tempClosed.value);
+                      },
+                      child: new Row(
+                        children: <Widget>[
+                          new Container(
+                              width: 15.0,
+                              margin: const EdgeInsets.only(right: 5.0),
+                              //color: Colors.amber,
+                              child: _tempClosed
+                          ),
+                          new Text("Closed"),
+                        ],
+                      ),
+                    )
                   ),
                 ],
               ),

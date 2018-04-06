@@ -11,6 +11,8 @@ import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/enumeration/DanceCategory.dart';
+import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
@@ -46,7 +48,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       });
     });
 
-    global.taggableFriends.then((usrs){
+    /*global.taggableFriends.then((usrs){
       setState((){
         if(usrs != null && !usrs.isEmpty) {
           int _ctr = 1;
@@ -61,7 +63,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           }
         }
       });
-    });
+    });*/
 
     getUserExistingParticipants().then((usersData){
       setState((){
@@ -388,6 +390,19 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       String _curr = usr.first_name[0].toUpperCase();
       String _displayPhoto = usr.displayPhotoUrl;
       ImageProvider _profilePhoto;
+      String _categoryGender = "";
+
+      if(isExisting) {
+        if (usr?.category == DanceCategory.PROFESSIONAL)
+          _categoryGender = "(PRO";
+        else
+          _categoryGender = "(AM";
+
+        if (usr?.gender == Gender.MAN)
+          _categoryGender += " GUY)";
+        else
+          _categoryGender += " GIRL)";
+      }
 
       if(_displayPhoto != null && !_displayPhoto.isEmpty) {
         _profilePhoto = new NetworkImage(usr.displayPhotoUrl);
@@ -434,13 +449,21 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                     padding: new EdgeInsets.only(left: 20.0),
                     //color: Colors.cyanAccent,
                     width: _screenWidth * 0.6,
-                    child: new Text("${usr.first_name} ${usr.last_name}",
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: "Montserrat-Light",
-                        color: const Color(0xffffffff),
-                      ),
-                    ),
+                    child: new Wrap(
+                      children: <Widget>[
+                        new Text("${usr.first_name} ${usr.last_name} ",
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: "Montserrat-Light",
+                            color: const Color(0xffffffff),
+                          ),
+                        ),
+                        new Padding(
+                          padding: const EdgeInsets.only(top: 0.0),
+                          child: new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold))
+                        )
+                      ],
+                    )
                   ),
                 ],
               )
@@ -470,13 +493,21 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                     //color: Colors.cyanAccent,
                     //constraints: new BoxConstraints.expand(),
                     width: _screenWidth * 0.6,
-                    child: new Text("${usr.first_name} ${usr.last_name}",
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: "Montserrat-Light",
-                        color: const Color(0xffffffff),
-                      ),
-                    ),
+                    child: new Wrap(
+                      children: <Widget>[
+                        new Text("${usr.first_name} ${usr.last_name} ",
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: "Montserrat-Light",
+                            color: const Color(0xffffffff),
+                          ),
+                        ),
+                        new Padding(
+                            padding: const EdgeInsets.only(top: 0.0),
+                            child: new Text("${_categoryGender}", style: new TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold))
+                        )
+                      ],
+                    )
                   ),
                 ],
               )
@@ -619,21 +650,21 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           new Flexible(
             child: new MFTabbedComponentDemoScaffold(
                 demos: <MFComponentDemoTabData>[
-                  new MFComponentDemoTabData(
+                  /*new MFComponentDemoTabData(
                       tabName: 'FACEBOOK',
                       description: '',
                       demoWidget: _buildFacebookContacts(),
                       loadMoreCallback: _loadMoreFBContacts
+                  ),*/
+                  new MFComponentDemoTabData(
+                    tabName: 'RECENT',
+                    description: '',
+                    demoWidget: _buildExistingContacts(),
                   ),
                   new MFComponentDemoTabData(
                       tabName: 'CONTACTS',
                       description: '',
                       demoWidget: _buildPhoneContacts(),
-                  ),
-                  new MFComponentDemoTabData(
-                      tabName: 'RECENT',
-                      description: '',
-                      demoWidget: _buildExistingContacts(),
                   ),
                 ]
             ),

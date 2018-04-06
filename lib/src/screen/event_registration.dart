@@ -485,6 +485,7 @@ class _event_registrationState extends State<event_registration> {
                           //color: Colors.amber,
                           alignment: Alignment.centerLeft,
                           child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               new Expanded(
                                   child: new Text("${val.name}",
@@ -494,17 +495,25 @@ class _event_registrationState extends State<event_registration> {
                                     ),
                                   )
                               ),
-                              _entryItems.containsKey(val.name) ? new CircleAvatar(
-                                radius: 14.0,
-                                backgroundColor: const Color(0xFF778198),
-                                child: new Text(_entryItems[val.name].toString(),
-                                  style: new TextStyle(
-                                    fontSize: 15.0,
-                                    color: Colors.black,
+                              _entryItems.containsKey(val.name) ? new Wrap(
+                                children: <Widget>[
+                                  new CircleAvatar(
+                                    radius: 14.0,
+                                    backgroundColor: const Color(0xFF778198),
+                                    child: new Text(_entryItems[val.name].toString(),
+                                      style: new TextStyle(
+                                        fontSize: 15.0,
+                                        color: Colors.black,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  new Padding(
+                                    padding: const EdgeInsets.only(top: 2.0),
+                                    child: new Icon(Icons.arrow_forward_ios, color: Colors.black),
+                                  )
+                                ],
                               ) : new Container(
-                                child: new Icon(Icons.arrow_forward, color: Colors.black),
+                                child: new Icon(Icons.arrow_forward_ios, color: Colors.black),
                               )
                             ],
                           ),

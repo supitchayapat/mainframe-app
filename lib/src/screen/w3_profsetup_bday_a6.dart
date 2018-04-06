@@ -7,6 +7,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 class ProfileSetupBday extends StatefulWidget {
@@ -20,7 +21,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   TextEditingController _bdayCtrl = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  String genderVal = "MALE";
+  String genderVal = "";
   String headingTitle = "MY PROFILE SETUP";
   User _user;
 
@@ -40,8 +41,9 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   void _handleSubmitted() {
     // perform validation and save
     final FormState form = _formKey.currentState;
-    if(!form.validate()) {
-      showInSnackBar('Please fix the errors in red before submitting.');
+    if(genderVal.isEmpty) {
+      //showInSnackBar('Please fix the errors in red before submitting.');
+      showMainFrameDialog(context, "Missing Field", "Please select Gender.");
     } else {
       form.save();
       if(global.dancePartner == null) {
@@ -62,6 +64,9 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
         if (usr.birthday != null) {
           _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
         }
+        else {
+          _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
+        }
         if (usr.gender == null) {
           genderVal = "MAN";
         } else {
@@ -75,8 +80,10 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
       setState((){
         headingTitle = "ADD A PARTICIPANT";
         _user = global.dancePartner;
+        _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
       });
     }
+    print("BIRTHDAY: ${_bdayCtrl.text}");
   }
 
   String _validateBirthday(String val) {
@@ -116,7 +123,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                   new Padding(padding: const EdgeInsets.all(5.0)),
                   new MFTextFormField(
                     icon: const Icon(Icons.access_time),
-                    labelText: 'Ex. February 18, 1982',
+                    labelText: ' ',
                     keyboardType: TextInputType.text,
                     onSaved: (String val) {
                       if(val != null && !val.isEmpty) {

@@ -47,20 +47,27 @@ class _MFRadioState extends State<MFRadio> {
 
   @override
   Widget build(BuildContext context) {
+    Radio _temp = new Radio(value: widget.value, groupValue: widget.groupValue, onChanged: widget.onChanged);
+
     return new Container(
-      child: new Row(
-        children: <Widget>[
-          new Radio(value: widget.value, groupValue: widget.groupValue, onChanged: widget.onChanged),
-          new Padding(padding: const EdgeInsets.only(left: 10.0)),
-          new Text(
-            widget.labelText,
-            style: new TextStyle(
-              fontSize: 16.0,
-              fontFamily: "Montserrat-Light",
-            )
-          ),
-        ],
-      ),
+      child: new InkWell(
+        onTap: (){
+          _temp.onChanged(widget.value);
+        },
+        child: new Row(
+          children: <Widget>[
+            _temp,
+            new Padding(padding: const EdgeInsets.only(left: 10.0)),
+            new Text(
+                widget.labelText,
+                style: new TextStyle(
+                  fontSize: 16.0,
+                  fontFamily: "Montserrat-Light",
+                )
+            ),
+          ],
+        ),
+      )
     );
   }
 }
