@@ -400,13 +400,14 @@ class _event_registrationState extends State<event_registration> {
                         width: 2.0,
                         color: const Color(0xFF313746),
                         style: BorderStyle.solid,
-                      )
+                      ),
                   ),
                   child: new Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       new MaterialButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                        //padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 20.0, right: 2.0),
                         minWidth: 5.0, height: 40.0,
                         color: Colors.white,
                         onPressed: () {
@@ -503,7 +504,7 @@ class _event_registrationState extends State<event_registration> {
                                     child: new Text(_entryItems[val.name].toString(),
                                       style: new TextStyle(
                                         fontSize: 15.0,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
