@@ -509,12 +509,13 @@ class _event_registrationState extends State<event_registration> {
                                     ),
                                   ),
                                   new Padding(
-                                    padding: const EdgeInsets.only(top: 2.0),
-                                    child: new Icon(Icons.arrow_forward_ios, color: Colors.black),
+                                    padding: const EdgeInsets.only(top: 7.0),
+                                    child: new Icon(Icons.arrow_forward_ios, color: Colors.black, size: 15.0),
                                   )
                                 ],
                               ) : new Container(
-                                child: new Icon(Icons.arrow_forward_ios, color: Colors.black),
+                                alignment: Alignment.center,
+                                child: new Icon(Icons.arrow_forward_ios, color: Colors.black, size: 15.0),
                               )
                             ],
                           ),

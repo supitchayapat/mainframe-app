@@ -6,19 +6,31 @@ import 'package:myapp/src/model/PaymentTransaction.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("stripe_payments");
 final user_ref = FirebaseDatabase.instance.reference().child("users");
+final config_ref = FirebaseDatabase.instance.reference().child("configuration");
 final String stripeKey_pk = "pk_test_I3QbZv331ioLsVDcw4LXxM82";
 final String stripeKey_sk = "sk_test_U1doXH82rtoluhjZ9ETZ4Hn5";
 
 class PaymentDao {
+  
+  static Future<String> getStripePublishableKey() {
+    return config_ref.child("stripePK").once().then((DataSnapshot data){
+      if(data?.value != null)
+        return data.value;
+      else
+        return null;
+    });
+  }
 
   static Future createToken(String cardNum, String expDate, String cvv, String cardHolder,
       bool isDefault, bool isSaveCard, Function p) async {
     List _expDate = expDate.split("/");
+    String publishable_key = await getStripePublishableKey();
     print("month: ${_expDate[0]} year: ${_expDate[1]}");
     cardNum = cardNum.replaceAll(" ", "-");
     print(cardNum);
+    print("publishable_key: ${publishable_key}");
     FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
-    return StripePlugin.createToken(cardNum, _expDate[0], _expDate[1], cvv, stripeKey_pk)
+    return StripePlugin.createToken(cardNum, _expDate[0], _expDate[1], cvv, publishable_key)
         .then((token){
       print("API TOKEN ID: ${token.tokenId}");
       assert(token != null);
