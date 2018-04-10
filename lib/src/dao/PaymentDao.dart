@@ -89,7 +89,7 @@ class PaymentDao {
         } else if(s["charge"] == null) {
           // error
           if(s["error"] != null){
-            Function.apply(p, [s["error"]]);
+            Function.apply(p, [s["error"], pushId]);
           }
         }
       }

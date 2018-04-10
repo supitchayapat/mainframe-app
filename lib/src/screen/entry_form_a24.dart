@@ -16,6 +16,7 @@ import 'package:myapp/src/model/FormAgeCat.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:collection/collection.dart';
 
 double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
@@ -56,6 +57,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   ScrollController _minLeftScrollController = new ScrollController();
   ScrollController _rightScrollController = new ScrollController();
   Map<String, Map<String, String>> levelValMap = {};
+  Map<String, Map<String, String>> savedValMap = {};
   Map<String, Map<String, String>> levelValPaidMap = {};
   Set<EntryFormExclude> excludes = new Set<EntryFormExclude>();
   double rPanelWidth;
@@ -308,13 +310,16 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           }
           if(_subCat.subCategoryMap != null) {
             Map<String, String> _lvValAgeMap = {};
+            Map<String, String> _svValAgeMap = {};
             Map<String, String> _lvValPaidMap = {};
             _subCat.subCategoryMap.forEach((_k, _v){
               //print("$_k : $_v");
               if(_v["selected"]) {
                 _lvValAgeMap.putIfAbsent(_k, () => _k);
+                _svValAgeMap.putIfAbsent(_k, () => _k);
               } else {
                 _lvValAgeMap.putIfAbsent(_k, () => "");
+                _svValAgeMap.putIfAbsent(_k, () => "");
               }
               if(_v["paid"]) {
                 _lvValPaidMap.putIfAbsent(_k, () => _k);
@@ -335,12 +340,16 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                 levelValMap[_lvlName + "_" + _subCat.ageCategory + _catOpenClose] = _lvValAgeMap;
               }
             }
+            savedValMap.putIfAbsent(_lvlName + "_" + _subCat.ageCategory + _catOpenClose, () => _svValAgeMap);
             levelValPaidMap.putIfAbsent(_lvlName + "_" + _subCat.ageCategory + _catOpenClose, () => _lvValPaidMap);
           }
         }
         _levelMap.putIfAbsent(_lvlName, () => _lvAgeMap);
       }
     }
+
+    //print(savedValMap);
+    //print(levelValMap);
 
     if(!isVerticalLvl) {
       tipsTimer = ShowTips.showTips(context, "standardFormVerticalLevel");
@@ -367,8 +376,35 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     tipsTimer = null;
   }
 
+  bool _isEqualMap() {
+    bool retVal = true;
+
+    levelValMap.forEach((_k, _v){
+      if(retVal && savedValMap.containsKey(_k)) {
+        bool _testEq = const DeepCollectionEquality().equals(savedValMap[_k], _v);
+        //print("key: ${_k} val: ${_v}");
+        //print("savedkey: ${_k} savedval: ${savedValMap[_k]}");
+        //print(_testEq);
+        retVal = _testEq;
+      }
+      else if(retVal) {
+        //print("key: ${_k} val: ${_v}");
+        bool valEmpty = true;
+        _v.forEach((_ky, _vl){
+          if(valEmpty && !_vl.isEmpty) {
+            valEmpty = false;
+          }
+        });
+        //print("isEmpty: ${valEmpty}");
+        retVal = valEmpty;
+      }
+    });
+    print("returned isEqual val: ${retVal}");
+    return retVal;
+  }
+
   Future _handleSaving() async {
-    if(_levelMap.length > 0 || _ageMap.length > 0) {
+    if(!_isEqualMap() && (_levelMap.length > 0 || _ageMap.length > 0)) {
       var val = await showMainFrameDialogWithCancel(
           context, "Entry Changed", "Save Changes on ${formEntry.name}?");
       if (val == "OK") {

@@ -79,6 +79,7 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
       if(widget.controller != null && (widget.controller.text != null && !widget.controller.text.isEmpty)) {
         _pickDate = new DateFormat("MM/dd/yyyy").parse(widget.controller.text);
       }
+      
       field = new _DateTimePicker(
         labelText: widget.labelText,
         selectedDate: _pickDate,
@@ -176,6 +177,8 @@ class _DateTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print("DATE: ${selectedDate}");
+
     final TextStyle valueStyle = Theme.of(context).textTheme.title;
     return new Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -184,7 +187,7 @@ class _DateTimePicker extends StatelessWidget {
           flex: 4,
           child: new _InputDropdown(
             labelText: labelText,
-            valueText: new DateFormat("MM/dd/yyyy").format(selectedDate),
+            valueText: new DateFormat("MMMM d, yyyy").format(selectedDate),
             valueStyle: valueStyle,
             onPressed: () { _selectDate(context); },
           ),
