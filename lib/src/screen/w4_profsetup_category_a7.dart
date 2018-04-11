@@ -31,7 +31,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
         if (usr.category == null) {
-          categoryVal = "PROFESSIONAL";
+          categoryVal = "";
         }
         else {
           categoryVal =
