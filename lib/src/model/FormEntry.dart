@@ -2,7 +2,7 @@ import 'package:quiver/core.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
 import 'package:intl/intl.dart';
 
-dynamic _setListObject(s, objName) {
+List _setListObject(s, objName) {
   String objNames = objName+"s";
   if(objName == "exclude") {
     objNames = "exclusions";
@@ -16,7 +16,7 @@ dynamic _setListObject(s, objName) {
       _objects = s[objNames];
     }
     //print(_objects);
-    var objArr = [];
+    List objArr = [];
     if(_objects is List) {
       _objects.forEach((val) {
         objArr.add(_initFromSnapshot(objName, val));
@@ -127,7 +127,8 @@ class Admission {
 
   Admission.fromSnapshot(var s) {
     legend = s["legend"];
-    tickets = _setListObject(s, "ticket");
+    tickets = [];
+    _setListObject(s, "ticket")?.forEach((ticketTemp) => tickets.add(ticketTemp));
   }
 
   toJson() {
@@ -375,8 +376,10 @@ class FormStructure {
   FormStructure({this.horizontals, this.verticals});
 
   FormStructure.fromSnapshot(var s) {
-    horizontals = _setListObject(s, "horizontal");
-    verticals = _setListObject(s, "vertical");
+    horizontals = [];
+    _setListObject(s, "horizontal")?.forEach((horizontalTemp) => horizontals.add(horizontalTemp));
+    verticals = [];
+    _setListObject(s, "vertical")?.forEach((verTemp) => verticals.add(verTemp));
   }
 
   toJson() {
@@ -406,13 +409,17 @@ class FormEntry {
     order = s["order"];
     type = getFormTypeFromString(s["type"]);
 
-    participants = _setListObject(s, "participant");
-    prices = _setListObject(s, "price");
+    participants = [];
+    _setListObject(s, "participant")?.forEach((partTemp) => participants.add(partTemp));
+    prices = [];
+    _setListObject(s, "price")?.forEach((priceTemp) => prices.add(priceTemp));
     if(s["structure"] != null) {
       structure = new FormStructure.fromSnapshot(s["structure"]);
     }
-    lookups = _setListObject(s, "lookup");
-    exclusions = _setListObject(s, "exclude");
+    lookups = [];
+    _setListObject(s, "lookup")?.forEach((lookTemp) => lookups.add(lookTemp));
+    exclusions = [];
+    _setListObject(s, "exclude")?.forEach((exTemp) => exclusions.add(exTemp));
 
     /*if(exclusions != null) {
       exclusions.forEach((_ex) {

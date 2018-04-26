@@ -1330,13 +1330,15 @@ Future<Null> showMainFrameDialogWithCancel(BuildContext context, String title, S
         new FlatButton(
           child: new Text('NO'),
           onPressed: () {
-            Navigator.pop(context, "CANCEL");
+            //Navigator.pop(context, "CANCEL");
+            Navigator.maybePop(context, "CANCEL");
           },
         ),
         new FlatButton(
           child: new Text('YES'),
           onPressed: () {
-            Navigator.pop(context, "OK");
+            //Navigator.pop(context, "OK");
+            Navigator.maybePop(context, "CANCEL");
           },
         ),
       ],

@@ -104,7 +104,7 @@ DEPENDENCIES:
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
   - firebase_storage (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
   - Stripe
@@ -123,7 +123,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios
   Flutter:
-    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios
+    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
   mframe_plugins:
     :path: /Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios
   path_provider:
@@ -152,7 +152,7 @@ SPEC CHECKSUMS:
   FirebaseDynamicLinks: b75f5b4dcfc3c9b7889e1283632359e5431264e7
   FirebaseInstanceID: 148c25c986c8699e67304b114e365713dce467f2
   FirebaseStorage: 0930e97994dc79b404179bdfafb6b16f59433a82
-  Flutter: d674e78c937094a75ac71dd77e921e840bea3dbf
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022

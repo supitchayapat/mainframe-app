@@ -33,6 +33,9 @@ class MframePlugins {
     _channel.invokeMethod('setPortrait');
   }
 
-  static Future<String> get platform =>
-      _channel.invokeMethod('getPlatform');
+  static Future<String> get platform {
+    return _channel.invokeMethod('getPlatform').then((platformVal){
+      return platformVal;
+    });
+  }
 }

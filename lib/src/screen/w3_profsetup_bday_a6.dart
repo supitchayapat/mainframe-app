@@ -25,7 +25,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   String headingTitle = "MY PROFILE SETUP";
   User _user;
 
-  void _handleGenderChanged(String val) {
+  void _handleGenderChanged(val) {
     setState((){
       genderVal = val;
       _user.gender = getGenderFromString(genderVal);

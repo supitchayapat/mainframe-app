@@ -231,7 +231,7 @@ Future<StreamSubscription> soloParticipantsListener(Function p) async {
   });
 }
 
-Future<User> removeSoloParticipant(User user) async {
+Future<void> removeSoloParticipant(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return partnerRef.child(fuser.uid).child("solo_participants").once().then((_snapshot){
     if(_snapshot.value != null && _snapshot.value.length > 0) {
@@ -307,7 +307,7 @@ Future<Couple> saveUserCoupleParticipants(User user, User user2) async {
   });
 }
 
-Future<Couple> removeUserCoupleParticipants(User user, User user2) async {
+Future<void> removeUserCoupleParticipants(User user, User user2) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return partnerRef.child(fuser.uid).child("couple_participants").once().then((_snapshot){
     if(_snapshot.value != null && _snapshot.value.length > 0) {

@@ -758,7 +758,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         activeColor: isPaidSubCategory(_lvlValMapIdx, headingVal) ? new Color(0xff00e5ff) : Colors.white,
         value: headingVal,
         groupValue: levelValMap[_lvlValMapIdx][headingVal],
-        onChanged: (String radioVal) {
+        onChanged: (radioVal) {
           if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvlValMapIdx, headingVal)) {
             setState(() {
               levelValMap[_lvlValMapIdx][headingVal] = radioVal;

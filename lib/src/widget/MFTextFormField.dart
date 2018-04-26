@@ -46,7 +46,7 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
         //icon: widget.icon,
         hintText: widget.hintText,
         labelText: widget.labelText,
-        hideDivider: true,
+        //hideDivider: true,
     );
 
     Widget field = new TextFormField(
@@ -224,7 +224,7 @@ class _InputDropdown extends StatelessWidget {
       child: new InputDecorator(
         decoration: new InputDecoration(
           labelText: labelText,
-          hideDivider: true
+          //hideDivider: true
         ),
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

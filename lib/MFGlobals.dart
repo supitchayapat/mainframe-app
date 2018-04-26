@@ -20,7 +20,7 @@ Future<List<User>> get taggableFriends async {
       print("taggable list length: ${val.length}");
       if(val != null && val.length > 0) {
         _taggableFriends = [];
-        val.sort((a, b) => (a.first_name).compareTo(b.first_name));
+        val.sort((User a, User b) => (a.first_name).compareTo(b.first_name));
         _taggableFriends.addAll(val);
       }
     });

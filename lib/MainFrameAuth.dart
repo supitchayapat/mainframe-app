@@ -63,7 +63,9 @@ Future<String> loginWithFacebook() async {
  */
 Future<String> signInWithFacebook() async {
   String token = "";
+  print("before is logged in");
   bool isLogged = await FacebookSignIn.isLoggedIn();
+  print("after is logged in");
   if(!isLogged) {
     token = await FacebookSignIn.loginWithReadPermissions(read);
   }
