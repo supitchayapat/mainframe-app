@@ -730,7 +730,7 @@ class _event_registrationState extends State<event_registration> {
             ),
           ),
           new Column(
-            children: _participants.map((val){
+            children: _participants.map<Widget>((val){
               return _generateEntryItem(val);
             }).toList(),
           )

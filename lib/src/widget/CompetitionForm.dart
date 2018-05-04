@@ -127,7 +127,7 @@ class _CompetitionFormState extends State<CompetitionForm> {
     }
 
     if(widget.rightPanelTabs != null) {
-      children.addAll(widget.rightPanelTabs.map((widget) {
+      children.addAll(widget.rightPanelTabs.map<Widget>((widget) {
         return new Container(
           child: new Center(
               child: widget

@@ -264,7 +264,7 @@ class _solo_managementState extends State<solo_management> {
           ),
           new Flexible(
             child: new ListView(
-              children: _listItems.map((val){
+              children: _listItems.map<Widget>((val){
                 return _generateItem(val);
               }).toList(),
             ),

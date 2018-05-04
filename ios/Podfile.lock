@@ -35,6 +35,9 @@ PODS:
     - Firebase/Auth
     - Firebase/Core
     - Flutter
+  - firebase_core (0.0.1):
+    - Firebase/Core
+    - Flutter
   - firebase_database (0.0.1):
     - Firebase/Database
     - Flutter
@@ -101,9 +104,10 @@ DEPENDENCIES:
   - FBSDKShareKit
   - Firebase/DynamicLinks
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
+  - firebase_core (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
-  - firebase_storage (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios`)
+  - firebase_storage (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios`)
   - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
@@ -116,12 +120,14 @@ EXTERNAL SOURCES:
     :path: /Users/macbook/Documents/flProjects/myapp/FB-Signin-Plugin/ios
   firebase_auth:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios
+  firebase_core:
+    :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios
   firebase_database:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios
   firebase_dynamic_link:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios
   firebase_storage:
-    :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_storage-0.0.8/ios
+    :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios
   Flutter:
     :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
   mframe_plugins:
@@ -141,10 +147,11 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: b077381c27d800f21661757e8140cf2c80a91e4a
   FBSDKShareKit: 4f525556e0df4cf0f574cb3f01c675434f29d477
   Firebase: dbfb98ccec2dcfcd21ab9cc1b4981a3f3c8c5e26
-  firebase_auth: 6edaa8ccd18c2804c90f57aba1f24e05fc25282f
-  firebase_database: 8d50f5c188b769afc186b0a700b2c6cdb8208df9
+  firebase_auth: 6023fc2e28feabd6571d9a105b678cce7978be90
+  firebase_core: ce5006bb48508ee4e71e0f429a3f519bb8ee2961
+  firebase_database: b78d1e592c4f3cf826497dae722116a937aa99e0
   firebase_dynamic_link: 1591bb1f60ad5dd23f3fe4b016ef33dec273fa98
-  firebase_storage: eb8091489a1cfb657eeefc933bb1ccfab23195a3
+  firebase_storage: 6dbb71176c8a85e171184f8775606c566433026d
   FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
   FirebaseAuth: cdeee95b528958dbb7dcf220ad0fb804d3a284b0
   FirebaseCore: 6cf108b63997bc08c04a1ffa55a3ac0d71a59ffc

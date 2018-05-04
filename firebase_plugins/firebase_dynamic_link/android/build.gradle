@@ -19,6 +19,14 @@ rootProject.allprojects {
     }
 }
 
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
+
 apply plugin: 'com.android.library'
 
 android {
@@ -32,6 +40,6 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        api 'com.google.firebase:firebase-invites:11.8.0'
+        api 'com.google.firebase:firebase-invites:15.+'
     }
 }

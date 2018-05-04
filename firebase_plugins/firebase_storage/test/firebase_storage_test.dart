@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  /*group('StorageReference', () {
+  group('StorageReference', () {
     group('getData', () {
       final List<MethodCall> log = <MethodCall>[];
 
@@ -47,6 +47,104 @@ void main() {
       test('returns correct result', () async {
         expect(await ref.getData(10),
             equals(new Uint8List.fromList(<int>[1, 2, 3, 4])));
+      });
+    });
+
+    group('getMetadata', () {
+      final List<MethodCall> log = <MethodCall>[];
+
+      StorageReference ref;
+
+      setUp(() {
+        FirebaseStorage.channel
+            .setMockMethodCallHandler((MethodCall methodCall) async {
+          log.add(methodCall);
+          return <String, String>{'name': 'image.jpg'};
+        });
+        ref = FirebaseStorage.instance
+            .ref()
+            .child('avatars')
+            .child('large')
+            .child('image.jpg');
+      });
+
+      test('invokes correct method', () async {
+        await ref.getMetadata();
+
+        expect(log, <Matcher>[
+          isMethodCall(
+            'StorageReference#getMetadata',
+            arguments: <String, dynamic>{
+              'path': 'avatars/large/image.jpg',
+            },
+          ),
+        ]);
+      });
+
+      test('returns correct result', () async {
+        expect((await ref.getMetadata()).name, 'image.jpg');
+      });
+    });
+
+    group('updateMetadata', () {
+      final List<MethodCall> log = <MethodCall>[];
+
+      StorageReference ref;
+
+      setUp(() {
+        FirebaseStorage.channel
+            .setMockMethodCallHandler((MethodCall methodCall) async {
+          log.add(methodCall);
+          switch (methodCall.method) {
+            case 'StorageReference#getMetadata':
+              return <String, String>{
+                'name': 'image.jpg',
+              };
+              break;
+            case 'StorageReference#updateMetadata':
+              return <String, String>{
+                'name': 'image.jpg',
+                'contentLanguage': 'en'
+              };
+              break;
+            default:
+              break;
+          }
+        });
+        ref = FirebaseStorage.instance
+            .ref()
+            .child('avatars')
+            .child('large')
+            .child('image.jpg');
+      });
+
+      test('invokes correct method', () async {
+        await ref.updateMetadata(const StorageMetadata(contentLanguage: 'en'));
+
+        expect(log, <Matcher>[
+          isMethodCall(
+            'StorageReference#updateMetadata',
+            arguments: <String, dynamic>{
+              'path': 'avatars/large/image.jpg',
+              'metadata': <String, String>{
+                'cacheControl': null,
+                'contentDisposition': null,
+                'contentLanguage': 'en',
+                'contentType': null,
+                'contentEncoding': null
+              },
+            },
+          ),
+        ]);
+      });
+
+      test('returns correct result', () async {
+        expect((await ref.getMetadata()).contentLanguage, null);
+        expect(
+            (await ref.updateMetadata(
+                    const StorageMetadata(contentLanguage: 'en')))
+                .contentLanguage,
+            'en');
       });
     });
 
@@ -116,5 +214,5 @@ void main() {
         );
       });
     });
-  });*/
+  });
 }

@@ -691,7 +691,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     int col = 0;
     return <Widget>[
       new Row(
-        children: danceCategories.map((danceCategory){
+        children: danceCategories.map<Widget>((danceCategory){
           //print(col % 2);
           return new Container(
             color: (col++ % 2 == 1) ? const Color(0xff1e5484) : Colors.transparent,
@@ -704,7 +704,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                   height: 30.0,
                 ),
                 new Row(
-                  children: danceCategory.subCategories.map((sub){
+                  children: danceCategory.subCategories.map<Widget>((sub){
                     //print("idx: $idx mod: "+(idx % 2).toString());
                     subheadingIdx.putIfAbsent("${danceCategory.code.toUpperCase()} ${sub.subCategory}${sub.id}", () => (col-1) % 2);
                     idx += 1;

@@ -112,7 +112,7 @@ class _GroupDanceState extends State<GroupDance> {
 
   List<Widget> _generateGroupMembers() {
     if(formParticipant?.members != null && formParticipant?.members?.length > 0) {
-      return formParticipant.members.map((member){
+      return formParticipant.members.map<Widget>((member){
         return new Container(
           padding: const EdgeInsets.all(5.0),
           decoration: new BoxDecoration(
@@ -184,7 +184,7 @@ class _GroupDanceState extends State<GroupDance> {
                         child: new DropdownButton(
                             iconSize: 30.0,
                             value: _dataMap[_idx],
-                            items: _elementItems.map((String value) {
+                            items: _elementItems.map<Widget>((String value) {
                               return new DropdownMenuItem<String>(
                                   value: value,
                                   child: new Text(value));
