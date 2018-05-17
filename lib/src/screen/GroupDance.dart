@@ -28,7 +28,7 @@ class _GroupDanceState extends State<GroupDance> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   TextEditingController _danceCtrl = new TextEditingController();
   String titlePage = "";
-  HashMap<String, String> _dataMap = new HashMap<String, dynamic>();
+  HashMap<String, String> _dataMap = new HashMap<String, String>();
   bool isPaid = false;
   var tipsTimer;
 
@@ -158,7 +158,7 @@ class _GroupDanceState extends State<GroupDance> {
         //print(_formLookup?.description);
         if(_formLookup?.description != null) {
           String _idx = _formLookup.description.toString().toLowerCase().replaceAll(" ", "_");
-          _dataMap.putIfAbsent(_idx, () => _formLookup?.elements[0]?.content);
+          _dataMap.putIfAbsent(_idx, () => _formLookup.elements[0].content);
           List<String> _elementItems = [];
 
           _formLookup?.elements?.forEach((_elem){
@@ -184,7 +184,7 @@ class _GroupDanceState extends State<GroupDance> {
                         child: new DropdownButton(
                             iconSize: 30.0,
                             value: _dataMap[_idx],
-                            items: _elementItems.map<Widget>((String value) {
+                            items: _elementItems.map<DropdownMenuItem>((String value) {
                               return new DropdownMenuItem<String>(
                                   value: value,
                                   child: new Text(value));
