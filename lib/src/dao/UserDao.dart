@@ -53,17 +53,17 @@ Future userExistsByEmail(String email) {
   });
 }
 
-Future<User> saveUser(User usr) async {
+Future saveUser(User usr) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).child("info").set(usr.toJson());
 }
 
-Future<User> saveUserFromFirebase(FirebaseUser usr) async {
+Future saveUserFromFirebase(FirebaseUser usr) async {
   User user = new User(fbUserId: "", first_name: "", last_name: "", email: usr.email, birthday: new DateTime.now(), displayPhotoUrl: usr.photoUrl);
   return reference.child(usr.uid).child("info").set(user.toJson());
 }
 
-Future<User> saveUserAccessToken(String token) async {
+Future saveUserAccessToken(String token) async {
   //final _ref = FirebaseDatabase.instance.reference().child("fb_tokens");
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return reference.child(fuser.uid).child("fb_tokens").set({"fbToken": token});
@@ -96,7 +96,7 @@ Future<User> getCurrentUserProfile() async {
   });
 }
 
-Future<User> saveUserFriends(List<User> users) async {
+Future<dynamic> saveUserFriends(List<User> users) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return taggableRef.child(fuser.uid).child("taggable_friends").push().set(
     users.map((val){
@@ -105,7 +105,7 @@ Future<User> saveUserFriends(List<User> users) async {
   );
 }
 
-Future<User> saveUserExistingParticipants(User user) async {
+Future saveUserExistingParticipants(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   User _existingUser = await getUserDanceParticipantViaName(user);
   if(_existingUser != null) {
@@ -116,7 +116,7 @@ Future<User> saveUserExistingParticipants(User user) async {
   return partnerRef.child(fuser.uid).child("existing_participants").push().set(user.toJson());
 }
 
-Future<User> saveUserSoloParticipants(User user) async {
+Future<dynamic> saveUserSoloParticipants(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   User _existingUser = await getUserSoloParticipantViaName(user);
   if(_existingUser != null) {
@@ -274,7 +274,7 @@ Future<User> getUserCoupleParticipants(User user) async {
   });
 }
 
-Future<Couple> saveUserCoupleParticipants(User user, User user2) async {
+Future<dynamic> saveUserCoupleParticipants(User user, User user2) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return partnerRef.child(fuser.uid).child("couple_participants").once().then((_snapshot){
     if(_snapshot.value != null && _snapshot.value.length > 0) {

@@ -108,12 +108,12 @@ DEPENDENCIES:
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
   - firebase_storage (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
   - Stripe
   - stripe_plugin (from `/Users/macbook/Documents/flProjects/myapp/stripe_plugin/ios`)
-  - url_launcher (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-1.0.3/ios`)
+  - url_launcher (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.0/ios`)
 
 EXTERNAL SOURCES:
   facebook_sign_in:
@@ -129,7 +129,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: /Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios
   Flutter:
-    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release
+    :path: /Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios
   mframe_plugins:
     :path: /Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios
   path_provider:
@@ -137,7 +137,7 @@ EXTERNAL SOURCES:
   stripe_plugin:
     :path: /Users/macbook/Documents/flProjects/myapp/stripe_plugin/ios
   url_launcher:
-    :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-1.0.3/ios
+    :path: /Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.0/ios
 
 SPEC CHECKSUMS:
   APAddressBook: e68ecaf95f2c323b625ae585a0d25fe505291286
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
-  leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022
+  leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   mframe_plugins: 689c7710f2a9c85a6d9d972f7ab8ae57851d69b2
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259

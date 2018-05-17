@@ -82,7 +82,7 @@ Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, doubl
     ));
   });
 
-  return showDialog<Null>(
+  return showDialog<dynamic>(
       context: context,
       //barrierDismissible: false,
       child: new Dialog(

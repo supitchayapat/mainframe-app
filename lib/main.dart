@@ -11,7 +11,7 @@ import 'package:myapp/src/util/FirebaseCrashReport.dart';
 void main() {
   FlutterError.onError = (errorDetails) {
     print("main caught errors: ${errorDetails}");
-    MainFrameCrashReport.send(errorDetails.exception);
+    MainFrameCrashReport.send(errorDetails.exception.toString());
   };
 
   ThemeData theme = new ThemeData(

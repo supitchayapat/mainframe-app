@@ -46,6 +46,7 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
         //icon: widget.icon,
         hintText: widget.hintText,
         labelText: widget.labelText,
+        border: InputBorder.none
         //hideDivider: true,
     );
 
@@ -56,7 +57,7 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
       onSaved: widget.onSaved,
       validator: widget.validator,
       controller: widget.controller,
-      initialValue: widget.initialValue,
+      //initialValue: widget.initialValue,
     );
 
     TextStyle style = new TextStyle(

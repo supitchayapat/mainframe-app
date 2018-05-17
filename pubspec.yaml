@@ -55,8 +55,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - mainframe_assets/profile/displayPhoto.jpg
-    - mainframe_assets/profile/profilePhoto.jpg
     - mainframe_assets/images/m7x5ba.jpg
     - mainframe_assets/images/Mainframe_Dance_System_Logo.png
     - mainframe_assets/images/DanceFrame-logo.png
