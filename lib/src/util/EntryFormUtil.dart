@@ -43,11 +43,12 @@ class EntryFormUtil {
   }
 
   static double getPriceFromForm(priceMap, participant, type) {
+    //print("PriceMap:");
     //print(priceMap);
     FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);
     var _price = priceMap[(userCode.toString().replaceAll("FormParticipantCode.", "")).replaceAll("_", "-")];
     //print(participant.toJson());
-    //print(_price.toJson());
+    //print("runtime price: ${_price.runtimeType}");
     if(_price?.row != null) {
       if(userCode == FormParticipantCode.GROUP) {
         int _numParticipants = participant.members.length;

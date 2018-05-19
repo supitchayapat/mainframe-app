@@ -57,7 +57,7 @@ class _TabbedComponentDemoScaffoldState extends State<TabbedComponentDemoScaffol
   List<Widget> _buildTabs(double d_width) {
     double tabWidth = d_width / widget.demos.length;
     int idx = 0;
-    return widget.demos.map((ComponentDemoTabData data) {
+    return widget.demos.map<Widget>((ComponentDemoTabData data) {
       return new MFTab(idx++, text: data.tabName, width: tabWidth);
     }).toList();
   }
@@ -94,7 +94,7 @@ class _TabbedComponentDemoScaffoldState extends State<TabbedComponentDemoScaffol
           ),
         ),
         body: new MainFrameTabBarView(
-          children: widget.demos.map((ComponentDemoTabData demo) {
+          children: widget.demos.map<Widget>((ComponentDemoTabData demo) {
             return new Column(
               children: <Widget>[
                 new Padding(

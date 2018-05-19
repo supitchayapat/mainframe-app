@@ -70,18 +70,29 @@ class DatabaseReference extends Query {
   ///
   /// Passing null for the new value means all data at this location or any
   /// child location will be deleted.
-  Future<Null> set(dynamic value, {dynamic priority}) {
+  Future<void> set(dynamic value, {dynamic priority}) {
     return _database._channel.invokeMethod(
       'DatabaseReference#set',
-      <String, dynamic>{'path': path, 'value': value, 'priority': priority},
+      <String, dynamic>{
+        'app': _database.app?.name,
+        'databaseURL': _database.databaseURL,
+        'path': path,
+        'value': value,
+        'priority': priority,
+      },
     );
   }
 
   /// Update the node with the `value`
-  Future<Null> update(Map<String, dynamic> value) {
+  Future<void> update(Map<String, dynamic> value) {
     return _database._channel.invokeMethod(
       'DatabaseReference#update',
-      <String, dynamic>{'path': path, 'value': value},
+      <String, dynamic>{
+        'app': _database.app?.name,
+        'databaseURL': _database.databaseURL,
+        'path': path,
+        'value': value,
+      },
     );
   }
 
@@ -109,10 +120,15 @@ class DatabaseReference extends Query {
   /// Note that priorities are parsed and ordered as IEEE 754 double-precision
   /// floating-point numbers. Keys are always stored as strings and are treated
   /// as numbers only when they can be parsed as a 32-bit integer.
-  Future<Null> setPriority(dynamic priority) async {
+  Future<void> setPriority(dynamic priority) async {
     return _database._channel.invokeMethod(
       'DatabaseReference#setPriority',
-      <String, dynamic>{'path': path, 'priority': priority},
+      <String, dynamic>{
+        'app': _database.app?.name,
+        'databaseURL': _database.databaseURL,
+        'path': path,
+        'priority': priority,
+      },
     );
   }
 
@@ -124,7 +140,7 @@ class DatabaseReference extends Query {
   /// Database servers will also be started.
   ///
   /// remove() is equivalent to calling set(null)
-  Future<Null> remove() => set(null);
+  Future<void> remove() => set(null);
 
   /// Performs an optimistic-concurrency transactional update to the data at
   /// this Firebase Database location.
@@ -143,23 +159,27 @@ class DatabaseReference extends Query {
 
     FirebaseDatabase._transactions[transactionKey] = transactionHandler;
 
-    _database._channel
-        .invokeMethod('DatabaseReference#runTransaction', <String, dynamic>{
-      'path': path,
-      'transactionKey': transactionKey,
-      'transactionTimeout': timeout.inMilliseconds
-    }).then((Map<String, dynamic> result) {
+    TransactionResult toTransactionResult(Map<dynamic, dynamic> map) {
       final DatabaseError databaseError =
-          result['error'] != null ? new DatabaseError._(result['error']) : null;
-      final bool committed = result['committed'];
-      final DataSnapshot dataSnapshot = result['snapshot'] != null
-          ? new DataSnapshot._(result['snapshot'])
-          : null;
+          map['error'] != null ? new DatabaseError._(map['error']) : null;
+      final bool committed = map['committed'];
+      final DataSnapshot dataSnapshot =
+          map['snapshot'] != null ? new DataSnapshot._(map['snapshot']) : null;
 
       FirebaseDatabase._transactions.remove(transactionKey);
 
-      completer.complete(
-          new TransactionResult._(databaseError, committed, dataSnapshot));
+      return new TransactionResult._(databaseError, committed, dataSnapshot);
+    }
+
+    _database._channel
+        .invokeMethod('DatabaseReference#runTransaction', <String, dynamic>{
+      'app': _database.app?.name,
+      'databaseURL': _database.databaseURL,
+      'path': path,
+      'transactionKey': transactionKey,
+      'transactionTimeout': timeout.inMilliseconds
+    }).then((dynamic response) {
+      completer.complete(toTransactionResult(response));
     });
 
     return completer.future;

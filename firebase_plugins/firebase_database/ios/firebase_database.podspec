@@ -17,5 +17,5 @@ Firebase Database plugin for Flutter.
   s.ios.deployment_target = '6.0'
   s.dependency 'Flutter'
   s.dependency 'Firebase/Database'
+  s.static_framework = true
 end
-

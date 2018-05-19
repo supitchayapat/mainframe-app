@@ -4,15 +4,16 @@ description: A new Flutter project.
 dependencies:
   flutter:
     sdk: flutter
-  #firebase_auth: "^0.3.1"
+  #firebase_auth: 0.5.5
   firebase_auth:
     path: firebase_plugins/firebase_auth
-  #firebase_database: "^0.1.4"
+  #firebase_database: 0.4.4
   firebase_database:
     path: firebase_plugins/firebase_database
   firebase_dynamic_link:
     path: firebase_plugins/firebase_dynamic_link
-  firebase_storage: "^0.0.8"
+  firebase_storage:
+    path: firebase_plugins/firebase_storage
   validator: ">=0.0.4 <0.1.0"
   intl: "^0.15.2"
   http: "^0.11.3+14"
@@ -24,7 +25,7 @@ dependencies:
   stripe_plugin:
       path: stripe_plugin
   font_awesome_flutter: "^6.0.0"
-  url_launcher: "1.0.3"
+  url_launcher: "^3.0.0"
   strings: "^0.0.6"
   flutter_launcher_icons: "^0.2.0"
     #path: firebase_plugins/url_launcher
@@ -54,8 +55,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - mainframe_assets/profile/displayPhoto.jpg
-    - mainframe_assets/profile/profilePhoto.jpg
     - mainframe_assets/images/m7x5ba.jpg
     - mainframe_assets/images/Mainframe_Dance_System_Logo.png
     - mainframe_assets/images/DanceFrame-logo.png

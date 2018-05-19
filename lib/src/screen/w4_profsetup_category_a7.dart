@@ -115,7 +115,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     //Navigator.pushReplacementNamed(context, "/mainscreen");
   }
 
-  void _handleCategoryChanged(String val) {
+  void _handleCategoryChanged(val) {
     setState((){
       categoryVal = val;
       _user.category = getDanceCategoryFromString(categoryVal);

@@ -3,58 +3,85 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 
-void main() {
-  runApp(new MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Database Example',
-      home: new MyHomePage(),
-    );
-  }
+Future<void> main() async {
+  final FirebaseApp app = await FirebaseApp.configure(
+    name: 'db2',
+    options: Platform.isIOS
+        ? const FirebaseOptions(
+            googleAppID: '1:297855924061:ios:c6de2b69b03a5be8',
+            gcmSenderID: '297855924061',
+            databaseURL: 'https://flutterfire-cd2f7.firebaseio.com',
+          )
+        : const FirebaseOptions(
+            googleAppID: '1:297855924061:android:669871c998cc21bd',
+            apiKey: 'AIzaSyD_shO5mfO9lhy2TVWhfo1VUmARKlG4suk',
+            databaseURL: 'https://flutterfire-cd2f7.firebaseio.com',
+          ),
+  );
+  runApp(new MaterialApp(
+    title: 'Flutter Database Example',
+    home: new MyHomePage(app: app),
+  ));
 }
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({this.app});
+  final FirebaseApp app;
+
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter;
-  final DatabaseReference _counterRef =
-      FirebaseDatabase.instance.reference().child('counter');
-  final DatabaseReference _messagesRef =
-      FirebaseDatabase.instance.reference().child('messages');
+  DatabaseReference _counterRef;
+  DatabaseReference _messagesRef;
   StreamSubscription<Event> _counterSubscription;
   StreamSubscription<Event> _messagesSubscription;
   bool _anchorToBottom = false;
 
   String _kTestKey = 'Hello';
   String _kTestValue = 'world!';
+  DatabaseError _error;
 
   @override
   void initState() {
     super.initState();
-    FirebaseDatabase.instance.setPersistenceEnabled(true);
-    FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
+    // Demonstrates configuring to the database using a file
+    _counterRef = FirebaseDatabase.instance.reference().child('counter');
+    // Demonstrates configuring the database directly
+    final FirebaseDatabase database = new FirebaseDatabase(app: widget.app);
+    _messagesRef = database.reference().child('messages');
+    database.reference().child('counter').once().then((DataSnapshot snapshot) {
+      print('Connected to second database and read ${snapshot.value}');
+    });
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
     _counterRef.keepSynced(true);
     _counterSubscription = _counterRef.onValue.listen((Event event) {
       setState(() {
+        _error = null;
         _counter = event.snapshot.value ?? 0;
+      });
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      setState(() {
+        _error = error;
       });
     });
     _messagesSubscription =
         _messagesRef.limitToLast(10).onChildAdded.listen((Event event) {
       print('Child added: ${event.snapshot.value}');
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
     });
   }
 
@@ -66,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Null> _increment() async {
-    await FirebaseAuth.instance.signInAnonymously();
     // Increment counter in transaction.
     final TransactionResult transactionResult =
         await _counterRef.runTransaction((MutableData mutableData) async {
@@ -96,11 +122,14 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           new Flexible(
             child: new Center(
-              // ignore: prefer_const_constructors
-              child: new Text(
-                'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.\n\n'
-                    'This includes all devices, ever.',
-              ),
+              child: _error == null
+                  ? new Text(
+                      'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.\n\n'
+                          'This includes all devices, ever.',
+                    )
+                  : new Text(
+                      'Error retrieving button tap count:\n${_error.message}',
+                    ),
             ),
           ),
           new ListTile(
@@ -136,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: new FloatingActionButton(
         onPressed: _increment,
         tooltip: 'Increment',
-        child: new Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -93,6 +93,18 @@ int nextHandle = 0;
                              completion:^(FIRUser *user, NSError *error) {
                                [self sendResult:result forUser:user error:error];
                              }];
+  } else if ([@"fetchProvidersForEmail" isEqualToString:call.method]) {
+    NSString *email = call.arguments[@"email"];
+    [[FIRAuth auth] fetchProvidersForEmail:email
+                                completion:^(NSArray<NSString *> *providers, NSError *error) {
+                                  [self sendResult:result forProviders:providers error:error];
+                                }];
+  } else if ([@"sendPasswordResetEmail" isEqualToString:call.method]) {
+    NSString *email = call.arguments[@"email"];
+    [[FIRAuth auth] sendPasswordResetWithEmail:email
+                                    completion:^(NSError *error) {
+                                      [self sendResult:result forUser:nil error:error];
+                                    }];
   } else if ([@"signInWithEmailAndPassword" isEqualToString:call.method]) {
     NSString *email = call.arguments[@"email"];
     NSString *password = call.arguments[@"password"];
@@ -134,6 +146,17 @@ int nextHandle = 0;
                                         completion:^(FIRUser *user, NSError *error) {
                                           [self sendResult:result forUser:user error:error];
                                         }];
+  } else if ([@"updateProfile" isEqualToString:call.method]) {
+    FIRUserProfileChangeRequest *changeRequest = [[FIRAuth auth].currentUser profileChangeRequest];
+    if (call.arguments[@"displayName"]) {
+      changeRequest.displayName = call.arguments[@"displayName"];
+    }
+    if (call.arguments[@"photoUrl"]) {
+      changeRequest.photoURL = call.arguments[@"photoUrl"];
+    }
+    [changeRequest commitChangesWithCompletion:^(NSError *error) {
+      [self sendResult:result forUser:nil error:error];
+    }];
   } else if ([@"signInWithCustomToken" isEqualToString:call.method]) {
     NSString *token = call.arguments[@"token"];
     [[FIRAuth auth] signInWithCustomToken:token
@@ -199,4 +222,15 @@ int nextHandle = 0;
   }
 }
 
+- (void)sendResult:(FlutterResult)result
+      forProviders:(NSArray<NSString *> *)providers
+             error:(NSError *)error {
+  if (error != nil) {
+    result(error.flutterError);
+  } else if (providers == nil) {
+    result(nil);
+  } else {
+    result(providers);
+  }
+}
 @end

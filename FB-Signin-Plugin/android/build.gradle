@@ -2,27 +2,26 @@ group 'com.yourcompany.facebooksignin'
 version '1.0-SNAPSHOT'
 buildscript {
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 allprojects {
     repositories {
+        google()
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
     }
 }
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    compileSdkVersion 27
 
     defaultConfig {
+        minSdkVersion 16
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -30,11 +29,6 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    provided files('tmplibs/flutter.jar')
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    api 'com.facebook.android:facebook-android-sdk:[4,5)'
 }

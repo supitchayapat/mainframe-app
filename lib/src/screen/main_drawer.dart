@@ -190,7 +190,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
                     child: new Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: _drawerContents.map((_MenuContent content) {
+                      children: _drawerContents.map<Widget>((_MenuContent content) {
                         return new _MFListTile(
                           //leading: new CircleAvatar(child: new Text(id)),
                           leading: new Container(

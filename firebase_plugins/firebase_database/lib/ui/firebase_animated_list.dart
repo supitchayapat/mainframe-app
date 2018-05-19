@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../firebase_database.dart';
 import 'firebase_list.dart';
@@ -33,8 +33,7 @@ class FirebaseAnimatedList extends StatefulWidget {
     this.shrinkWrap: false,
     this.padding,
     this.duration: const Duration(milliseconds: 300),
-  })
-      : super(key: key) {
+  }) : super(key: key) {
     assert(itemBuilder != null);
   }
 

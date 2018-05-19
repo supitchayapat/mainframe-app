@@ -1,6 +1,68 @@
+## 0.5.5
+
+* Updated Google Play Services dependencies to version 15.0.0.
+
+## 0.5.4
+
+* Simplified podspec for Cocoapods 1.5.0, avoiding link issues in app archives.
+
+## 0.5.3
+
+* Secure fetchProvidersForEmail (no providers)
+
+## 0.5.2
+
+* Fixed Dart 2 type error in fetchProvidersForEmail.
+
+## 0.5.1
+
+* Added support to fetchProvidersForEmail
+
+## 0.5.0
+
+* **Breaking change**. Set SDK constraints to match the Flutter beta release.
+
+## 0.4.7
+
+* Fixed Dart 2 type errors.
+
+## 0.4.6
+
+* Fixed Dart 2 type errors.
+
+## 0.4.5
+
+* Enabled use in Swift projects.
+
+## 0.4.4
+
+* Added support for sendPasswordResetEmail
+
+## 0.4.3
+
+* Moved to the io.flutter.plugins organization.
+
+## 0.4.2
+
+* Added support for changing user data
+
+## 0.4.1
+
+* Simplified and upgraded Android project template to Android SDK 27.
+* Updated package description.
+
+## 0.4.0
+
+* **Breaking change**. Upgraded to Gradle 4.1 and Android Studio Gradle plugin
+  3.0.1. Older Flutter projects need to upgrade their Gradle setup as well in
+  order to use this version of the plugin. Instructions can be found
+  [here](https://github.com/flutter/flutter/wiki/Updating-Flutter-projects-to-Gradle-4.1-and-Android-Studio-Gradle-plugin-3.0.1).
+* Relaxed GMS dependency to [11.4.0,12.0[
+
 ## 0.3.2
 
 * Added FLT prefix to iOS types
+* Change GMS dependency to 11.4.+
 
 ## 0.3.1
 

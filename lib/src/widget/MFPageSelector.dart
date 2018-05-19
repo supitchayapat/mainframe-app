@@ -89,7 +89,7 @@ class _PageSelectorState extends State<_PageSelector> {
         ),
         new Expanded(
           child: new TabBarView(
-              children: widget.pageWidgets.map((_w){
+              children: widget.pageWidgets.map<Widget>((_w){
                 return new ListView(
                   children: <Widget>[
                     _w.demoWidget

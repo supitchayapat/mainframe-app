@@ -82,7 +82,7 @@ Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, doubl
     ));
   });
 
-  return showDialog<Null>(
+  return showDialog<dynamic>(
       context: context,
       //barrierDismissible: false,
       child: new Dialog(
@@ -154,10 +154,10 @@ Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, doubl
   );
 }
 
-Future<Null> showSummaryDialog(BuildContext context) async {
+Future<String> showSummaryDialog(BuildContext context) async {
   double _scrWidth = MediaQuery.of(context).size.width;
 
-  return showDialog<Null>(
+  return showDialog<String>(
     context: context,
     barrierDismissible: true, // user must tap button!
     child: new Theme(
@@ -592,7 +592,7 @@ Future<Null> showSummaryDialog(BuildContext context) async {
   );
 }
 
-Future<Null> showTicketDialog(BuildContext context, String _name) async {
+Future<String> showTicketDialog(BuildContext context, String _name) async {
   double _scrWidth = MediaQuery.of(context).size.width;
 
   return showDialog<Null>(
@@ -1312,9 +1312,9 @@ Future<Null> showTicketDialog(BuildContext context, String _name) async {
   A method that shows a dialog screen with cancel option.
   It accepts a String message and a string title
  */
-Future<Null> showMainFrameDialogWithCancel(BuildContext context, String title, String msg) async {
+Future<String> showMainFrameDialogWithCancel(BuildContext context, String title, String msg) async {
 
-  return showDialog<Null>(
+  return showDialog<String>(
     context: context,
     barrierDismissible: false, // user must tap button!
     child: new AlertDialog(

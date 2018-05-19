@@ -279,7 +279,7 @@ class _participant_listState extends State<participant_list> {
                                   child: new TextField(
                                     controller: _searchCtrl,
                                     decoration: new InputDecoration(
-                                      hideDivider: true,
+                                      //hideDivider: true,
                                       hintText: "Search Name",
                                       hintStyle: new TextStyle(color: Colors.black)
                                     ),

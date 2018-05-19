@@ -13,7 +13,7 @@ import 'package:myapp/src/util/ShowTipsUtil.dart';
 var participantEntries;
 var eventEntries;
 Map participantTickets;
-Map<String, Map<String, double>> entryForms = {};
+Map<String, Map<String, dynamic>> entryForms = {};
 List admissionTickets;
 Map ticketUsers;
 
@@ -45,7 +45,7 @@ class _entry_summaryState extends State<entry_summary> {
       var _formEntries = reg.eventItem.formEntries;
       //var _admission = reg.eventItem.admission;
       _formEntries.forEach((_entry){
-        Map<String, double> _priceMap = {};
+        Map<String, dynamic> _priceMap = {};
         _entry.participants.forEach((_p){
           //print("${_entry.formName} ${_p.code} getPrice: ${_entry.getPriceFromList(_p.price).toJson()}");
           _priceMap.putIfAbsent(_p.code, () => _entry.getPriceFromList(_p.price));

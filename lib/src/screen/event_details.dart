@@ -187,7 +187,7 @@ class _EventDetailsState extends State<EventDetails> {
                 child: new Column(
                   //mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _sched.timedata.map((_timedata){
+                  children: _sched.timedata.map<Widget>((_timedata){
                     return new Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

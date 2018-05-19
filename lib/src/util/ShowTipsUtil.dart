@@ -580,9 +580,9 @@ class ShowTips {
     return periodic;
   }
 
-  static Future<Null> showContentTips(BuildContext context, String title, bool isNext, List<Widget> contents) async {
+  static Future<dynamic> showContentTips(BuildContext context, String title, bool isNext, List<Widget> contents) async {
     if(global.hasTips) {
-      return showDialog<Null>(
+      return showDialog<dynamic>(
         context: context,
         barrierDismissible: true, // user must tap button!
         child: new AlertDialog(

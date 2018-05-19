@@ -7,10 +7,10 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:validator/validator.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/HttpUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
-import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/screen/participant_list.dart' as participant;
@@ -181,8 +181,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
       couple.tipsTimer = null;
       Navigator.of(context).popUntil(ModalRoute.withName("/coupleManagement"));
     } else if(participant.participantType == "group") {
-      if(group.formParticipant.members == null)
-        group.formParticipant.members = new Set();
+      if(group.formParticipant.members == null) {
+        group.formParticipant.members = new Set<User>();
+      }
       setState((){
         group.formParticipant.members.add(usr);
         Navigator.maybePop(context);

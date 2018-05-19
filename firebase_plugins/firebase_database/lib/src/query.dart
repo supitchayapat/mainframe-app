@@ -50,11 +50,13 @@ class Query {
         _handle = _database._channel.invokeMethod(
           'Query#observe',
           <String, dynamic>{
+            'app': _database.app?.name,
+            'databaseURL': _database.databaseURL,
             'path': path,
             'parameters': _parameters,
             'eventType': eventType.toString(),
           },
-        );
+        ).then<int>((dynamic result) => result);
         _handle.then((int handle) {
           FirebaseDatabase._observers[handle] = controller;
         });
@@ -64,6 +66,8 @@ class Query {
           await _database._channel.invokeMethod(
             'Query#removeObserver',
             <String, dynamic>{
+              'app': _database.app?.name,
+              'databaseURL': _database.databaseURL,
               'path': path,
               'parameters': _parameters,
               'handle': handle,
@@ -100,7 +104,11 @@ class Query {
   /// than or equal to the given key.
   Query startAt(dynamic value, {String key}) {
     assert(!_parameters.containsKey('startAt'));
-    assert(value is String || value is bool || value is double || value is int);
+    assert(value is String ||
+        value is bool ||
+        value is double ||
+        value is int ||
+        value == null);
     final Map<String, dynamic> parameters = <String, dynamic>{'startAt': value};
     if (key != null) parameters['startAtKey'] = key;
     return _copyWithParameters(parameters);
@@ -112,7 +120,11 @@ class Query {
   /// than or equal to the given key.
   Query endAt(dynamic value, {String key}) {
     assert(!_parameters.containsKey('endAt'));
-    assert(value is String || value is bool || value is double || value is int);
+    assert(value is String ||
+        value is bool ||
+        value is double ||
+        value is int ||
+        value == null);
     final Map<String, dynamic> parameters = <String, dynamic>{'endAt': value};
     if (key != null) parameters['endAtKey'] = key;
     return _copyWithParameters(parameters);
@@ -124,10 +136,14 @@ class Query {
   /// If a key is provided, there is at most one such child as names are unique.
   Query equalTo(dynamic value, {String key}) {
     assert(!_parameters.containsKey('equalTo'));
-    assert(value is String || value is bool || value is double || value is int);
-    return _copyWithParameters(
-      <String, dynamic>{'equalTo': value, 'equalToKey': key},
-    );
+    assert(value is String ||
+        value is bool ||
+        value is double ||
+        value is int ||
+        value == null);
+    final Map<String, dynamic> parameters = <String, dynamic>{'equalTo': value};
+    if (key != null) parameters['equalToKey'] = key;
+    return _copyWithParameters(parameters);
   }
 
   /// Create a query with limit and anchor it to the start of the window.
@@ -189,10 +205,12 @@ class Query {
   /// automatically be downloaded and kept in sync, even when no listeners are
   /// attached for that location. Additionally, while a location is kept synced,
   /// it will not be evicted from the persistent disk cache.
-  Future<Null> keepSynced(bool value) {
+  Future<void> keepSynced(bool value) {
     return _database._channel.invokeMethod(
       'Query#keepSynced',
       <String, dynamic>{
+        'app': _database.app?.name,
+        'databaseURL': _database.databaseURL,
         'path': path,
         'parameters': _parameters,
         'value': value

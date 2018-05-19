@@ -11,7 +11,7 @@ const String cloudFunctionsUri = "https://us-central1-uberregister-5308a.cloudfu
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class MFHttpUtil {
-  static Future<List> requestFacebookFriends() async {
+  /*static Future<List> requestFacebookFriends() async {
     List users = [];
     String token = await getFBAccessToken();
     //print(token);
@@ -48,7 +48,7 @@ class MFHttpUtil {
     saveUserFriends(users);
 
     return users;
-  }
+  }*/
 
   static Future sendMailInvite() async {
     final FirebaseUser currentUser = await _auth.currentUser();

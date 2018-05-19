@@ -28,7 +28,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
     });
 
     // set firebase instance offline
-    FirebaseDatabase.instance.setPersistenceEnabled(true);
+    //FirebaseDatabase.instance.setPersistenceEnabled(true);
 
     // check user logged in
     listener = initAuthStateListener((bool isLogged) {
