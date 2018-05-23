@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
-import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
@@ -8,8 +7,6 @@ import 'package:validator/validator.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
-import 'package:myapp/src/util/HttpUtil.dart';
-import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';

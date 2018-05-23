@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
-import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
-import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFPageSelector.dart';
 import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:validator/validator.dart';
 
 var eventItem;
 

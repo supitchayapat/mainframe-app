@@ -149,7 +149,6 @@ class _GroupDanceState extends State<GroupDance> {
 
   List<Widget> _generateInputs() {
     List<Widget> _children = [];
-    var _dropValue = "SUMMARY";
 
     if(formEntry?.structure?.verticals != null) {
       formEntry.structure.verticals.forEach((_vert){

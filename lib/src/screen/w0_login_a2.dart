@@ -4,7 +4,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
-import 'package:myapp/src/widget/MFButton.dart';
 
 class LoginApp extends StatefulWidget {
 

@@ -7,7 +7,6 @@ import 'package:myapp/src/screen/event_registration.dart' as reg;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var participantEntries;

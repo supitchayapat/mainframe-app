@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/src/model/MFEvent.dart';
 import 'package:myapp/src/dao/UserDao.dart';
-import 'package:intl/intl.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 final reference = FirebaseDatabase.instance.reference().child("events");

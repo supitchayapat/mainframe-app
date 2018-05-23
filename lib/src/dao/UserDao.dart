@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:facebook_sign_in/facebook_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';

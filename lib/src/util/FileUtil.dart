@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/FirebaseCrashReport.dart';
 
 final StorageReference ref = FirebaseStorage.instance.ref();

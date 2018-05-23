@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/model/User.dart';
