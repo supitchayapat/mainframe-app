@@ -9,7 +9,8 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
-import 'package:strings/strings.dart';
+//import 'package:strings/strings.dart';
+import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var participantType;
@@ -156,7 +157,7 @@ class _participant_listState extends State<participant_list> {
                 new Text("${key} ", style: new TextStyle(fontSize: 18.0)),
                 new Padding(
                     padding: const EdgeInsets.only(top: 3.0),
-                    child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                    child: new Text("(${StringUtil.camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
                 )
               ],
             )

@@ -17,7 +17,8 @@ import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
-import 'package:strings/strings.dart';
+//import 'package:strings/strings.dart';
+import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 
 var eventItem;
@@ -354,7 +355,7 @@ class _event_registrationState extends State<event_registration> {
                     new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
                     new Padding(
                       padding: const EdgeInsets.only(top: 2.0),
-                      child: new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                      child: new Text("${StringUtil.camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
                     )
                   ],
                 ),
@@ -556,7 +557,7 @@ class _event_registrationState extends State<event_registration> {
                     child: new Wrap(
                       children: <Widget>[
                         new Text("${_evtParticipant.name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-                        new Text("${camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
+                        new Text("${StringUtil.camelize(_categoryGender)}", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold))
                       ],
                     ),
                   )
@@ -689,7 +690,7 @@ class _event_registrationState extends State<event_registration> {
                                     new Padding(
                                       padding: const EdgeInsets.only(top: 3.0),
                                       child: (participant["user"] is Couple || participant["user"] is User) ?
-                                        new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.bold)) :
+                                        new Text("(${StringUtil.camelize(_categoryGender)})", style: new TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.bold)) :
                                         new Container(),
                                     )
                                   ],

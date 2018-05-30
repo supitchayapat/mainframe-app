@@ -5,7 +5,8 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
-import 'package:strings/strings.dart';
+//import 'package:strings/strings.dart';
+import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
@@ -76,7 +77,7 @@ class _couple_managementState extends State<couple_management> {
                     new Text("${val.coupleName} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
                     new Padding(
                       padding: const EdgeInsets.only(top: 2.0),
-                      child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                      child: new Text("(${StringUtil.camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
                     )
                   ],
                 )
@@ -190,7 +191,7 @@ class _couple_managementState extends State<couple_management> {
                           new Text("${couple1.first_name} ${couple1.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
                           new Padding(
                             padding: const EdgeInsets.only(top: 2.0),
-                            child: new Text("(${camelize(_categoryGender1)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                            child: new Text("(${StringUtil.camelize(_categoryGender1)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
                           )
                         ],
                       ),
@@ -233,7 +234,7 @@ class _couple_managementState extends State<couple_management> {
                           new Text("${couple2.first_name} ${couple2.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
                           new Padding(
                             padding: const EdgeInsets.only(top: 2.0),
-                            child: new Text("(${camelize(_categoryGender2)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                            child: new Text("(${StringUtil.camelize(_categoryGender2)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
                           )
                         ],
                       ),

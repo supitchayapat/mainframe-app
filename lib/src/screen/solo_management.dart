@@ -5,7 +5,8 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
-import 'package:strings/strings.dart';
+//import 'package:strings/strings.dart';
+import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
@@ -74,7 +75,7 @@ class _solo_managementState extends State<solo_management> {
                   new Text("${val.first_name} ${val.last_name} ", style: new TextStyle(fontSize: 16.0, color: Colors.black)),
                   new Padding(
                     padding: const EdgeInsets.only(top: 2.0),
-                    child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                    child: new Text("(${StringUtil.camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold)),
                   )
                 ],
               )
@@ -167,7 +168,7 @@ class _solo_managementState extends State<solo_management> {
                         new Text("${participantUser.first_name} ${participantUser.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
                         new Padding(
                           padding: const EdgeInsets.only(top: 3.0),
-                          child: new Text("(${camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                          child: new Text("(${StringUtil.camelize(_categoryGender)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
                         )
                       ],
                     ),

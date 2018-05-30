@@ -26,7 +26,7 @@ dependencies:
       path: stripe_plugin
   font_awesome_flutter: "^6.0.0"
   url_launcher: "^3.0.0"
-  strings: "^0.0.6"
+  #strings: "^0.0.6"
   flutter_launcher_icons: "^0.2.0"
     #path: firebase_plugins/url_launcher
   #facebook_sign_in:
