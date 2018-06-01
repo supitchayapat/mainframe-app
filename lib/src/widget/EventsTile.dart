@@ -150,7 +150,8 @@ class EventsListTile extends ListTile {
         child: new Container(
           decoration: new BoxDecoration(
             border: const Border(
-              top: const BorderSide(width: 2.0, color: const Color(0xFF212D44)),
+              bottom: const BorderSide(width: 1.0, color: const Color(0xFF53617C)),
+              //top: const BorderSide(width: 2.0, color: const Color(0xFF212D44)),
             ),
           ),
           //padding: const EdgeInsets.symmetric(vertical: 1.0),
@@ -159,7 +160,8 @@ class EventsListTile extends ListTile {
           child: new Container(
             decoration: new BoxDecoration(
               border: const Border(
-                top: const BorderSide(width: 1.0, color: const Color(0xFF53617C)),
+                bottom: const BorderSide(width: 2.0, color: const Color(0xFF212D44)),
+                //top: const BorderSide(width: 1.0, color: const Color(0xFF53617C)),
               ),
             ),
             child: new Row(children: children),

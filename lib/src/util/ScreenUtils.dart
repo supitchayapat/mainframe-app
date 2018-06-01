@@ -1428,12 +1428,21 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
           onChanged: (bool val){
             //_openVal=val;
             if(_enabledAges.contains(str)) {
-              if (_selectedButtons.containsKey(str)) {
-                FormAgeCat _formAgeCat = _selectedButtons[str];
+              FormAgeCat _formAgeCat;
+              if (!_selectedButtons.containsKey(str)) {
+                _selectedButtons.putIfAbsent(str, () => new FormAgeCat());
+                _formAgeCat = _selectedButtons[str];
                 _formAgeCat.catOpen = !_formAgeCat.catOpen;
-                Navigator.of(context).pop();
-                showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
               }
+              else {
+                _formAgeCat = _selectedButtons[str];
+                _formAgeCat.catOpen = !_formAgeCat.catOpen;
+                if(!_formAgeCat.catOpen && !_formAgeCat.catClosed) {
+                  _selectedButtons.remove(str);
+                }
+              }
+              Navigator.of(context).pop();
+              showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
             }
           }
       );
@@ -1441,12 +1450,21 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
       Checkbox _tempClosed = new Checkbox(activeColor: const Color(0xFF324261),value: _closedVal,
           onChanged: (bool val){
             if(_enabledAges.contains(str)) {
-              if (_selectedButtons.containsKey(str)) {
-                FormAgeCat _formAgeCat = _selectedButtons[str];
+              FormAgeCat _formAgeCat;
+              if (!_selectedButtons.containsKey(str)) {
+                _selectedButtons.putIfAbsent(str, () => new FormAgeCat());
+                _formAgeCat = _selectedButtons[str];
                 _formAgeCat.catClosed = !_formAgeCat.catClosed;
-                Navigator.of(context).pop();
-                showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
               }
+              else {
+                _formAgeCat = _selectedButtons[str];
+                _formAgeCat.catClosed = !_formAgeCat.catClosed;
+                if(!_formAgeCat.catOpen && !_formAgeCat.catClosed) {
+                  _selectedButtons.remove(str);
+                }
+              }
+              Navigator.of(context).pop();
+              showAgeCategoryDialog(context, hasCat, _agesTextArr, _selectedButtons, onComplete, ages: ages);
             }
           }
       );
