@@ -88,9 +88,17 @@ Future<StreamSubscription> deleteUserListener(Function p) async {
 
 Future<User> getCurrentUserProfile() async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+
+  if(fuser == null)
+    return null;
+
   return reference.child(fuser.uid).child("info").once().then((DataSnapshot data) {
     //print(data.value["first_name"]);
-    print(data.value);
+    //print("CURRENT USER PROFILE: ${data.value}");
+    //print(data.value);
+    if(data == null || data.value == null) {
+      return null;
+    }
     return new User.fromSnapshot(data);
   });
 }

@@ -35,9 +35,9 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       if(!isLogged) {
         _navi = '/loginscreen';
       }
-      else {
+      //else {
         //FileUtil.loadImages();
-      }
+      //}
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(_navi);
       });

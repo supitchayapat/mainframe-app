@@ -126,13 +126,21 @@ void logoutUser() {
   An Authentication State Listener
  */
 StreamSubscription initAuthStateListener(Function p) {
-  return _auth.onAuthStateChanged.listen((FirebaseUser user){
+  return _auth.onAuthStateChanged.listen((FirebaseUser user) async {
     print("AUTHENTICATION HAS CHANGED!!!!!");
-    if(user != null) {
-      Function.apply(p, [true]);
-    } else {
-      Function.apply(p, [false]);
-    }
+    return getCurrentUserProfile().then((fuser){
+      if(user != null) {
+        if(fuser == null) {
+          //FirebaseAuth.instance.signOut();
+          Function.apply(p, [false]);
+        } else {
+          Function.apply(p, [true]);
+        }
+      } else {
+        //print("USER NULL");
+        Function.apply(p, [false]);
+      }
+    });
   });
 }
 
