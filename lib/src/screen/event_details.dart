@@ -133,8 +133,15 @@ class _EventDetailsState extends State<EventDetails> {
     List<Widget> _children = [];
 
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.address));
-    _children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
-    _children.addAll(_addIfNotEmpty(eventItem?.contact?.city));
+    //_children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
+    if(eventItem?.contact?.province != null && eventItem?.contact?.city != null) {
+      _children.addAll(_addIfNotEmpty("${eventItem.contact.city}, ${eventItem.contact.province}"));
+    } else {
+      if(eventItem?.contact?.city != null)
+        _children.addAll(_addIfNotEmpty(eventItem?.contact?.city));
+      else
+        _children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
+    }
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.country));
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.phone, label: "Phone"));
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.fax, label: "Fax"));
