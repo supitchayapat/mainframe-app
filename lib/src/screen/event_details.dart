@@ -284,7 +284,7 @@ class _EventDetailsState extends State<EventDetails> {
       ));
     }
 
-    if(eventItem?.organizers != null && eventItem.organizers.length > 0) {
+    if(eventItem?.organizers != null) {
       _pages.add(new PageSelectData(
           tabName: 'Organizer',
           description: '',
