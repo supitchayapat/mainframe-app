@@ -121,9 +121,7 @@ class _EventDetailsState extends State<EventDetails> {
     if((eventItem?.venue?.province != null && eventItem.venue.province != "") && (eventItem?.venue?.city != null && eventItem.venue.city != "")) {
       _children.addAll(_addIfNotEmpty("${eventItem.venue.city}, ${eventItem.venue.province}"));
     } else {
-      if(eventItem?.venue?.city != null)
         _children.addAll(_addIfNotEmpty(eventItem?.venue?.city));
-      else
         _children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
     }
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.zip));
@@ -151,9 +149,7 @@ class _EventDetailsState extends State<EventDetails> {
     if((eventItem?.contact?.province != null && eventItem.contact.province != "") && (eventItem?.contact?.city != null && eventItem.contact.city != "")) {
       _children.addAll(_addIfNotEmpty("${eventItem.contact.city}, ${eventItem.contact.province}"));
     } else {
-      if(eventItem?.contact?.city != null)
         _children.addAll(_addIfNotEmpty(eventItem?.contact?.city));
-      else
         _children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
     }
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.zip));
