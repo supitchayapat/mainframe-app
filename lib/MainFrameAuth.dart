@@ -63,9 +63,7 @@ Future<String> loginWithFacebook() async {
  */
 Future<String> signInWithFacebook() async {
   String token = "";
-  print("before is logged in");
   bool isLogged = await FacebookSignIn.isLoggedIn();
-  print("after is logged in");
   if(!isLogged) {
     token = await FacebookSignIn.loginWithReadPermissions(read);
   }
@@ -126,21 +124,36 @@ void logoutUser() {
   An Authentication State Listener
  */
 StreamSubscription initAuthStateListener(Function p) {
-  return _auth.onAuthStateChanged.listen((FirebaseUser user) async {
+  return _auth.onAuthStateChanged.listen((user) async {
     print("AUTHENTICATION HAS CHANGED!!!!!");
-    return getCurrentUserProfile().then((fuser){
-      if(user != null) {
-        if(fuser == null) {
-          //FirebaseAuth.instance.signOut();
-          Function.apply(p, [false]);
-        } else {
-          Function.apply(p, [true]);
-        }
-      } else {
-        //print("USER NULL");
+
+    return _auth.currentUser().then((fireUser){
+      fireUser.getIdToken().then((ftoken){
+        print("ID TOKEN: $ftoken");
+
+        return getCurrentUserProfile().then((fuser){
+          if(user != null) {
+            if(fuser == null) {
+              //FirebaseAuth.instance.signOut();
+              Function.apply(p, [false]);
+            } else {
+              Function.apply(p, [true]);
+            }
+          } else {
+            //print("USER NULL");
+            Function.apply(p, [false]);
+          }
+        });
+
+      }).catchError((err){
+        print("GET TOKEN ERROR: $err");
         Function.apply(p, [false]);
-      }
+      });
+    }).catchError((err){
+      print("GET CURRENT USER ERROR: $err");
+      Function.apply(p, [false]);
     });
+
   });
 }
 
