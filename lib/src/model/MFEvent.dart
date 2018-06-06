@@ -222,7 +222,7 @@ class MFEvent {
       venue.city = s["venue"]["city"] ?? "";
       venue.province = s["venue"]["province"] ?? "";
       venue.country = s["venue"]["country"] ?? "";
-      venue.zip = s["venue"]["zip"] ?? "";
+      venue.zip = s["venue"]["zipcode"] ?? "";
     }
 
     // Contact

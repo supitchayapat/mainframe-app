@@ -115,9 +115,9 @@ class _EventDetailsState extends State<EventDetails> {
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.venueName));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.address));
     //_children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
-    print("province: ${eventItem.venue.province}");
-    print("city: ${eventItem.venue.city}");
-    print("zip: ${eventItem.venue.zip}");
+    //print("province: ${eventItem.venue.province}");
+    //print("city: ${eventItem.venue.city}");
+    //print("zip: ${eventItem.venue.zip}");
     if((eventItem?.venue?.province != null && eventItem.venue.province != "") && (eventItem?.venue?.city != null && eventItem.venue.city != "")) {
       _children.addAll(_addIfNotEmpty("${eventItem.venue.city}, ${eventItem.venue.province}"));
     } else {
@@ -143,9 +143,9 @@ class _EventDetailsState extends State<EventDetails> {
 
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.address));
     //_children.addAll(_addIfNotEmpty(eventItem?.contact?.province));
-    print("contact province: ${eventItem.contact.province}");
-    print("contact city: ${eventItem.contact.city}");
-    print("contact zip: ${eventItem.contact.zip}");
+    //print("contact province: ${eventItem.contact.province}");
+    //print("contact city: ${eventItem.contact.city}");
+    //print("contact zip: ${eventItem.contact.zip}");
     if((eventItem?.contact?.province != null && eventItem.contact.province != "") && (eventItem?.contact?.city != null && eventItem.contact.city != "")) {
       _children.addAll(_addIfNotEmpty("${eventItem.contact.city}, ${eventItem.contact.province}"));
     } else {
@@ -284,7 +284,7 @@ class _EventDetailsState extends State<EventDetails> {
       ));
     }
 
-    if(eventItem?.organizers != null) {
+    if(eventItem?.organizers != null && eventItem.organizers.length > 0) {
       _pages.add(new PageSelectData(
           tabName: 'Organizer',
           description: '',
