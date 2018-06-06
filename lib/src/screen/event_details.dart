@@ -114,8 +114,15 @@ class _EventDetailsState extends State<EventDetails> {
 
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.venueName));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.address));
-    _children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
-    _children.addAll(_addIfNotEmpty(eventItem?.venue?.city));
+    //_children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
+    if(eventItem?.venue?.province != null && eventItem?.venue?.city != null) {
+      _children.addAll(_addIfNotEmpty("${eventItem.venue.city}, ${eventItem.venue.province}"));
+    } else {
+      if(eventItem?.venue?.city != null)
+        _children.addAll(_addIfNotEmpty(eventItem?.venue?.city));
+      else
+        _children.addAll(_addIfNotEmpty(eventItem?.venue?.province));
+    }
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.country));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.phone, label: "Phone"));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.fax, label: "Fax"));

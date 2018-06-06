@@ -38,9 +38,9 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       //else {
         //FileUtil.loadImages();
       //}
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      //SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(_navi);
-      });
+      //});
 
     });
   }
