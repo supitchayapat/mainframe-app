@@ -240,9 +240,9 @@ class MFEvent {
     }
 
     // Organizers
-    this.organizers = [];
     var _orgs = s["organizers"];
     if(_orgs != null) {
+      this.organizers = [];
       _orgs.forEach((itm){
         organizers.add(itm["name"]);
       });
