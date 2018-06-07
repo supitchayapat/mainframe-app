@@ -134,6 +134,27 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   void initState() {
     super.initState();
+    
+    // loading indicator set
+    listTiles.add(
+      new Container(
+        height: 120.0,
+        //color: Colors.cyanAccent,
+        alignment: Alignment.center,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Text("Loading"),
+            new Container(
+                margin: const EdgeInsets.only(left: 10.0),
+                width: 20.0,
+                height: 20.0,
+                child: new CircularProgressIndicator()
+            )
+          ],
+        ),
+      )
+    );
 
     MframePlugins.platform.then((_platform){
       if(_platform != null)
