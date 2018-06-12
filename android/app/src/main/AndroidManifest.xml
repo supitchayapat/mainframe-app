@@ -46,6 +46,16 @@
             </intent-filter>
         </activity>
 
+        <!--<meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="e69686e81951a092cc8547d73a51ad07a90bfa5c"
+        />-->
+
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="7e9bbd22542431d1ad13dae4a7a673027f542441"
+        />
+
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                    android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"

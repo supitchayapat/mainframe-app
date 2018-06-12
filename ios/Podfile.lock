@@ -8,6 +8,11 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
+  - crashlytics (0.0.1):
+    - Flutter
+  - Crashlytics (3.10.1):
+    - Fabric (~> 1.7.5)
+  - Fabric (1.7.6)
   - facebook_sign_in (0.0.1):
     - Flutter
   - FBSDKCoreKit (4.28.0):
@@ -98,6 +103,9 @@ PODS:
 
 DEPENDENCIES:
   - APAddressBook
+  - Crashlytics
+  - crashlytics (from `/Users/macbook/Documents/flProjects/myapp/crashlytics/ios`)
+  - Fabric
   - facebook_sign_in (from `/Users/macbook/Documents/flProjects/myapp/FB-Signin-Plugin/ios`)
   - FBSDKCoreKit
   - FBSDKLoginKit
@@ -119,6 +127,8 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - APAddressBook
     - Bolts
+    - Crashlytics
+    - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
     - FBSDKShareKit
@@ -137,6 +147,8 @@ SPEC REPOS:
     - Stripe
 
 EXTERNAL SOURCES:
+  crashlytics:
+    :path: "/Users/macbook/Documents/flProjects/myapp/crashlytics/ios"
   facebook_sign_in:
     :path: "/Users/macbook/Documents/flProjects/myapp/FB-Signin-Plugin/ios"
   firebase_auth:
@@ -163,6 +175,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   APAddressBook: e68ecaf95f2c323b625ae585a0d25fe505291286
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
+  crashlytics: 112c4471521aaf65cfa232fb17a62b3f2bd9e2fa
+  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   facebook_sign_in: 09726fb53eb5157ad64b5e8bfda7399cd963ec89
   FBSDKCoreKit: ca961e279113f691fd83dc634c0bbad9d4e3f370
   FBSDKLoginKit: b077381c27d800f21661757e8140cf2c80a91e4a
@@ -191,6 +206,6 @@ SPEC CHECKSUMS:
   stripe_plugin: da7f60220f621bb71a954c8059c45947897942f7
   url_launcher: 92b89c1029a0373879933c21642958c874539095
 
-PODFILE CHECKSUM: d769b8c5dfc79e8edaad7e938a4d5eb3a43df1f8
+PODFILE CHECKSUM: b6fe5e744fc10b22f310a9965c7fd8f74072de68
 
 COCOAPODS: 1.5.2

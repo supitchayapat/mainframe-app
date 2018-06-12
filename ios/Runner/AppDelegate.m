@@ -2,10 +2,13 @@
 #include "GeneratedPluginRegistrant.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Stripe/Stripe.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [Fabric with:@[[Crashlytics class]]];
   [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:@"pk_test_I3QbZv331ioLsVDcw4LXxM82"];
   [GeneratedPluginRegistrant registerWithRegistry:self];
   [[FBSDKApplicationDelegate sharedInstance] application:application
