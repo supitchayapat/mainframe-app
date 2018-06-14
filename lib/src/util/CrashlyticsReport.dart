@@ -7,11 +7,12 @@ import 'package:flutter/services.dart';
   Crash Reporting dart file for the application.
   Sends Exception message to Firebase Crash Reporting
  */
-class MainFrameCrashReport {
+class CrashlyticsReport {
 
-  static const MethodChannel _channel = const MethodChannel('firebase_crash');
+  static const MethodChannel _channel = const MethodChannel('crashlytics');
 
   static Future send(String errorMessage) async {
+    print("BEFORE INVOKE crash");
     return _channel.invokeMethod("reportMainFrameCrash", <String, dynamic> {
       "exceptionMessage": errorMessage
     });

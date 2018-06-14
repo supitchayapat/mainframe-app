@@ -17,6 +17,6 @@ public class MainActivity extends FlutterActivity {
     Fabric.with(this, new Crashlytics());
     GeneratedPluginRegistrant.registerWith(this);
     // add a method channel to call firebase crash reporting
-    new MethodChannel(getFlutterView(), "firebase_crash").setMethodCallHandler(new FirebaseCrashPlugin());
+    new MethodChannel(getFlutterView(), "crashlytics").setMethodCallHandler(new CrashlyticsReport());
   }
 }

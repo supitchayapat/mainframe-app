@@ -4,7 +4,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:myapp/src/util/FirebaseCrashReport.dart';
 
 final StorageReference ref = FirebaseStorage.instance.ref();
 final int ONE_MEGABYTE = 1024 * 1024;
@@ -32,7 +31,7 @@ class FileUtil {
             await imgFile.writeAsBytes(_imgResult);
           } catch(e) {
             print("ERROR WRITING $fileName");
-            MainFrameCrashReport.send("[File Util] ERROR WRITING IMAGE: ${evt.eventTitle}");
+            //MainFrameCrashReport.send("[File Util] ERROR WRITING IMAGE: ${evt.eventTitle}");
           }
           //global.imgFiles.putIfAbsent(fileName, () => imgFile);
           /*String url = evt.thumbnail;
@@ -69,7 +68,7 @@ class FileUtil {
         } catch(e) {
           print("ERROR WRITING $fileName");
           print(e);
-          MainFrameCrashReport.send("[File Util] ERROR WRITING IMAGE: ${evt.eventTitle}");
+          //MainFrameCrashReport.send("[File Util] ERROR WRITING IMAGE: ${evt.eventTitle}");
         }
       } else {
         Function.apply(p, [fileName, imgFile]);

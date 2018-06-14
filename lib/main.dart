@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameRoute.dart';
-import 'package:myapp/src/util/FirebaseCrashReport.dart';
 
 /*
   Author: Art
@@ -9,12 +8,25 @@ import 'package:myapp/src/util/FirebaseCrashReport.dart';
   It contains the login and sign-up screen widgets
  */
 void main() {
-  FlutterError.onError = (errorDetails) {
-    print("main caught errors: ${errorDetails}");
-    MainFrameCrashReport.send(errorDetails.exception.toString());
-  };
+  runApp(new DanceFrameApp());
+}
 
-  ThemeData theme = new ThemeData(
+class DanceFrameApp extends StatefulWidget {
+  @override
+  _DanceFrameApp createState() => new _DanceFrameApp();
+}
+
+class _DanceFrameApp extends State<DanceFrameApp> {
+
+  @override
+  Widget build(BuildContext context) {
+
+    FlutterError.onError = (errorDetails) {
+      print("main caught errors: ${errorDetails}");
+      //MainFrameCrashReport.send(errorDetails.exception.toString());
+    };
+
+    ThemeData theme = new ThemeData(
       primaryColor: new Color(0xFF324261),
       fontFamily: "Montserrat-Regular",
       canvasColor: new Color(0xFF324261),
@@ -22,11 +34,12 @@ void main() {
       hintColor: Colors.white,
       accentColor: Colors.white,
       dialogBackgroundColor: new Color(0xFF324261),
-  );
+    );
 
-  runApp(new MaterialApp(
+    return new MaterialApp(
       onGenerateRoute: getMainFrameOnRoute,
       routes: getMainFrameRoute(),
       theme: theme,
-  ));
+    );
+  }
 }
