@@ -1,5 +1,6 @@
 package com.yourcompany.myapp;
 
+import java.util.List;
 import android.util.Log;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -17,19 +18,27 @@ public class CrashlyticsReport implements MethodCallHandler {
 
     @Override
     public void onMethodCall(MethodCall call, final Result result) {
-        if (call.method.equals("reportMainFrameCrash")) {
+        if (call.method.equals("logException")) {
             String msg = call.argument("exceptionMessage");
             Exception ex = call.argument("exception");
+            List<String> logs = call.argument("exceptionLogs");
 
-            Crashlytics.log("Test logging");
-            Crashlytics.logException(new Exception("Has something to do with issues"));
+            if(logs != null && !logs.isEmpty()) {
+                for(String log : logs) {
+                    Crashlytics.log(log);
+                }
+            }
 
-            /*if(ex != null) { // not yet implemented can only get exception message
-                FirebaseCrash.report(ex);
+            if(ex != null) { // not yet implemented can only get exception message
+                Crashlytics.logException(ex);
             }
             else if(msg != null) {
-                FirebaseCrash.report(new Exception(msg));
-            }*/
+                Crashlytics.logException(new Exception(msg));
+            }
+        }
+        else if(call.method.equals("logMessage")) {
+            String msg = call.argument("logMessage");
+            Crashlytics.log(msg);
         }
         else {
             result.notImplemented();

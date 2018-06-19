@@ -5,6 +5,7 @@ import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/couple_management.dart' as coupleMgt;
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
@@ -34,6 +35,9 @@ class _participant_listState extends State<participant_list> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Participants List Screen Load.");
 
     tipsTimer = ShowTips.showTips(context, "participantsList");
 
@@ -128,6 +132,8 @@ class _participant_listState extends State<participant_list> {
 
       _participants.add(new InkWell(
         onTap: () {
+          // logging for crashlytics
+          global.messageLogs.add("Selected Participant [$key]");
           setState((){
             registration.participant = {
               "name": key,
@@ -310,12 +316,16 @@ class _participant_listState extends State<participant_list> {
           }).then((selectVal){
             switch(selectVal) {
               case 'solo':
+                // logging for crashlytics
+                global.messageLogs.add("Create new Solo Participant button");
                 participantType = "solo";
                 solo.participantUser = null;
                 solo.tipsTimer = null;
                 Navigator.of(context).pushNamed("/soloManagement");
                 break;
               case 'couple':
+                // logging for crashlytics
+                global.messageLogs.add("Create new Couple Participant button");
                 participantType = "couple";
                 coupleMgt.couple1 = null;
                 coupleMgt.couple2 = null;
@@ -323,6 +333,8 @@ class _participant_listState extends State<participant_list> {
                 Navigator.of(context).pushNamed("/coupleManagement");
                 break;
               case 'group':
+                // logging for crashlytics
+                global.messageLogs.add("Create new Group Participant button");
                 setState((){
                   groupCounter = groupCounter != null ? groupCounter+1 : 1;
                   registration.participant = {

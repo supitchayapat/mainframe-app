@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/screen/checkout_entry.dart' as checkout;
 import 'package:myapp/src/screen/event_registration.dart' as reg;
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,6 +37,9 @@ class _entry_summaryState extends State<entry_summary> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Entry Summary Screen load.");
 
     tipsTimer = ShowTips.showTips(context, "entrySummary");
 
@@ -389,6 +393,8 @@ class _entry_summaryState extends State<entry_summary> {
               ),
               new InkWell(
                 onTap: (){
+                  // logging for crashlytics
+                  global.messageLogs.add("Pay Fees button pressed.");
                   if(_total > 0.0) {
                     checkout.totalAmount = _total;
                     Navigator.of(context).pushNamed("/checkoutEntry");

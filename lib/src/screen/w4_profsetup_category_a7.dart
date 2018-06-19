@@ -27,6 +27,8 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   @override
   void initState(){
     super.initState();
+    global.messageLogs.add("Profile Setup 3 Screen Loaded.");
+
     print("INIT CATEGORY.....");
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {

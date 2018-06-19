@@ -60,6 +60,7 @@ class _EventsWidgetState extends State<EventsWidget> {
         listTiles.add(
             new InkWell(
                 onTap: () {
+                  global.messageLogs.add("Event [${e.eventTitle}] clicked.");
                   _handleEventTap(e);
                 },
                 child: new EventsListTile(

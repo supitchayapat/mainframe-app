@@ -12,6 +12,7 @@ import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/EventLevel.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
 import 'package:myapp/src/screen/event_registration.dart' as registration;
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:collection/collection.dart';
@@ -75,6 +76,10 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
   @override
   void initState() {
+
+    // logging for crashlytics
+    global.messageLogs.add("Entry Form Screen [${formEntry.name}]");
+
     danceCategories = [];
     danceLevels = [];
 
@@ -406,6 +411,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       var val = await showMainFrameDialogWithCancel(
           context, "Entry Changed", "Save Changes on ${formEntry.name}?");
       if (val == "OK") {
+        // logging for crashlytics
+        global.messageLogs.add("Ok buttong pressed. Saving Entry.");
         //print("Saving changes");
         EventEntry entry = new EventEntry(
           formEntry: formEntry,
@@ -632,6 +639,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         imgHeight: 32.0,
         fontSize: 16.0,
         onPressed: (){
+          // logging for crashlytics
+          global.messageLogs.add("Add Age Category button pressed.");
           //print(_levelMap[levelTxt]);
           Map<String, FormAgeCat> _selButtons = {};
           if(_levelMap.containsKey(levelTxt)) {

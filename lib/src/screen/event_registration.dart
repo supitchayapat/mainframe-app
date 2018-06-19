@@ -17,9 +17,11 @@ import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
+import 'package:myapp/MFGlobals.dart' as global;
 //import 'package:strings/strings.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/CrashlyticsReport.dart';
 
 var eventItem;
 var participant;
@@ -88,6 +90,10 @@ class _event_registrationState extends State<event_registration> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Event Registration Load.");
+
     _initSummary();
 
     //print("participantTickets ${summary.participantTickets}");
@@ -412,6 +418,8 @@ class _event_registrationState extends State<event_registration> {
                         minWidth: 5.0, height: 40.0,
                         color: Colors.white,
                         onPressed: () {
+                          // logging for crashlytics
+                          global.messageLogs.add("Entry form button pressed.");
                           bool hasDataEntry = false;
                           if(_eventEntries != null) {
                             _eventEntries.forEach((_pushId, _entryVal){
@@ -662,6 +670,8 @@ class _event_registrationState extends State<event_registration> {
                   child: new MaterialButton(
                       padding: const EdgeInsets.all(0.0),
                       onPressed: (){
+                        // logging for crashlytics
+                        global.messageLogs.add("Select Participants tapped.");
                         participant = null;
                         partList.participants = _participants;
                         Navigator.of(context).pushNamed("/participants");
@@ -710,6 +720,8 @@ class _event_registrationState extends State<event_registration> {
             child: new MainFrameButton(
               child: new Text("ADD TO EVENT"),
               onPressed: (){
+                // logging for crashlytics
+                global.messageLogs.add("Add to Event button tapped.");
                 _handleAddEventParticipant();
               },
             ),
@@ -788,6 +800,8 @@ class _event_registrationState extends State<event_registration> {
               ),
               new InkWell(
                 onTap: (){
+                  // logging for crashlytics
+                  global.messageLogs.add("Proceed button tapped.");
                   if(_participantEntries.length > 0) {
                     if(_participants.length == _participantEntries.length) {
                       print(_participantEntries);

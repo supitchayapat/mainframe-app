@@ -11,6 +11,7 @@ import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
 import 'event_registration.dart' as registration;
+import 'package:myapp/MFGlobals.dart' as global;
 
 var participantUser;
 var tipsTimer;
@@ -28,6 +29,9 @@ class _solo_managementState extends State<solo_management> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Solo Participant Management Screen.");
 
     soloParticipantsListener((users){
       setState(() {
@@ -155,6 +159,8 @@ class _solo_managementState extends State<solo_management> {
                     color: Colors.white,
                     onPressed: () {
                       //couple1 = "_assignCoupleParticipant";
+                      // logging for crashlytics
+                      global.messageLogs.add("Assign button pressed.");
                       addPartner.tipsTimer = null;
                       Navigator.of(context).pushNamed("/addPartner");
                     },
@@ -183,6 +189,8 @@ class _solo_managementState extends State<solo_management> {
             child: new MainFrameButton(
               child: new Text("ADD PARTICIPANT"),
               onPressed: (){
+                // logging for crashlytics
+                global.messageLogs.add("Add Participant button pressed.");
                 if(participantUser != null) {
                   //if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
                   if(!_listItems.contains(participantUser)) {

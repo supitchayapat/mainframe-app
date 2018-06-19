@@ -58,6 +58,9 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   @override
   void initState(){
     super.initState();
+
+    global.messageLogs.add("Profile Setup 2 Screen Loaded.");
+
     print("INIT BDAY.....");
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {

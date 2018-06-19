@@ -10,6 +10,7 @@ import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
 import 'add_dance_partner.dart' as addPartner;
+import 'package:myapp/MFGlobals.dart' as global;
 
 var formEntry;
 var formParticipant;
@@ -35,6 +36,10 @@ class _GroupDanceState extends State<GroupDance> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Group Entry form screen loaded.");
+
     _dataMap = new HashMap<String, String>();
 
     tipsTimer = ShowTips.showTips(context, "groupDance");
@@ -75,6 +80,8 @@ class _GroupDanceState extends State<GroupDance> {
   void _handleSaving() {
     if((_dataMap["danceTitle"] != null && _dataMap["danceTitle"].isNotEmpty)
         && formCoach != null) {
+      // logging for crashlytics
+      global.messageLogs.add("Saving entry form.");
       print("saving datamap: $_dataMap");
 
       Map freeform = {};
@@ -359,6 +366,9 @@ class _GroupDanceState extends State<GroupDance> {
       ),
       floatingActionButton: !isPaid ? new InkWell(
         onTap: () {
+          // logging for crashlytics
+          global.messageLogs.add("Save button pressed.");
+
           if(!isPaid && formParticipant?.members != null) {
             _handleSaving();
           } else {

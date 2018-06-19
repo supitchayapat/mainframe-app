@@ -13,6 +13,7 @@ User dancePartner = null;
 List<MFEvent> events = <MFEvent>[];
 bool hasTips = true;
 String devicePlatform = "";
+List<String> messageLogs = <String>[];
 
 Future<List<User>> get taggableFriends async {
   if(_taggableFriends.length <= 0) {

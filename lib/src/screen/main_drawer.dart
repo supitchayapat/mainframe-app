@@ -68,6 +68,9 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
     Method implementation when the Side Nav menu is pressed.
    */
   void _MFMenuPressed(_MenuContent content) {
+    // crashlytics logging
+    global.messageLogs.add("SideNav menu button pressed [${content.menuLabel}]");
+
     Navigator.of(context).pop(); // Dismiss the drawer.
 
     if(content.menuNavUri == null ||

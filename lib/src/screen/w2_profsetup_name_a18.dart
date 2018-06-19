@@ -29,6 +29,9 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   @override
   void initState() {
     super.initState();
+
+    global.messageLogs.add("Profile Setup 1 Screen Loaded.");
+
     print("INIT STATE PROFILE SETUP....");
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {

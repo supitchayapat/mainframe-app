@@ -8,6 +8,7 @@ import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:myapp/src/util/CrashlyticsReport.dart';
 
 var eventItem;
 
@@ -26,6 +27,10 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("[${eventItem?.eventTitle}] Event Details Page Load.");
+
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
       //eventRange = eventItem.dateRange;
@@ -70,6 +75,7 @@ class _EventDetailsState extends State<EventDetails> {
                 new Text("Website:  ", style: new TextStyle(fontSize: 16.0)),
                 new InkWell(
                   onTap: (){
+                    global.messageLogs.add("Website link tapped. Navigate to ${eventItem?.website}");
                     if(eventItem?.website != null) {
                       if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
                         _launchUrl(eventItem?.website);
@@ -410,6 +416,7 @@ class _EventDetailsState extends State<EventDetails> {
               ),
               new InkWell(
                 onTap: (){
+                  global.messageLogs.add("Register button tapped.");
                   eventInfo.eventItem = eventItem;
                   eventInfo.participant = null;
                   if(_floatText == "Register") {

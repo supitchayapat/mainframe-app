@@ -11,6 +11,7 @@ import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'add_dance_partner.dart' as addPartner;
 import 'event_registration.dart' as registration;
+import 'package:myapp/MFGlobals.dart' as global;
 
 var couple1;
 var couple2;
@@ -30,6 +31,9 @@ class _couple_managementState extends State<couple_management> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Couple Participant Management Screen.");
 
     coupleParticipantsListener((couples){
       //print("NUMBER OF USERS: ${couples.length}");
@@ -177,6 +181,8 @@ class _couple_managementState extends State<couple_management> {
                       minWidth: 5.0, height: 5.0,
                       color: Colors.white,
                       onPressed: () {
+                        // logging for crashlytics
+                        global.messageLogs.add("Assign button pressed.");
                         couple1 = "_assignCoupleParticipant";
                         addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
@@ -220,6 +226,8 @@ class _couple_managementState extends State<couple_management> {
                       minWidth: 5.0, height: 5.0,
                       color: Colors.white,
                       onPressed: () {
+                        // logging for crashlytics
+                        global.messageLogs.add("Assign button pressed.");
                         couple2 = "_assignCoupleParticipant";
                         addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
@@ -249,6 +257,8 @@ class _couple_managementState extends State<couple_management> {
               child: new MainFrameButton(
                 child: new Text("ADD COUPLE"),
                 onPressed: (){
+                  // logging for crashlytics
+                  global.messageLogs.add("Add Couple button pressed.");
                   if(couple1 != null && couple2 != null) {
                     if(couple1 != couple2) {
                       saveUserCoupleParticipants(couple1, couple2).then((_coupl){

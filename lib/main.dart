@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameRoute.dart';
+import 'src/util/CrashlyticsReport.dart';
 
 /*
   Author: Art
@@ -22,8 +23,10 @@ class _DanceFrameApp extends State<DanceFrameApp> {
   Widget build(BuildContext context) {
 
     FlutterError.onError = (errorDetails) {
-      print("main caught errors: ${errorDetails}");
+      print("MAIN caught errors: ${errorDetails.stack.toString()}");
+      print("LOGGING ONCRASHLYTICS");
       //MainFrameCrashReport.send(errorDetails.exception.toString());
+      CrashlyticsReport.logException(errorDetails.exceptionAsString());
     };
 
     ThemeData theme = new ThemeData(

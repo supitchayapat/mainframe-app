@@ -7,6 +7,7 @@ import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class EmailLogin extends StatefulWidget {
   @override
@@ -24,10 +25,14 @@ class _EmailLoginState extends State<EmailLogin> {
   void initState() {
     super.initState();
     _user = new User();
+    // crashlytics logging
+    global.messageLogs.add("Email Login Screen Loaded.");
   }
 
   void _handleSignUp() {
-    print("SIGN UP HANDLED");
+    // crashlytics logging
+    global.messageLogs.add("Sign-up button pressed.");
+
     FormState form = _signUpFormKey.currentState;
     if(!form.validate()) {
       //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
@@ -52,7 +57,9 @@ class _EmailLoginState extends State<EmailLogin> {
 
   void _handleLogin() {
     FormState form = _formKey.currentState;
-    print("LOGIN HANDLED");
+    // crashlytics logging
+    global.messageLogs.add("Login button pressed.");
+
     if(!form.validate()) {
       //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
     } else {
@@ -122,7 +129,11 @@ class _EmailLoginState extends State<EmailLogin> {
                 new Padding(padding: const EdgeInsets.all(15.0)),
                 new Center(
                   child: new MaterialButton(
-                      onPressed: () => Navigator.of(context).pushNamed("/forgot-password"),
+                      onPressed: () {
+                        // crashlytics logging
+                        global.messageLogs.add("Forgot password pressed.");
+                        Navigator.of(context).pushNamed("/forgot-password");
+                      },
                       child: new Text("Forgot Password?", style: new TextStyle(color: Colors.grey, fontSize: 16.0)),
                   )
                 )

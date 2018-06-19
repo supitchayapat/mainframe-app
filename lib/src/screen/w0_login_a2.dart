@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class LoginApp extends StatefulWidget {
 
@@ -18,6 +19,10 @@ class _LoginAppState extends State<LoginApp> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    // CrashlyticsReport.logMessage("Login Page load");
+    global.messageLogs.add("Login Page load");
 
     // check user logged in
     initAuthStateListener((bool isLogged) {
@@ -49,6 +54,7 @@ class _LoginAppState extends State<LoginApp> {
                   child: new Text("Facebook Login"),
                   color: Colors.blue,
                   onPressed: () {
+                    global.messageLogs.add("Facebook Login button pressed.");
                     MainFrameLoadingIndicator.showLoading(context);
                     loginWithFacebook().then((str) =>
                         Navigator.of(context).pushReplacementNamed(_nextRoute))
@@ -65,6 +71,7 @@ class _LoginAppState extends State<LoginApp> {
                   child: new Text("Email Login"),
                   color: Colors.red,
                   onPressed: () {
+                    global.messageLogs.add("Email Login button pressed.");
                     _nextRoute = "/mainscreen";
                     Navigator.pushNamed(context, '/emailLogin');
                   }
@@ -90,6 +97,7 @@ class _LoginAppState extends State<LoginApp> {
                   child: new Text("Connect with Facebook"),
                   color: Colors.blue,
                   onPressed: () {
+                    global.messageLogs.add("Facebook Login button pressed.");
                     MainFrameLoadingIndicator.showLoading(context);
                     signInWithFacebook().then((str) =>
                         Navigator.of(context).pushNamed(_nextRoute))
@@ -106,6 +114,7 @@ class _LoginAppState extends State<LoginApp> {
                   child: new Text("Sign-up Email"),
                   color: Colors.red,
                   onPressed: () {
+                    global.messageLogs.add("Email Login button pressed.");
                     _nextRoute = "/profilesetup-1";
                     Navigator.pushNamed(context, '/emailRegistry');
                   }

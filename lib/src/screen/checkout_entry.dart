@@ -10,6 +10,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'package:myapp/src/screen/event_details.dart' as event_details;
 import 'package:myapp/src/screen/entry_summary.dart' as summary;
+import 'package:myapp/MFGlobals.dart' as global;
 import 'package:stripe_plugin/stripe_plugin.dart';
 import 'package:myapp/src/model/InvoiceInfo.dart';
 import 'package:myapp/src/model/User.dart';
@@ -44,6 +45,9 @@ class _checkout_entryState extends State<checkout_entry> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Checkout Screen loaded.");
 
     /*Timer periodic = new Timer.periodic(new Duration(seconds: 5), (timer){
       print(timer);
@@ -459,6 +463,8 @@ class _checkout_entryState extends State<checkout_entry> {
                     margin: const EdgeInsets.only(bottom: 15.0),
                     child: new InkWell(
                       onTap: (){
+                        // logging for crashlytics
+                        global.messageLogs.add("Pay Entry button pressed");
                         _handlePayment();
                       },
                       child: new Container(

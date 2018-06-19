@@ -35,6 +35,10 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   @override
   void initState() {
     super.initState();
+
+    // logging for crashlytics
+    global.messageLogs.add("Add Participant Screen loaded.");
+
     //setState((){
       _searchCtrl.text = "SEARCH";
     //});
@@ -74,6 +78,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   }
 
   void _inviteWithEmail() {
+    // logging for crashlytics
+    global.messageLogs.add("Add manually button pressed.");
     // will send email immediately right after finish dance partner forms
     /*var _ans = showMainFrameDialogWithCancel(
         context, "Invite via Email",
@@ -150,6 +156,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   }
 
   void _handleTapExisting(usr) {
+    // logging for crashlytics
+    global.messageLogs.add("Existing User pressed [${usr.first_name} ${usr.last_name}]");
     // TODO: will implement saving of entry form
     if(participant.participantType == "solo") {
       //MainFrameLoadingIndicator.showLoading(context);
@@ -232,6 +240,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           _letter = _curr;
           _children.add(new InkWell(
             onTap: () {
+              global.messageLogs.add("User From Contacts pressed [${con.contactName}]");
               global.setDancePartner = con.contactName;
               Navigator.of(context).pushNamed("/profilesetup-1");
             },
@@ -606,6 +615,8 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                 ),
                 new InkWell(
                   onTap: (){
+                    // logging for crashlytics
+                    global.messageLogs.add("Assign me button pressed.");
                     if(_currentUser != null) {
                       _handleTapExisting(_currentUser);
                     }
