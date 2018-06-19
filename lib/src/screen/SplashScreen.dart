@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 
 class MainFrameSplash extends StatefulWidget {
-  final FirebaseAnalytics analytics;
-  final FirebaseAnalyticsObserver observer;
-
-  MainFrameSplash({this.analytics, this.observer});
 
   @override
   _MainFrameSplashState createState() => new _MainFrameSplashState();
