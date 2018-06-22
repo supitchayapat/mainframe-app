@@ -14,6 +14,10 @@ dependencies:
     path: firebase_plugins/firebase_dynamic_link
   firebase_storage:
     path: firebase_plugins/firebase_storage
+  firebase_analytics:
+    path: firebase_plugins/firebase_analytics
+  firebase_performance:
+      path: firebase_plugins/firebase_performance
   validator: ">=0.0.4 <0.1.0"
   intl: "^0.15.2"
   http: "^0.11.3+14"

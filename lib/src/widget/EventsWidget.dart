@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'EventsTile.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
@@ -7,8 +8,11 @@ import 'package:myapp/src/util/FileUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
+import 'package:myapp/src/util/PerformanceUtil.dart';
+//import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 const double _kFlexibleSpaceMaxHeight = 186.0;
+const int _timerDelay = 100;
 
 class EventsWidget extends StatefulWidget {
   @override
@@ -24,6 +28,10 @@ class _EventsWidgetState extends State<EventsWidget> {
   List _events = [];
   List _pastEvents = [];
   Map<String, Widget> _thumbImages = {};
+  bool eventListRunning = false;
+  bool pastEventRunning = false;
+  bool fileUtilRunning = false;
+  Timer _performanceTimer;
 
   void _menuPressed() {
     _scaffoldKey.currentState.openDrawer();
@@ -37,6 +45,29 @@ class _EventsWidgetState extends State<EventsWidget> {
   void _buildListTiles() {
     listTiles = [];
     _renderEvents();
+  }
+
+  bool isStillRunning() {
+    //print("eventList: $eventListRunning, pastEventRunning: $pastEventRunning, fileUtilRunning: $fileUtilRunning");
+    if(eventListRunning || pastEventRunning || fileUtilRunning) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  void stopTracking() {
+    _performanceTimer = new Timer.periodic(new Duration(milliseconds: _timerDelay), (timer){
+      bool isRunning = isStillRunning();
+      //print("IS RUNNING: $isRunning");
+      if(!isRunning) {
+        // stop performance check
+        PerformanceUtil.stopTrace();
+        // stop timer
+        _performanceTimer.cancel();
+      }
+    });
   }
 
   void _renderEvents() {
@@ -61,6 +92,9 @@ class _EventsWidgetState extends State<EventsWidget> {
             new InkWell(
                 onTap: () {
                   global.messageLogs.add("Event [${e.eventTitle}] clicked.");
+                  /*AnalyticsUtil.sendAnalyticsEvent("event_item_clicked", params: {
+                    "EventTitle": e.eventTitle
+                  });*/
                   _handleEventTap(e);
                 },
                 child: new EventsListTile(
@@ -135,7 +169,10 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   void initState() {
     super.initState();
-    
+
+    // start performance check
+    PerformanceUtil.startTrace("event_list");
+
     // loading indicator set
     listTiles.add(
       new Container(
@@ -167,31 +204,40 @@ class _EventsWidgetState extends State<EventsWidget> {
       print(_usr.email);
     });
 
+    eventListRunning = true;
     listener = EventDao.eventsListener((events) {
       setState(() {
         print("set events");
         _events = [];
         _events.addAll(events);
         _buildListTiles();
+        eventListRunning = false;
       });
     });
 
+    pastEventRunning = true;
     past_listener = EventDao.pastUserEventListener((events) {
       setState(() {
         print("past events LENGTH: ${events.length}");
         _events = [];
         _events.addAll(events);
         _buildListTiles();
+        pastEventRunning = false;
       });
     });
 
+    fileUtilRunning = true;
     FileUtil.downloadImagesCallback((fileName, img){
       setState((){
         Image _img = new Image.file(img);
         _thumbImages.putIfAbsent(fileName, () => _img);
         _buildListTiles();
+        fileUtilRunning = false;
       });
     });
+
+    // stop performance check
+    stopTracking();
   }
 
   @override
@@ -200,6 +246,8 @@ class _EventsWidgetState extends State<EventsWidget> {
     super.dispose();
     listener.cancel();
     past_listener.cancel();
+    if(_performanceTimer != null)
+      _performanceTimer.cancel();
   }
 
   @override
