@@ -9,6 +9,7 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class ProfileSetupBday extends StatefulWidget {
 
@@ -60,6 +61,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     super.initState();
 
     global.messageLogs.add("Profile Setup 2 Screen Loaded.");
+    AnalyticsUtil.setCurrentScreen("Profile Setup 2", screenClassName: "profile_w3");
 
     print("INIT BDAY.....");
     if(global.dancePartner == null) {

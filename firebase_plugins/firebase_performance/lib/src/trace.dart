@@ -44,7 +44,6 @@ class Trace extends PerformanceAttributes {
     assert(!_hasStarted);
 
     _hasStarted = true;
-    print("INVOKING START");
     return FirebasePerformance.channel
         .invokeMethod('Trace#start', <String, dynamic>{
       'handle': _handle,
@@ -71,7 +70,6 @@ class Trace extends PerformanceAttributes {
     };
 
     _hasStopped = true;
-    print("INVOKING STOP");
     return FirebasePerformance.channel.invokeMethod('Trace#stop', data);
   }
 

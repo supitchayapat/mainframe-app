@@ -12,6 +12,7 @@ import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -28,6 +29,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void initState(){
     super.initState();
     global.messageLogs.add("Profile Setup 3 Screen Loaded.");
+    AnalyticsUtil.setCurrentScreen("Profile Setup 3", screenClassName: "profile_w4");
 
     print("INIT CATEGORY.....");
     if(global.dancePartner == null) {

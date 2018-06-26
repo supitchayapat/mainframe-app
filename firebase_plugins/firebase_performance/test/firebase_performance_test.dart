@@ -4,12 +4,12 @@
 
 import 'package:flutter/services.dart';
 
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-//class MockPerformanceAttributes extends PerformanceAttributes {}
+class MockPerformanceAttributes extends PerformanceAttributes {}
 
 void main() {
-  /*
   group('$FirebasePerformance', () {
     final FirebasePerformance performance = FirebasePerformance.instance;
     final List<MethodCall> log = <MethodCall>[];
@@ -322,5 +322,4 @@ void main() {
       });
     });
   });
-  */
 }

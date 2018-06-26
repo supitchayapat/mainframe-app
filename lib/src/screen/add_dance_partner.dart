@@ -14,6 +14,7 @@ import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var tipsTimer;
 
@@ -38,6 +39,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
 
     // logging for crashlytics
     global.messageLogs.add("Add Participant Screen loaded.");
+    AnalyticsUtil.setCurrentScreen("Add Participant", screenClassName: "add_dance_partner");
 
     //setState((){
       _searchCtrl.text = "SEARCH";
@@ -80,6 +82,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   void _inviteWithEmail() {
     // logging for crashlytics
     global.messageLogs.add("Add manually button pressed.");
+    AnalyticsUtil.sendAnalyticsEvent("add_manually_press", params: {
+      'screen': 'add_dance_partner'
+    });
     // will send email immediately right after finish dance partner forms
     /*var _ans = showMainFrameDialogWithCancel(
         context, "Invite via Email",
@@ -158,6 +163,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   void _handleTapExisting(usr) {
     // logging for crashlytics
     global.messageLogs.add("Existing User pressed [${usr.first_name} ${usr.last_name}]");
+    AnalyticsUtil.sendAnalyticsEvent("existing_user_press", params: {
+      'screen': 'add_dance_partner'
+    });
     // TODO: will implement saving of entry form
     if(participant.participantType == "solo") {
       //MainFrameLoadingIndicator.showLoading(context);
@@ -241,6 +249,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
           _children.add(new InkWell(
             onTap: () {
               global.messageLogs.add("User From Contacts pressed [${con.contactName}]");
+              AnalyticsUtil.sendAnalyticsEvent("user_contact_press", params: {
+                'screen': 'add_dance_partner'
+              });
               global.setDancePartner = con.contactName;
               Navigator.of(context).pushNamed("/profilesetup-1");
             },
@@ -617,6 +628,9 @@ class _AddDancePartnerState extends State<AddDancePartner> {
                   onTap: (){
                     // logging for crashlytics
                     global.messageLogs.add("Assign me button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("assign_me_press", params: {
+                      'screen': 'add_dance_partner'
+                    });
                     if(_currentUser != null) {
                       _handleTapExisting(_currentUser);
                     }

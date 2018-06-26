@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:myapp/src/demo/demo.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 class LoginApp extends StatefulWidget {
@@ -23,6 +24,7 @@ class _LoginAppState extends State<LoginApp> {
     // logging for crashlytics
     // CrashlyticsReport.logMessage("Login Page load");
     global.messageLogs.add("Login Page load");
+    AnalyticsUtil.setCurrentScreen("Login Page", screenClassName: "login_a2");
 
     // check user logged in
     initAuthStateListener((bool isLogged) {
@@ -55,6 +57,9 @@ class _LoginAppState extends State<LoginApp> {
                   color: Colors.blue,
                   onPressed: () {
                     global.messageLogs.add("Facebook Login button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("fb_login_pressed", params: {
+                      'screen': 'login_a2'
+                    });
                     MainFrameLoadingIndicator.showLoading(context);
                     loginWithFacebook().then((str) =>
                         Navigator.of(context).pushReplacementNamed(_nextRoute))
@@ -72,6 +77,9 @@ class _LoginAppState extends State<LoginApp> {
                   color: Colors.red,
                   onPressed: () {
                     global.messageLogs.add("Email Login button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("email_login_pressed", params: {
+                      'screen': 'login_a2'
+                    });
                     _nextRoute = "/mainscreen";
                     Navigator.pushNamed(context, '/emailLogin');
                   }
@@ -98,6 +106,9 @@ class _LoginAppState extends State<LoginApp> {
                   color: Colors.blue,
                   onPressed: () {
                     global.messageLogs.add("Facebook Login button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("fb_login_pressed", params: {
+                      'screen': 'login_a2'
+                    });
                     MainFrameLoadingIndicator.showLoading(context);
                     signInWithFacebook().then((str) =>
                         Navigator.of(context).pushNamed(_nextRoute))
@@ -115,6 +126,9 @@ class _LoginAppState extends State<LoginApp> {
                   color: Colors.red,
                   onPressed: () {
                     global.messageLogs.add("Email Login button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("email_login_pressed", params: {
+                      'screen': 'login_a2'
+                    });
                     _nextRoute = "/profilesetup-1";
                     Navigator.pushNamed(context, '/emailRegistry');
                   }

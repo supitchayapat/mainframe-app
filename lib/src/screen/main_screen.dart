@@ -6,7 +6,7 @@ import 'package:firebase_dynamic_link/firebase_dynamic_link.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
-import 'package:myapp/src/util/CrashlyticsReport.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 
@@ -32,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     // logging for crashlytics
     // CrashlyticsReport.logMessage("Main Page load");
     global.messageLogs.add("Main Page Load.");
+    AnalyticsUtil.setCurrentScreen("Main Screen", screenClassName: "MainScreen");
 
     /*getCurrentUserProfile().then((usr) {
       //_mainFrameDrawer = new MainFrameDrawer(_scaffoldKey);

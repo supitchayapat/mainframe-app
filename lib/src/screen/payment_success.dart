@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 class payment_success extends StatefulWidget {
@@ -15,6 +16,7 @@ class _payment_successState extends State<payment_success> {
     super.initState();
     // logging for crashlytics
     global.messageLogs.add("Payment Success Screen loaded.");
+    AnalyticsUtil.setCurrentScreen("GPayment Success", screenClassName: "payment_success");
   }
 
   void _handleBackBtn() {

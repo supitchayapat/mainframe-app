@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -35,12 +36,41 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
 
   private FirebaseStoragePlugin(Registrar registrar) {
     FirebaseApp.initializeApp(registrar.context());
-    this.firebaseStorage = FirebaseStorage.getInstance();
   }
 
   @Override
   public void onMethodCall(MethodCall call, final Result result) {
+    String app = call.argument("app");
+    String storageBucket = call.argument("bucket");
+    if (app == null && storageBucket == null) {
+      firebaseStorage = FirebaseStorage.getInstance();
+    } else if (storageBucket == null) {
+      firebaseStorage = FirebaseStorage.getInstance(FirebaseApp.getInstance(app));
+    } else if (app == null) {
+      firebaseStorage = FirebaseStorage.getInstance(storageBucket);
+    } else {
+      firebaseStorage = FirebaseStorage.getInstance(FirebaseApp.getInstance(app), storageBucket);
+    }
+
     switch (call.method) {
+      case "FirebaseStorage#getMaxDownloadRetryTime":
+        result.success(firebaseStorage.getMaxDownloadRetryTimeMillis());
+        break;
+      case "FirebaseStorage#getMaxUploadRetryTime":
+        result.success(firebaseStorage.getMaxUploadRetryTimeMillis());
+        break;
+      case "FirebaseStorage#getMaxOperationRetryTime":
+        result.success(firebaseStorage.getMaxOperationRetryTimeMillis());
+        break;
+      case "FirebaseStorage#setMaxDownloadRetryTime":
+        setMaxDownloadRetryTimeMillis(call, result);
+        break;
+      case "FirebaseStorage#setMaxUploadRetryTime":
+        setMaxUploadRetryTimeMillis(call, result);
+        break;
+      case "FirebaseStorage#setMaxOperationRetryTime":
+        setMaxOperationTimeMillis(call, result);
+        break;
       case "StorageReference#putFile":
         putFile(call, result);
         break;
@@ -53,6 +83,15 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
       case "StorageReference#delete":
         delete(call, result);
         break;
+      case "StorageReference#getBucket":
+        getBucket(call, result);
+        break;
+      case "StorageReference#getName":
+        getName(call, result);
+        break;
+      case "StorageReference#getPath":
+        getPath(call, result);
+        break;
       case "StorageReference#getDownloadUrl":
         getDownloadUrl(call, result);
         break;
@@ -62,10 +101,31 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
       case "StorageReference#updateMetadata":
         updateMetadata(call, result);
         break;
+      case "StorageReference#writeToFile":
+        writeToFile(call, result);
+        break;
       default:
         result.notImplemented();
         break;
     }
+  }
+
+  private void setMaxDownloadRetryTimeMillis(MethodCall call, Result result) {
+    Number time = call.argument("time");
+    firebaseStorage.setMaxDownloadRetryTimeMillis(time.longValue());
+    result.success(null);
+  }
+
+  private void setMaxUploadRetryTimeMillis(MethodCall call, Result result) {
+    Number time = call.argument("time");
+    firebaseStorage.setMaxUploadRetryTimeMillis(time.longValue());
+    result.success(null);
+  }
+
+  private void setMaxOperationTimeMillis(MethodCall call, Result result) {
+    Number time = call.argument("time");
+    firebaseStorage.setMaxOperationRetryTimeMillis(time.longValue());
+    result.success(null);
   }
 
   private void getMetadata(MethodCall call, final Result result) {
@@ -107,6 +167,24 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
                 result.error("metadata_error", e.getMessage(), null);
               }
             });
+  }
+
+  private void getBucket(MethodCall call, final Result result) {
+    String path = call.argument("path");
+    StorageReference ref = firebaseStorage.getReference().child(path);
+    result.success(ref.getBucket());
+  }
+
+  private void getName(MethodCall call, final Result result) {
+    String path = call.argument("path");
+    StorageReference ref = firebaseStorage.getReference().child(path);
+    result.success(ref.getName());
+  }
+
+  private void getPath(MethodCall call, final Result result) {
+    String path = call.argument("path");
+    StorageReference ref = firebaseStorage.getReference().child(path);
+    result.success(ref.getPath());
   }
 
   private void getDownloadUrl(MethodCall call, final Result result) {
@@ -202,6 +280,13 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
     builder.setContentDisposition((String) map.get("contentDisposition"));
     builder.setContentLanguage((String) map.get("contentLanguage"));
     builder.setContentType((String) map.get("contentType"));
+
+    Map<String, String> customMetadata = (Map<String, String>) map.get("customMetadata");
+    if (customMetadata != null) {
+      for (String key : customMetadata.keySet()) {
+        builder.setCustomMetadata(key, customMetadata.get(key));
+      }
+    }
     return builder.build();
   }
 
@@ -221,6 +306,12 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
     map.put("contentEncoding", storageMetadata.getContentEncoding());
     map.put("contentLanguage", storageMetadata.getContentLanguage());
     map.put("contentType", storageMetadata.getContentType());
+
+    Map<String, String> customMetadata = new HashMap<>();
+    for (String key : storageMetadata.getCustomMetadataKeys()) {
+      customMetadata.put(key, storageMetadata.getCustomMetadata(key));
+    }
+    map.put("customMetadata", customMetadata);
     return map;
   }
 
@@ -234,6 +325,28 @@ public class FirebaseStoragePlugin implements MethodCallHandler {
           @Override
           public void onSuccess(byte[] bytes) {
             result.success(bytes);
+          }
+        });
+    downloadTask.addOnFailureListener(
+        new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            result.error("download_error", e.getMessage(), null);
+          }
+        });
+  }
+
+  private void writeToFile(MethodCall call, final Result result) {
+    String path = call.argument("path");
+    String filePath = call.argument("filePath");
+    File file = new File(filePath);
+    StorageReference ref = firebaseStorage.getReference().child(path);
+    FileDownloadTask downloadTask = ref.getFile(file);
+    downloadTask.addOnSuccessListener(
+        new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+          @Override
+          public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+            result.success(taskSnapshot.getTotalByteCount());
           }
         });
     downloadTask.addOnFailureListener(

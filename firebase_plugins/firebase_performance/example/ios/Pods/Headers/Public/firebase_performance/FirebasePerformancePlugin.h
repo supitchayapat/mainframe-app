@@ -1,0 +1,1 @@
+../../../../.symlinks/plugins/firebase_performance/ios/Classes/FirebasePerformancePlugin.h

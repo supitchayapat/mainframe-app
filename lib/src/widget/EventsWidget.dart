@@ -9,7 +9,7 @@ import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/PerformanceUtil.dart';
-//import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 const double _kFlexibleSpaceMaxHeight = 186.0;
 const int _timerDelay = 100;
@@ -92,9 +92,9 @@ class _EventsWidgetState extends State<EventsWidget> {
             new InkWell(
                 onTap: () {
                   global.messageLogs.add("Event [${e.eventTitle}] clicked.");
-                  /*AnalyticsUtil.sendAnalyticsEvent("event_item_clicked", params: {
+                  AnalyticsUtil.sendAnalyticsEvent("event_item_clicked", params: {
                     "EventTitle": e.eventTitle
-                  });*/
+                  });
                   _handleEventTap(e);
                 },
                 child: new EventsListTile(
@@ -102,16 +102,6 @@ class _EventsWidgetState extends State<EventsWidget> {
                       int.parse(e.thumbnailBg)) : Theme
                       .of(context)
                       .primaryColor,
-                  leading: new Container(
-                      height: 78.0,
-                      width: 140.0,
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      //child: new Image.network(e.thumbnail),
-                      child: (_thumbImages != null &&
-                          _thumbImages.containsKey(e.thumbnail))
-                          ? _thumbImages[e.thumbnail]
-                          : new Container()
-                  ),
                   title: new Container(
                     //color: Colors.amber,
                     alignment: Alignment.centerLeft,
@@ -144,6 +134,16 @@ class _EventsWidgetState extends State<EventsWidget> {
                       ],
                     ),
                     //child: new ListTileText(e.eventTitle)
+                  ),
+                  leading: new Container(
+                      height: 78.0,
+                      width: 140.0,
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      //child: new Image.network(e.thumbnail),
+                      child: (_thumbImages != null &&
+                          _thumbImages.containsKey(e.thumbnail))
+                          ? _thumbImages[e.thumbnail]
+                          : new Container()
                   ),
                   /*subtitle: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

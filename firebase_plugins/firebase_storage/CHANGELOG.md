@@ -1,3 +1,31 @@
+## 0.3.7
+
+* Updated Gradle tooling to match Android Studio 3.1.2.
+
+## 0.3.6
+
+* Added support for custom metadata.
+
+## 0.3.5
+
+* Updated iOS implementation to reflect Firebase API changes.
+
+## 0.3.4
+
+* Added timeout properties to FirebaseStorage.
+
+## 0.3.3
+
+* Added support for initialization with a custom Firebase app.
+
+## 0.3.2
+
+* Added support for StorageReference `writeToFile`.
+
+## 0.3.1
+
+* Added support for StorageReference functions: `getParent`, `getRoot`, `getStorage`, `getName`, `getPath`, `getBucket`.
+
 ## 0.3.0
 
 * **Breaking change**. Changed StorageUploadTask to abstract, removed the 'file' field, and made 'path' and 'metadata'

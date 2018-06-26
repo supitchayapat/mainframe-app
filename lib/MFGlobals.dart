@@ -4,6 +4,8 @@ import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/model/MFEvent.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 
 String FBToken = "";
 FirebaseUser currentUser;
@@ -14,6 +16,9 @@ List<MFEvent> events = <MFEvent>[];
 bool hasTips = true;
 String devicePlatform = "";
 List<String> messageLogs = <String>[];
+
+FirebaseAnalytics analytics;
+FirebaseAnalyticsObserver observer;
 
 Future<List<User>> get taggableFriends async {
   if(_taggableFriends.length <= 0) {

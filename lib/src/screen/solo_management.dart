@@ -5,10 +5,10 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
-//import 'package:strings/strings.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'add_dance_partner.dart' as addPartner;
 import 'event_registration.dart' as registration;
 import 'package:myapp/MFGlobals.dart' as global;
@@ -32,6 +32,7 @@ class _solo_managementState extends State<solo_management> {
 
     // logging for crashlytics
     global.messageLogs.add("Solo Participant Management Screen.");
+    AnalyticsUtil.setCurrentScreen("Solo Participant Management", screenClassName: "solo_management");
 
     soloParticipantsListener((users){
       setState(() {
@@ -161,6 +162,9 @@ class _solo_managementState extends State<solo_management> {
                       //couple1 = "_assignCoupleParticipant";
                       // logging for crashlytics
                       global.messageLogs.add("Assign button pressed.");
+                      AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed", params: {
+                        'screen': 'solo_management'
+                      });
                       addPartner.tipsTimer = null;
                       Navigator.of(context).pushNamed("/addPartner");
                     },
@@ -191,6 +195,9 @@ class _solo_managementState extends State<solo_management> {
               onPressed: (){
                 // logging for crashlytics
                 global.messageLogs.add("Add Participant button pressed.");
+                AnalyticsUtil.sendAnalyticsEvent("add_participant_pressed", params: {
+                  'screen': 'solo_management'
+                });
                 if(participantUser != null) {
                   //if(!_listItems.contains("${participantUser.first_name} ${participantUser.last_name}"))
                   if(!_listItems.contains(participantUser)) {

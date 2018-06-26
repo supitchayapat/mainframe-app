@@ -1,3 +1,27 @@
+## 0.5.11
+
+* Updated Gradle tooling to match Android Studio 3.1.2.
+
+## 0.5.10
+
+* Updated iOS implementation to reflect Firebase API changes.
+
+## 0.5.9
+
+* Added support for signing in with a Twitter account.
+
+## 0.5.8
+
+* Added support to reload firebase user
+
+## 0.5.7
+
+* Added support to sendEmailVerification
+
+## 0.5.6
+
+* Added support for linkWithFacebookCredential
+
 ## 0.5.5
 
 * Updated Google Play Services dependencies to version 15.0.0.

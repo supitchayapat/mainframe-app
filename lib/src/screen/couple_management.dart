@@ -9,6 +9,7 @@ import 'package:myapp/src/util/EntryFormUtil.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'add_dance_partner.dart' as addPartner;
 import 'event_registration.dart' as registration;
 import 'package:myapp/MFGlobals.dart' as global;
@@ -34,6 +35,7 @@ class _couple_managementState extends State<couple_management> {
 
     // logging for crashlytics
     global.messageLogs.add("Couple Participant Management Screen.");
+    AnalyticsUtil.setCurrentScreen("Couple Participant Management ", screenClassName: "GroupDance");
 
     coupleParticipantsListener((couples){
       //print("NUMBER OF USERS: ${couples.length}");
@@ -183,6 +185,9 @@ class _couple_managementState extends State<couple_management> {
                       onPressed: () {
                         // logging for crashlytics
                         global.messageLogs.add("Assign button pressed.");
+                        AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed", params: {
+                          'screen': 'couple_management'
+                        });
                         couple1 = "_assignCoupleParticipant";
                         addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
@@ -228,6 +233,9 @@ class _couple_managementState extends State<couple_management> {
                       onPressed: () {
                         // logging for crashlytics
                         global.messageLogs.add("Assign button pressed.");
+                        AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed_2", params: {
+                          'screen': 'couple_management'
+                        });
                         couple2 = "_assignCoupleParticipant";
                         addPartner.tipsTimer = null;
                         Navigator.of(context).pushNamed("/addPartner");
@@ -259,6 +267,9 @@ class _couple_managementState extends State<couple_management> {
                 onPressed: (){
                   // logging for crashlytics
                   global.messageLogs.add("Add Couple button pressed.");
+                  AnalyticsUtil.sendAnalyticsEvent("add_couple_pressed", params: {
+                    'screen': 'couple_management'
+                  });
                   if(couple1 != null && couple2 != null) {
                     if(couple1 != couple2) {
                       saveUserCoupleParticipants(couple1, couple2).then((_coupl){

@@ -7,6 +7,7 @@ import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
 import 'add_dance_partner.dart' as addPartner;
@@ -39,6 +40,7 @@ class _GroupDanceState extends State<GroupDance> {
 
     // logging for crashlytics
     global.messageLogs.add("Group Entry form screen loaded.");
+    AnalyticsUtil.setCurrentScreen("Group Entry Form", screenClassName: "GroupDance");
 
     _dataMap = new HashMap<String, String>();
 
@@ -82,6 +84,9 @@ class _GroupDanceState extends State<GroupDance> {
         && formCoach != null) {
       // logging for crashlytics
       global.messageLogs.add("Saving entry form.");
+      AnalyticsUtil.sendAnalyticsEvent("saving_entry_form", params: {
+        'screen': 'GroupDance'
+      });
       print("saving datamap: $_dataMap");
 
       Map freeform = {};
@@ -368,7 +373,9 @@ class _GroupDanceState extends State<GroupDance> {
         onTap: () {
           // logging for crashlytics
           global.messageLogs.add("Save button pressed.");
-
+          AnalyticsUtil.sendAnalyticsEvent("save_button_pressed", params: {
+            'screen': 'GroupDance'
+          });
           if(!isPaid && formParticipant?.members != null) {
             _handleSaving();
           } else {

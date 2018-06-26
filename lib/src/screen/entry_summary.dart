@@ -9,6 +9,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var participantEntries;
 var eventEntries;
@@ -40,6 +41,7 @@ class _entry_summaryState extends State<entry_summary> {
 
     // logging for crashlytics
     global.messageLogs.add("Entry Summary Screen load.");
+    AnalyticsUtil.setCurrentScreen("Entry Summary", screenClassName: "MainScreen");
 
     tipsTimer = ShowTips.showTips(context, "entrySummary");
 
@@ -395,6 +397,9 @@ class _entry_summaryState extends State<entry_summary> {
                 onTap: (){
                   // logging for crashlytics
                   global.messageLogs.add("Pay Fees button pressed.");
+                  AnalyticsUtil.sendAnalyticsEvent("pay_fees_pressed", params: {
+                    'screen': 'entry_summary'
+                  });
                   if(_total > 0.0) {
                     checkout.totalAmount = _total;
                     Navigator.of(context).pushNamed("/checkoutEntry");

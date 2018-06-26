@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,7 +19,7 @@ const String kMockAccessToken = '67890';
 const String kMockCustomToken = '12345';
 
 void main() {
-  /*group('$FirebaseAuth', () {
+  group('$FirebaseAuth', () {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final List<MethodCall> log = <MethodCall>[];
 
@@ -190,6 +190,24 @@ void main() {
       );
     });
 
+    test('linkWithFacebookCredential', () async {
+      final FirebaseUser user = await auth.linkWithFacebookCredential(
+        accessToken: kMockAccessToken,
+      );
+      verifyUser(user);
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'linkWithFacebookCredential',
+            arguments: <String, String>{
+              'accessToken': kMockAccessToken,
+            },
+          ),
+        ],
+      );
+    });
+
     test('signInWithFacebook', () async {
       final FirebaseUser user = await auth.signInWithFacebook(
         accessToken: kMockAccessToken,
@@ -223,6 +241,44 @@ void main() {
               'email': kMockEmail,
               'password': kMockPassword,
             },
+          ),
+        ],
+      );
+    });
+
+    test('sendEmailVerification', () async {
+      final FirebaseUser user = await auth.currentUser();
+      await user.sendEmailVerification();
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'currentUser',
+            arguments: null,
+          ),
+          isMethodCall(
+            'sendEmailVerification',
+            arguments: null,
+          ),
+        ],
+      );
+    });
+
+    test('reload', () async {
+      final FirebaseUser user = await auth.currentUser();
+      await user.reload();
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'currentUser',
+            arguments: null,
+          ),
+          isMethodCall(
+            'reload',
+            arguments: null,
           ),
         ],
       );
@@ -325,7 +381,7 @@ void main() {
         ],
       );
     });
-  });*/
+  });
 }
 
 Map<String, dynamic> mockFirebaseUser(

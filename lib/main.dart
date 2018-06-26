@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameRoute.dart';
 import 'src/util/CrashlyticsReport.dart';
+import 'src/util/AnalyticsUtil.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 
 /*
   Author: Art
@@ -20,7 +23,14 @@ class DanceFrameApp extends StatefulWidget {
 class _DanceFrameApp extends State<DanceFrameApp> {
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    AnalyticsUtil.initializeAnalytics();
 
     FlutterError.onError = (errorDetails) {
       print("MAIN caught errors: ${errorDetails.stack.toString()}");
@@ -42,6 +52,7 @@ class _DanceFrameApp extends State<DanceFrameApp> {
     return new MaterialApp(
       onGenerateRoute: getMainFrameOnRoute,
       routes: getMainFrameRoute(),
+      navigatorObservers: <NavigatorObserver>[AnalyticsUtil.observer],
       theme: theme,
     );
   }

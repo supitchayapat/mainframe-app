@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class MainFrameSplash extends StatefulWidget {
 
@@ -19,6 +20,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
     // logging for crashlytics
     // CrashlyticsReport.logMessage("Splash Screen Page load");
     global.messageLogs.add("Splash Screen Page Load.");
+    AnalyticsUtil.setCurrentScreen("Splash Screen", screenClassName: "SplashScreen");
 
     // set portrait mode
     MframePlugins.setToPortrait();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 /*
   Author: Art
@@ -70,6 +71,9 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
   void _MFMenuPressed(_MenuContent content) {
     // crashlytics logging
     global.messageLogs.add("SideNav menu button pressed [${content.menuLabel}]");
+    AnalyticsUtil.sendAnalyticsEvent("sidenav_menu_press", params: {
+      'screen': 'main_drawer'
+    });
 
     Navigator.of(context).pop(); // Dismiss the drawer.
 

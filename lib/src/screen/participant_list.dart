@@ -13,6 +13,7 @@ import 'package:myapp/src/util/EntryFormUtil.dart';
 //import 'package:strings/strings.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var participantType;
 var groupCounter;
@@ -38,6 +39,7 @@ class _participant_listState extends State<participant_list> {
 
     // logging for crashlytics
     global.messageLogs.add("Participants List Screen Load.");
+    AnalyticsUtil.setCurrentScreen("Participants List", screenClassName: "participant_list");
 
     tipsTimer = ShowTips.showTips(context, "participantsList");
 
@@ -134,6 +136,9 @@ class _participant_listState extends State<participant_list> {
         onTap: () {
           // logging for crashlytics
           global.messageLogs.add("Selected Participant [$key]");
+          AnalyticsUtil.sendAnalyticsEvent("select_participant_press", params: {
+            'screen': 'participant_list'
+          });
           setState((){
             registration.participant = {
               "name": key,
@@ -318,6 +323,9 @@ class _participant_listState extends State<participant_list> {
               case 'solo':
                 // logging for crashlytics
                 global.messageLogs.add("Create new Solo Participant button");
+                AnalyticsUtil.sendAnalyticsEvent("create_solo_press", params: {
+                  'screen': 'participant_list'
+                });
                 participantType = "solo";
                 solo.participantUser = null;
                 solo.tipsTimer = null;
@@ -326,6 +334,9 @@ class _participant_listState extends State<participant_list> {
               case 'couple':
                 // logging for crashlytics
                 global.messageLogs.add("Create new Couple Participant button");
+                AnalyticsUtil.sendAnalyticsEvent("create_couple_press", params: {
+                  'screen': 'participant_list'
+                });
                 participantType = "couple";
                 coupleMgt.couple1 = null;
                 coupleMgt.couple2 = null;
@@ -335,6 +346,9 @@ class _participant_listState extends State<participant_list> {
               case 'group':
                 // logging for crashlytics
                 global.messageLogs.add("Create new Group Participant button");
+                AnalyticsUtil.sendAnalyticsEvent("create_group_press", params: {
+                  'screen': 'participant_list'
+                });
                 setState((){
                   groupCounter = groupCounter != null ? groupCounter+1 : 1;
                   registration.participant = {

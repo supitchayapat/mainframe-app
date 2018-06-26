@@ -8,8 +8,6 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
-  - crashlytics (0.0.1):
-    - Flutter
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
   - Fabric (1.7.6)
@@ -21,21 +19,29 @@ PODS:
     - FBSDKCoreKit
   - FBSDKShareKit (4.28.0):
     - FBSDKCoreKit
-  - Firebase/Auth (4.7.0):
+  - Firebase/Auth (5.0.1):
+    - Firebase/CoreOnly
+    - FirebaseAuth (= 5.0.0)
+  - Firebase/Core (5.0.1):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.0.0)
+  - Firebase/CoreOnly (5.0.1):
+    - FirebaseCore (= 5.0.1)
+  - Firebase/Database (5.0.1):
+    - Firebase/CoreOnly
+    - FirebaseDatabase (= 5.0.0)
+  - Firebase/DynamicLinks (5.0.1):
     - Firebase/Core
-    - FirebaseAuth (= 4.4.0)
-  - Firebase/Core (4.7.0):
-    - FirebaseAnalytics (= 4.0.5)
-    - FirebaseCore (= 4.0.12)
-  - Firebase/Database (4.7.0):
+    - FirebaseDynamicLinks (= 3.0.0)
+  - Firebase/Performance (5.0.1):
     - Firebase/Core
-    - FirebaseDatabase (= 4.1.2)
-  - Firebase/DynamicLinks (4.7.0):
+    - FirebasePerformance (= 2.0.0)
+  - Firebase/Storage (5.0.1):
+    - Firebase/CoreOnly
+    - FirebaseStorage (= 3.0.0)
+  - firebase_analytics (0.0.1):
     - Firebase/Core
-    - FirebaseDynamicLinks (= 2.3.0)
-  - Firebase/Storage (4.7.0):
-    - Firebase/Core
-    - FirebaseStorage (= 2.1.0)
+    - Flutter
   - firebase_auth (0.0.1):
     - Firebase/Auth
     - Firebase/Core
@@ -48,43 +54,52 @@ PODS:
     - Flutter
   - firebase_dynamic_link (0.0.1):
     - Flutter
+  - firebase_performance (0.0.1):
+    - Firebase/Core
+    - Firebase/Performance
+    - Flutter
   - firebase_storage (0.0.1):
     - Firebase/Storage
     - Flutter
-  - FirebaseAnalytics (4.0.5):
-    - FirebaseCore (~> 4.0)
-    - FirebaseInstanceID (~> 2.0)
+  - FirebaseAnalytics (5.0.0):
+    - FirebaseCore (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - nanopb (~> 0.3)
-  - FirebaseAuth (4.4.0):
-    - FirebaseAnalytics (~> 4.0)
-    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+  - FirebaseAuth (5.0.0):
+    - FirebaseCore (~> 5.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseCore (4.0.12):
+  - FirebaseCore (5.0.1):
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-  - FirebaseDatabase (4.1.2):
-    - FirebaseAnalytics (~> 4.0)
-    - FirebaseCore (~> 4.0)
+  - FirebaseDatabase (5.0.0):
+    - FirebaseCore (~> 5.0)
     - leveldb-library (~> 1.18)
-  - FirebaseDynamicLinks (2.3.0):
-    - FirebaseAnalytics (~> 4.0)
-  - FirebaseInstanceID (2.0.7)
-  - FirebaseStorage (2.1.0):
-    - FirebaseAnalytics (~> 4.0)
-    - FirebaseCore (~> 4.0)
+  - FirebaseDynamicLinks (3.0.0):
+    - FirebaseAnalytics (~> 5.0)
+  - FirebaseInstanceID (3.0.0):
+    - FirebaseCore (~> 5.0)
+  - FirebasePerformance (2.0.0):
+    - FirebaseAnalytics (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
+    - FirebaseSwizzlingUtilities/ISASwizzling (~> 2.0)
+    - FirebaseSwizzlingUtilities/MethodSwizzling (~> 2.0)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
+    - Protobuf (~> 3.5)
+  - FirebaseStorage (3.0.0):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseSwizzlingUtilities/ISASwizzling (2.0.0)
+  - FirebaseSwizzlingUtilities/MethodSwizzling (2.0.0):
+    - FirebaseCore (~> 5.0)
   - Flutter (1.0.0)
-  - GoogleToolboxForMac/DebugUtils (2.1.3):
-    - GoogleToolboxForMac/Defines (= 2.1.3)
-  - GoogleToolboxForMac/Defines (2.1.3)
-  - "GoogleToolboxForMac/NSData+zlib (2.1.3)":
-    - GoogleToolboxForMac/Defines (= 2.1.3)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.3)":
-    - GoogleToolboxForMac/DebugUtils (= 2.1.3)
-    - GoogleToolboxForMac/Defines (= 2.1.3)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.3)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.1.3)"
-  - GTMSessionFetcher/Core (1.1.12)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - GoogleToolboxForMac/Logger (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GTMSessionFetcher/Core (1.1.15)
   - leveldb-library (1.20)
   - mframe_plugins (0.0.1):
     - Flutter
@@ -95,6 +110,7 @@ PODS:
   - nanopb/encode (0.3.8)
   - path_provider (0.0.1):
     - Flutter
+  - Protobuf (3.5.0)
   - Stripe (11.5.0)
   - stripe_plugin (0.0.1):
     - Flutter
@@ -104,17 +120,18 @@ PODS:
 DEPENDENCIES:
   - APAddressBook
   - Crashlytics
-  - crashlytics (from `/Users/macbook/Documents/flProjects/myapp/crashlytics/ios`)
   - Fabric
   - facebook_sign_in (from `/Users/macbook/Documents/flProjects/myapp/FB-Signin-Plugin/ios`)
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
   - Firebase/DynamicLinks
+  - firebase_analytics (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_analytics/ios`)
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
   - firebase_core (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
+  - firebase_performance (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_performance/ios`)
   - firebase_storage (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios`)
   - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
@@ -139,18 +156,21 @@ SPEC REPOS:
     - FirebaseDatabase
     - FirebaseDynamicLinks
     - FirebaseInstanceID
+    - FirebasePerformance
     - FirebaseStorage
+    - FirebaseSwizzlingUtilities
     - GoogleToolboxForMac
     - GTMSessionFetcher
     - leveldb-library
     - nanopb
+    - Protobuf
     - Stripe
 
 EXTERNAL SOURCES:
-  crashlytics:
-    :path: "/Users/macbook/Documents/flProjects/myapp/crashlytics/ios"
   facebook_sign_in:
     :path: "/Users/macbook/Documents/flProjects/myapp/FB-Signin-Plugin/ios"
+  firebase_analytics:
+    :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_analytics/ios"
   firebase_auth:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios"
   firebase_core:
@@ -159,6 +179,8 @@ EXTERNAL SOURCES:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios"
   firebase_dynamic_link:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios"
+  firebase_performance:
+    :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_performance/ios"
   firebase_storage:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios"
   Flutter:
@@ -176,32 +198,36 @@ SPEC CHECKSUMS:
   APAddressBook: e68ecaf95f2c323b625ae585a0d25fe505291286
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  crashlytics: 112c4471521aaf65cfa232fb17a62b3f2bd9e2fa
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   facebook_sign_in: 09726fb53eb5157ad64b5e8bfda7399cd963ec89
   FBSDKCoreKit: ca961e279113f691fd83dc634c0bbad9d4e3f370
   FBSDKLoginKit: b077381c27d800f21661757e8140cf2c80a91e4a
   FBSDKShareKit: 4f525556e0df4cf0f574cb3f01c675434f29d477
-  Firebase: dbfb98ccec2dcfcd21ab9cc1b4981a3f3c8c5e26
+  Firebase: d6861c2059d8c32d1e6dd8932e22ada346d90a3a
+  firebase_analytics: fcc60a9de4b8e07aa5af8941303a7f5fe6e0383f
   firebase_auth: 27a5a77a032d557c18f8e223aaf8ec1368f6cdbc
   firebase_core: c96aa8b2fcf7f5167d32f22034f502f9304952b8
   firebase_database: dd62ab9f71967c9011ce2fd03a89e762dcc364df
   firebase_dynamic_link: 6dac3d3fdb6de3e8d7f1ae251b90519e78422796
+  firebase_performance: 66d2630faa8a2281681ed710d6d39dd49151cd8c
   firebase_storage: e34d30ff8bb57e691191b70e9d255ec2eba2351f
-  FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
-  FirebaseAuth: cdeee95b528958dbb7dcf220ad0fb804d3a284b0
-  FirebaseCore: 6cf108b63997bc08c04a1ffa55a3ac0d71a59ffc
-  FirebaseDatabase: 18ecb23e15c7f58bb0c4527e9cace06897cc40ca
-  FirebaseDynamicLinks: b75f5b4dcfc3c9b7889e1283632359e5431264e7
-  FirebaseInstanceID: 148c25c986c8699e67304b114e365713dce467f2
-  FirebaseStorage: 0930e97994dc79b404179bdfafb6b16f59433a82
+  FirebaseAnalytics: 19812b49fa5f283dd6b23edf8a14b5d477029ab8
+  FirebaseAuth: acbeef02fe7c3a26624e309849f3fe30c84115af
+  FirebaseCore: cafc814b2d84fc8733f09e653041cc2165332ad7
+  FirebaseDatabase: 697eb53e5b4fe7cd4fa8756c1f82a9fca011345f
+  FirebaseDynamicLinks: c70e8ef2f267f13459db89b8816b13a06b2278d2
+  FirebaseInstanceID: 83e0040351565df711a5db3d8ebe5ea21aca998a
+  FirebasePerformance: 1ec6c40e5dad2543ca4c4f25d15168bde6322c2c
+  FirebaseStorage: 7ca4bb7b58a25fa647b04f524033fc7cb7eb272b
+  FirebaseSwizzlingUtilities: 6c22677c50d0b6f5f0dc637c1233f13694a3003f
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   mframe_plugins: d98071381746f69dfd95911ffe122fab2b1443c0
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
+  Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   Stripe: 10761682d20dc491c52287393c800db056c9748d
   stripe_plugin: da7f60220f621bb71a954c8059c45947897942f7
   url_launcher: 92b89c1029a0373879933c21642958c874539095

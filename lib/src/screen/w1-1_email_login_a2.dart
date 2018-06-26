@@ -8,6 +8,7 @@ import 'package:myapp/src/demo/demo.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class EmailLogin extends StatefulWidget {
   @override
@@ -27,11 +28,15 @@ class _EmailLoginState extends State<EmailLogin> {
     _user = new User();
     // crashlytics logging
     global.messageLogs.add("Email Login Screen Loaded.");
+    AnalyticsUtil.setCurrentScreen("Email Login", screenClassName: "email_a2");
   }
 
   void _handleSignUp() {
     // crashlytics logging
     global.messageLogs.add("Sign-up button pressed.");
+    AnalyticsUtil.sendAnalyticsEvent("signup_btn_press", params: {
+      'screen': 'email_a2'
+    });
 
     FormState form = _signUpFormKey.currentState;
     if(!form.validate()) {
@@ -59,6 +64,9 @@ class _EmailLoginState extends State<EmailLogin> {
     FormState form = _formKey.currentState;
     // crashlytics logging
     global.messageLogs.add("Login button pressed.");
+    AnalyticsUtil.sendAnalyticsEvent("login_btn_press", params: {
+      'screen': 'email_a2'
+    });
 
     if(!form.validate()) {
       //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
@@ -132,6 +140,9 @@ class _EmailLoginState extends State<EmailLogin> {
                       onPressed: () {
                         // crashlytics logging
                         global.messageLogs.add("Forgot password pressed.");
+                        AnalyticsUtil.sendAnalyticsEvent("fogot_pwd_press", params: {
+                          'screen': 'email_a2'
+                        });
                         Navigator.of(context).pushNamed("/forgot-password");
                       },
                       child: new Text("Forgot Password?", style: new TextStyle(color: Colors.grey, fontSize: 16.0)),

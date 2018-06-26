@@ -6,6 +6,7 @@ import 'package:myapp/src/widget/MFTextFormField.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:validator/validator.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 class ProfileSetupName extends StatefulWidget {
@@ -31,6 +32,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
     super.initState();
 
     global.messageLogs.add("Profile Setup 1 Screen Loaded.");
+    AnalyticsUtil.setCurrentScreen("Profile Setup 1", screenClassName: "GroupDance");
 
     print("INIT STATE PROFILE SETUP....");
     if(global.dancePartner == null) {

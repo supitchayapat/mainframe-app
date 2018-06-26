@@ -8,7 +8,7 @@ import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:myapp/src/util/CrashlyticsReport.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var eventItem;
 
@@ -30,6 +30,7 @@ class _EventDetailsState extends State<EventDetails> {
 
     // logging for crashlytics
     global.messageLogs.add("[${eventItem?.eventTitle}] Event Details Page Load.");
+    AnalyticsUtil.setCurrentScreen("Event Details", screenClassName: "event_details");
 
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
@@ -76,6 +77,9 @@ class _EventDetailsState extends State<EventDetails> {
                 new InkWell(
                   onTap: (){
                     global.messageLogs.add("Website link tapped. Navigate to ${eventItem?.website}");
+                    AnalyticsUtil.sendAnalyticsEvent("navigate_web", params: {
+                      'screen': 'event_details'
+                    });
                     if(eventItem?.website != null) {
                       if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
                         _launchUrl(eventItem?.website);
@@ -417,6 +421,9 @@ class _EventDetailsState extends State<EventDetails> {
               new InkWell(
                 onTap: (){
                   global.messageLogs.add("Register button tapped.");
+                  AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
+                    'screen': 'event_details'
+                  });
                   eventInfo.eventItem = eventItem;
                   eventInfo.participant = null;
                   if(_floatText == "Register") {

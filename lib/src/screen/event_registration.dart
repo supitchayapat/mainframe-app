@@ -21,7 +21,7 @@ import 'package:myapp/MFGlobals.dart' as global;
 //import 'package:strings/strings.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
-import 'package:myapp/src/util/CrashlyticsReport.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var eventItem;
 var participant;
@@ -93,6 +93,7 @@ class _event_registrationState extends State<event_registration> {
 
     // logging for crashlytics
     global.messageLogs.add("Event Registration Load.");
+    AnalyticsUtil.setCurrentScreen("Event Registration", screenClassName: "event_registration");
 
     _initSummary();
 
@@ -420,6 +421,9 @@ class _event_registrationState extends State<event_registration> {
                         onPressed: () {
                           // logging for crashlytics
                           global.messageLogs.add("Entry form button pressed.");
+                          AnalyticsUtil.sendAnalyticsEvent("entry_form_press", params: {
+                            'screen': 'event_registration'
+                          });
                           bool hasDataEntry = false;
                           if(_eventEntries != null) {
                             _eventEntries.forEach((_pushId, _entryVal){
@@ -672,6 +676,9 @@ class _event_registrationState extends State<event_registration> {
                       onPressed: (){
                         // logging for crashlytics
                         global.messageLogs.add("Select Participants tapped.");
+                        AnalyticsUtil.sendAnalyticsEvent("select_participants_press", params: {
+                          'screen': 'event_registration'
+                        });
                         participant = null;
                         partList.participants = _participants;
                         Navigator.of(context).pushNamed("/participants");
@@ -722,6 +729,9 @@ class _event_registrationState extends State<event_registration> {
               onPressed: (){
                 // logging for crashlytics
                 global.messageLogs.add("Add to Event button tapped.");
+                AnalyticsUtil.sendAnalyticsEvent("add_to_event", params: {
+                  'screen': 'event_registration'
+                });
                 _handleAddEventParticipant();
               },
             ),
@@ -802,6 +812,9 @@ class _event_registrationState extends State<event_registration> {
                 onTap: (){
                   // logging for crashlytics
                   global.messageLogs.add("Proceed button tapped.");
+                  AnalyticsUtil.sendAnalyticsEvent("proceed_btn_press", params: {
+                    'screen': 'event_registration'
+                  });
                   if(_participantEntries.length > 0) {
                     if(_participants.length == _participantEntries.length) {
                       print(_participantEntries);

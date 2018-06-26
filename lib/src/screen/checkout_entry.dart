@@ -17,6 +17,7 @@ import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
+import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var totalAmount;
 
@@ -48,6 +49,7 @@ class _checkout_entryState extends State<checkout_entry> {
 
     // logging for crashlytics
     global.messageLogs.add("Checkout Screen loaded.");
+    AnalyticsUtil.setCurrentScreen("Checkout Screen", screenClassName: "checkout_entry");
 
     /*Timer periodic = new Timer.periodic(new Duration(seconds: 5), (timer){
       print(timer);
@@ -465,6 +467,9 @@ class _checkout_entryState extends State<checkout_entry> {
                       onTap: (){
                         // logging for crashlytics
                         global.messageLogs.add("Pay Entry button pressed");
+                        AnalyticsUtil.sendAnalyticsEvent("pay_entry_pressed", params: {
+                          'screen': 'checkout_entry'
+                        });
                         _handlePayment();
                       },
                       child: new Container(
