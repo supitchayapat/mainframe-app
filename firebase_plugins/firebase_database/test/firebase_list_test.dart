@@ -6,11 +6,11 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_list.dart';
-//import 'package:mockito/mockito.dart';
+import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 void main() {
-  /*group('FirebaseList', () {
+  group('FirebaseList', () {
     StreamController<Event> onChildAddedStreamController;
     StreamController<Event> onChildRemovedStreamController;
     StreamController<Event> onChildChangedStreamController;
@@ -167,10 +167,10 @@ void main() {
       );
       expect(list, <DataSnapshot>[snapshot2, snapshot3, snapshot1]);
     });
-  });*/
+  });
 }
 
-/*class MockQuery extends Mock implements Query {
+class MockQuery extends Mock implements Query {
   MockQuery(
     this.onChildAdded,
     this.onChildRemoved,
@@ -189,7 +189,7 @@ void main() {
 
   @override
   final Stream<Event> onChildMoved;
-}*/
+}
 
 class ListChange {
   ListChange.at(int index, DataSnapshot snapshot)
