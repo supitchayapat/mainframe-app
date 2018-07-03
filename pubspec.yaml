@@ -11,7 +11,7 @@ dependencies:
   firebase_database:
     path: firebase_plugins/firebase_database
   firebase_dynamic_link:
-    path: firebase_plugins/firebase_dynamic_link
+    path: firebase_plugins/firebase_dynamic_links
   firebase_storage:
     path: firebase_plugins/firebase_storage
   firebase_analytics:
