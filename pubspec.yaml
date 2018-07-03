@@ -10,7 +10,7 @@ dependencies:
   #firebase_database: 0.4.4
   firebase_database:
     path: firebase_plugins/firebase_database
-  firebase_dynamic_link:
+  firebase_dynamic_links:
     path: firebase_plugins/firebase_dynamic_links
   firebase_storage:
     path: firebase_plugins/firebase_storage
