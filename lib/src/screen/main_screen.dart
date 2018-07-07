@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/EventsWidget.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:firebase_dynamic_link/firebase_dynamic_link.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:mframe_plugins/mframe_plugins.dart';
@@ -24,6 +25,30 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.popUntil(context, (_) => !Navigator.canPop(context));
     Navigator.of(context).pushNamed("/");
   }*/
+
+  Future<void> _retrieveDynamicLink() async {
+    final PendingDynamicLinkData data =
+    await FirebaseDynamicLinks.instance.retrieveDynamicLink();
+    final Uri deepLink = data?.link;
+
+    if (deepLink != null) {
+      print("deepLink path: ${deepLink.path}");
+      //Navigator.pushNamed(context, deepLink.path);
+      String _link = deepLink.path;
+      if(_link.contains("/")) {
+        List<String> nav = _link.split("/");
+        if(nav.length > 2) {
+          String _navId = nav[2];
+          EventDao.getEvent(nav[2]).then((evt){
+              eventInfo.eventItem = evt;
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushNamed("/${nav[1]}");
+              });
+          });
+        }
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -52,24 +77,7 @@ class _MainScreenState extends State<MainScreen> {
     global.taggableFriends.then((val){});
 
     // get dynamic link with firebase
-    FirebaseDynamicLink.getDynamicLink().then((String _link){
-      if(_link != null) {
-        if(_link.contains("/")) {
-          List<String> nav = _link.split("/");
-          if(nav.length > 2) {
-            String _navId = nav[2];
-            EventDao.getEvent(nav[2]).then((evt){
-              eventInfo.eventItem = evt;
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushNamed("/${nav[1]}");
-              });
-            });
-          }
-        }
-      }
-    }).catchError((error){
-      print("Error: $error");
-    });
+    _retrieveDynamicLink();
 
     // check user is deleted on firebase console
     remove_listener = removeUserListener((event){

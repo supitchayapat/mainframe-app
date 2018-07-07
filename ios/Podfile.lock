@@ -52,7 +52,8 @@ PODS:
   - firebase_database (0.0.1):
     - Firebase/Database
     - Flutter
-  - firebase_dynamic_link (0.0.1):
+  - firebase_dynamic_links (0.0.1):
+    - Firebase/DynamicLinks
     - Flutter
   - firebase_performance (0.0.1):
     - Firebase/Core
@@ -130,10 +131,10 @@ DEPENDENCIES:
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
   - firebase_core (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
-  - firebase_dynamic_link (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios`)
+  - firebase_dynamic_links (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_links/ios`)
   - firebase_performance (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_performance/ios`)
   - firebase_storage (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
   - Stripe
@@ -177,14 +178,14 @@ EXTERNAL SOURCES:
     :path: "/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios"
   firebase_database:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios"
-  firebase_dynamic_link:
-    :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_link/ios"
+  firebase_dynamic_links:
+    :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_links/ios"
   firebase_performance:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_performance/ios"
   firebase_storage:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios"
   Flutter:
-    :path: "/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios"
+    :path: "/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release"
   mframe_plugins:
     :path: "/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios"
   path_provider:
@@ -208,7 +209,7 @@ SPEC CHECKSUMS:
   firebase_auth: 27a5a77a032d557c18f8e223aaf8ec1368f6cdbc
   firebase_core: c96aa8b2fcf7f5167d32f22034f502f9304952b8
   firebase_database: dd62ab9f71967c9011ce2fd03a89e762dcc364df
-  firebase_dynamic_link: 6dac3d3fdb6de3e8d7f1ae251b90519e78422796
+  firebase_dynamic_links: 4b65a189d7356540f9578e98185c6554d478a8d2
   firebase_performance: 66d2630faa8a2281681ed710d6d39dd49151cd8c
   firebase_storage: e34d30ff8bb57e691191b70e9d255ec2eba2351f
   FirebaseAnalytics: 19812b49fa5f283dd6b23edf8a14b5d477029ab8
