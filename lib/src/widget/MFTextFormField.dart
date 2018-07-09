@@ -188,7 +188,7 @@ class _DateTimePicker extends StatelessWidget {
           flex: 4,
           child: new _InputDropdown(
             labelText: labelText,
-            valueText: new DateFormat("MMMM d, yyyy").format(selectedDate),
+            valueText: new DateFormat("yMMMMd").format(selectedDate),
             valueStyle: valueStyle,
             onPressed: () { _selectDate(context); },
           ),

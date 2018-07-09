@@ -34,17 +34,20 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     print("INIT CATEGORY.....");
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
-        if (usr.category == null) {
-          categoryVal = "";
-        }
-        else {
-          categoryVal =
-              usr.category.toString()
-                  .replaceAll("DanceCategory.", "")
-                  .toUpperCase();
-        }
-        _user = usr;
-        _user.category = getDanceCategoryFromString(categoryVal);
+
+        setState(() {
+          if (usr.category == null) {
+            categoryVal = "";
+          }
+          else {
+            categoryVal =
+                usr.category.toString()
+                    .replaceAll("DanceCategory.", "")
+                    .toUpperCase();
+          }
+          _user = usr;
+          _user.category = getDanceCategoryFromString(categoryVal);
+        });
       });
     } else {
       setState((){

@@ -110,6 +110,7 @@ class _MainFrameDrawerState extends State<MainFrameDrawer> with TickerProviderSt
       //new _MenuContent("Industry News", "", "mainframe_assets/icons/noun_1129072_cc@2x.png", false, false),
       //new _MenuContent("ACCOUNT", "", null, true, false),
       //new _MenuContent("Settings", "", "mainframe_assets/icons/noun_1098180_cc@2x.png", false, false),
+      new _MenuContent("Edit Profile", "/profilesetup-1", "", false, false, menuIcon: Icons.person),
       new _MenuContent("Logout", _logoutUser, "mainframe_assets/icons/noun_1037967_cc@2x.png", false, false),
       //new _MenuContent("TECH SUPPORT", "", null, true, false),
       new _MenuContent("Show Tips "+(global.hasTips ? "[ON]" : "[OFF]"), _showTips, "", false, false, menuIcon: Icons.lightbulb_outline),

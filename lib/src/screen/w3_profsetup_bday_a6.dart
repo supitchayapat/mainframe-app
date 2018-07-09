@@ -66,19 +66,23 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
     print("INIT BDAY.....");
     if(global.dancePartner == null) {
       getCurrentUserProfile().then((usr) {
-        if (usr.birthday != null) {
-          _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
-        }
-        else {
-          _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
-        }
-        if (usr.gender == null) {
-          genderVal = "MAN";
-        } else {
-          genderVal =
-              usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
-        }
-        _user = usr;
+
+        setState(() {
+          if (usr.birthday != null) {
+            _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
+            print("bdayCtrl: ${_bdayCtrl.text}");
+          }
+          else {
+            _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
+          }
+          if (usr.gender == null) {
+            genderVal = "";
+          } else {
+            genderVal =
+                usr.gender.toString().replaceAll("Gender.", "").toUpperCase();
+          }
+          _user = usr;
+        });
       });
     } else {
       // setup for dance partner
@@ -88,7 +92,6 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
         _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
       });
     }
-    print("BIRTHDAY: ${_bdayCtrl.text}");
   }
 
   String _validateBirthday(String val) {
