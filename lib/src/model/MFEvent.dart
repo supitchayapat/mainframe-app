@@ -264,12 +264,16 @@ class MFEvent {
       var _admission = s["forms"]["admission"];
       if(_forms != null) {
         formEntries = [];
-        _forms.forEach((val) {
-          FormEntry entry = new FormEntry.fromSnapshot(val);
-          formEntries.add(entry);
-          formEntries.sort((a, b) => (a.order).compareTo(b.order));
-          print(entry.toJson());
-        });
+        if(_forms is List) {
+          _forms.forEach((val) {
+            FormEntry entry = new FormEntry.fromSnapshot(val);
+            formEntries.add(entry);
+            formEntries.sort((a, b) => (a.order).compareTo(b.order));
+            print(entry.toJson());
+          });
+        } else {
+          formEntries.add(_forms);
+        }
       }
       if(_admission != null) {
         admission = new Admission.fromSnapshot(_admission);
