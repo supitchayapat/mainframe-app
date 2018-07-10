@@ -159,7 +159,7 @@ class Finance {
 
 class MFEvent {
 
-  final formatterOut = new DateFormat("MMM dd");
+  final formatterOut = new DateFormat("MMM d");
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
   String id;
@@ -205,7 +205,11 @@ class MFEvent {
     startDate = formatterSrc.parse(s["info"]["dateStart"]);
     stopDate = formatterSrc.parse(s["info"]["dateStop"]);
     deadline = s["info"]["deadline"] != null ? formatterSrc.parse(s["info"]["deadline"]) : null;
-    dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
+    if(startDate == stopDate) {
+      dateRange = "${formatterOut.format(startDate)}";
+    } else {
+      dateRange = "${formatterOut.format(startDate)} - ${formatterOut.format(stopDate)}";
+    }
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
     website = s["info"]["website"] ?? "";

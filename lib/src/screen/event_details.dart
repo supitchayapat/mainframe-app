@@ -35,7 +35,11 @@ class _EventDetailsState extends State<EventDetails> {
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
       //eventRange = eventItem.dateRange;
-      eventRange = "${formatterOut.format(eventItem.startDate)} - ${formatterOut.format(eventItem.stopDate)}";
+      if(eventItem.startDate == eventItem.stopDate) {
+        eventRange = "${formatterOut.format(eventItem.startDate)}";
+      } else {
+        eventRange = "${formatterOut.format(eventItem.startDate)} - ${formatterOut.format(eventItem.stopDate)}";
+      }
     }
 
     // check if registration is open
@@ -326,7 +330,7 @@ class _EventDetailsState extends State<EventDetails> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       new Container(child: new Text(eventTitle, style: new TextStyle(fontSize: 22.0))),
-                      new Text("$eventRange  ${eventItem.year}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)))
+                      new Text("$eventRange ${eventItem.year}", style: new TextStyle(fontSize: 16.0, color: new Color(0xff00e5ff)))
                     ],
                   )
                 ),
