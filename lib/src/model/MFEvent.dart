@@ -272,7 +272,8 @@ class MFEvent {
             print(entry.toJson());
           });
         } else {
-          formEntries.add(_forms);
+          FormEntry entry = new FormEntry.fromSnapshot(_forms);
+          formEntries.add(entry);
         }
       }
       if(_admission != null) {
