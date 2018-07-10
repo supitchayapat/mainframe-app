@@ -6,6 +6,7 @@ import 'package:validator/validator.dart';
 import 'package:myapp/src/model/MFEvent.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:myapp/src/dao/ConfigDao.dart';
 
 String FBToken = "";
 FirebaseUser currentUser;
@@ -60,6 +61,10 @@ set setDancePartner(String name) {
     }
     dancePartner = new User(first_name: fname, last_name: lname);
   }
+}
+
+Future getAOFlag() async {
+  return await ConfigDao.getAOFlag();
 }
 
 resetGlobal() {

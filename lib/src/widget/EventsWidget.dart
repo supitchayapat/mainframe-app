@@ -32,6 +32,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   bool pastEventRunning = false;
   bool fileUtilRunning = false;
   Timer _performanceTimer;
+  bool aoFlag;
 
   void _menuPressed() {
     _scaffoldKey.currentState.openDrawer();
@@ -73,7 +74,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   void _renderEvents() {
     double scrnWidth = MediaQuery.of(context).size.width;
     bool triggerRegistrationFilter = false;
-    if(global.devicePlatform == "ios" && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
+    if(global.devicePlatform == "ios" && (aoFlag != null && !aoFlag)) {
       triggerRegistrationFilter = true;
     }
 
@@ -172,6 +173,13 @@ class _EventsWidgetState extends State<EventsWidget> {
 
     // start performance check
     PerformanceUtil.startTrace("event_list");
+
+    global.getAOFlag().then((_aoFlag){
+      print("GLOBAL AO: ${_aoFlag}");
+      setState(() {
+        aoFlag = _aoFlag;
+      });
+    });
 
     // loading indicator set
     listTiles.add(

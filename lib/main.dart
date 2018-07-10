@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameRoute.dart';
 import 'src/util/CrashlyticsReport.dart';
 import 'src/util/AnalyticsUtil.dart';
+import 'MFGlobals.dart' as global;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 
@@ -36,7 +37,9 @@ class _DanceFrameApp extends State<DanceFrameApp> {
       print("MAIN caught errors: ${errorDetails.stack.toString()}");
       print("LOGGING ONCRASHLYTICS");
       //MainFrameCrashReport.send(errorDetails.exception.toString());
-      CrashlyticsReport.logException(errorDetails.exceptionAsString());
+      if(global.devicePlatform == "android") {
+        CrashlyticsReport.logException(errorDetails.exceptionAsString());
+      }
     };
 
     ThemeData theme = new ThemeData(
