@@ -412,7 +412,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           context, "Entry Changed", "Save Changes on ${formEntry.name}?");
       if (val == "OK") {
         // logging for crashlytics
-        global.messageLogs.add("Ok buttong pressed. Saving Entry.");
+        global.messageLogs.add("Ok button pressed. Saving Entry.");
         //print("Saving changes");
         EventEntry entry = new EventEntry(
           formEntry: formEntry,

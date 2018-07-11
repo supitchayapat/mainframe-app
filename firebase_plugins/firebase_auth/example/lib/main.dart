@@ -7,13 +7,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = new GoogleSignIn();
+//final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
 void main() {
-  runApp(new MyApp());
+//  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -64,22 +64,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<String> _testSignInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    final FirebaseUser user = await _auth.signInWithGoogle(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    assert(user.email != null);
-    assert(user.displayName != null);
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
-
-    return 'signInWithGoogle succeeded: $user';
+//    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+//    final GoogleSignInAuthentication googleAuth =
+//        await googleUser.authentication;
+//    final FirebaseUser user = await _auth.signInWithGoogle(
+//      accessToken: googleAuth.accessToken,
+//      idToken: googleAuth.idToken,
+//    );
+//    assert(user.email != null);
+//    assert(user.displayName != null);
+//    assert(!user.isAnonymous);
+//    assert(await user.getIdToken() != null);
+//
+//    final FirebaseUser currentUser = await _auth.currentUser();
+//    assert(user.uid == currentUser.uid);
+//
+//    return 'signInWithGoogle succeeded: $user';
+  return null;
   }
 
   @override
