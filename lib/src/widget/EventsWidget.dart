@@ -4,6 +4,7 @@ import 'EventsTile.dart';
 import 'package:myapp/src/screen/main_drawer.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/dao/ConfigDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
@@ -22,6 +23,7 @@ class EventsWidget extends StatefulWidget {
 class _EventsWidgetState extends State<EventsWidget> {
   var listener;
   var past_listener;
+  var ao_listener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
   List<Widget> listTiles = <Widget>[];
@@ -174,10 +176,12 @@ class _EventsWidgetState extends State<EventsWidget> {
     // start performance check
     PerformanceUtil.startTrace("event_list");
 
-    global.getAOFlag().then((_aoFlag){
+    ao_listener = ConfigDao.aoFlagListener((_aoFlag){
       print("GLOBAL AO: ${_aoFlag}");
       setState(() {
+        global.aoFlag = _aoFlag;
         aoFlag = _aoFlag;
+        _buildListTiles();
       });
     });
 
@@ -254,6 +258,8 @@ class _EventsWidgetState extends State<EventsWidget> {
     super.dispose();
     listener.cancel();
     past_listener.cancel();
+    if(ao_listener != null)
+      ao_listener.cancel();
     if(_performanceTimer != null)
       _performanceTimer.cancel();
   }

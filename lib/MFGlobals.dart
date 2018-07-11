@@ -17,6 +17,7 @@ List<MFEvent> events = <MFEvent>[];
 bool hasTips = true;
 String devicePlatform = "";
 List<String> messageLogs = <String>[];
+bool aoFlag;
 
 FirebaseAnalytics analytics;
 FirebaseAnalyticsObserver observer;
@@ -61,10 +62,6 @@ set setDancePartner(String name) {
     }
     dancePartner = new User(first_name: fname, last_name: lname);
   }
-}
-
-Future getAOFlag() async {
-  return await ConfigDao.getAOFlag();
 }
 
 resetGlobal() {

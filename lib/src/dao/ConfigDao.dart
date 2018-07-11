@@ -18,4 +18,19 @@ class ConfigDao {
       }
     });
   }
+
+  static Future<StreamSubscription> aoFlagListener(Function p) async {
+    return reference.child("ao_flag").onValue.listen((Event event){
+      DataSnapshot data = event.snapshot;
+      if(data?.value != null) {
+        if(data.value is String) {
+          Function.apply(p, [data.value.toString().toLowerCase() == 'true']);
+        } else {
+          Function.apply(p, [data.value]);
+        }
+      } else {
+        Function.apply(p, [null]);
+      }
+    });
+  }
 }
