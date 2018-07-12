@@ -14,6 +14,7 @@ import 'package:myapp/MFGlobals.dart' as global;
 import 'package:stripe_plugin/stripe_plugin.dart';
 import 'package:myapp/src/model/InvoiceInfo.dart';
 import 'package:myapp/src/model/User.dart';
+import 'package:myapp/src/model/UserEvent.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 import 'package:myapp/src/enumeration/FormParticipantType.dart';
 import 'package:myapp/src/enumeration/FormType.dart';
@@ -185,7 +186,12 @@ class _checkout_entryState extends State<checkout_entry> {
               //print(invParticipants.toJson());
               info.entries.add(invParticipants);
             }
-            EventEntryDao.updateEventEntry(key, val);
+
+            UserEvent userEvent = new UserEvent(
+              usrEntryForm: val,
+              info: event_details.eventItem
+            );
+            EventEntryDao.updateEventEntry(key, userEvent);
           }
         });
 

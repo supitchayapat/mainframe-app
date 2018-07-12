@@ -33,14 +33,14 @@ class _DanceFrameApp extends State<DanceFrameApp> {
   Widget build(BuildContext context) {
     AnalyticsUtil.initializeAnalytics();
 
-    FlutterError.onError = (errorDetails) {
+    /*FlutterError.onError = (errorDetails) {
       print("MAIN caught errors: ${errorDetails.stack.toString()}");
       print("LOGGING ONCRASHLYTICS");
       //MainFrameCrashReport.send(errorDetails.exception.toString());
       if(global.devicePlatform == "android") {
         CrashlyticsReport.logException(errorDetails.exceptionAsString());
       }
-    };
+    };*/
 
     ThemeData theme = new ThemeData(
       primaryColor: new Color(0xFF324261),

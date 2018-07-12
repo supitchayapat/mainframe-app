@@ -8,6 +8,7 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventDanceCategory.dart';
 import 'package:myapp/src/model/EventEntry.dart';
+import 'package:myapp/src/model/UserEvent.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/EventLevel.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
@@ -414,11 +415,18 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         // logging for crashlytics
         global.messageLogs.add("Ok button pressed. Saving Entry.");
         //print("Saving changes");
+
         EventEntry entry = new EventEntry(
           formEntry: formEntry,
-          event: registration.eventItem,
+          //event: registration.eventItem,
           participant: formParticipant,
         );
+
+        UserEvent usrEvent = new UserEvent(
+          usrEntryForm: entry,
+          info: registration.eventItem,
+        );
+
         int danceEntries = 0;
         int paidEntries = 0;
         entry.levels = [];
@@ -540,9 +548,9 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         //print(entry.toJson());
         if (entry.levels.length > 0) {
           if(formPushId != null) {
-            EventEntryDao.updateEventEntry(formPushId, entry);
+            EventEntryDao.updateEventEntry(formPushId, usrEvent);
           } else {
-            EventEntryDao.saveEventEntry(entry);
+            EventEntryDao.saveEventEntry(usrEvent);
           }
         }
         Navigator.of(context).maybePop();

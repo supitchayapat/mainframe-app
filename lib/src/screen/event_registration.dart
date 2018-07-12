@@ -113,7 +113,7 @@ class _event_registrationState extends State<event_registration> {
     }
 
     // retrieve participants with entries
-    EventEntryDao.getEventEntry(eventItem.id, (_evtParticipantEntries){
+    EventEntryDao.getEventEntry(eventItem, (_evtParticipantEntries){
       //print("participant Entries: ${_evtParticipantEntries.length}");
       setState((){
         _eventEntries = {};
@@ -189,7 +189,7 @@ class _event_registrationState extends State<event_registration> {
 
   void _handleTicketListen() {
     if(_participantEntries != null && _participantEntries.isNotEmpty && ticketListener == null) {
-      TicketDao.getTickets(eventItem.id, (_evtTickets){
+      TicketDao.getTickets(eventItem, (_evtTickets){
         if(_evtTickets != null && _evtTickets.length > 0) {
           summary.ticketUsers = {}; // paid tickets
           Map unpaidTicketUsers = {};

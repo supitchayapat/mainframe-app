@@ -43,7 +43,7 @@ class EventDao {
           snap.value.forEach((val){_addEventItem(val, global.events);});
         }
         else {
-          snap.value.forEach((key, val){_addEventItem(val, global.events);});
+          snap.value.forEach((key, val){_addEventItem(val, global.events, key: key);});
         }
       }
       _filterEvents();
@@ -52,11 +52,12 @@ class EventDao {
     });
   }
 
-  static _addEventItem(val, _eventItems) {
+  static _addEventItem(val, _eventItems, {key}) {
     var item = val;
     //print("item: ${item}");
     if(item != null) {
       MFEvent evt = new MFEvent.fromSnapshot(item);
+      evt.evtPId = key != null ? key : null;
       _eventItems.add(evt);
     }
   }
@@ -76,7 +77,7 @@ class EventDao {
         else {
           snap.value.forEach((key, val){
             //print("key: ${key} val: ${val}");
-            _addEventItem(val, future_events);
+            _addEventItem(val, future_events, key: key);
           });
         }
       }
@@ -132,5 +133,35 @@ class EventDao {
       _sortEvents();
       Function.apply(p, [global.events]);
     });
+  }
+
+  static Future getEventPushId(eventId) async {
+    dynamic returnVal;
+    await reference.once().then((snap) async {
+      if(snap.value != null && snap.value.length > 0) {
+        global.events = [];
+        if(snap.value is List) {
+          int ctr = 1;
+          snap.value.forEach((val){
+            MFEvent evt = new MFEvent.fromSnapshot(val);
+            if(evt.id == eventId) {
+              //print("${evt.eventTitle} ID: $ctr");
+              returnVal = ctr;
+            }
+            ctr++;
+          });
+        }
+        else {
+          snap.value.forEach((key, val){
+            MFEvent evt = new MFEvent.fromSnapshot(val);
+            if(evt.id == eventId) {
+              //print("${evt.eventTitle} ID: $key");
+              returnVal = key;
+            }
+          });
+        }
+      }
+    });
+    return returnVal;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventEntry.dart';
+import 'package:myapp/src/model/UserEvent.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
@@ -30,7 +31,7 @@ class _GroupDanceState extends State<GroupDance> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   TextEditingController _danceCtrl = new TextEditingController();
   String titlePage = "";
-  HashMap<String, String> _dataMap = new HashMap<String, String>();
+  var _dataMap;
   bool isPaid = false;
   var tipsTimer;
 
@@ -42,7 +43,7 @@ class _GroupDanceState extends State<GroupDance> {
     global.messageLogs.add("Group Entry form screen loaded.");
     AnalyticsUtil.setCurrentScreen("Group Entry Form", screenClassName: "GroupDance");
 
-    _dataMap = new HashMap<String, String>();
+    //_dataMap = new HashMap();
 
     tipsTimer = ShowTips.showTips(context, "groupDance");
 
@@ -55,12 +56,13 @@ class _GroupDanceState extends State<GroupDance> {
     }
 
     if(formData != null) {
-      print("formData: $formData");
       _dataMap = formData;
       if(_dataMap.containsKey("danceCoach")) {
         formCoach = new User.fromDataSnapshot(_dataMap["danceCoach"]);
       }
       _danceCtrl.text = _dataMap["danceTitle"];
+    } else {
+      _dataMap = new HashMap<dynamic, dynamic>();
     }
   }
 
@@ -95,16 +97,21 @@ class _GroupDanceState extends State<GroupDance> {
 
       EventEntry entry = new EventEntry(
           formEntry: formEntry,
-          event: registration.eventItem,
+          //event: registration.eventItem,
           participant: formParticipant,
           levels: [],
           danceEntries: 1,
           freeForm: freeform
       );
+
+      UserEvent userEvent = new UserEvent(
+        info: registration.eventItem,
+        usrEntryForm: entry
+      );
       if(formPushId != null) {
-        EventEntryDao.updateEventEntry(formPushId, entry);
+        EventEntryDao.updateEventEntry(formPushId, userEvent);
       } else {
-        EventEntryDao.saveEventEntry(entry);
+        EventEntryDao.saveEventEntry(userEvent);
       }
       _clearInputs();
       Navigator.of(context).maybePop();

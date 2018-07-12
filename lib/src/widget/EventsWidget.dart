@@ -228,7 +228,7 @@ class _EventsWidgetState extends State<EventsWidget> {
     });
 
     pastEventRunning = true;
-    past_listener = EventDao.pastUserEventListener((events) {
+    /*past_listener = EventDao.pastUserEventListener((events) {
       setState(() {
         print("past events LENGTH: ${events.length}");
         _events = [];
@@ -236,7 +236,7 @@ class _EventsWidgetState extends State<EventsWidget> {
         _buildListTiles();
         pastEventRunning = false;
       });
-    });
+    });*/
 
     fileUtilRunning = true;
     FileUtil.downloadImagesCallback((fileName, img){

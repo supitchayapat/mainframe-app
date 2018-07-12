@@ -1,29 +1,52 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:myapp/src/model/EventEntry.dart';
+import 'package:myapp/src/model/UserEvent.dart';
+import 'package:myapp/src/model/MFEvent.dart';
+import 'package:myapp/src/dao/EventDao.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("users");
 
 class EventEntryDao {
 
-  static saveEventEntry(EventEntry entry) async {
+  static Future saveEventEntry(UserEvent userEvent) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
-    reference.child(fUser.uid).child("entry_forms").push().set(entry.toJson());
+    var pushId;
+    if(userEvent.info.evtPId == null) {
+      pushId = await EventDao.getEventPushId(userEvent.info.id);
+    } else {
+      pushId = userEvent.info.evtPId;
+    }
+    print("pushId: $pushId as ${pushId.runtimeType}");
+    reference.child(fUser.uid).child("events").child(pushId).child("entry_forms").push().set(userEvent.usrEntryForm.toJson());
+    reference.child(fUser.uid).child("events").child(pushId).child("info").set(userEvent.info.toJson());
   }
 
-  static updateEventEntry(String pushId, EventEntry entry) async {
+  static Future updateEventEntry(String formPushId, UserEvent userEvent) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
-    reference.child(fUser.uid).child("entry_forms").child(pushId).set(entry.toJson());
+    var pushId;
+    print(userEvent.info.evtPId);
+    if(userEvent.info.evtPId == null) {
+      pushId = await EventDao.getEventPushId(userEvent.info.id);
+    }
+    else {
+      pushId = userEvent.info.evtPId;
+    }
+    print("pushId: $pushId as ${pushId.runtimeType}");
+    reference.child(fUser.uid).child("events").child(pushId).child("entry_forms").child(formPushId).set(userEvent.usrEntryForm.toJson());
+    reference.child(fUser.uid).child("events").child(pushId).child("info").set(userEvent.info.toJson());
   }
 
-  static Future<StreamSubscription> getEventEntry(eventId, Function p) async {
+  static Future<StreamSubscription> getEventEntry(evt, Function p) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
-    return reference.child(fUser.uid).child("entry_forms")
-          .orderByChild("event/id")
-          .equalTo(eventId)
+    var evtPushId = evt.evtPId == null ? await EventDao.getEventPushId(evt.id) : evt.evtPId;
+    print("EVT PUSHID: $evtPushId");
+    return reference.child(fUser.uid).child("events").child(evtPushId).child("entry_forms")
+          //.orderByChild("info/id")
+          //.equalTo(eventId)
           .onValue.listen((event){
-      //print(event.snapshot.value);
+      print("ENTRY FORM: ${event.snapshot.value}");
       if(event.snapshot?.value != null) {
         Map<String, EventEntry> _evtEntries = {};
         event.snapshot.value.forEach((dataKey, dataVal) {

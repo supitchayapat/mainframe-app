@@ -185,7 +185,7 @@ class _entry_summaryState extends State<entry_summary> {
   }
 
   Future _handleSelect() {
-    Map<String, String> _selection = {};
+    Map<String, dynamic> _selection = {};
     for(var _ticket in admissionTickets) {
       _selection.putIfAbsent(_ticket.content, () => _ticket);
     }

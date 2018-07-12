@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/model/EventEntry.dart';
+import 'package:myapp/src/model/UserEvent.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'event_registration.dart' as registration;
@@ -35,7 +36,10 @@ class _entry_freeformState extends State<entry_freeform> {
     }
 
     if(formData != null) {
-      freeFormObj = formData;
+      print("FORM DATA: ${formData?.toJson()}");
+      setState(() {
+        freeFormObj = formData;
+      });
     }
   }
 
@@ -61,22 +65,29 @@ class _entry_freeformState extends State<entry_freeform> {
       freeFormObj.toJson().forEach((key, val) {
         if(val != null) {
           hasValue = true;
-          //print(val);
+          print("FREEFORM VAL: $val");
         }
       });
       if(hasValue) {
         EventEntry entry = new EventEntry(
           formEntry: formEntry,
-          event: registration.eventItem,
+          //event: registration.eventItem,
           participant: formParticipant,
           levels: [],
           danceEntries: 1,
           freeForm: freeFormObj
         );
+
+        print("Registration evtItem: ${registration.eventItem.evtPId}");
+
+        UserEvent userEvent = new UserEvent(
+          info: registration.eventItem,
+          usrEntryForm: entry
+        );
         if(formPushId != null) {
-          EventEntryDao.updateEventEntry(formPushId, entry);
+          EventEntryDao.updateEventEntry(formPushId, userEvent);
         } else {
-          EventEntryDao.saveEventEntry(entry);
+          EventEntryDao.saveEventEntry(userEvent);
         }
         Navigator.of(context).maybePop();
       }

@@ -9,7 +9,7 @@ import 'package:stripe_plugin/stripe_plugin.dart';
 class EventEntry {
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
-  dynamic event;
+  //dynamic event;
   dynamic formEntry;
   dynamic participant;
   List<LevelEntry> levels;
@@ -19,10 +19,10 @@ class EventEntry {
   int danceEntries;
   int paidEntries;
 
-  EventEntry({this.event, this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm, this.payment, this.paidEntries});
+  EventEntry({this.formEntry, this.levels, this.participant, this.danceEntries, this.freeForm, this.payment, this.paidEntries});
 
   EventEntry.fromSnapshot(var s) {
-    event = new MFEvent.fromSnapshotEntry(s["event"]);
+    //event = new MFEvent.fromSnapshotEntry(s["event"]);
     formEntry = new FormEntry.fromSnapshot(s["form"]);
     if(s["participant"] != null && s["participant"]["coupleName"] != null) {
       participant = new Couple.fromSnapshot(s["participant"]);
@@ -64,7 +64,7 @@ class EventEntry {
       _freeFormData = freeForm;
 
     return {
-      "event": event.toJson(),
+      //"event": event.toJson(),
       "form": formEntry.toJson(),
       "participant": participant.toJson(),
       "danceEntries": danceEntries,

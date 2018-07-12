@@ -163,6 +163,7 @@ class MFEvent {
   final formatterSrc = new DateFormat("yyyy-MM-dd");
 
   String id;
+  String evtPId;
   String eventTitle;
   String thumbnail;
   String thumbnailBg;
@@ -185,7 +186,7 @@ class MFEvent {
   Admission admission;
   EventSchedule schedule;
 
-  MFEvent({this.id, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
+  MFEvent({this.id, this.evtPId, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
 
   /*MFEvent.fromSnapshot(var s)
       : eventTitle = s["eventTitle"],

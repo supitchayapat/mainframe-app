@@ -10,9 +10,9 @@ class TicketDao {
 
   static Future retrieveAndSave(event, ticket, ticketOwner) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
-    final ticketRef = reference.child(fUser.uid).child("tickets");
+    final ticketRef = reference.child(fUser.uid).child("events").child(event.evtPId).child("tickets");
     EventTicket _ticket;
-    Map<String, EventTicket> participantTicket = await getTicketByUser(event.id, ticketOwner);
+    Map<String, EventTicket> participantTicket = await getTicketByUser(event.evtPId, ticketOwner);
     if(participantTicket == null) {
       _ticket = new EventTicket(
           event: event,
@@ -61,13 +61,15 @@ class TicketDao {
     }
   }
 
-  static Future<StreamSubscription> getTickets(eventId, Function p) async {
+  static Future<StreamSubscription> getTickets(evt, Function p) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
     return reference
         .child(fUser.uid)
+        .child("events")
+        .child(evt.evtPId)
         .child("tickets")
-        .orderByChild("event/id")
-        .equalTo(eventId)
+        //.orderByChild("event/id")
+        //.equalTo(eventId)
         .onValue
         .listen((event) {
       if(event.snapshot?.value != null) {
@@ -80,13 +82,15 @@ class TicketDao {
     });
   }
 
-  static Future<Map<String, EventTicket>> getTicketByUser(eventId, user) async {
+  static Future<Map<String, EventTicket>> getTicketByUser(eventPId, user) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
     return reference
         .child(fUser.uid)
+        .child("events")
+        .child(eventPId)
         .child("tickets")
-        .orderByChild("event/id")
-        .equalTo(eventId)
+        //.orderByChild("event/id")
+        //.equalTo(eventId)
         .once()
         .then((_snapshot){
       if(_snapshot.value != null && _snapshot.value.length > 0) {

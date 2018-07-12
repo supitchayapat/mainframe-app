@@ -21,6 +21,8 @@ class ShowDanceSolo {
 
   Widget toWidget() {
 
+    TextEditingController _danceCtrl = new TextEditingController();
+    _danceCtrl.text = dance != null ? dance : "";
 
     return new Container(
       //color: Colors.amber,
@@ -33,6 +35,7 @@ class ShowDanceSolo {
             keyboardType: TextInputType.text,
             onSaved: (String val) => dance = val,
             validator: _validateNotEmpty,
+            controller: _danceCtrl,
             initialValue: dance != null ? dance : "",
           ),
         ],
