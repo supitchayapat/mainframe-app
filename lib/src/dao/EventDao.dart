@@ -88,7 +88,7 @@ class EventDao {
       _filterEvents();
       //print("AFTER FUTURE: ${future_events.length}");
       global.events.addAll(future_events);
-      global.events.addAll(past_events);
+      //global.events.addAll(past_events);
       _sortEvents();
       //print("EVENTS LENGTH AFTER: ${events.length}");
       Function.apply(p, [global.events]);
@@ -102,36 +102,40 @@ class EventDao {
       //print("Date: ${evt.stopDate.toIso8601String()}");
       //print("same day: ${evt.stopDate.isAtSameMomentAs(_now)}");
       //print("before day: ${evt.stopDate.isBefore(_now)}");
-      return (evt.stopDate.isAtSameMomentAs(_now) || evt.stopDate.isBefore(_now));
+      return (evt.dateStop.isAtSameMomentAs(_now) || evt.dateStop.isBefore(_now));
     });
   }
 
   static void _sortEvents() {
     // sort events by start date DESC
-    global.events.sort((a, b) => (a.startDate).compareTo(b.startDate));
+    global.events.sort((a, b) => (a.dateStart).compareTo(b.dateStart));
   }
 
   static Future<StreamSubscription> pastUserEventListener(Function p) {
     return userEventsListener((snap){
       past_events = <MFEvent>[];
+      DateTime _now = new DateTime.now();
       if(snap.value != null && snap.value.length > 0) {
-        //for (Iterator iter = snap.value.iterator; iter.moveNext();) {
-        snap.value.forEach((item){
-          //var item = iter.current;
+        snap.value.forEach((key, item){
           //print("item: ${item}");
           if (item != null) {
-            MFEvent evt = new MFEvent.fromSnapshot(item);
-            past_events.add(evt);
+            MFEvent evt = new MFEvent.userSnapshot(item);
+            // check if past event qualifies:
+            // 1. check results node if exists
+            // 2. check stop date is before current date
+            if(evt.results != null && evt.dateStop.isBefore(_now)) {
+              past_events.add(evt);
+            }
           }
         });
       }
       print("PAST EVTS: ${past_events.length}");
-      global.events = [];
-      global.events.addAll(past_events);
-      _filterEvents();
-      global.events.addAll(future_events);
-      _sortEvents();
-      Function.apply(p, [global.events]);
+      //global.events = [];
+      //global.events.addAll(past_events);
+      //_filterEvents();
+      //global.events.addAll(future_events);
+      past_events.sort((a, b) => (a.dateStart).compareTo(b.dateStart));
+      Function.apply(p, [past_events]);
     });
   }
 

@@ -6,6 +6,7 @@ import 'package:myapp/src/dao/EventDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/dao/ConfigDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
+import 'package:myapp/src/widget/MFTabComponent.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
@@ -14,6 +15,7 @@ import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 const double _kFlexibleSpaceMaxHeight = 186.0;
 const int _timerDelay = 100;
+const int _refreshDelay = 1;
 
 class EventsWidget extends StatefulWidget {
   @override
@@ -27,6 +29,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
   List<Widget> listTiles = <Widget>[];
+  List<Widget> prevTiles = <Widget>[];
   List _events = [];
   List _pastEvents = [];
   Map<String, Widget> _thumbImages = {};
@@ -34,6 +37,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   bool pastEventRunning = false;
   bool fileUtilRunning = false;
   Timer _performanceTimer;
+  Timer _eventsListTimer;
   bool aoFlag;
 
   void _menuPressed() {
@@ -47,6 +51,7 @@ class _EventsWidgetState extends State<EventsWidget> {
 
   void _buildListTiles() {
     listTiles = [];
+    prevTiles = [];
     _renderEvents();
   }
 
@@ -80,10 +85,11 @@ class _EventsWidgetState extends State<EventsWidget> {
       triggerRegistrationFilter = true;
     }
 
+    double _padd = 0.0;
+    double _width = scrnWidth;//100.0;
+
     _events.forEach((e){
       //print(e.thumbnail);
-      double _padd = 0.0;
-      double _width = scrnWidth;//100.0;
       //print("${e.eventTitle} >> ${e.eventTitle.length}");
       if(e.eventTitle.length >= 46) {
         _padd = 10.0;
@@ -91,64 +97,81 @@ class _EventsWidgetState extends State<EventsWidget> {
       }
 
       if(!triggerRegistrationFilter || (e.uberRegister)) {
-        listTiles.add(
-            new InkWell(
-                onTap: () {
-                  global.messageLogs.add("Event [${e.eventTitle}] clicked.");
-                  AnalyticsUtil.sendAnalyticsEvent("event_item_clicked", params: {
-                    "EventTitle": e.eventTitle
-                  });
-                  _handleEventTap(e);
-                },
-                child: new EventsListTile(
-                  leadingColor: e.thumbnailBg != null ? new Color(
-                      int.parse(e.thumbnailBg)) : Theme
-                      .of(context)
-                      .primaryColor,
-                  title: new Container(
-                    //color: Colors.amber,
-                    alignment: Alignment.centerLeft,
-                    child: new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Container(
-                          //color: Colors.amber,
-                          constraints: new BoxConstraints(maxHeight: 50.0),
-                          child: new ListTileText(e.eventTitle),
-                        ),
-                        new Wrap(
-                          //crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            new Text(e.dateRange,
-                                style: new TextStyle(
-                                    color: new Color(0xff00e5ff))),
-                            new Container(
-                              //color: Colors.amber,
-                              padding: new EdgeInsets.only(left: _padd),
-                              width: _width,
-                              //padding: const EdgeInsets.only(left: 20.0),
-                              child: new Text(e.year.toString(),
-                                  style: new TextStyle(
-                                      color: new Color(0xff00e5ff))),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    //child: new ListTileText(e.eventTitle)
-                  ),
-                  leading: new Container(
-                      height: 78.0,
-                      width: 140.0,
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      //child: new Image.network(e.thumbnail),
-                      child: (_thumbImages != null &&
-                          _thumbImages.containsKey(e.thumbnail))
-                          ? _thumbImages[e.thumbnail]
-                          : new Container()
-                  ),
-                  /*subtitle: new Column(
+        listTiles.add(generateEventTiles(e, _padd, _width));
+      }
+    });
+
+    _pastEvents.forEach((e){
+      print("eventTitle: ${e.eventTitle}");
+      if(e.eventTitle.length >= 46) {
+        _padd = 10.0;
+        _width = 60.0;
+      }
+
+      if(!triggerRegistrationFilter || (e.uberRegister)) {
+        prevTiles.add(generateEventTiles(e, _padd, _width));
+      }
+    });
+  }
+  
+  Widget generateEventTiles(e, _padd, _width) {
+    return new InkWell(
+        onTap: () {
+          global.messageLogs.add("Event [${e.eventTitle}] clicked.");
+          AnalyticsUtil.sendAnalyticsEvent("event_item_clicked", params: {
+            "EventTitle": e.eventTitle
+          });
+          _handleEventTap(e);
+        },
+        child: new EventsListTile(
+          leadingColor: e.thumbnailBg != null ? new Color(
+              int.parse(e.thumbnailBg)) : Theme
+              .of(context)
+              .primaryColor,
+          title: new Container(
+            //color: Colors.amber,
+            alignment: Alignment.centerLeft,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Container(
+                  //color: Colors.amber,
+                  constraints: new BoxConstraints(maxHeight: 50.0),
+                  child: new ListTileText(e.eventTitle),
+                ),
+                new Wrap(
+                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(e.dateRange,
+                        style: new TextStyle(
+                            color: new Color(0xff00e5ff))),
+                    new Container(
+                      //color: Colors.amber,
+                      padding: new EdgeInsets.only(left: _padd),
+                      width: _width,
+                      //padding: const EdgeInsets.only(left: 20.0),
+                      child: new Text(e.year.toString(),
+                          style: new TextStyle(
+                              color: new Color(0xff00e5ff))),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            //child: new ListTileText(e.eventTitle)
+          ),
+          leading: new Container(
+              height: 78.0,
+              width: 140.0,
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              //child: new Image.network(e.thumbnail),
+              child: (_thumbImages != null &&
+                  _thumbImages.containsKey(e.thumbnail))
+                  ? _thumbImages[e.thumbnail]
+                  : new Container()
+          ),
+          /*subtitle: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(e.dateRange,
@@ -157,15 +180,81 @@ class _EventsWidgetState extends State<EventsWidget> {
                         style: new TextStyle(color: new Color(0xff00e5ff)))
                   ],
                 ),*/
-                  trailing: e.hasAttended ? new Image.asset(
-                    "mainframe_assets/images/attended_before@2x.png",
-                    height: 60.0,
-                    width: 60.0,
-                  ) : new Container(),
-                )
-            )
-        );
-      }
+          trailing: e.hasAttended ? new Image.asset(
+            "mainframe_assets/images/attended_before@2x.png",
+            height: 60.0,
+            width: 60.0,
+          ) : new Container(),
+        )
+    );
+  }
+
+  void _eventsListSetup() {
+    // loading indicator set
+    listTiles.add(
+        new Container(
+          height: 120.0,
+          //color: Colors.cyanAccent,
+          alignment: Alignment.center,
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Text("Loading"),
+              new Container(
+                  margin: const EdgeInsets.only(left: 10.0),
+                  width: 20.0,
+                  height: 20.0,
+                  child: new CircularProgressIndicator()
+              )
+            ],
+          ),
+        )
+    );
+
+    MframePlugins.platform.then((_platform){
+      if(_platform != null)
+        global.devicePlatform = _platform;
+    });
+
+    eventListRunning = true;
+    if(listener != null) {
+      listener.cancel();
+      listener = null;
+    }
+    listener = EventDao.eventsListener((events) {
+      setState(() {
+        print("set events [${events.length}]");
+        _events = [];
+        _events.addAll(events);
+        _buildListTiles();
+        eventListRunning = false;
+      });
+    });
+
+    pastEventRunning = true;
+    if(past_listener != null) {
+      past_listener = null;
+    }
+    past_listener = EventDao.pastUserEventListener((events) {
+      setState(() {
+        print("past events LENGTH: ${events.length}");
+        //_events = [];
+        //_events.addAll(events);
+        _pastEvents = [];
+        _pastEvents.addAll(events);
+        _buildListTiles();
+        pastEventRunning = false;
+      });
+    });
+
+    fileUtilRunning = true;
+    FileUtil.downloadImagesCallback((fileName, img){
+      setState((){
+        Image _img = new Image.file(img);
+        _thumbImages.putIfAbsent(fileName, () => _img);
+        _buildListTiles();
+        fileUtilRunning = false;
+      });
     });
   }
 
@@ -185,71 +274,21 @@ class _EventsWidgetState extends State<EventsWidget> {
       });
     });
 
-    // loading indicator set
-    listTiles.add(
-      new Container(
-        height: 120.0,
-        //color: Colors.cyanAccent,
-        alignment: Alignment.center,
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text("Loading"),
-            new Container(
-                margin: const EdgeInsets.only(left: 10.0),
-                width: 20.0,
-                height: 20.0,
-                child: new CircularProgressIndicator()
-            )
-          ],
-        ),
-      )
-    );
-
-    MframePlugins.platform.then((_platform){
-      if(_platform != null)
-        global.devicePlatform = _platform;
-    });
-
     getCurrentUserProfile().then((_usr){
       global.currentUserProfile = _usr;
       print(_usr.email);
     });
 
-    eventListRunning = true;
-    listener = EventDao.eventsListener((events) {
-      setState(() {
-        print("set events");
-        _events = [];
-        _events.addAll(events);
-        _buildListTiles();
-        eventListRunning = false;
-      });
-    });
-
-    pastEventRunning = true;
-    /*past_listener = EventDao.pastUserEventListener((events) {
-      setState(() {
-        print("past events LENGTH: ${events.length}");
-        _events = [];
-        _events.addAll(events);
-        _buildListTiles();
-        pastEventRunning = false;
-      });
-    });*/
-
-    fileUtilRunning = true;
-    FileUtil.downloadImagesCallback((fileName, img){
-      setState((){
-        Image _img = new Image.file(img);
-        _thumbImages.putIfAbsent(fileName, () => _img);
-        _buildListTiles();
-        fileUtilRunning = false;
-      });
-    });
+    _eventsListSetup();
 
     // stop performance check
     stopTracking();
+
+    // perform refresh events
+    _eventsListTimer = new Timer.periodic(new Duration(hours: _refreshDelay), (timer) {
+      print("REFRESH EVENT");
+      _eventsListSetup();
+    });
   }
 
   @override
@@ -260,8 +299,12 @@ class _EventsWidgetState extends State<EventsWidget> {
     past_listener.cancel();
     if(ao_listener != null)
       ao_listener.cancel();
-    if(_performanceTimer != null)
+    if(_performanceTimer != null) {
       _performanceTimer.cancel();
+    }
+    if(_eventsListTimer != null) {
+      _eventsListTimer.cancel();
+    }
   }
 
   @override
@@ -290,7 +333,12 @@ class _EventsWidgetState extends State<EventsWidget> {
       alignment: Alignment.bottomLeft,
       padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
     ));
-    _children.addAll(listTiles);
+
+    if(_pastEvents?.isEmpty) {
+      _children.addAll(listTiles);
+    } else {
+      _children.addAll(buildTabViewEvent());
+    }
 
     return new Scaffold(
       key: _scaffoldKey,
@@ -306,59 +354,47 @@ class _EventsWidgetState extends State<EventsWidget> {
       backgroundColor: const Color(0xFF324261),
       body: new Container(
         margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-        child: new ListView(
-          children: _children
-          /*children: <Widget>[
-            //new Expanded(
-                /*child:*/ new Container(
-                  decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                          image: new ExactAssetImage(
-                              "mainframe_assets/images/m7x5ba.jpg"),
-                          fit: BoxFit.cover
-                      )
-                  ),
-                  child: new Container(
-                    height: 55.0,
-                    width: 200.0,
-                    child: new Text("Find Your Next Event Below",
-                      style: new TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25.0
-                      ),
-                    ),
-                  ),
-                  height: 235.0,
-                  alignment: Alignment.bottomLeft,
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
-                ),
-            //),
-            new Flexible(
-              //color: Colors.amber,
-              //height: 275.0,
-                child: new ListView(
-                  children: <Widget>[
-                    new ClipRect(
-                        child: new Stack(
-                          children: <Widget>[
-                            new Container(
-                                child: new Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .stretch,
-                                    children: listTiles
-                                )
-                            ),
-                          ],
-                        )
-                    )
-                  ],
-                )
-            )
-          ],*/
-        ),
+        child: _pastEvents?.isEmpty ? new ListView(
+          children: _children,
+        ) : new Column(
+          children: _children,
+        )
       ),
+    );
+  }
+  
+  List<Widget> buildTabViewEvent() {
+    return <Widget>[
+      new Flexible(
+          child: new MFTabbedComponentDemoScaffold(
+              demos: <MFComponentDemoTabData>[
+                new MFComponentDemoTabData(
+                  tabName: 'CURRENT',
+                  description: '',
+                  demoWidget: buildCurrentEvents(),
+                ),
+                new MFComponentDemoTabData(
+                  tabName: 'PREVIOUSLY ATTENDED',
+                  description: '',
+                  demoWidget: buildPreviousEvents(),
+                ),
+              ]
+          )
+      )
+    ];
+  }
+
+  Widget buildCurrentEvents() {
+    return new Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: listTiles,
+    );
+  }
+
+  Widget buildPreviousEvents() {
+    return new Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: prevTiles,
     );
   }
 }

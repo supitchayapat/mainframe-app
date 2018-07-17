@@ -35,10 +35,10 @@ class _EventDetailsState extends State<EventDetails> {
     if(eventItem != null) {
       eventTitle = eventItem.eventTitle;
       //eventRange = eventItem.dateRange;
-      if(eventItem.startDate == eventItem.stopDate) {
-        eventRange = "${formatterOut.format(eventItem.startDate)}";
+      if(eventItem.dateStart == eventItem.dateStop) {
+        eventRange = "${formatterOut.format(eventItem.dateStart)}";
       } else {
-        eventRange = "${formatterOut.format(eventItem.startDate)} - ${formatterOut.format(eventItem.stopDate)}";
+        eventRange = "${formatterOut.format(eventItem.dateStart)} - ${formatterOut.format(eventItem.dateStop)}";
       }
     }
 
@@ -69,7 +69,7 @@ class _EventDetailsState extends State<EventDetails> {
           children: <Widget>[
             /*new Text("Event:  $eventTitle", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
-            new Text("${format.format(eventItem.startDate)} to ${format.format(eventItem.stopDate)}", style: new TextStyle(fontSize: 16.0)),
+            new Text("${format.format(eventItem.dateStart)} to ${format.format(eventItem.dateStop)}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),
             new Text("Status:  ${eventItem.statusName}", style: new TextStyle(fontSize: 16.0)),
             new Padding(padding: const EdgeInsets.only(top: 10.0)),*/
@@ -259,7 +259,7 @@ class _EventDetailsState extends State<EventDetails> {
     DateTime _now = new DateTime.now();
     String _floatText = "Register";
 
-    if(_now.isAfter(eventItem.stopDate)) {
+    if(_now.isAfter(eventItem.dateStop)) {
       _floatText = "Results";
     }
 
