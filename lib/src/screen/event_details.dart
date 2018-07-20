@@ -4,6 +4,7 @@ import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/widget/MFPageSelector.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/screen/event_registration.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -258,9 +259,67 @@ class _EventDetailsState extends State<EventDetails> {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
     DateTime _now = new DateTime.now();
     String _floatText = "Register";
+    List<Widget> _btnChildren = [];
+
+    Widget _btnWidget = new InkWell(
+      onTap: (){
+        global.messageLogs.add("Register button tapped.");
+        AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
+          'screen': 'event_details'
+        });
+        eventInfo.eventItem = eventItem;
+        eventInfo.participant = null;
+        if(_floatText == "Register") {
+          if(isRegisterOpen) {
+            Navigator.of(context).pushNamed("/registration");
+          } else {
+            showMainFrameDialogWithCancel(
+                context,
+                "Registration Status",
+                "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
+            ).then((ans) {
+              if(ans == "OK") {
+                if(eventItem?.website != null) {
+                  if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
+                    _launchUrl(eventItem?.website);
+                  else
+                    _launchUrl("http://${eventItem?.website}");
+                }
+              }
+            });
+          }
+        }
+        else if(_floatText == "Results") {
+          showSelectionDialog(context, "SELECT PARTICIPANT", 220.0, {
+            "Jackie & Yeva(Am Girl)": "solo"
+          }).then((selectVal){
+
+          });
+        }
+      },
+      child: new Container(
+        decoration: new BoxDecoration(
+          image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+          //color: Colors.amber
+        ),
+        width: 115.0,
+        height: 40.0,
+        child: new Center(child: new Text(_now.isAfter(eventItem.dateStop) ? "Results" : "Register", style: new TextStyle(fontSize: 17.0))),
+      ),
+    );
 
     if(_now.isAfter(eventItem.dateStop)) {
       _floatText = "Results";
+      _btnChildren.add(_btnWidget);
+      _btnChildren.add(
+          new Expanded(child: new Container())
+      );
+    }
+    else {
+      _btnChildren.add(
+          new Expanded(child: new Container())
+      );
+      _btnChildren.add(_btnWidget);
     }
 
     List<PageSelectData> _pages = [];
@@ -414,53 +473,11 @@ class _EventDetailsState extends State<EventDetails> {
       bottomNavigationBar: new Container(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
         child: new Container(
-          padding: const EdgeInsets.only(left: 20.0, right: 5.0, top: 2.0, bottom: 5.0),
+          padding: const EdgeInsets.only(left: 10.0, right: 5.0, top: 2.0, bottom: 5.0),
           height: 40.0,
           child: new Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              new Expanded(
-                child: new Container(),
-              ),
-              new InkWell(
-                onTap: (){
-                  global.messageLogs.add("Register button tapped.");
-                  AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
-                    'screen': 'event_details'
-                  });
-                  eventInfo.eventItem = eventItem;
-                  eventInfo.participant = null;
-                  if(_floatText == "Register") {
-                    if(isRegisterOpen) {
-                      Navigator.of(context).pushNamed("/registration");
-                    } else {
-                      showMainFrameDialogWithCancel(
-                          context,
-                          "Registration Status",
-                          "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
-                      ).then((ans) {
-                        if(ans == "OK") {
-                          if(eventItem?.website != null) {
-                            if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
-                              _launchUrl(eventItem?.website);
-                            else
-                              _launchUrl("http://${eventItem?.website}");
-                          }
-                        }
-                      });
-                    }
-                  }
-                },
-                child: new Container(
-                  decoration: new BoxDecoration(
-                    image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
-                  ),
-                  width: 115.0,
-                  height: 40.0,
-                  child: new Center(child: new Text(_floatText, style: new TextStyle(fontSize: 17.0))),
-                ),
-              )
-            ],
+            children: _btnChildren,
           ),
         ),
       ),
