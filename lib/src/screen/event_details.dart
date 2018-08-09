@@ -10,8 +10,12 @@ import 'package:myapp/MFGlobals.dart' as global;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/ResultsDao.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 
 var eventItem;
+var heatResult;
+var selectedParticipant;
 
 class EventDetails extends StatefulWidget {
   @override
@@ -24,6 +28,11 @@ class _EventDetailsState extends State<EventDetails> {
   String eventTitle = "EVENT TITLE";
   String eventRange = "";
   bool isRegisterOpen = false;
+  List _solo = [];
+  List _couples = [];
+  Map<String, dynamic> _users = {};
+  var soloListener;
+  var coupleListener;
 
   @override
   void initState() {
@@ -45,6 +54,47 @@ class _EventDetailsState extends State<EventDetails> {
 
     // check if registration is open
     isRegisterOpen = eventItem.uberRegister;
+
+    // heat results
+    ResultsDao.getResults(eventItem.evtPId).then((res){
+      heatResult = res;
+
+      // pull participants
+      /*soloParticipantsListener((users){
+        //print("NUMBER OF USERS: ${users.length}");
+        setState((){
+          _users = {};
+          _solo = [];
+          _solo.addAll(users);
+          users.forEach((val){
+            _users.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
+          });
+          _couples.forEach((val){
+            _users.putIfAbsent("${val.coupleName}", () => val);
+          });
+        });
+      }).then((listener) {soloListener=listener;});*/
+
+      coupleParticipantsListener((couples){
+        setState((){
+          _users = {};
+          _couples = [];
+          _couples.addAll(couples);
+          _solo.forEach((val){
+            _users.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
+          });
+          couples.forEach((val){
+            for(var cp in res.couples) {
+              // check if matches coupleKey and Names
+              if(cp.coupleKey == val.key)
+                _users.putIfAbsent("${val.coupleName}", () => val);
+            }
+          });
+        });
+
+        print("users: ${_users.length}");
+      }).then((listener){coupleListener=listener;});
+    });
   }
 
   Future _launchUrl(url) async {
@@ -290,10 +340,27 @@ class _EventDetailsState extends State<EventDetails> {
           }
         }
         else if(_floatText == "Results") {
-          showSelectionDialog(context, "SELECT PARTICIPANT", 220.0, {
-            "Jackie & Yeva(Am Girl)": "solo"
-          }).then((selectVal){
+          selectedParticipant = null;
 
+          Map<String, dynamic> participantsList = {};
+          _users.forEach((_usrName, _usr){
+            participantsList.putIfAbsent(_usrName, () => _usr);
+          });
+          participantsList.putIfAbsent("All Participants", () => "all");
+
+          showSelectionDialog(context, "SELECT PARTICIPANT", 220.0,
+              participantsList).then((selectVal){
+            if(selectVal != null) {
+              // navigate results
+              if(selectVal == "all" && heatResult != null) {
+                //print("Evt PID: ${eventItem.evtPId}");
+                Navigator.of(context).pushNamed("/result");
+              }
+              else {
+                selectedParticipant = selectVal;
+                Navigator.of(context).pushNamed("/result");
+              }
+            }
           });
         }
       },

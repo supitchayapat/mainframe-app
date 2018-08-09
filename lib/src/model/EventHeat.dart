@@ -10,24 +10,24 @@ class EventHeat {
   EventHeat({this.couples, this.heats, this.persons, this.studios});
 
   EventHeat.fromSnapshot(var s) {
-    if(s["couples"] != null) {
-      couples = [];
-      setListObject(s, "couple")?.forEach((coupleTemp) => couples.add(coupleTemp));
+    if(s["studios"] != null) {
+      studios = [];
+      setListObject(s, "studio")?.forEach((studioTemp) => studios.add(studioTemp));
     }
     if(s["persons"] != null) {
       persons = [];
-      setListObject(s, "person")?.forEach((personTemp) => persons.add(personTemp));
+      setListObject(s, "person", objArrParams: studios)?.forEach((personTemp) => persons.add(personTemp));
+    }
+    if(s["couples"] != null) {
+      couples = [];
+      setListObject(s, "couple", objArrParams: persons)?.forEach((coupleTemp) => couples.add(coupleTemp));
     }
     if(s["heats"]["heat"] != null) {
       heats = [];
       var _heats = s["heats"]["heat"];
       _heats.forEach((item){
-        heats.add(new Heat.fromSnapshot(item));
+        heats.add(new Heat.fromSnapshot(item, coupleArr: couples));
       });
-    }
-    if(s["studios"] != null) {
-      studios = [];
-      setListObject(s, "studio")?.forEach((studioTemp) => studios.add(studioTemp));
     }
   }
 }

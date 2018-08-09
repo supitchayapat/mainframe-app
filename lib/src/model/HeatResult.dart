@@ -5,26 +5,28 @@ class ResultHeat {
   final formatter = new DateFormat("MM/dd/yyyy");
   final timeFormatter = new DateFormat("HH:mm");
 
-  DateTime date;
+  String date;
   String desc;
   String name;
   String session;
-  DateTime time;
+  String time;
   List<ResultSubHeat> subHeats;
 
   ResultHeat({this.date, this.desc, this.name, this.session, this.time, this.subHeats});
 
-  ResultHeat.fromSnapshot(var s) {
-    date = formatter.parse(s["date"]);
+  ResultHeat.fromSnapshot(var s, {judgeArr, coupleArr}) {
+    //date = formatter.parse(s["date"]);
+    date = s["date"];
     desc = s["desc"];
     name = s["name"];
     session = s["session"];
-    time = timeFormatter.parse(s["time"]);
+    //time = timeFormatter.parse(s["time"]);
+    time = s["time"];
     if(s["subHeat"] != null) {
       subHeats = [];
       var _subHeats = s["subHeat"];
       _subHeats.forEach((itm){
-        subHeats.add(new ResultSubHeat.fromSnapshot(itm));
+        subHeats.add(new ResultSubHeat.fromSnapshot(itm, judgeArr: judgeArr, coupleArr: coupleArr));
       });
     }
   }
@@ -40,12 +42,15 @@ class ResultSubHeat {
 
   ResultSubHeat({this.age, this.dance, this.id, this.level, this.type, this.result});
 
-  ResultSubHeat.fromSnapshot(var s) {
+  ResultSubHeat.fromSnapshot(var s, {judgeArr, coupleArr}) {
     age = s["age"];
     dance = s["dance"];
     id = s["id"];
     level = s["level"];
     type = s["type"];
+    if(s["result"] != null) {
+      result = new HeatResult.fromSnapshot(s["result"], judgeArr: judgeArr, coupleArr: coupleArr);
+    }
   }
 }
 
@@ -56,42 +61,60 @@ class HeatResult {
 
   HeatResult({this.judgingPanels, this.scoreHeaders, this.marks});
 
-  HeatResult.fromSnapshot(var s) {
-    if(s["judgingPanels"] != null) {
+  HeatResult.fromSnapshot(var s, {judgeArr, coupleArr}) {
+    if(s["judgingPanelKeys"] != null && judgeArr != null) {
       judgingPanels = [];
-      var _panels = s["judgingPanels"];
+      var _panelKeys = s["judgingPanelKeys"];
+      List _panels = _panelKeys.split("|");
       _panels.forEach((item){
-        judgingPanels.add(new HeatJudge.fromSnapshot(item));
+        for(var judge in judgeArr) {
+          if(judge.judgeKey == item) {
+            judgingPanels.add(judge);
+            break;
+          }
+        }
       });
     }
     if(s["scoreHeaders"] != null) {
       scoreHeaders = [];
-      var _headers = s["scoreHeaders"];
+      var _scoreHeaders = s["scoreHeaders"];
+      List _headers = _scoreHeaders.split("|");
       _headers.forEach((item){
         scoreHeaders.add(item);
       });
     }
-    if(s["marks"]["mark"] != null) {
+    if(s["marks"]["mark"] != null && coupleArr != null) {
       marks = [];
       var _marks = s["marks"]["mark"];
       _marks.forEach((item){
-        marks.add(new Mark.fromSnapshot(item));
+        Mark mark = new Mark.fromSnapshot(item);
+        if(mark.contestantKey != null) {
+          for (var cp in coupleArr) {
+            if(mark.contestantKey == cp.coupleKey) {
+              mark.contestant = cp;
+              marks.add(mark);
+              break;
+            }
+          }
+        }
       });
     }
   }
 }
 
 class Mark {
-  String coupleKey;
+  var contestantKey;
+  var contestant;
   List<String> texts;
 
-  Mark({this.coupleKey, this.texts});
+  Mark({this.contestantKey, this.texts});
 
   Mark.fromSnapshot(var s){
-    coupleKey = s["coupleKey"];
-    if(s["texts"] != null) {
+    contestantKey = s["coupleKey"];
+    if(s["text"] != null) {
       texts = [];
-      var _texts = s["texts"];
+      var _text = s["text"];
+      List _texts = _text.split("|");
       _texts.forEach((item){
         texts.add(item);
       });

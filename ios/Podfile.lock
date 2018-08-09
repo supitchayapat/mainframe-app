@@ -157,19 +157,19 @@ DEPENDENCIES:
   - Firebase/DynamicLinks
   - firebase_analytics (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_analytics/ios`)
   - firebase_auth (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios`)
-  - firebase_core (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios`)
+  - firebase_core (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.5/ios`)
   - firebase_database (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_messaging/ios`)
   - firebase_performance (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_performance/ios`)
   - firebase_remote_config (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_remote_config/ios`)
   - firebase_storage (from `/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios`)
-  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios`)
+  - Flutter (from `/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release`)
   - mframe_plugins (from `/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios`)
   - path_provider (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/path_provider-0.2.2/ios`)
   - Stripe
   - stripe_plugin (from `/Users/macbook/Documents/flProjects/myapp/stripe_plugin/ios`)
-  - url_launcher (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.1/ios`)
+  - url_launcher (from `/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.3/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -208,7 +208,7 @@ EXTERNAL SOURCES:
   firebase_auth:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_auth/ios"
   firebase_core:
-    :path: "/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.3/ios"
+    :path: "/Users/macbook/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.2.5/ios"
   firebase_database:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_database/ios"
   firebase_dynamic_links:
@@ -222,7 +222,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: "/Users/macbook/Documents/flProjects/myapp/firebase_plugins/firebase_storage/ios"
   Flutter:
-    :path: "/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios"
+    :path: "/Users/macbook/Documents/flutter/bin/cache/artifacts/engine/ios-release"
   mframe_plugins:
     :path: "/Users/macbook/Documents/flProjects/myapp/mframe_plugins/ios"
   path_provider:
@@ -230,7 +230,7 @@ EXTERNAL SOURCES:
   stripe_plugin:
     :path: "/Users/macbook/Documents/flProjects/myapp/stripe_plugin/ios"
   url_launcher:
-    :path: "/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.1/ios"
+    :path: "/Users/macbook/.pub-cache/hosted/pub.dartlang.org/url_launcher-3.0.3/ios"
 
 SPEC CHECKSUMS:
   APAddressBook: e68ecaf95f2c323b625ae585a0d25fe505291286

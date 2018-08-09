@@ -55,6 +55,87 @@ Future<Null> showMainFrameDialog(BuildContext context, String title, String msg)
   );
 }
 
+/*
+  A method that shows a dialog screen
+  that accepts a String message and a string title
+ */
+Future<Null> showDialogResult(BuildContext context, String title, {List headerItems, List markItems}) async {
+  List<Widget> _headers = [];
+  List<Widget> _marks = [];
+  headerItems.forEach((item){
+    _headers.add(
+        new Flexible(
+          child: new Container(
+            constraints: new BoxConstraints(minWidth: 60.0, minHeight: 20.0),
+            child: new Text(item),
+          ),
+        )
+    );
+  });
+  markItems.forEach((item){
+    _marks.add(
+        new Flexible(
+          child: new Container(
+            constraints: new BoxConstraints(minWidth: 60.0, minHeight: 20.0),
+            child: new Text(item),
+          ),
+        )
+    );
+  });
+
+
+  return showDialog(
+    context: context,
+    child: new Dialog(
+      child: new Container(
+        decoration: new BoxDecoration(
+            borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
+            color: new Color(0xff364864),
+            boxShadow: <BoxShadow>[
+              new BoxShadow(
+                  blurRadius: 1.0,
+                  spreadRadius: 1.0
+              )
+            ]
+        ),
+        height: 220.0,
+        width: 180.0,
+        constraints: new BoxConstraints(minHeight: 220.0, maxHeight: 390.0),
+        child: new Column(
+          children: <Widget>[
+            new Container(
+              //color: Colors.amber,
+              height: 45.0,
+              child: new Row(
+                children: <Widget>[
+                  new Flexible(
+                    child: new Center(
+                      child: new Text(title, overflow: TextOverflow.ellipsis, style: new TextStyle(fontSize: 16.0)),
+                    )
+                  ),
+                ],
+              ),
+            ),
+            new Container(
+              margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+              color: new Color(0xFF212D44),
+              child: new Row(
+                children: _headers,
+              )
+            ),
+            new Container(
+                margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: new Row(
+                  children: _marks,
+                )
+            ),
+          ],
+        ),
+      ),
+    )
+  );
+}
+
 Future<dynamic> showSelectionDialog(BuildContext context, String titleMsg, double height, Map<String, dynamic> options) async {
   List<Widget> _opts = [];
 

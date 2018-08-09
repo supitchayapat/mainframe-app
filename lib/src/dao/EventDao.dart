@@ -120,6 +120,7 @@ class EventDao {
           //print("item: ${item}");
           if (item != null) {
             MFEvent evt = new MFEvent.userSnapshot(item);
+            evt.evtPId = key != null ? key : null;
             // check if past event qualifies:
             // 1. check results node if exists
             // 2. check stop date is before current date

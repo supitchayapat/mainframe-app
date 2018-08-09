@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:myapp/src/model/Heat.dart';
+import 'package:myapp/src/model/EventHeat.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("users");
 
@@ -12,7 +12,7 @@ class HeatListDao {
         .child("program")
         .once().then((data){
       if(data.value != null && data.value.length > 0) {
-        return new Heat.fromSnapshot(data);
+        return new EventHeat.fromSnapshot(data.value);
       }
       else {
         return null;

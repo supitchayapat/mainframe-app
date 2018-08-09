@@ -5,12 +5,14 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class Couple {
+  String key;
   String coupleName;
   List<User> couple;
 
   Couple({this.coupleName, this.couple});
 
   Couple.fromSnapshot(var s) {
+    key = s["key"];
     coupleName = s["coupleName"];
 
     if(s["couple"].length > 0) {

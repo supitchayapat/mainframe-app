@@ -1,5 +1,5 @@
 
-List setListObject(s, objName) {
+List setListObject(s, objName, {objArrParams}) {
   String objNames = objName+"s";
   if(objName == "exclude") {
     objNames = "exclusions";
@@ -16,30 +16,33 @@ List setListObject(s, objName) {
     List objArr = [];
     if(_objects is List) {
       _objects.forEach((val) {
-        objArr.add(initFromSnapshot(objName, val));
+        if(objArrParams == null)
+          objArr.add(initFromSnapshot(objName, val));
+        else
+          objArr.add(initFromSnapshot(objName, val, objArr: objArrParams));
       });
     }
     else {
-      objArr.add(initFromSnapshot(objName, _objects));
+      if(objArrParams == null)
+        objArr.add(initFromSnapshot(objName, _objects));
+      else
+        objArr.add(initFromSnapshot(objName, _objects, objArr: objArrParams));
     }
     return objArr;
   }
   return null;
 }
 
-dynamic initFromSnapshot(String objName, val) {
+dynamic initFromSnapshot(String objName, val, {objArr}) {
   switch (objName.toLowerCase()) {
     case 'couple':
-      HeatCouple _heatCouple = new HeatCouple.fromSnapshot(
-          val);
+      HeatCouple _heatCouple = objArr == null ? new HeatCouple.fromSnapshot(val) : new HeatCouple.fromSnapshot(val, objArr: objArr);
       return _heatCouple;
     case 'person':
-      HeatPerson _person = new HeatPerson.fromSnapshot(
-          val);
+      HeatPerson _person = objArr == null ? new HeatPerson.fromSnapshot(val) : new HeatPerson.fromSnapshot(val, objArr: objArr);
       return _person;
     case 'studio':
-      HeatStudio _studio = new HeatStudio.fromSnapshot(
-          val);
+      HeatStudio _studio = new HeatStudio.fromSnapshot(val);
       return _studio;
     case 'judge':
       HeatJudge _judge = new HeatJudge.fromSnapshot(
@@ -64,7 +67,7 @@ class HeatPerson {
   HeatPerson({this.NdcaUsabdaNumber, this.competitorNumber, this.firstName, this.gender, this.lastName,
   this.nickName, this.personKey, this.personType, this.studio});
 
-  HeatPerson.fromSnapshot(var s) {
+  HeatPerson.fromSnapshot(var s, {objArr}) {
     NdcaUsabdaNumber = s["NdcaUsabdaNumber"];
     competitorNumber = s["competitorNumber"];
     firstName = s["firstName"];
@@ -73,8 +76,14 @@ class HeatPerson {
     nickName = s["nickName"];
     personKey = s["personKey"];
     personType = s["personType"];
-    if(s["studio"] != null) {
-      studio = new HeatStudio.fromSnapshot(s["studio"]);
+    if(s["studioKey"] != null && objArr != null) {
+      String sKey = s["studioKey"];
+      for(var arrItem in objArr){
+        if(arrItem?.studioKey != null && arrItem.studioKey == sKey) {
+          studio = arrItem;
+          break;
+        }
+      }
     }
   }
 }
@@ -85,11 +94,16 @@ class HeatCouple {
 
   HeatCouple({this.coupleKey, this.persons});
 
-  HeatCouple.fromSnapshot(var s) {
+  HeatCouple.fromSnapshot(var s, {objArr}) {
     coupleKey = s["coupleKey"];
-    if(s["persons"] != null) {
+    if(s["personKey"] != null && objArr != null) {
       persons = [];
-      setListObject(s, "person")?.forEach((personTemp) => persons.add(personTemp));
+      List personKeys = s["personKey"];
+      for(var arrItem in objArr) {
+        if(arrItem?.personKey != null && personKeys.contains(arrItem.personKey)) {
+          persons.add(arrItem);
+        }
+      }
     }
   }
 }
