@@ -74,26 +74,30 @@ class _EventDetailsState extends State<EventDetails> {
           });
         });
       }).then((listener) {soloListener=listener;});*/
+      if(res != null) {
+        coupleParticipantsListener((couples) {
+          setState(() {
+            _users = {};
+            _couples = [];
+            _couples.addAll(couples);
+            _solo.forEach((val) {
+              _users.putIfAbsent(
+                  "${val.first_name} ${val.last_name}", () => val);
+            });
+            couples.forEach((val) {
+              for (var cp in res.couples) {
+                // check if matches coupleKey and Names
+                if (cp.coupleKey == val.key)
+                  _users.putIfAbsent("${val.coupleName}", () => val);
+              }
+            });
+          });
 
-      coupleParticipantsListener((couples){
-        setState((){
-          _users = {};
-          _couples = [];
-          _couples.addAll(couples);
-          _solo.forEach((val){
-            _users.putIfAbsent("${val.first_name} ${val.last_name}", () => val);
-          });
-          couples.forEach((val){
-            for(var cp in res.couples) {
-              // check if matches coupleKey and Names
-              if(cp.coupleKey == val.key)
-                _users.putIfAbsent("${val.coupleName}", () => val);
-            }
-          });
+          print("users: ${_users.length}");
+        }).then((listener) {
+          coupleListener = listener;
         });
-
-        print("users: ${_users.length}");
-      }).then((listener){coupleListener=listener;});
+      }
     });
   }
 
@@ -156,18 +160,22 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
-  List<Widget> _addIfNotEmpty(prop, {label}) {
+  List<Widget> _addIfNotEmpty(prop, {label, padTop}) {
     List<Widget> _children = [];
     if(prop != null && prop != "") {
       if(label == null || label.toString().isEmpty) {
         _children.addAll([
-          new Text("${prop}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
+          new Container(
+            padding: (padTop != null) ? const EdgeInsets.only(top: 10.0) : const EdgeInsets.only(),
+            child: new Text("${prop}", style: new TextStyle(fontSize: 16.0)),
+          )
         ]);
       } else {
         _children.addAll([
-          new Text("$label:  ${prop}", style: new TextStyle(fontSize: 16.0)),
-          new Padding(padding: const EdgeInsets.only(top: 10.0)),
+          new Container(
+            padding: (padTop != null) ? const EdgeInsets.only(top: 10.0) : const EdgeInsets.only(),
+            child: new Text("$label:  ${prop}", style: new TextStyle(fontSize: 16.0)),
+          )
         ]);
       }
     }
@@ -175,6 +183,7 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Widget _buildVenueInfo() {
+    print("build venue");
     List<Widget> _children = [];
 
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.venueName));
@@ -191,8 +200,9 @@ class _EventDetailsState extends State<EventDetails> {
     }
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.zip));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.country));
-    _children.addAll(_addIfNotEmpty(eventItem?.venue?.phone, label: "Phone"));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.phone, label: "Phone", padTop: true));
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.fax, label: "Fax"));
+    _children.addAll(_addIfNotEmpty(eventItem?.venue?.website, label: "website", padTop: true));
 
     return new Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -219,9 +229,9 @@ class _EventDetailsState extends State<EventDetails> {
     }
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.zip));
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.country));
-    _children.addAll(_addIfNotEmpty(eventItem?.contact?.phone, label: "Phone"));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.phone, label: "Phone", padTop: true));
     _children.addAll(_addIfNotEmpty(eventItem?.contact?.fax, label: "Fax"));
-    _children.addAll(_addIfNotEmpty(eventItem?.contact?.email, label: "Email"));
+    _children.addAll(_addIfNotEmpty(eventItem?.contact?.email, label: "Email", padTop: true));
 
     return new Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),

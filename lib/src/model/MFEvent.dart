@@ -14,9 +14,10 @@ class Venue {
   String province;
   String country;
   String zip;
+  String website;
 
   Venue({this.venueName, this.phone, this.fax, this.address, this.address2,
-        this.city, this.province, this.country, this.zip});
+        this.city, this.province, this.country, this.zip, this.website});
 }
 
 class ContactInfo {
@@ -321,6 +322,7 @@ class MFEvent {
       venue.province = s["venue"]["province"] ?? "";
       venue.country = s["venue"]["country"] ?? "";
       venue.zip = s["venue"]["zipcode"] ?? "";
+      venue.website = s["venue"]["website"] ?? "";
     }
 
     // Contact
