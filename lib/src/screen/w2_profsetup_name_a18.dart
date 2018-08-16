@@ -9,6 +9,10 @@ import 'package:validator/validator.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
+var pGender;
+var pBirthDay;
+var pCategory;
+
 class ProfileSetupName extends StatefulWidget {
   @override
   _ProfileSetupNameState createState() => new _ProfileSetupNameState();
@@ -30,6 +34,9 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   @override
   void initState() {
     super.initState();
+    pGender = null;
+    pBirthDay = null;
+    pCategory = null;
 
     global.messageLogs.add("Profile Setup 1 Screen Loaded.");
     AnalyticsUtil.setCurrentScreen("Profile Setup 1", screenClassName: "GroupDance");

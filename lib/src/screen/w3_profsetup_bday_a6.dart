@@ -9,6 +9,7 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFRadioGroup.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/MFGlobals.dart' as global;
+import 'w2_profsetup_name_a18.dart' as setup;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class ProfileSetupBday extends StatefulWidget {
@@ -29,6 +30,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   void _handleGenderChanged(val) {
     setState((){
       genderVal = val;
+      setup.pGender = genderVal;
       _user.gender = getGenderFromString(genderVal);
     });
   }
@@ -52,6 +54,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
       } else {
 
       }
+
       Navigator.pushNamed(context, "/profilesetup-3");
     }
   }
@@ -65,17 +68,28 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
 
     print("INIT BDAY.....");
     if(global.dancePartner == null) {
-      getCurrentUserProfile().then((usr) {
 
+      //print(setup.pBirthDay);
+      //print(setup.pGender);
+
+      getCurrentUserProfile().then((usr) {
         setState(() {
-          if (usr.birthday != null) {
+          if(setup.pBirthDay != null) {
+            _bdayCtrl.text = setup.pBirthDay;
+            print("pBday: ${setup.pBirthDay}");
+          }
+          else if (usr.birthday != null) {
             _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(usr.birthday);
             print("bdayCtrl: ${_bdayCtrl.text}");
           }
           else {
             _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
           }
-          if (usr.gender == null) {
+
+          if(setup.pGender != null) {
+            genderVal = setup.pGender;
+          }
+          else if (usr.gender == null) {
             genderVal = "";
           } else {
             genderVal =
@@ -90,6 +104,14 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
         headingTitle = "ADD A PARTICIPANT";
         _user = global.dancePartner;
         _bdayCtrl.text = new DateFormat("MM/dd/yyyy").format(new DateTime(1901));
+
+        if(setup.pBirthDay != null) {
+          _bdayCtrl.text = setup.pBirthDay;
+          print("pBday: ${setup.pBirthDay}");
+        }
+        if(setup.pGender != null) {
+          genderVal = setup.pGender;
+        }
       });
     }
   }
@@ -138,6 +160,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
                         _user.birthday =
                             new DateFormat("MM/dd/yyyy").parse(val);
                         _bdayCtrl.text = val;
+                        setup.pBirthDay = _bdayCtrl.text;
                       }
                     },
                     controller: _bdayCtrl,

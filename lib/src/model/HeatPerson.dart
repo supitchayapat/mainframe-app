@@ -96,9 +96,9 @@ class HeatCouple {
 
   HeatCouple.fromSnapshot(var s, {objArr}) {
     coupleKey = s["coupleKey"];
-    if(s["personKey"] != null && objArr != null) {
+    if(s["personKeys"]["personKey"] != null && objArr != null) {
       persons = [];
-      List personKeys = s["personKey"];
+      List personKeys = s["personKeys"]["personKey"];
       for(var arrItem in objArr) {
         if(arrItem?.personKey != null && personKeys.contains(arrItem.personKey)) {
           persons.add(arrItem);

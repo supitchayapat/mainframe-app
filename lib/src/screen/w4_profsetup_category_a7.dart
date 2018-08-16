@@ -12,6 +12,7 @@ import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+import 'w2_profsetup_name_a18.dart' as setup;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 class ProfileSetupCategory extends StatefulWidget {
@@ -36,7 +37,10 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
       getCurrentUserProfile().then((usr) {
 
         setState(() {
-          if (usr.category == null) {
+          if(setup.pCategory != null) {
+            categoryVal = setup.pCategory;
+          }
+          else if (usr.category == null) {
             categoryVal = "";
           }
           else {
@@ -54,6 +58,10 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
         _user = global.dancePartner;
         _user.category = getDanceCategoryFromString(categoryVal);
         headingTitle = "ADD A PARTICIPANT";
+
+        if(setup.pCategory != null) {
+          categoryVal = setup.pCategory;
+        }
       });
     }
     //print(_user.toJson());
@@ -125,6 +133,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   void _handleCategoryChanged(val) {
     setState((){
       categoryVal = val;
+      setup.pCategory = categoryVal;
       _user.category = getDanceCategoryFromString(categoryVal);
       //print(_user.toJson());
     });

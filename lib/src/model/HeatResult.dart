@@ -22,9 +22,9 @@ class ResultHeat {
     session = s["session"];
     //time = timeFormatter.parse(s["time"]);
     time = s["time"];
-    if(s["subHeat"] != null) {
+    if(s["subHeats"]["subHeat"] != null) {
       subHeats = [];
-      var _subHeats = s["subHeat"];
+      var _subHeats = s["subHeats"]["subHeat"];
       _subHeats.forEach((itm){
         subHeats.add(new ResultSubHeat.fromSnapshot(itm, judgeArr: judgeArr, coupleArr: coupleArr));
       });

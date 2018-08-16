@@ -204,12 +204,14 @@ class MFEvent {
     eventTitle = s["info"]["eventTitle"];
     thumbnail = s["info"]["thumbnail"];
     thumbnailBg = s["info"]["thumbnailBg"];
-    dateStart = formatterSrc.parse(s["info"]["dateStart"]);
-    dateStop = formatterSrc.parse(s["info"]["dateStop"]);
+    if(s["info"]["dateStart"] != null)
+      dateStart = formatterSrc.parse(s["info"]["dateStart"]);
+    if(s["info"]["dateStop"] != null)
+      dateStop = formatterSrc.parse(s["info"]["dateStop"]);
     deadline = s["info"]["deadline"] != null ? formatterSrc.parse(s["info"]["deadline"]) : null;
     if(dateStart == dateStop) {
       dateRange = "${formatterOut.format(dateStart)}";
-    } else {
+    } else if(dateStart != null && dateStop != null) {
       dateRange = "${formatterOut.format(dateStart)} - ${formatterOut.format(dateStop)}";
     }
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
