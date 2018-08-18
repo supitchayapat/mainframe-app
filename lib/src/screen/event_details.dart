@@ -11,10 +11,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/dao/ResultsDao.dart';
+import 'package:myapp/src/dao/HeatlistDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 
 var eventItem;
 var heatResult;
+var heatList;
 var selectedParticipant;
 
 class EventDetails extends StatefulWidget {
@@ -34,8 +36,37 @@ class _EventDetailsState extends State<EventDetails> {
   var soloListener;
   var coupleListener;
 
+  void _processResults(res) {
+    if(res != null) {
+      coupleParticipantsListener((couples) {
+        setState(() {
+          _users = {};
+          _couples = [];
+          _couples.addAll(couples);
+          _solo.forEach((val) {
+            _users.putIfAbsent(
+                "${val.first_name} ${val.last_name}", () => val);
+          });
+          couples.forEach((val) {
+            for (var cp in res.couples) {
+              // check if matches coupleKey and Names
+              if (cp.coupleKey == val.key)
+                _users.putIfAbsent("${val.coupleName}", () => val);
+            }
+          });
+        });
+
+        print("users: ${_users.length}");
+      }).then((listener) {
+        coupleListener = listener;
+      });
+    }
+  }
+
   @override
   void initState() {
+    heatList = null;
+    heatResult = null;
     super.initState();
 
     // logging for crashlytics
@@ -56,6 +87,12 @@ class _EventDetailsState extends State<EventDetails> {
     isRegisterOpen = eventItem.uberRegister;
 
     // heat results
+    HeatListDao.getHeats(eventItem.evtPId).then((res){
+      heatList = res;
+      _processResults(res);
+    });
+
+    // heat results
     ResultsDao.getResults(eventItem.evtPId).then((res){
       heatResult = res;
 
@@ -74,30 +111,7 @@ class _EventDetailsState extends State<EventDetails> {
           });
         });
       }).then((listener) {soloListener=listener;});*/
-      if(res != null) {
-        coupleParticipantsListener((couples) {
-          setState(() {
-            _users = {};
-            _couples = [];
-            _couples.addAll(couples);
-            _solo.forEach((val) {
-              _users.putIfAbsent(
-                  "${val.first_name} ${val.last_name}", () => val);
-            });
-            couples.forEach((val) {
-              for (var cp in res.couples) {
-                // check if matches coupleKey and Names
-                if (cp.coupleKey == val.key)
-                  _users.putIfAbsent("${val.coupleName}", () => val);
-              }
-            });
-          });
-
-          print("users: ${_users.length}");
-        }).then((listener) {
-          coupleListener = listener;
-        });
-      }
+      _processResults(res);
     });
   }
 
@@ -314,6 +328,35 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
+  Widget _resButton(buttonText, pressedFunction) {
+    return new Expanded(
+      child: new Container(
+        decoration: new BoxDecoration(
+            borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+            border: new Border.all(
+              width: 2.0,
+              color: const Color(0xFF313746),
+              style: BorderStyle.solid,
+            )
+        ),
+        height: 48.0,
+        constraints: new BoxConstraints(minWidth: 120.0),
+        child: new MaterialButton(
+          padding: new EdgeInsets.all(0.0),
+          minWidth: 5.0, height: 5.0,
+          color: const Color(0xFFF4EEF6),
+          onPressed: pressedFunction,
+          child: new Text(buttonText,
+            style: new TextStyle(
+                fontSize: 18.0,
+                color: const Color(0xFF287399)
+            ),
+          ),
+        ),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
@@ -321,59 +364,61 @@ class _EventDetailsState extends State<EventDetails> {
     String _floatText = "Register";
     List<Widget> _btnChildren = [];
 
-    Widget _btnWidget = new InkWell(
-      onTap: (){
-        global.messageLogs.add("Register button tapped.");
-        AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
-          'screen': 'event_details'
-        });
-        eventInfo.eventItem = eventItem;
-        eventInfo.participant = null;
-        if(_floatText == "Register") {
-          if(isRegisterOpen) {
-            Navigator.of(context).pushNamed("/registration");
-          } else {
-            showMainFrameDialogWithCancel(
-                context,
-                "Registration Status",
-                "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
-            ).then((ans) {
-              if(ans == "OK") {
-                if(eventItem?.website != null) {
-                  if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
-                    _launchUrl(eventItem?.website);
-                  else
-                    _launchUrl("http://${eventItem?.website}");
-                }
-              }
-            });
-          }
-        }
-        else if(_floatText == "Results") {
-          selectedParticipant = null;
-
-          Map<String, dynamic> participantsList = {};
-          _users.forEach((_usrName, _usr){
-            participantsList.putIfAbsent(_usrName, () => _usr);
-          });
-          participantsList.putIfAbsent("All Participants", () => "all");
-
-          showSelectionDialog(context, "SELECT PARTICIPANT", 220.0,
-              participantsList).then((selectVal){
-            if(selectVal != null) {
-              // navigate results
-              if(selectVal == "all" && heatResult != null) {
-                //print("Evt PID: ${eventItem.evtPId}");
-                Navigator.of(context).pushNamed("/result");
-              }
-              else {
-                selectedParticipant = selectVal;
-                Navigator.of(context).pushNamed("/result");
+    Widget _btnWidget = _resButton(_now.isAfter(eventItem.dateStop) ? "Results" : "Register", (){
+      global.messageLogs.add("Register button tapped.");
+      AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
+        'screen': 'event_details'
+      });
+      eventInfo.eventItem = eventItem;
+      eventInfo.participant = null;
+      if(_floatText == "Register") {
+        if(isRegisterOpen) {
+          Navigator.of(context).pushNamed("/registration");
+        } else {
+          showMainFrameDialogWithCancel(
+              context,
+              "Registration Status",
+              "Mobile Registration is not currently available for this Competition. Would you instead wish to go to their website now?"
+          ).then((ans) {
+            if(ans == "OK") {
+              if(eventItem?.website != null) {
+                if((eventItem?.website).contains("http") || (eventItem?.website).contains("https"))
+                  _launchUrl(eventItem?.website);
+                else
+                  _launchUrl("http://${eventItem?.website}");
               }
             }
           });
         }
-      },
+      }
+      else if(_floatText == "Results") {
+        selectedParticipant = null;
+
+        Map<String, dynamic> participantsList = {};
+        _users.forEach((_usrName, _usr){
+          participantsList.putIfAbsent(_usrName, () => _usr);
+        });
+        participantsList.putIfAbsent("All Participants", () => "all");
+
+        showSelectionDialog(context, "SELECT PARTICIPANT", 220.0,
+            participantsList).then((selectVal){
+          if(selectVal != null) {
+            // navigate results
+            if(selectVal == "all" && heatResult != null) {
+              //print("Evt PID: ${eventItem.evtPId}");
+              Navigator.of(context).pushNamed("/result");
+            }
+            else {
+              selectedParticipant = selectVal;
+              Navigator.of(context).pushNamed("/result");
+            }
+          }
+        });
+      }
+    });
+
+    /*Widget _btnWidget = new InkWell(
+      onTap: (){},
       child: new Container(
         decoration: new BoxDecoration(
           image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
@@ -383,19 +428,44 @@ class _EventDetailsState extends State<EventDetails> {
         height: 40.0,
         child: new Center(child: new Text(_now.isAfter(eventItem.dateStop) ? "Results" : "Register", style: new TextStyle(fontSize: 17.0))),
       ),
-    );
+    );*/
 
     if(_now.isAfter(eventItem.dateStop)) {
       _floatText = "Results";
-      _btnChildren.add(_btnWidget);
       _btnChildren.add(
-          new Expanded(child: new Container())
+        _btnWidget
       );
+
+      if(heatList != null) {
+        _btnChildren.add(
+            _resButton("Heat List", () {
+              selectedParticipant = null;
+              Navigator.of(context).pushNamed("/heatlist");
+            })
+        );
+      } else {
+        _btnChildren.add(
+            new Expanded(
+                child: new Container()
+            )
+        );
+      }
     }
     else {
-      _btnChildren.add(
-          new Expanded(child: new Container())
-      );
+      if(heatList != null) {
+        _btnChildren.add(
+            _resButton("Heat List", () {
+              selectedParticipant = null;
+              Navigator.of(context).pushNamed("/heatlist");
+            })
+        );
+      } else {
+        _btnChildren.add(
+            new Expanded(
+                child: new Container()
+            )
+        );
+      }
       _btnChildren.add(_btnWidget);
     }
 

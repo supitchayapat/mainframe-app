@@ -16,6 +16,7 @@ import 'src/screen/event_details.dart';
 import 'src/screen/ticket_summary_a60.dart';
 import 'src/screen/event_registration.dart';
 import 'src/screen/event_result.dart';
+import 'src/screen/event_heatlist.dart';
 import 'src/screen/couple_management.dart';
 import 'src/screen/participant_list.dart';
 import 'src/screen/entry_summary.dart';
@@ -149,6 +150,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new event_result(),
         settings: settings,
       );
+    case '/heatlist':
+      return new MainFrameRoute(
+        builder: (_) => new event_heatlist(),
+        settings: settings,
+      );
     case '/coupleManagement':
       return new MainFrameRoute(
         builder: (_) => new couple_management(),
@@ -205,6 +211,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
     '/registration': (BuildContext context) => new event_registration(),
     '/result': (BuildContext context) => new event_result(),
+    '/heatlist': (BuildContext context) => new event_heatlist(),
     '/coupleManagement': (BuildContext context) => new couple_management(),
     '/soloManagement': (BuildContext context) => new solo_management(),
     '/participants': (BuildContext context) => new participant_list(),
