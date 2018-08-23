@@ -488,7 +488,7 @@ class _EventDetailsState extends State<EventDetails> {
 
     if(eventItem?.venue != null) {
       _pages.add(new PageSelectData(
-          tabName: 'Venue',
+          tabName: 'Location of Event',
           description: '',
           demoWidget: _buildVenueInfo(),
           loadMoreCallback: (){}

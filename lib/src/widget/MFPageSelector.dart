@@ -61,12 +61,12 @@ class _PageSelectorState extends State<_PageSelector> {
             //color: Colors.amber,
             child: new Row(
                 children: <Widget>[
-                  new IconButton(
+                  (widget.pageWidgets.length > 1 && controller.index > 0) ? new IconButton(
                       icon: const Icon(Icons.chevron_left),
                       color: color,
                       onPressed: () { _handleArrowButtonPress(context, -1); },
                       tooltip: 'Page back'
-                  ),
+                  ) : new Container(height: 40.0, width: 48.0),
                   /*new Center(
                       child: new Text(widget.pageWidgets[controller.index].tabName,
                         style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light", fontWeight: FontWeight.bold),
@@ -77,12 +77,12 @@ class _PageSelectorState extends State<_PageSelector> {
                       tabPages: widget.pageWidgets.map((pSelData){
                         return pSelData.tabName;
                       }).toList()),
-                  new IconButton(
+                  (widget.pageWidgets.length > 1 && controller.index < (widget.pageWidgets.length - 1)) ? new IconButton(
                       icon: const Icon(Icons.chevron_right),
                       color: color,
                       onPressed: () { _handleArrowButtonPress(context, 1); },
                       tooltip: 'Page forward'
-                  )
+                  ) : new Container(height: 40.0, width: 48.0)
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceBetween
             )
