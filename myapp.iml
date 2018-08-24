@@ -20,6 +20,10 @@
       <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_dynamic_link/build" />
       <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_dynamic_link/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_dynamic_link/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_messaging/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_messaging/build" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_messaging/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_messaging/example/build" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart Packages" level="project" />
