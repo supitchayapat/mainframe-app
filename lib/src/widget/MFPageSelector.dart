@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'MFTabPageSelector.dart';
+import 'MFTabPageArrow.dart';
 
 class PageSelectData {
   PageSelectData({
@@ -42,7 +43,7 @@ class _PageSelector extends StatefulWidget {
 
 class _PageSelectorState extends State<_PageSelector> {
 
-  void _handleArrowButtonPress(BuildContext context, int delta) {
+  void _handleArrowButtonPress(int delta) {
     final TabController controller = DefaultTabController.of(context);
     setState((){
       if (!controller.indexIsChanging)
@@ -61,12 +62,21 @@ class _PageSelectorState extends State<_PageSelector> {
             //color: Colors.amber,
             child: new Row(
                 children: <Widget>[
-                  (widget.pageWidgets.length > 1 && controller.index > 0) ? new IconButton(
+                  /*(widget.pageWidgets.length > 1 && controller.index > 0) ? new IconButton(
                       icon: const Icon(Icons.chevron_left),
                       color: color,
                       onPressed: () { _handleArrowButtonPress(context, -1); },
                       tooltip: 'Page back'
-                  ) : new Container(height: 40.0, width: 48.0),
+                  ) : new Container(height: 40.0, width: 48.0),*/
+                  new MFTabPageArrow(
+                    controller: controller,
+                    arrowColor: color,
+                    handleArrowButtonPress: () {
+                      _handleArrowButtonPress(-1);
+                    },
+                    isForward: false,
+                    pagesLength: widget.pageWidgets.length,
+                  ),
                   /*new Center(
                       child: new Text(widget.pageWidgets[controller.index].tabName,
                         style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light", fontWeight: FontWeight.bold),
@@ -77,12 +87,21 @@ class _PageSelectorState extends State<_PageSelector> {
                       tabPages: widget.pageWidgets.map((pSelData){
                         return pSelData.tabName;
                       }).toList()),
-                  (widget.pageWidgets.length > 1 && controller.index < (widget.pageWidgets.length - 1)) ? new IconButton(
+                  /*(widget.pageWidgets.length > 1 && controller.index < (widget.pageWidgets.length - 1)) ? new IconButton(
                       icon: const Icon(Icons.chevron_right),
                       color: color,
-                      onPressed: () { _handleArrowButtonPress(context, 1); },
+                      onPressed: () { _handleArrowButtonPress(1); },
                       tooltip: 'Page forward'
-                  ) : new Container(height: 40.0, width: 48.0)
+                  ) : new Container(height: 40.0, width: 48.0)*/
+                  new MFTabPageArrow(
+                    controller: controller,
+                    arrowColor: color,
+                    handleArrowButtonPress: (){
+                      _handleArrowButtonPress(1);
+                    },
+                    isForward: true,
+                    pagesLength: widget.pageWidgets.length,
+                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceBetween
             )
