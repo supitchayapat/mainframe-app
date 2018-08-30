@@ -1709,8 +1709,9 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
                 ],
               ),
             ),
-            new Container(
-              height: heightOverflow,
+            new Expanded(
+              //color: Colors.amber,
+              //height: heightOverflow,
               child: new ListView(
                 children: <Widget>[
                   new Row(

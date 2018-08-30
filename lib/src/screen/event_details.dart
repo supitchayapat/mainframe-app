@@ -56,7 +56,7 @@ class _EventDetailsState extends State<EventDetails> {
           });
         });
 
-        print("users: ${_users.length}");
+        //print("users: ${_users.length}");
       }).then((listener) {
         coupleListener = listener;
       });
@@ -113,6 +113,15 @@ class _EventDetailsState extends State<EventDetails> {
       }).then((listener) {soloListener=listener;});*/
       _processResults(res);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if(soloListener != null)
+      soloListener.cancel();
+    if(coupleListener != null)
+      coupleListener.cancel();
   }
 
   Future _launchUrl(url) async {
@@ -197,7 +206,7 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Widget _buildVenueInfo() {
-    print("build venue");
+    //print("build venue");
     List<Widget> _children = [];
 
     _children.addAll(_addIfNotEmpty(eventItem?.venue?.venueName));
