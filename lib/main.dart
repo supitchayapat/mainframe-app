@@ -50,6 +50,7 @@ class _DanceFrameApp extends State<DanceFrameApp> {
       hintColor: Colors.white,
       accentColor: Colors.white,
       dialogBackgroundColor: new Color(0xFF324261),
+      textSelectionHandleColor: new Color(0xFF53617C),
     );
 
     return new MaterialApp(

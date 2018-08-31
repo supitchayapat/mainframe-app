@@ -11,6 +11,7 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:myapp/src/util/EntryFormUtil.dart';
 //import 'package:strings/strings.dart';
+import 'package:myapp/src/widget/MFSearchText.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
@@ -29,6 +30,7 @@ class _participant_listState extends State<participant_list> {
   List _solo = [];
   List _couples = [];
   Map<String, dynamic> _users = {};
+  Map<String, dynamic> _userSearch = {};
   var soloListener;
   var coupleListener;
   var tipsTimer;
@@ -91,6 +93,27 @@ class _participant_listState extends State<participant_list> {
     coupleListener.cancel();
     if(tipsTimer != null)
       tipsTimer.cancel();
+  }
+
+  void _searchChange(String val) {
+    Map<String, dynamic> _filtered = {};
+    //print("VALUE $val");
+    setState(() {
+      if(_userSearch.isEmpty && _users.isNotEmpty) {
+        _userSearch = _users;
+      }
+      if(val.isEmpty) {
+        _users = _userSearch;
+      }
+      else {
+        _userSearch.forEach((String key, item){
+          if(key.toLowerCase().contains(val.toLowerCase())) {
+            _filtered.putIfAbsent(key, () => item);
+          }
+          _users = _filtered;
+        });
+      }
+    });
   }
 
   @override
@@ -288,14 +311,9 @@ class _participant_listState extends State<participant_list> {
                             new Expanded(
                                 child: new Padding(
                                   padding: const EdgeInsets.only(left: 2.0),
-                                  child: new TextField(
+                                  child: new MFSearchText(
                                     controller: _searchCtrl,
-                                    decoration: new InputDecoration(
-                                      //hideDivider: true,
-                                      hintText: "Search Name",
-                                      hintStyle: new TextStyle(color: Colors.black)
-                                    ),
-                                    style: new TextStyle(color: Colors.black, fontSize: 18.0, fontFamily: "Montserrat-Regular"),
+                                    onChanged: _searchChange,
                                   ),
                                 )
                             )
