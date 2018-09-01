@@ -282,6 +282,75 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
+  Widget _buildHotels() {
+    List<Widget> _hotelChildren = [];
+
+    eventItem.hotels.forEach((itm){
+      _hotelChildren.add(
+        new Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            new Container(
+                child: new CircleAvatar(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                  backgroundImage: new ExactAssetImage("mainframe_assets/images/hotel_thumbnail.png"),
+                ),
+                width: 100.0,
+                height: 100.0,
+                margin: const EdgeInsets.only(right: 8.0, top: 5.0),
+                padding: const EdgeInsets.all(3.0), // borde width
+                decoration: new BoxDecoration(
+                  color: const Color(0xFFFFFFFF), // border color
+                  shape: BoxShape.circle,
+                )
+            ),
+            new Expanded(
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Wrap(
+                    children: <Widget>[
+                      new Text(itm?.description, style: new TextStyle(fontSize: 16.0))
+                    ],
+                  ),
+                  (itm?.url != null && itm.url != "") ? new Wrap(
+                    children: <Widget>[
+                      new InkWell(
+                        onTap: (){
+                          global.messageLogs.add("Hotel Website link tapped. Navigate to ${eventItem?.website}");
+                          AnalyticsUtil.sendAnalyticsEvent("navigate_web", params: {
+                            'screen': 'event_details'
+                          });
+                          if(eventItem?.website != null) {
+                            if((itm?.url).contains("http") || (itm?.url).contains("https"))
+                              _launchUrl(itm?.url);
+                            else
+                              _launchUrl("http://${itm?.url}");
+                          }
+                        },
+                        child: new Text("${itm?.url}", style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
+                      ),
+                    ],
+                  ) : new Container()
+                ],
+              )
+            )
+          ],
+        )
+      );
+      _hotelChildren.add(new Padding(padding: const EdgeInsets.only(top: 20.0)));
+    });
+
+    return new Padding(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _hotelChildren,
+      ),
+    );
+  }
+
   Widget _buildSchedule() {
     List<Widget> _scheduleChildren = [];
     _scheduleChildren.add(new Center(
@@ -518,6 +587,15 @@ class _EventDetailsState extends State<EventDetails> {
           tabName: 'Organizer',
           description: '',
           demoWidget: _buildOrganizers(),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.hotels != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Hotels',
+          description: '',
+          demoWidget: _buildHotels(),
           loadMoreCallback: (){}
       ));
     }

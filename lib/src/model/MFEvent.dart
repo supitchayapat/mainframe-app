@@ -110,6 +110,29 @@ class Schedule {
   }
 }
 
+class Hotel {
+  String description;
+  String url;
+  String image;
+  int orderValue;
+
+  Hotel({this.description, this.url, this.image, this.orderValue});
+
+  Hotel.fromSnapshot(var s) {
+    description = s["description"];
+    url = s["url"];
+    orderValue = s["orderValue"];
+  }
+
+  toJson() {
+    return {
+      "description": description,
+      "url": url,
+      "orderValue": orderValue
+    };
+  }
+}
+
 class EventSchedule {
   int id;
   String title;
@@ -183,6 +206,7 @@ class MFEvent {
   ContactInfo contact;
   Finance finance;
   List<String> organizers;
+  List<Hotel> hotels;
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
   List<FormEntry> formEntries;
@@ -347,6 +371,15 @@ class MFEvent {
       this.organizers = [];
       _orgs.forEach((itm){
         organizers.add(itm["name"]);
+      });
+    }
+
+    // Hotels
+    if(s["hotels"] != null) {
+      var _hotels = s["hotels"];
+      this.hotels = [];
+      _hotels.forEach((itm){
+        hotels.add(new Hotel.fromSnapshot(itm));
       });
     }
 
