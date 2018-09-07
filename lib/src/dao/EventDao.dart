@@ -169,4 +169,16 @@ class EventDao {
     });
     return returnVal;
   }
+
+  static Future<StreamSubscription> removeEventListener(Function p) async {
+    return reference
+        .onChildRemoved
+        .listen((event) {
+      print("deleted event");
+      var val = event.snapshot.value;
+      print(val);
+      MFEvent evt = new MFEvent.fromSnapshot(val);
+      Function.apply(p, [evt]);
+    });
+  }
 }

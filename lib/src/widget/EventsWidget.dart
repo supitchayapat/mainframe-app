@@ -26,6 +26,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   var listener;
   var past_listener;
   var ao_listener;
+  var delete_listener;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   MainFrameDrawer _mainFrameDrawer;
   List<Widget> listTiles = <Widget>[];
@@ -74,6 +75,8 @@ class _EventsWidgetState extends State<EventsWidget> {
         PerformanceUtil.stopTrace();
         // stop timer
         _performanceTimer.cancel();
+        // clean images
+        _cleanImages();
       }
     });
   }
@@ -258,6 +261,13 @@ class _EventsWidgetState extends State<EventsWidget> {
     });
   }
 
+  void _cleanImages() {
+    List _allEvents = [];
+    _allEvents.addAll(_events);
+    _allEvents.addAll(_pastEvents);
+    FileUtil.cleanImages(_allEvents);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -271,6 +281,26 @@ class _EventsWidgetState extends State<EventsWidget> {
         global.aoFlag = _aoFlag;
         aoFlag = _aoFlag;
         _buildListTiles();
+      });
+    });
+
+    delete_listener = EventDao.removeEventListener((evt){
+      print("returned");
+      List<String> _evtImages = [];
+      if(evt != null) {
+        if(evt?.thumbnail != null)
+          _evtImages.add(evt.thumbnail);
+        if(evt?.hotels != null) {
+          evt.hotels.forEach((hotelItm){
+            if(hotelItm?.imgFilename != null) {
+              _evtImages.add(hotelItm.imgFilename);
+            }
+          });
+        }
+      }
+      // iterate event images
+      _evtImages.forEach((img){
+        FileUtil.getImage(img, isDelete: true);
       });
     });
 
@@ -299,6 +329,8 @@ class _EventsWidgetState extends State<EventsWidget> {
     past_listener.cancel();
     if(ao_listener != null)
       ao_listener.cancel();
+    if(delete_listener != null)
+      delete_listener.cancel();
     if(_performanceTimer != null) {
       _performanceTimer.cancel();
     }

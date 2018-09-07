@@ -113,15 +113,16 @@ class Schedule {
 class Hotel {
   String description;
   String url;
-  String image;
+  String imgFilename; // missing imageUrl child
   int orderValue;
 
-  Hotel({this.description, this.url, this.image, this.orderValue});
+  Hotel({this.description, this.url, this.imgFilename, this.orderValue});
 
   Hotel.fromSnapshot(var s) {
     description = s["description"];
     url = s["url"];
     orderValue = s["orderValue"];
+    imgFilename = s["imgFilename"];
   }
 
   toJson() {
@@ -432,6 +433,21 @@ class MFEvent {
     }
   }
 
+  MFEvent.fromJsonData(var s) {
+    id = (s["id"]).toString();
+    eventTitle = s["eventTitle"];
+    thumbnail = s["imgFilename"];
+    thumbnailBg = s["thumbnailBg"];
+    // Hotels
+    if(s["hotels"] != null) {
+      var _hotels = s["hotels"];
+      this.hotels = [];
+      _hotels.forEach((itm){
+        hotels.add(new Hotel.fromSnapshot(itm));
+      });
+    }
+  }
+
   MFEvent.fromSnapshotEntry(var s) {
     //print(s);
     id = (s["id"]).toString();
@@ -466,6 +482,16 @@ class MFEvent {
       "hasAttended": hasAttended.toString(),
       "contact": contact?.toJson(),
       "year": year.toString(),
+    };
+  }
+
+  toJsonData() {
+    return {
+      "id": id,
+      "eventTitle": eventTitle,
+      "thumbnail": thumbnail,
+      "thumbnailBg": thumbnailBg,
+      "hotels": hotels?.map((val) => val?.toJson())?.toList(),
     };
   }
 }

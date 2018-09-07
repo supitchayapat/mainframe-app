@@ -13,6 +13,7 @@ import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/dao/ResultsDao.dart';
 import 'package:myapp/src/dao/HeatlistDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/util/FileUtil.dart';
 
 var eventItem;
 var heatResult;
@@ -33,6 +34,7 @@ class _EventDetailsState extends State<EventDetails> {
   List _solo = [];
   List _couples = [];
   Map<String, dynamic> _users = {};
+  Map<String, dynamic> _hotelImgs = {};
   var soloListener;
   var coupleListener;
 
@@ -81,6 +83,21 @@ class _EventDetailsState extends State<EventDetails> {
       } else {
         eventRange = "${formatterOut.format(eventItem.dateStart)} - ${formatterOut.format(eventItem.dateStop)}";
       }
+
+      eventItem.hotels.forEach((itm){
+        if(itm?.imgFilename != null) {
+          FileUtil.getImage(itm.imgFilename, isDelete: false).then((img){
+            if(img != null) {
+              //print("image now exists");
+              setState(() {
+                _hotelImgs.putIfAbsent(itm.imgFilename, () => img);
+              });
+            } else {
+              //print("image does not exist");
+            }
+          });
+        }
+      });
     }
 
     // check if registration is open
@@ -283,29 +300,32 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Widget _buildHotels() {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
+    double _hotelImgWidth = mediaQueryData.size.width;
     List<Widget> _hotelChildren = [];
 
     eventItem.hotels.forEach((itm){
+      //print("hotel img: ${itm.imgFilename}");
       _hotelChildren.add(
-        new Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        new Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            new Container(
-                child: new CircleAvatar(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  backgroundImage: new ExactAssetImage("mainframe_assets/images/hotel_thumbnail.png"),
-                ),
-                width: 100.0,
-                height: 100.0,
-                margin: const EdgeInsets.only(right: 8.0, top: 5.0),
-                padding: const EdgeInsets.all(3.0), // borde width
-                decoration: new BoxDecoration(
-                  color: const Color(0xFFFFFFFF), // border color
-                  shape: BoxShape.circle,
-                )
-            ),
-            new Expanded(
+            (itm?.imgFilename != null && _hotelImgs.containsKey(itm.imgFilename)) ? new Container(
+                alignment: Alignment.center,
+                /*decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                        //image: new ExactAssetImage("mainframe_assets/images/hotel_thumbnail.png"),
+                        fit: BoxFit.fitHeight
+                    ),
+                    //color: Colors.amber
+                ),*/
+                width: _hotelImgWidth,
+                height: 140.0,
+                child: _hotelImgs[itm.imgFilename],
+            ) : Container(),
+            (itm?.description != null) ? new Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -335,7 +355,7 @@ class _EventDetailsState extends State<EventDetails> {
                   ) : new Container()
                 ],
               )
-            )
+            ) : new Container()
           ],
         )
       );
