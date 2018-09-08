@@ -14,6 +14,7 @@ import 'package:myapp/src/dao/ResultsDao.dart';
 import 'package:myapp/src/dao/HeatlistDao.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/src/util/FileUtil.dart';
+import 'package:myapp/src/widget/MFTabContent.dart';
 
 var eventItem;
 var heatResult;
@@ -35,6 +36,8 @@ class _EventDetailsState extends State<EventDetails> {
   List _couples = [];
   Map<String, dynamic> _users = {};
   Map<String, dynamic> _hotelImgs = {};
+  Map<String, dynamic> _infoImgs = {};
+  Map<String, dynamic> _sponsorImgs = {};
   var soloListener;
   var coupleListener;
 
@@ -65,6 +68,21 @@ class _EventDetailsState extends State<EventDetails> {
     }
   }
 
+  void _loadHotInfoSponsorImages(itm, imgs) {
+    if(itm?.imgFilename != null) {
+      FileUtil.getImage(itm.imgFilename, isDelete: false).then((img){
+        if(img != null) {
+          //print("image now exists");
+          setState(() {
+            imgs.putIfAbsent(itm.imgFilename, () => img);
+          });
+        } else {
+          //print("image does not exist");
+        }
+      });
+    }
+  }
+
   @override
   void initState() {
     heatList = null;
@@ -84,19 +102,16 @@ class _EventDetailsState extends State<EventDetails> {
         eventRange = "${formatterOut.format(eventItem.dateStart)} - ${formatterOut.format(eventItem.dateStop)}";
       }
 
-      eventItem.hotels.forEach((itm){
-        if(itm?.imgFilename != null) {
-          FileUtil.getImage(itm.imgFilename, isDelete: false).then((img){
-            if(img != null) {
-              //print("image now exists");
-              setState(() {
-                _hotelImgs.putIfAbsent(itm.imgFilename, () => img);
-              });
-            } else {
-              //print("image does not exist");
-            }
-          });
-        }
+      eventItem.hotels?.forEach((itm){
+        _loadHotInfoSponsorImages(itm, _hotelImgs);
+      });
+
+      eventItem.informations?.forEach((itm){
+        _loadHotInfoSponsorImages(itm, _infoImgs);
+      });
+
+      eventItem.sponsors?.forEach((itm){
+        _loadHotInfoSponsorImages(itm, _sponsorImgs);
       });
     }
 
@@ -299,76 +314,8 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 
-  Widget _buildHotels() {
-    final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    double _hotelImgWidth = mediaQueryData.size.width;
-    List<Widget> _hotelChildren = [];
-
-    eventItem.hotels.forEach((itm){
-      //print("hotel img: ${itm.imgFilename}");
-      _hotelChildren.add(
-        new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            (itm?.imgFilename != null && _hotelImgs.containsKey(itm.imgFilename)) ? new Container(
-                alignment: Alignment.center,
-                /*decoration: new BoxDecoration(
-                    image: new DecorationImage(
-                        //image: new ExactAssetImage("mainframe_assets/images/hotel_thumbnail.png"),
-                        fit: BoxFit.fitHeight
-                    ),
-                    //color: Colors.amber
-                ),*/
-                width: _hotelImgWidth,
-                height: 140.0,
-                child: _hotelImgs[itm.imgFilename],
-            ) : Container(),
-            (itm?.description != null) ? new Container(
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new Wrap(
-                    children: <Widget>[
-                      new Text(itm?.description, style: new TextStyle(fontSize: 16.0))
-                    ],
-                  ),
-                  (itm?.url != null && itm.url != "") ? new Wrap(
-                    children: <Widget>[
-                      new InkWell(
-                        onTap: (){
-                          global.messageLogs.add("Hotel Website link tapped. Navigate to ${eventItem?.website}");
-                          AnalyticsUtil.sendAnalyticsEvent("navigate_web", params: {
-                            'screen': 'event_details'
-                          });
-                          if(eventItem?.website != null) {
-                            if((itm?.url).contains("http") || (itm?.url).contains("https"))
-                              _launchUrl(itm?.url);
-                            else
-                              _launchUrl("http://${itm?.url}");
-                          }
-                        },
-                        child: new Text("${itm?.url}", style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
-                      ),
-                    ],
-                  ) : new Container()
-                ],
-              )
-            ) : new Container()
-          ],
-        )
-      );
-      _hotelChildren.add(new Padding(padding: const EdgeInsets.only(top: 20.0)));
-    });
-
-    return new Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _hotelChildren,
-      ),
-    );
+  Widget _buildHotelInfoSponsor(evtHotelInfoSponsor, imgs) {
+    return new MFTabContent(contentItems: evtHotelInfoSponsor, imgs: imgs);
   }
 
   Widget _buildSchedule() {
@@ -615,7 +562,25 @@ class _EventDetailsState extends State<EventDetails> {
       _pages.add(new PageSelectData(
           tabName: 'Hotels',
           description: '',
-          demoWidget: _buildHotels(),
+          demoWidget: _buildHotelInfoSponsor(eventItem.hotels, _hotelImgs),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.informations != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Informations',
+          description: '',
+          demoWidget: _buildHotelInfoSponsor(eventItem.informations, _infoImgs),
+          loadMoreCallback: (){}
+      ));
+    }
+
+    if(eventItem?.sponsors != null) {
+      _pages.add(new PageSelectData(
+          tabName: 'Sponsors',
+          description: '',
+          demoWidget: _buildHotelInfoSponsor(eventItem.sponsors, _sponsorImgs),
           loadMoreCallback: (){}
       ));
     }

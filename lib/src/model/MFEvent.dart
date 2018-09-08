@@ -110,15 +110,15 @@ class Schedule {
   }
 }
 
-class Hotel {
+class HotInfoSponsor {
   String description;
   String url;
   String imgFilename; // missing imageUrl child
   int orderValue;
 
-  Hotel({this.description, this.url, this.imgFilename, this.orderValue});
+  HotInfoSponsor({this.description, this.url, this.imgFilename, this.orderValue});
 
-  Hotel.fromSnapshot(var s) {
+  HotInfoSponsor.fromSnapshot(var s) {
     description = s["description"];
     url = s["url"];
     orderValue = s["orderValue"];
@@ -207,7 +207,9 @@ class MFEvent {
   ContactInfo contact;
   Finance finance;
   List<String> organizers;
-  List<Hotel> hotels;
+  List<HotInfoSponsor> hotels;
+  List<HotInfoSponsor> informations;
+  List<HotInfoSponsor> sponsors;
   List<EventDanceCategory> danceCategories;
   List<EventLevel> levels;
   List<FormEntry> formEntries;
@@ -380,7 +382,25 @@ class MFEvent {
       var _hotels = s["hotels"];
       this.hotels = [];
       _hotels.forEach((itm){
-        hotels.add(new Hotel.fromSnapshot(itm));
+        hotels.add(new HotInfoSponsor.fromSnapshot(itm));
+      });
+    }
+
+    // Informations
+    if(s["informations"] != null) {
+      var _infos = s["informations"];
+      this.informations = [];
+      _infos.forEach((itm){
+        informations.add(new HotInfoSponsor.fromSnapshot(itm));
+      });
+    }
+
+    // Sponsors
+    if(s["sponsors"] != null) {
+      var _sponsors = s["sponsors"];
+      this.sponsors = [];
+      _sponsors.forEach((itm){
+        sponsors.add(new HotInfoSponsor.fromSnapshot(itm));
       });
     }
 
@@ -443,7 +463,7 @@ class MFEvent {
       var _hotels = s["hotels"];
       this.hotels = [];
       _hotels.forEach((itm){
-        hotels.add(new Hotel.fromSnapshot(itm));
+        hotels.add(new HotInfoSponsor.fromSnapshot(itm));
       });
     }
   }
