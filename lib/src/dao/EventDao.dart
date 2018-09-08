@@ -99,10 +99,14 @@ class EventDao {
     // filter date that are only future events
     future_events.removeWhere((evt){
       DateTime _now = new DateTime.now();
+      DateTime _tempStop = evt.dateStop.add(new Duration(hours: 6));
+      //print("Date: ${_now}");
+      //print("Date Stop: ${_tempStop}");
+      //print("Date Stop plus 4 hours: ${_tempStop.add(new Duration(hours: 6))}");
       //print("Date: ${evt.stopDate.toIso8601String()}");
       //print("same day: ${evt.stopDate.isAtSameMomentAs(_now)}");
       //print("before day: ${evt.stopDate.isBefore(_now)}");
-      return (evt.dateStop.isAtSameMomentAs(_now) || evt.dateStop.isBefore(_now));
+      return (_tempStop.isAtSameMomentAs(_now) || _tempStop.isBefore(_now));
     });
   }
 
