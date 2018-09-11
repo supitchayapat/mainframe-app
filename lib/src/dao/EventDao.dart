@@ -99,7 +99,8 @@ class EventDao {
     // filter date that are only future events
     future_events.removeWhere((evt){
       DateTime _now = new DateTime.now();
-      DateTime _tempStop = evt.dateStop.add(new Duration(hours: 6));
+      // The actual stop day should be the next day + six hours (6:00am)
+      DateTime _tempStop = evt.dateStop.add(new Duration(days: 1, hours: 6));
       //print("Date: ${_now}");
       //print("Date Stop: ${_tempStop}");
       //print("Date Stop plus 4 hours: ${_tempStop.add(new Duration(hours: 6))}");
