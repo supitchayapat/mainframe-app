@@ -253,8 +253,8 @@ class _EventsWidgetState extends State<EventsWidget> {
     fileUtilRunning = true;
     FileUtil.downloadImagesCallback((fileName, img){
       setState((){
-        Image _img = new Image.file(img);
-        _thumbImages.putIfAbsent(fileName, () => _img);
+        //Image _img = new Image.file(img);
+        _thumbImages.putIfAbsent(fileName, () => img);
         _buildListTiles();
         fileUtilRunning = false;
       });

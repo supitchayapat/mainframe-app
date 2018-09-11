@@ -51,7 +51,7 @@ class FileUtil {
     print("LOAD DIR: $dir");
     //if(global.imgFiles.isEmpty) {
     var list = await EventDao.getEvents();
-    await Future.forEach(list, (evt) async {
+    /*await Future.forEach(list, (evt) async {
       String fileName = evt.thumbnail.substring(evt.thumbnail.lastIndexOf("/") + 1);
       // ommit after params
       if(fileName.contains("?")) {
@@ -74,6 +74,18 @@ class FileUtil {
         }
       } else {
         Function.apply(p, [fileName, imgFile]);
+      }
+    });*/
+    list.forEach((mfEvent){
+      if(mfEvent?.thumbnail != null) {
+        getImage(mfEvent.thumbnail, isDelete: false).then((img){
+          if(img != null) {
+            Function.apply(p, [mfEvent.thumbnail, img]);
+          }
+          else {
+            //print("image does not exist");
+          }
+        });
       }
     });
   }
