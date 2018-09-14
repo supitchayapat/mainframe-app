@@ -130,6 +130,10 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    double _height = mediaQuery.size.height;
+    double _formHeight = _height - 140.0;
+
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new MFAppBar(headingTitle, context),
@@ -140,53 +144,58 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
               child: new ListView(
                 children: <Widget>[
                   new Container(
-                    alignment: Alignment.bottomLeft,
-                    child: new Text(
-                      "Birthday",
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: "Montserrat-Light",
-                      ),
+                    height: _formHeight,
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          alignment: Alignment.bottomLeft,
+                          child: new Text(
+                            "Birthday",
+                            style: new TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: "Montserrat-Light",
+                            ),
+                          ),
+                          height: 60.0,
+                        ),
+                        new Padding(padding: const EdgeInsets.all(5.0)),
+                        new MFTextFormField(
+                          icon: const Icon(Icons.access_time),
+                          labelText: ' ',
+                          keyboardType: TextInputType.text,
+                          onSaved: (String val) {
+                            if(val != null && !val.isEmpty) {
+                              _user.birthday =
+                                  new DateFormat("MM/dd/yyyy").parse(val);
+                              _bdayCtrl.text = val;
+                              setup.pBirthDay = _bdayCtrl.text;
+                            }
+                          },
+                          controller: _bdayCtrl,
+                          validator: _validateBirthday,
+                          isDatePicker: true,
+                        ),
+                        new Container(
+                          child: new Text(
+                            "Gender",
+                            style: new TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: "Montserrat-Light",
+                            ),
+                          ),
+                          alignment: Alignment.bottomLeft,
+                          height: 120.0,
+                        ),
+                        new Padding(padding: const EdgeInsets.all(5.0)),
+                        new MFRadioGroup(
+                            radioItems: <MFRadio>[
+                              new MFRadio(labelText: "Man", value: "MAN", groupValue: genderVal, onChanged: _handleGenderChanged),
+                              new MFRadio(labelText: "Woman", value: "WOMAN", groupValue: genderVal, onChanged: _handleGenderChanged)
+                            ]
+                        ),
+                      ],
                     ),
-                    height: 60.0,
                   ),
-                  new Padding(padding: const EdgeInsets.all(5.0)),
-                  new MFTextFormField(
-                    icon: const Icon(Icons.access_time),
-                    labelText: ' ',
-                    keyboardType: TextInputType.text,
-                    onSaved: (String val) {
-                      if(val != null && !val.isEmpty) {
-                        _user.birthday =
-                            new DateFormat("MM/dd/yyyy").parse(val);
-                        _bdayCtrl.text = val;
-                        setup.pBirthDay = _bdayCtrl.text;
-                      }
-                    },
-                    controller: _bdayCtrl,
-                    validator: _validateBirthday,
-                    isDatePicker: true,
-                  ),
-                  new Container(
-                    child: new Text(
-                      "Gender",
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: "Montserrat-Light",
-                      ),
-                    ),
-                    alignment: Alignment.bottomLeft,
-                    height: 120.0,
-                  ),
-                  new Padding(padding: const EdgeInsets.all(5.0)),
-                  new MFRadioGroup(
-                      radioItems: <MFRadio>[
-                        new MFRadio(labelText: "Man", value: "MAN", groupValue: genderVal, onChanged: _handleGenderChanged),
-                        new MFRadio(labelText: "Woman", value: "WOMAN", groupValue: genderVal, onChanged: _handleGenderChanged)
-                      ]
-                  ),
-
-                  new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(
                     child: new MainFrameButton(
                       child: new Text("CONTINUE"),

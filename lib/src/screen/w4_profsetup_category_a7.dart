@@ -141,41 +141,51 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    double _height = mediaQuery.size.height;
+    double _formHeight = _height - 140.0;
+
     return new Scaffold(
         appBar: new MFAppBar(headingTitle, context),
         body: new Container(
           margin: new EdgeInsets.only(right: 30.0, left: 30.0),
           child: new ListView(
             children: <Widget>[
-              new Padding(padding: const EdgeInsets.all(20.0)),
-              new MFRadio(value: "PROFESSIONAL", labelText: "Professional", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-              new Padding(padding: const EdgeInsets.all(10.0)),
               new Container(
-                alignment: Alignment.bottomLeft,
-                child: new Text(
-                  "Professional dancers compete as a Professional Couple, or as a Professional in a Pro-Am Couple.",
-                  style: new TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Montserrat-Light",
-                  ),
+                height: _formHeight,
+                child: new Column(
+                  children: <Widget>[
+                    new Padding(padding: const EdgeInsets.all(20.0)),
+                    new MFRadio(value: "PROFESSIONAL", labelText: "Professional", groupValue: categoryVal, onChanged: _handleCategoryChanged),
+                    new Padding(padding: const EdgeInsets.all(10.0)),
+                    new Container(
+                      alignment: Alignment.bottomLeft,
+                      child: new Text(
+                        "Professional dancers compete as a Professional Couple, or as a Professional in a Pro-Am Couple.",
+                        style: new TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: "Montserrat-Light",
+                        ),
+                      ),
+                      height: 60.0,
+                    ),
+                    new Padding(padding: const EdgeInsets.all(30.0)),
+                    new MFRadio(value: "AMATEUR", labelText: "Amateur", groupValue: categoryVal, onChanged: _handleCategoryChanged),
+                    new Padding(padding: const EdgeInsets.all(10.0)),
+                    new Container(
+                      alignment: Alignment.bottomLeft,
+                      child: new Text(
+                        "Amateur dancers compete as an Amateur Couple, or as an Amateur in a Pro-Am Couple.",
+                        style: new TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: "Montserrat-Light",
+                        ),
+                      ),
+                      height: 60.0,
+                    ),
+                  ],
                 ),
-                height: 60.0,
               ),
-              new Padding(padding: const EdgeInsets.all(30.0)),
-              new MFRadio(value: "AMATEUR", labelText: "Amateur", groupValue: categoryVal, onChanged: _handleCategoryChanged),
-              new Padding(padding: const EdgeInsets.all(10.0)),
-              new Container(
-                alignment: Alignment.bottomLeft,
-                child: new Text(
-                  "Amateur dancers compete as an Amateur Couple, or as an Amateur in a Pro-Am Couple.",
-                  style: new TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Montserrat-Light",
-                  ),
-                ),
-                height: 60.0,
-              ),
-              new Padding(padding: const EdgeInsets.all(30.0)),
               new Container(
                 child: new MainFrameButton(
                   child: new Text("FINISH PROFILE"),

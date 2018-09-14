@@ -110,6 +110,9 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    double _height = mediaQuery.size.height;
+    double _formHeight = _height - 140.0;
 
     return new Scaffold(
         key: _scaffoldKey,
@@ -121,44 +124,50 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
               child: new ListView(
                 children: <Widget>[
                   new Container(
-                    child: new Text(
-                      textDescription,
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                        fontFamily: "Montserrat-Light",
-                      ),
+                    height: _formHeight,
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          child: new Text(
+                            textDescription,
+                            style: new TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: "Montserrat-Light",
+                            ),
+                          ),
+                          alignment: Alignment.bottomCenter,
+                          height: 120.0,
+                        ),
+                        new Padding(padding: const EdgeInsets.all(10.0)),
+                        new MFTextFormField(
+                            icon: const Icon(Icons.person),
+                            labelText: 'First Name',
+                            keyboardType: TextInputType.text,
+                            onSaved: (String val) => _user.first_name = val,
+                            controller: _fnameCtrl,
+                            validator: _validateNotEmpty
+                        ),
+                        new MFTextFormField(
+                          icon: const Icon(Icons.person),
+                          labelText: 'Last Name',
+                          keyboardType: TextInputType.text,
+                          onSaved: (String val) => _user.last_name = val,
+                          controller: _lnameCtrl,
+                          validator: _validateNotEmpty,
+                        ),
+                        new MFTextFormField(
+                          icon: const Icon(Icons.email),
+                          labelText: 'Email',
+                          keyboardType: TextInputType.text,
+                          onSaved: (String val) => _user.email = val,
+                          controller: _emailCtrl,
+                          validator: isEmailEnabled ? _validateEmail : _validateNotEmpty,
+                          //initialValue: _user.email != null ? _user.email : "",
+                          isEnabled: isEmailEnabled,
+                        ),
+                      ],
                     ),
-                    alignment: Alignment.bottomCenter,
-                    height: 120.0,
                   ),
-                  new Padding(padding: const EdgeInsets.all(10.0)),
-                  new MFTextFormField(
-                    icon: const Icon(Icons.person),
-                    labelText: 'First Name',
-                    keyboardType: TextInputType.text,
-                    onSaved: (String val) => _user.first_name = val,
-                    controller: _fnameCtrl,
-                    validator: _validateNotEmpty
-                  ),
-                  new MFTextFormField(
-                    icon: const Icon(Icons.person),
-                    labelText: 'Last Name',
-                    keyboardType: TextInputType.text,
-                    onSaved: (String val) => _user.last_name = val,
-                    controller: _lnameCtrl,
-                    validator: _validateNotEmpty,
-                  ),
-                  new MFTextFormField(
-                    icon: const Icon(Icons.email),
-                    labelText: 'Email',
-                    keyboardType: TextInputType.text,
-                    onSaved: (String val) => _user.email = val,
-                    controller: _emailCtrl,
-                    validator: isEmailEnabled ? _validateEmail : _validateNotEmpty,
-                    //initialValue: _user.email != null ? _user.email : "",
-                    isEnabled: isEmailEnabled,
-                  ),
-                  new Padding(padding: const EdgeInsets.all(30.0)),
                   new Container(
                     child: new MainFrameButton(
                       child: new Text("CONTINUE"),
