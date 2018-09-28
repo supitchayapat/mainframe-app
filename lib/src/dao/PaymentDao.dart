@@ -6,7 +6,7 @@ import 'package:myapp/src/model/PaymentTransaction.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("stripe_payments");
 final user_ref = FirebaseDatabase.instance.reference().child("users");
-final config_ref = FirebaseDatabase.instance.reference().child("configuration");
+final config_ref = FirebaseDatabase.instance.reference().child("configuration").child("public");
 final String stripeKey_pk = "pk_test_I3QbZv331ioLsVDcw4LXxM82";
 final String stripeKey_sk = "sk_test_U1doXH82rtoluhjZ9ETZ4Hn5";
 

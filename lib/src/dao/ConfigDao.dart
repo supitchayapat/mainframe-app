@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 
-final reference = FirebaseDatabase.instance.reference().child("configuration");
+final reference = FirebaseDatabase.instance.reference().child("configuration").child("public");
 
 class ConfigDao {
 
