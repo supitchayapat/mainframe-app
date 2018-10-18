@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:myapp/src/screen/change_password.dart' as cp;
 
 class MainFrameSplash extends StatefulWidget {
 
@@ -39,16 +43,35 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       print("[SPLASH page] Is loggedin: $isLogged");
       String _navi = '/mainscreen';
       if(!isLogged) {
-        _navi = '/loginscreen';
+        //_navi = '/loginscreen';
+        _retrieveDynamicLink().then((retVal) {
+          Navigator.of(context).pushReplacementNamed(retVal);
+        });
+      }
+      else {
+        Navigator.of(context).pushReplacementNamed(_navi);
       }
       //else {
         //FileUtil.loadImages();
       //}
       //SchedulerBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed(_navi);
       //});
 
     });
+  }
+
+  Future<String> _retrieveDynamicLink() async {
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.retrieveDynamicLink();
+    final Uri deepLink = data?.link;
+
+    if(deepLink != null && deepLink.path.contains("changepass")) {
+      if(deepLink.queryParameters.containsKey("tokenId")) {
+        cp.changepassToken = deepLink.queryParameters["tokenId"];
+        return '/change-password';
+      }
+    }
+
+    return '/loginscreen';
   }
 
   @override

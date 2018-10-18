@@ -25,6 +25,8 @@ import 'src/screen/entry_freeform.dart';
 import 'src/screen/GroupDance.dart';
 import 'src/screen/payment_success.dart';
 import 'src/screen/solo_management.dart';
+import 'src/screen/change_password.dart';
+import 'src/screen/forgotpass_success.dart';
 
 /*
   Author: Art
@@ -78,6 +80,16 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
     case '/forgot-password':
       return new MainFrameRoute(
         builder: (_) => new ForgotPassword(),
+        settings: settings,
+      );
+    case '/forgotpass_success':
+      return new MainFrameRoute(
+        builder: (_) => new forgotpass_success(),
+        settings: settings,
+      );
+    case '/change-password':
+      return new MainFrameRoute(
+        builder: (_) => new change_password(),
         settings: settings,
       );
     case '/mainscreen':
@@ -192,11 +204,13 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
 
 Map<String, WidgetBuilder> getMainFrameRoute() {
   return <String, WidgetBuilder>{
-    '/':         (BuildContext context) => new MainFrameSplash(),
-    '/login':         (BuildContext context) => new LoginApp(),
-    '/loginscreen':         (BuildContext context) => new LoginScreen(),
-    '/contactUs':         (BuildContext context) => new AboutUs(),
-    '/forgot-password':         (BuildContext context) => new ForgotPassword(),
+    '/': (BuildContext context) => new MainFrameSplash(),
+    '/login': (BuildContext context) => new LoginApp(),
+    '/loginscreen': (BuildContext context) => new LoginScreen(),
+    '/contactUs': (BuildContext context) => new AboutUs(),
+    '/forgot-password': (BuildContext context) => new ForgotPassword(),
+    '/forgotpass-success': (BuildContext context) => new forgotpass_success(),
+    '/change-password': (BuildContext context) => new change_password(),
     '/mainscreen': (BuildContext context) => new MainScreen(),
     '/profilesetup-1': (BuildContext context) => new ProfileSetupName(),
     '/profilesetup-2': (BuildContext context) => new ProfileSetupBday(),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/widget/MFTextFormField.dart';
@@ -7,7 +8,8 @@ import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:validator/validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myapp/src/util/HttpUtil.dart';
+import 'forgotpass_success.dart' as fp;
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -21,9 +23,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void _handleReset() {
     FormState form = _formKey.currentState;
     // crashlytics logging
-    global.messageLogs.add("Login button pressed.");
-    AnalyticsUtil.sendAnalyticsEvent("login_btn_press", params: {
-      'screen': 'email_a2'
+    global.messageLogs.add("Forgot password button submit.");
+    AnalyticsUtil.sendAnalyticsEvent("forgot_btn_press", params: {
+      'screen': 'forgot_pass_a3'
     });
 
     if(!form.validate()) {
@@ -31,6 +33,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     } else {
       form.save();
       MainFrameLoadingIndicator.showLoading(context);
+      /*UserUpdateInfo info = new UserUpdateInfo();
+      FirebaseAuth.instance.currentUser().then((firebaseUser){
+      });
       FirebaseAuth.instance.sendPasswordResetEmail(email: _email).then((usr) {
         MainFrameLoadingIndicator.hideLoading(context);
         showMainFrameDialog(
@@ -45,6 +50,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             context,
             "Reset Error",
             "Sending Reset link to your email failed. Make sure the email you entered is a registered email.");
+      });*/
+      HttpUtil.requestForgotPassword(_email).then((resp){
+        print("request responded");
+        if(resp != null) {
+          var jsonRes = json.decode(resp.body);
+          var message = jsonRes["message"];
+          var code = jsonRes["code"];
+
+          switch (code) {
+            case 100:
+              fp.fpMessage = message;
+              break;
+            case 102:
+              fp.fpMessage =
+              "You already requested for a change password. Please check your email.";
+              break;
+            case 305:
+              fp.fpMessage =
+              "Could not find user reset request. Please contact support. Thanks";
+              break;
+            case 304:
+              fp.fpMessage =
+              "Email not registered to BallroomGo app. Please input correct email.";
+              break;
+            default:
+              fp.fpMessage = null;
+          }
+        }
+        else {
+          fp.fpMessage = null;
+        }
+        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.of(context).pushReplacementNamed("/forgotpass-success");
+      }).catchError((errorMsg){
+        MainFrameLoadingIndicator.hideLoading(context);
+        showMainFrameDialog(
+            context,
+            "Error",
+            errorMsg.message
+        );
       });
     }
   }
@@ -103,6 +148,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       onSaved: (String val) => _email = val,
                     ),
                   ),
+                  /*new Container(
+                    child: new FlatButton(onPressed: (){Navigator.pushNamed(context, "/change-password");}, child: new Text("Change password")),
+                  )*/
                 ],
               ),
             ),

@@ -10,6 +10,7 @@ import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/util/ScreenUtils.dart';
 
 class MainScreen extends StatefulWidget {
 
@@ -33,6 +34,8 @@ class _MainScreenState extends State<MainScreen> {
 
     if (deepLink != null) {
       print("deepLink path: ${deepLink.path}");
+      //showMainFrameDialog(context, "deep params", deepLink.path);
+      //showMainFrameDialog(context, "deep params", deepLink.queryParametersAll.toString());
       //Navigator.pushNamed(context, deepLink.path);
       String _link = deepLink.path;
       if(_link.contains("/")) {
