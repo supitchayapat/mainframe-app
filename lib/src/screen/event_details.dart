@@ -20,6 +20,8 @@ var eventItem;
 var heatResult;
 var heatList;
 var selectedParticipant;
+Timer eventTimer;
+const int _refreshDelay = 1;
 
 class EventDetails extends StatefulWidget {
   @override
@@ -113,6 +115,17 @@ class _EventDetailsState extends State<EventDetails> {
       eventItem.sponsors?.forEach((itm){
         _loadHotInfoSponsorImages(itm, _sponsorImgs);
       });
+
+      // perform refresh events
+      eventTimer = new Timer.periodic(new Duration(minutes: _refreshDelay), (timer) {
+        print("Check event timer");
+        if(checkIsStopDate()) {
+          showMainFrameDialog(context, "Event Inactive", "Event is already inactive. You will be redirected to the events list").then((val){
+            Navigator.of(context).popUntil(ModalRoute.withName("/mainscreen"));
+          });
+          eventTimer.cancel();
+        }
+      });
     }
 
     // check if registration is open
@@ -145,6 +158,14 @@ class _EventDetailsState extends State<EventDetails> {
       }).then((listener) {soloListener=listener;});*/
       _processResults(res);
     });
+  }
+
+  bool checkIsStopDate() {
+    DateTime _now = new DateTime.now();
+    DateTime _tempStop = eventItem.dateStop.add(new Duration(days: 1, hours: 6));
+    //_now = _now.add(new Duration(days: 1, hours: 19, minutes: 55));
+    print("dateStop: ${eventItem.dateStop} , tempstop: ${_tempStop} , timeNow: ${_now}, isAfter: ${_now.isAfter(_tempStop)}");
+    return _now.isAfter(_tempStop);
   }
 
   @override
@@ -405,11 +426,10 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
-    DateTime _now = new DateTime.now();
     String _floatText = "Register";
     List<Widget> _btnChildren = [];
 
-    Widget _btnWidget = _resButton(_now.isAfter(eventItem.dateStop) ? "Results" : "Register", (){
+    Widget _btnWidget = _resButton(checkIsStopDate() ? "Results" : "Register", (){
       global.messageLogs.add("Register button tapped.");
       AnalyticsUtil.sendAnalyticsEvent("register_btn_press", params: {
         'screen': 'event_details'
@@ -439,26 +459,30 @@ class _EventDetailsState extends State<EventDetails> {
       else if(_floatText == "Results") {
         selectedParticipant = null;
 
-        Map<String, dynamic> participantsList = {};
-        _users.forEach((_usrName, _usr){
-          participantsList.putIfAbsent(_usrName, () => _usr);
-        });
-        participantsList.putIfAbsent("All Participants", () => "all");
+        if(heatResult != null) {
+          Map<String, dynamic> participantsList = {};
+          _users.forEach((_usrName, _usr) {
+            participantsList.putIfAbsent(_usrName, () => _usr);
+          });
+          participantsList.putIfAbsent("All Participants", () => "all");
 
-        showSelectionDialog(context, "SELECT PARTICIPANT", 220.0,
-            participantsList).then((selectVal){
-          if(selectVal != null) {
-            // navigate results
-            if(selectVal == "all" && heatResult != null) {
-              //print("Evt PID: ${eventItem.evtPId}");
-              Navigator.of(context).pushNamed("/result");
+          showSelectionDialog(context, "SELECT PARTICIPANT", 220.0,
+              participantsList).then((selectVal) {
+            if (selectVal != null) {
+              // navigate results
+              if (selectVal == "all" && heatResult != null) {
+                //print("Evt PID: ${eventItem.evtPId}");
+                Navigator.of(context).pushNamed("/result");
+              }
+              else {
+                selectedParticipant = selectVal;
+                Navigator.of(context).pushNamed("/result");
+              }
             }
-            else {
-              selectedParticipant = selectVal;
-              Navigator.of(context).pushNamed("/result");
-            }
-          }
-        });
+          });
+        } else {
+          showMainFrameDialog(context, "Results", "Event Results are not yet available. Please check it later.");
+        }
       }
     });
 
@@ -475,7 +499,7 @@ class _EventDetailsState extends State<EventDetails> {
       ),
     );*/
 
-    if(_now.isAfter(eventItem.dateStop)) {
+    if(checkIsStopDate()) {
       _floatText = "Results";
       _btnChildren.add(
         _btnWidget

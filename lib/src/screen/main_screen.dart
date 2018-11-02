@@ -12,13 +12,15 @@ import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/util/ScreenUtils.dart';
 
+const int _timerDelay = 100;
+
 class MainScreen extends StatefulWidget {
 
   @override
   _MainScreenState createState() => new _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   var remove_listener;
 
   /*void _logout() {

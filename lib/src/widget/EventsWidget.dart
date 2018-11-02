@@ -15,14 +15,14 @@ import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 const double _kFlexibleSpaceMaxHeight = 186.0;
 const int _timerDelay = 100;
-const int _refreshDelay = 1;
+const int _refreshDelay = 5;
 
 class EventsWidget extends StatefulWidget {
   @override
   _EventsWidgetState createState() => new _EventsWidgetState();
 }
 
-class _EventsWidgetState extends State<EventsWidget> {
+class _EventsWidgetState extends State<EventsWidget> with WidgetsBindingObserver {
   var listener;
   var past_listener;
   var ao_listener;
@@ -47,7 +47,23 @@ class _EventsWidgetState extends State<EventsWidget> {
 
   void _handleEventTap(event) {
     eventInfo.eventItem = event;
-    Navigator.of(context).pushNamed("/event");
+    if(_eventsListTimer != null) {
+      _eventsListTimer.cancel();
+    }
+    Navigator.of(context).pushNamed("/event").then((val){
+      print("BACK TO EVENT LIST");
+      _eventsListSetup();
+      // perform refresh events
+      _eventsListTimer = new Timer.periodic(new Duration(minutes: _refreshDelay), (timer) {
+        print("REFRESH EVENT");
+        _eventsListSetup();
+      });
+
+      if(eventInfo.eventTimer != null) {
+        print("cancelling event timer...");
+        eventInfo.eventTimer.cancel();
+      }
+    });
   }
 
   void _buildListTiles() {
@@ -271,6 +287,7 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     // start performance check
     PerformanceUtil.startTrace("event_list");
@@ -315,16 +332,23 @@ class _EventsWidgetState extends State<EventsWidget> {
     stopTracking();
 
     // perform refresh events
-    _eventsListTimer = new Timer.periodic(new Duration(hours: _refreshDelay), (timer) {
+    _eventsListTimer = new Timer.periodic(new Duration(minutes: _refreshDelay), (timer) {
       print("REFRESH EVENT");
       _eventsListSetup();
     });
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print("RESUME EVENT");
+      _eventsListSetup();
+    }
+  }
+
+  @override
   void dispose() {
     print("DISPOSED EVENTS WIDGET");
-    super.dispose();
     listener.cancel();
     past_listener.cancel();
     if(ao_listener != null)
@@ -337,6 +361,8 @@ class _EventsWidgetState extends State<EventsWidget> {
     if(_eventsListTimer != null) {
       _eventsListTimer.cancel();
     }
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
