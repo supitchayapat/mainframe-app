@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 final reference = FirebaseDatabase.instance.reference().child("configuration").child("public");
 
@@ -30,6 +31,21 @@ class ConfigDao {
         }
       } else {
         Function.apply(p, [null]);
+      }
+    });
+  }
+
+  static Future getSupportEmail() async {
+    String configKey = "ios_support_email";
+    if(global.devicePlatform == "android") {
+      configKey = "android_support_email";
+    }
+
+    return reference.child(configKey).once().then((DataSnapshot data){
+      if(data?.value != null) {
+        return data.value;
+      } else {
+        return "";
       }
     });
   }

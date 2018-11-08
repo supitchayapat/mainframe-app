@@ -408,6 +408,15 @@ class _EventsWidgetState extends State<EventsWidget> with WidgetsBindingObserver
             icon: const Icon(Icons.menu),
             onPressed: _menuPressed
         ),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.feedback),
+            tooltip: 'Submit Feedback',
+            onPressed: () {
+              Navigator.of(context).pushNamed("/feedback");
+            },
+          )
+        ],
       ),
       backgroundColor: const Color(0xFF324261),
       body: new Container(

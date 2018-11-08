@@ -27,6 +27,7 @@ import 'src/screen/payment_success.dart';
 import 'src/screen/solo_management.dart';
 import 'src/screen/change_password.dart';
 import 'src/screen/forgotpass_success.dart';
+import 'src/screen/feedback.dart';
 
 /*
   Author: Art
@@ -95,6 +96,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
     case '/mainscreen':
       return new MainFrameRoute(
         builder: (_) => new MainScreen(),
+        settings: settings,
+      );
+    case '/feedback':
+      return new MainFrameRoute(
+        builder: (_) => new feedback(),
         settings: settings,
       );
     case '/profilesetup-1':
@@ -212,6 +218,7 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/forgotpass-success': (BuildContext context) => new forgotpass_success(),
     '/change-password': (BuildContext context) => new change_password(),
     '/mainscreen': (BuildContext context) => new MainScreen(),
+    '/feedback': (BuildContext context) => new feedback(),
     '/profilesetup-1': (BuildContext context) => new ProfileSetupName(),
     '/profilesetup-2': (BuildContext context) => new ProfileSetupBday(),
     '/profilesetup-3': (BuildContext context) => new ProfileSetupCategory(),

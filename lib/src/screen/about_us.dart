@@ -1,4 +1,4 @@
-import 'dart:convert' show JSON;
+import 'dart:convert' show json;
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
@@ -17,7 +17,7 @@ class _AboutUsState extends State<AboutUs> {
     super.initState();
 
     rootBundle.loadString('mainframe_assets/conf/config.json').then<Null>((String data) {
-      var result = JSON.decode(data);
+      var result = json.decode(data);
       String internal_build = result['internal_build'];
       String app_version = result['app_version'];
       //print("JSON has "+ internal_build +" internal_build");
