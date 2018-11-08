@@ -108,7 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: _signInFacebookPressed,
                   ),
                 ),
-                new Container(
+                // DISABLED UNTIL NEXT RELEASE
+                /*new Container(
                   //color: Colors.amber,
                     height: 80.0,
                     alignment: Alignment.center,
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: new TextStyle(fontSize: 15.0, color: Colors.white, fontFamily: "Montserrat-Light")
                       ),
                     )
-                ),
+                ),*/
               ],
             )
           ),
