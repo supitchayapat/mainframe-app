@@ -10,7 +10,7 @@ final reference = FirebaseDatabase.instance.reference().child("feedbacks");
 
 class FeedbackDao {
   static Future saveFeedback(String msg) async {
-    final formatterSrc = new DateFormat("yyyy-MM-dd");
+    final formatterSrc = new DateFormat("yyyy-MM-dd HH:mm:ss");
     FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
 
     String data = await rootBundle.loadString('mainframe_assets/conf/config.json');
