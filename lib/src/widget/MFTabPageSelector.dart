@@ -17,7 +17,7 @@ class MFTabPageSelector extends StatelessWidget {
 
     return new Center(
         child: new Text(_tabName,
-          style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light")//, fontWeight: FontWeight.bold),
+          style: new TextStyle(fontSize: 18.0, fontFamily: "Montserrat-Light", fontWeight: FontWeight.bold),
         )
     );
   }

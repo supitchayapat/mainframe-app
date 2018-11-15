@@ -642,7 +642,10 @@ class _EventDetailsState extends State<EventDetails> {
               ),
           ),
           new Flexible(
-              child: new MFPageSelector(pageWidgets: _pages)
+              child: new DefaultTextStyle(
+                style: new TextStyle(fontFamily: "Montserrat-Light", fontWeight: FontWeight.w100),
+                child: new MFPageSelector(pageWidgets: _pages)
+              )
           )
           /*new Flexible(
               child: new MFTabbedComponentDemoScaffold(
