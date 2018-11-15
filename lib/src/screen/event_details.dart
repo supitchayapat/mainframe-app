@@ -593,7 +593,7 @@ class _EventDetailsState extends State<EventDetails> {
 
     if(eventItem?.informations != null) {
       _pages.add(new PageSelectData(
-          tabName: 'Informations',
+          tabName: 'Information',
           description: '',
           demoWidget: _buildHotelInfoSponsor(eventItem.informations, _infoImgs),
           loadMoreCallback: (){}
