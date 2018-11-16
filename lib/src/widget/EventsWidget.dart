@@ -421,7 +421,7 @@ class _EventsWidgetState extends State<EventsWidget> with WidgetsBindingObserver
                     margin: const EdgeInsets.only(top: 10.0, bottom: 0.0, left: 10.0, right: 10.0),
                     child: new Icon(Icons.feedback),
                   ),
-                  new Text("Ideas")
+                  new Text("Ideas", style: new TextStyle(fontFamily: "Montserrat-Light", fontWeight: FontWeight.w100))
                 ],
               ),
             ),

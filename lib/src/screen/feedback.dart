@@ -144,7 +144,8 @@ class _feedbackState extends State<feedback> {
                             maxLines: 15,
                             style: new TextStyle(
                               color: Colors.black,
-                              fontSize: 16.0
+                              fontSize: 16.0,
+                              fontFamily: "Montserrat-Light", fontWeight: FontWeight.w100
                             ),
                             controller: _msgCtrl,
                           ),
@@ -154,8 +155,15 @@ class _feedbackState extends State<feedback> {
                           padding: const EdgeInsets.only(top: 15.0),
                           child: new Wrap(
                             children: <Widget>[
-                              new Text("Press Send below for immediate sending of your ideas or suggestions. If you wish to instead email, "),
+                              new Text(
+                                "Press Send below for immediate sending of your ideas or suggestions. If you wish to instead email, Please press this; ",
+                                style: new TextStyle(fontFamily: "Montserrat-Light", fontWeight: FontWeight.w100),
+                              ),
                               new InkWell(
+                                onTap: emailPressed,
+                                child: new Text("Email Contact Link", style: new TextStyle(fontSize: 14.0, fontFamily: "Montserrat-Light", fontWeight: FontWeight.w100, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
+                              )
+                              /*new InkWell(
                                 onTap: emailPressed,
                                 child: new RichText(
                                   text: new TextSpan(
@@ -163,9 +171,9 @@ class _feedbackState extends State<feedback> {
                                       children: <TextSpan>[
                                         new TextSpan(text: "Email Contact Link", style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
                                       ]
-                                  )
+                                  ),
                                 ),
-                              )
+                              )*/
                             ],
                           )
                         )
