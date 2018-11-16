@@ -69,7 +69,7 @@ class _feedbackState extends State<feedback> {
       context: context,
       barrierDismissible: true, // user must tap button!
       child: new AlertDialog(
-        title: new Text("Submit Feedback"),
+        title: new Text("IDEAS / SUGGESTIONS"),
         content: new SingleChildScrollView(
           child: new ListBody(
             children: <Widget>[
@@ -123,7 +123,7 @@ class _feedbackState extends State<feedback> {
     double _formHeight = _height - 140.0;
 
     return new Scaffold(
-        appBar: new MFAppBar("SUPPORT / FEEDBACK", context),
+        appBar: new MFAppBar("IDEAS / SUGGESTIONS", context),
         body: new Form(
           child: new ListView(
             children: <Widget>[
@@ -134,6 +134,7 @@ class _feedbackState extends State<feedback> {
                     child: new Column(
                       children: <Widget>[
                         new Container(
+                          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 1.0),
                           decoration: new BoxDecoration(
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
@@ -142,7 +143,8 @@ class _feedbackState extends State<feedback> {
                             keyboardType: TextInputType.multiline,
                             maxLines: 15,
                             style: new TextStyle(
-                                color: Colors.black
+                              color: Colors.black,
+                              fontSize: 16.0
                             ),
                             controller: _msgCtrl,
                           ),
@@ -152,10 +154,17 @@ class _feedbackState extends State<feedback> {
                           padding: const EdgeInsets.only(top: 15.0),
                           child: new Wrap(
                             children: <Widget>[
-                              new Text("If you wish to email support. Please press this "),
+                              new Text("Press Send below for immediate sending of your ideas or suggestions. If you wish to instead email, "),
                               new InkWell(
                                 onTap: emailPressed,
-                                child: new Text("Contact Support Link" , style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
+                                child: new RichText(
+                                  text: new TextSpan(
+                                      text: "Please press this ",
+                                      children: <TextSpan>[
+                                        new TextSpan(text: "Email Contact Link", style: new TextStyle(fontSize: 14.0, color: new Color(0xff00e5ff), decoration: TextDecoration.underline)),
+                                      ]
+                                  )
+                                ),
                               )
                             ],
                           )

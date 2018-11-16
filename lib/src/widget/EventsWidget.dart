@@ -409,12 +409,22 @@ class _EventsWidgetState extends State<EventsWidget> with WidgetsBindingObserver
             onPressed: _menuPressed
         ),
         actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.feedback),
-            tooltip: 'Submit Feedback',
-            onPressed: () {
+          new InkWell(
+            onTap: (){
               Navigator.of(context).pushNamed("/feedback");
             },
+            child: new Container(
+              padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+              child: new Column(
+                children: <Widget>[
+                  new Container(
+                    margin: const EdgeInsets.only(top: 10.0, bottom: 0.0, left: 10.0, right: 10.0),
+                    child: new Icon(Icons.feedback),
+                  ),
+                  new Text("Ideas")
+                ],
+              ),
+            ),
           )
         ],
       ),
