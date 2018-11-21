@@ -84,6 +84,8 @@ class User {
   String displayPhotoUrl;
   bool hasProfileSetup;
   bool ao;
+  String devicePlatform;
+  String appVersion;
 
   User({this.fbUserId, this.first_name, this.last_name, this.email,
       this.birthday, this.gender, this.category, this.displayPhotoUrl, this.hasProfileSetup : false, this.ao : false});
@@ -129,7 +131,9 @@ class User {
       "gender": gender != null ? gender.toString().replaceAll("Gender.", "") : null,
       "category": category != null ? category.toString().replaceAll("DanceCategory.", "") : null,
       "displayPhotoUrl": displayPhotoUrl,
-      "hasProfileSetup": hasProfileSetup
+      "hasProfileSetup": hasProfileSetup,
+      "devicePlatform": devicePlatform,
+      "appVersion": appVersion,
     };
   }
 

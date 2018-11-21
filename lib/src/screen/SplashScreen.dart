@@ -7,6 +7,8 @@ import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:myapp/src/screen/change_password.dart' as cp;
+import 'package:flutter/services.dart';
+import 'dart:convert' show json;
 
 class MainFrameSplash extends StatefulWidget {
 
@@ -33,6 +35,13 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       print("CURRENT PLATFORM: ${_platform}");
       if(_platform != null)
         global.devicePlatform = _platform;
+    });
+
+    rootBundle.loadString('mainframe_assets/conf/config.json').then<Null>((String data) {
+      if(data != null) {
+        var result = json.decode(data);
+        global.app_version = result['app_version'];
+      }
     });
 
     // set firebase instance offline

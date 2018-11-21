@@ -16,6 +16,7 @@ User dancePartner = null;
 List<MFEvent> events = <MFEvent>[];
 bool hasTips = true;
 String devicePlatform = "";
+String app_version = "";
 List<String> messageLogs = <String>[];
 bool aoFlag;
 

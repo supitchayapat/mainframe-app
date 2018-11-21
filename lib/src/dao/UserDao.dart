@@ -57,6 +57,14 @@ Future saveUser(User usr) async {
   return reference.child(fuser.uid).child("info").set(usr.toJson());
 }
 
+Future saveUserLogin(String platform, String appVersion) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  User _user = await getCurrentUserProfile();
+  _user.devicePlatform = platform;
+  _user.appVersion = appVersion;
+  return reference.child(fuser.uid).child("info").set(_user.toJson());
+}
+
 Future saveUserFromFirebase(FirebaseUser usr) async {
   User user = new User(fbUserId: "", first_name: "", last_name: "", email: usr.email, birthday: new DateTime.now(), displayPhotoUrl: usr.photoUrl);
   return reference.child(usr.uid).child("info").set(user.toJson());

@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/MainFrameAuth.dart';
 import 'package:myapp/src/util/LoadingIndicator.dart';
+import 'package:myapp/src/util/ScreenUtils.dart';
+import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   var listener = null;
   String _nextRoute = "/mainscreen"; // if user is logged-in
+  Timer _loginTimer;
+  String _str = "";
 
   void _signInEmailPressed() {
     print("Listener CANCELLED");
@@ -20,12 +26,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
+
+    // login request timer
+    /*_loginTimer = new Timer(new Duration(seconds: 20), (){
+      // check if successful login
+      if(_str.isEmpty) {
+        if(listener != null) {
+          listener.cancel();
+        }
+        MainFrameLoadingIndicator.hideLoading(context);
+        print("Reqest has timed out");
+        showMainFrameDialog(context, "Error", "Could not connect to facebook.");
+      }
+    });*/
+
     signInWithFacebook().then((str) {
           /*MFHttpUtil.requestFacebookFriends().then((users){
             global.setTaggableFriends = users;
           });*/
+
+          if(_loginTimer != null) {
+            _loginTimer.cancel();
+          }
+
           if(str == "success") {
-            Navigator.of(context).pushReplacementNamed(_nextRoute);
+              // save device platform and version
+              print("Saving device[${global.devicePlatform}] and version[${global.app_version}]");
+              saveUserLogin(global.devicePlatform, global.app_version);
+              Navigator.of(context).pushReplacementNamed(_nextRoute);
           }
           else if(str == "new-user") {
             _nextRoute = "/profilesetup-1";
