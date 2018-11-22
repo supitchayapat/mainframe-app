@@ -27,27 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signInFacebookPressed() {
     MainFrameLoadingIndicator.showLoading(context);
 
-    // login request timer
-    /*_loginTimer = new Timer(new Duration(seconds: 20), (){
-      // check if successful login
-      if(_str.isEmpty) {
-        if(listener != null) {
-          listener.cancel();
-        }
-        MainFrameLoadingIndicator.hideLoading(context);
-        print("Reqest has timed out");
-        showMainFrameDialog(context, "Error", "Could not connect to facebook.");
-      }
-    });*/
-
     signInWithFacebook().then((str) {
           /*MFHttpUtil.requestFacebookFriends().then((users){
             global.setTaggableFriends = users;
           });*/
 
-          if(_loginTimer != null) {
-            _loginTimer.cancel();
-          }
+          _loginTimer?.cancel();
 
           if(str == "success") {
               // save device platform and version
@@ -63,7 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
               if(listener != null) {
                 listener.cancel();
               }
-            }).then((sub){ listener = sub; });
+            }).then((sub){ listener = sub; }).timeout(new Duration(seconds: 20), onTimeout: (){
+              MainFrameLoadingIndicator.hideLoading(context);
+              print("Reqest has timed out");
+              showMainFrameDialog(context, "Error", "Could not connect to facebook.");
+              logoutUser();
+            });
           }
         })
         .catchError((err) {
