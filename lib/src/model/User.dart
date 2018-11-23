@@ -102,6 +102,8 @@ class User {
                         category = getDanceCategoryFromString(s.value["category"]),
                         displayPhotoUrl = s.value["displayPhotoUrl"],
                         ao = s.value["ao"],
+                        appVersion = s.value["appVersion"],
+                        devicePlatform = s.value["devicePlatform"],
                         hasProfileSetup = s.value["hasProfileSetup"];
 
   User.fromDataSnapshot(s) : fbUserId = s["facebook_userId"],
@@ -116,6 +118,8 @@ class User {
         category = getDanceCategoryFromString(s["category"]),
         displayPhotoUrl = s["displayPhotoUrl"],
         ao = s["ao"],
+        appVersion = s.value["appVersion"],
+        devicePlatform = s.value["devicePlatform"],
         hasProfileSetup = s["hasProfileSetup"];
 
 

@@ -45,11 +45,12 @@ class _LoginScreenState extends State<LoginScreen> {
             newUserListener((event){
               // save device platform and version
               print("Saving device[${global.devicePlatform}] and version[${global.app_version}]");
-              saveUserLogin(global.devicePlatform, global.app_version);
-              Navigator.of(context).pushReplacementNamed(_nextRoute);
-              if(listener != null) {
-                listener.cancel();
-              }
+              saveUserLogin(global.devicePlatform, global.app_version).then((_loginState){
+                Navigator.of(context).pushReplacementNamed(_nextRoute);
+                if(listener != null) {
+                  listener.cancel();
+                }
+              });
             }).then((sub){ listener = sub; }).timeout(new Duration(seconds: 20), onTimeout: (){
               MainFrameLoadingIndicator.hideLoading(context);
               print("Reqest has timed out");
