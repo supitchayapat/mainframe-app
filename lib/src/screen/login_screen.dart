@@ -43,7 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
           else if(str == "new-user") {
             _nextRoute = "/profilesetup-1";
             newUserListener((event){
-              //print("printing event data");
+              // save device platform and version
+              print("Saving device[${global.devicePlatform}] and version[${global.app_version}]");
+              saveUserLogin(global.devicePlatform, global.app_version);
               Navigator.of(context).pushReplacementNamed(_nextRoute);
               if(listener != null) {
                 listener.cancel();
