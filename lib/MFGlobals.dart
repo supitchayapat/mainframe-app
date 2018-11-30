@@ -6,6 +6,7 @@ import 'package:validator/validator.dart';
 import 'package:myapp/src/model/MFEvent.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myapp/src/dao/ConfigDao.dart';
 
 String FBToken = "";
@@ -63,6 +64,31 @@ set setDancePartner(String name) {
     }
     dancePartner = new User(first_name: fname, last_name: lname);
   }
+}
+
+Future setDevicePushId(String pushId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("pushId", pushId);
+  print("PUSH ID SET: ${pushId}");
+}
+
+Future getDevicePushId() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  print("GET PUSH ID = ${prefs.getString("pushId")}");
+  return prefs.getString("pushId");
+}
+
+Future setSharedValue(String key, String sharedVal) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString(key, sharedVal);
+  print("${key} SET: ${sharedVal}");
+}
+
+Future getSharedValue(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String sharedVal = prefs.getString(key);
+  print("${key} GET: ${sharedVal}");
+  return sharedVal;
 }
 
 resetGlobal() {

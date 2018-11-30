@@ -10,6 +10,7 @@ import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/screen/event_details.dart' as eventInfo;
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/dao/DeviceInfoDao.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 
 const int _timerDelay = 100;
@@ -63,6 +64,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     // CrashlyticsReport.logMessage("Main Page load");
     global.messageLogs.add("Main Page Load.");
     AnalyticsUtil.setCurrentScreen("Main Screen", screenClassName: "MainScreen");
+
+    DeviceInfoDao.updateStatus("Main Screen Loaded");
+    global.setSharedValue("loginState", "Success");
 
     /*getCurrentUserProfile().then((usr) {
       //_mainFrameDrawer = new MainFrameDrawer(_scaffoldKey);

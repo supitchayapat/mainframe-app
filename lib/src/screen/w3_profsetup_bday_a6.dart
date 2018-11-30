@@ -11,6 +11,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'w2_profsetup_name_a18.dart' as setup;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/DeviceInfoDao.dart';
 
 class ProfileSetupBday extends StatefulWidget {
 
@@ -42,6 +43,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
   }
 
   void _handleSubmitted() {
+    DeviceInfoDao.updateStatus("Clicked Next Button");
     // perform validation and save
     final FormState form = _formKey.currentState;
     if(genderVal.isEmpty) {
@@ -65,6 +67,7 @@ class _ProfileSetupBdayState extends State<ProfileSetupBday> {
 
     global.messageLogs.add("Profile Setup 2 Screen Loaded.");
     AnalyticsUtil.setCurrentScreen("Profile Setup 2", screenClassName: "profile_w3");
+    DeviceInfoDao.updateStatus("Profile Setup Birthday Screen");
 
     print("INIT BDAY.....");
     if(global.dancePartner == null) {

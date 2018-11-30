@@ -8,6 +8,9 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:myapp/src/screen/change_password.dart' as cp;
 import 'package:flutter/services.dart';
+import 'package:device_info/device_info.dart';
+import 'package:myapp/src/dao/DeviceInfoDao.dart';
+import 'package:myapp/src/enumeration/LogMessage.dart';
 import 'dart:convert' show json;
 
 class MainFrameSplash extends StatefulWidget {
@@ -33,8 +36,21 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
 
     MframePlugins.platform.then((_platform){
       print("CURRENT PLATFORM: ${_platform}");
-      if(_platform != null)
+      if(_platform != null) {
         global.devicePlatform = _platform;
+        global.getDevicePushId().then((_pId){
+          print("IS PID PRESENT: ${_pId}");
+          if(_pId == null) {
+            DeviceInfoDao.saveDeviceInfo("Loaded Application").then((pushId){
+              print("PUSH ID: ${pushId}");
+              global.setDevicePushId(pushId);
+              //print("GET PUSH ID = ${global.getDevicePushId()}");
+            });
+          } else {
+            DeviceInfoDao.updateStatus("Loaded Application");
+          }
+        });
+      }
     });
 
     rootBundle.loadString('mainframe_assets/conf/config.json').then<Null>((String data) {

@@ -7,6 +7,7 @@ import 'package:myapp/src/widget/MFButton.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:validator/validator.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/DeviceInfoDao.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 
 var pGender;
@@ -40,6 +41,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
 
     global.messageLogs.add("Profile Setup 1 Screen Loaded.");
     AnalyticsUtil.setCurrentScreen("Profile Setup 1", screenClassName: "GroupDance");
+    DeviceInfoDao.updateStatus("Profile Setup Name Screen");
 
     print("INIT STATE PROFILE SETUP....");
     if(global.dancePartner == null) {
@@ -77,6 +79,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
   }
 
   void _handleSubmitted() {
+    DeviceInfoDao.updateStatus("Clicked Next Button");
     final FormState form = _formKey.currentState;
     // validate form and save
     if(!form.validate()) {

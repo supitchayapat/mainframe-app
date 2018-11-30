@@ -14,6 +14,7 @@ import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
 import 'w2_profsetup_name_a18.dart' as setup;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/DeviceInfoDao.dart';
 
 class ProfileSetupCategory extends StatefulWidget {
 
@@ -31,6 +32,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
     super.initState();
     global.messageLogs.add("Profile Setup 3 Screen Loaded.");
     AnalyticsUtil.setCurrentScreen("Profile Setup 3", screenClassName: "profile_w4");
+    DeviceInfoDao.updateStatus("Profile Setup Category Screen");
 
     print("INIT CATEGORY.....");
     if(global.dancePartner == null) {
@@ -68,6 +70,7 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
   }
 
   void _handleSubmitted() {
+    DeviceInfoDao.updateStatus("Clicked Next Button");
     // validate and save
     _user.hasProfileSetup = true;
     if(categoryVal.isEmpty) {
