@@ -24,13 +24,14 @@ dependencies:
     path: firebase_plugins/firebase_messaging
   #firebase_performance: "^0.0.4"
   http: "0.11.3+16"
+  flutter_facebook_login: "^1.1.1"
 
   validator: ">=0.0.4 <0.1.0"
   intl: "^0.15.2"
   #http: "^0.11.3+14"
   path_provider: "^0.2.2"
-  facebook_sign_in:
-    path: FB-Signin-Plugin
+  #facebook_sign_in:
+    #path: FB-Signin-Plugin
   mframe_plugins:
     path: mframe_plugins
   stripe_plugin:

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:facebook_sign_in/facebook_sign_in.dart';
+//import 'package:facebook_sign_in/facebook_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
 
 /*
@@ -22,7 +23,7 @@ void showInSnackBar(GlobalKey<ScaffoldState> _scaffoldKey, String value) {
   Facebook Share Dialog
  */
 void showFacebookAppShareDialog() {
-  FacebookSignIn.shareDialog();
+  //FacebookSignIn.shareDialog();
 }
 
 /*
