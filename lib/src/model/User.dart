@@ -118,8 +118,8 @@ class User {
         category = getDanceCategoryFromString(s["category"]),
         displayPhotoUrl = s["displayPhotoUrl"],
         ao = s["ao"],
-        appVersion = s.value["appVersion"],
-        devicePlatform = s.value["devicePlatform"],
+        appVersion = s["appVersion"],
+        devicePlatform = s["devicePlatform"],
         hasProfileSetup = s["hasProfileSetup"];
 
 
