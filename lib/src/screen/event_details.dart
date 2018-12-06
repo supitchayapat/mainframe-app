@@ -188,12 +188,19 @@ class _EventDetailsState extends State<EventDetails> {
 
   Widget _buildEventInfo() {
     bool displayUrl = true;
+    print("website enabled: ${eventItem?.websiteEnabled}");
 
     if(global.devicePlatform == "ios"
-        && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)
-        && (eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled )) {
+        && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
       displayUrl = false;
     }
+
+    // will not display URL if null or disabled
+    if(eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled) {
+      displayUrl = false;
+    }
+
+    print("displayURL: ${displayUrl}");
 
     return new Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
