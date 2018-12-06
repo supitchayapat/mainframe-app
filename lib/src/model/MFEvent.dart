@@ -202,6 +202,7 @@ class MFEvent {
   int year;
   String website;
   bool uberRegister;
+  bool websiteEnabled;
   MFResult results;
   Venue venue;
   ContactInfo contact;
@@ -245,6 +246,7 @@ class MFEvent {
     year = int.parse(s["info"]["year"]);
     website = s["info"]["website"] ?? "";
     uberRegister = s["info"]["uberRegister"];
+    websiteEnabled = s["info"]["websiteEnabled"];
 
     // Contact
     if(s["contact"] != null) {
@@ -338,6 +340,7 @@ class MFEvent {
     year = s["info"]["eventyear"];
     website = s["info"]["website"] ?? "";
     uberRegister = s["info"]["uberRegister"];
+    websiteEnabled = s["info"]["websiteEnabled"];
 
     // Venue
     if(s["venue"] != null) {
