@@ -189,7 +189,9 @@ class _EventDetailsState extends State<EventDetails> {
   Widget _buildEventInfo() {
     bool displayUrl = true;
 
-    if(global.devicePlatform == "ios" && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
+    if(global.devicePlatform == "ios"
+        && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)
+        && (eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled )) {
       displayUrl = false;
     }
 
