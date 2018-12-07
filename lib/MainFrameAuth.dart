@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:facebook_sign_in/facebook_sign_in.dart';
+//import 'package:facebook_sign_in/facebook_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/dao/UserDao.dart';
 
@@ -13,6 +14,7 @@ import 'package:myapp/src/dao/UserDao.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final List<String> read = ["public_profile", "user_friends", "email", "user_birthday"];
+final facebookLogin = new FacebookLogin();
 
 /*
   Method to register the current user to the Firebase Authenticated users.
@@ -38,12 +40,13 @@ Future<FirebaseUser> loginWithEmail(String email, String password) {
  */
 Future<String> loginWithFacebook() async {
   String token = "";
-  bool isLogged = await FacebookSignIn.isLoggedIn();
+  bool isLogged = await facebookLogin.isLoggedIn;
   if(!isLogged) {
-    token = await FacebookSignIn.loginWithReadPermissions(read);
+    FacebookLoginResult res = await facebookLogin.logInWithReadPermissions(read);
+    token = res.accessToken.token;
   }
   else {
-    token = await FacebookSignIn.getToken();
+    token = (await facebookLogin.currentAccessToken).token;
   }
   print("token: $token");
   final FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);
@@ -63,12 +66,13 @@ Future<String> loginWithFacebook() async {
  */
 Future<String> signInWithFacebook() async {
   String token = "";
-  bool isLogged = await FacebookSignIn.isLoggedIn();
+  bool isLogged = await facebookLogin.isLoggedIn;
   if(!isLogged) {
-    token = await FacebookSignIn.loginWithReadPermissions(read);
+    FacebookLoginResult res = await facebookLogin.logInWithReadPermissions(read);
+    token = res.accessToken.token;
   }
   else {
-    token = await FacebookSignIn.getToken();
+    token = (await facebookLogin.currentAccessToken).token;
   }
   print("token: $token");
   FirebaseUser user = await _auth.signInWithFacebook(accessToken: token);

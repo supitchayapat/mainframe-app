@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:facebook_sign_in/facebook_sign_in.dart';
+//import 'package:facebook_sign_in/facebook_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
@@ -11,6 +12,8 @@ import 'package:intl/intl.dart';
 final reference = FirebaseDatabase.instance.reference().child("users");
 final taggableRef = FirebaseDatabase.instance.reference().child("users");
 final partnerRef = FirebaseDatabase.instance.reference().child("users");
+
+var facebookLogin = new FacebookLogin();
 
 User convertResponseToUser(json_usr) {
   final formatter = new DateFormat("MM/dd/yyyy");
@@ -189,7 +192,9 @@ Future getUserExistingParticipants() async {
 }
 
 Future<String> getFBAccessToken() async {
-  return await FacebookSignIn.getToken();
+  FacebookAccessToken token = await facebookLogin.currentAccessToken;
+  return token.token;
+  //return await FacebookSignIn.getToken();
 }
 
 Future<StreamSubscription> userEventsListener(Function p) async {
