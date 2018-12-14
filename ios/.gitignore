@@ -31,6 +31,8 @@ xcuserdata
 Icon?
 .tags*
 
+*.lock
+
 /Flutter/app.flx
 /Flutter/app.zip
 /Flutter/App.framework
