@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/enumeration/Gender.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/MFGlobals.dart' as global;
 
 final reference = FirebaseDatabase.instance.reference().child("users");
 final taggableRef = FirebaseDatabase.instance.reference().child("users");
@@ -35,7 +36,12 @@ void saveUserFromResponse(var response, FirebaseUser fbaseUser) {
 Future userExists(FirebaseUser user) {
   return reference.child(user.uid).child("info").once().then((DataSnapshot data) {
     if(data.value != null && data.value.length > 0) {
-      return new User.fromSnapshot(data);
+      User _usr = new User.fromSnapshot(data);
+      if(_usr?.testUser != null) {
+        global.testUserFlag = _usr.testUser;
+      }
+      print("TEST USER: ${global.testUserFlag}");
+      return _usr;
     }
     else {
       return null;

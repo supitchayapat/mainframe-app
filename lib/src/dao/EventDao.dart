@@ -98,6 +98,7 @@ class EventDao {
   static void _filterEvents() {
     // filter date that are only future events
     future_events.removeWhere((evt){
+      bool removeEvent = false;
       DateTime _now = new DateTime.now();
       // The actual stop day should be the next day + six hours (6:00am)
       DateTime _tempStop = evt.dateStop.add(new Duration(days: 1, hours: 6));
@@ -107,7 +108,23 @@ class EventDao {
       //print("Date: ${evt.stopDate.toIso8601String()}");
       //print("same day: ${evt.stopDate.isAtSameMomentAs(_now)}");
       //print("before day: ${evt.stopDate.isBefore(_now)}");
-      return (_tempStop.isAtSameMomentAs(_now) || _tempStop.isBefore(_now));
+      if(_tempStop.isAtSameMomentAs(_now) || _tempStop.isBefore(_now)) {
+        removeEvent = true;
+      }
+      else {
+        // test user event
+        if(!global.testUserFlag) {
+          if(evt?.testEvent != null && evt?.testEvent){
+            removeEvent = true;
+          }
+        }
+        else {
+          removeEvent = false;
+        }
+      }
+      print("[${evt.eventTitle}] testUser[${global.testUserFlag}] HIDE EVENT: ${evt?.testEvent} >>>> ${removeEvent}");
+
+      return removeEvent;
     });
   }
 

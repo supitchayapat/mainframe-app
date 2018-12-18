@@ -20,6 +20,7 @@ String devicePlatform = "";
 String app_version = "";
 List<String> messageLogs = <String>[];
 bool aoFlag;
+bool testUserFlag = false;
 
 FirebaseAnalytics analytics;
 FirebaseAnalyticsObserver observer;
@@ -96,4 +97,5 @@ resetGlobal() {
   currentUser = null;
   _taggableFriends = [];
   dancePartner = null;
+  testUserFlag = false;
 }

@@ -199,6 +199,7 @@ class MFEvent {
   DateTime dateStop;
   DateTime deadline;
   bool hasAttended;
+  bool testEvent;
   int year;
   String website;
   bool uberRegister;
@@ -243,6 +244,7 @@ class MFEvent {
       dateRange = "${formatterOut.format(dateStart)} - ${formatterOut.format(dateStop)}";
     }
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
+    testEvent = (s["info"]["testEvent"].toString().toLowerCase() == 'true') ? true : false;
     year = int.parse(s["info"]["year"]);
     website = s["info"]["website"] ?? "";
     uberRegister = s["info"]["uberRegister"];
@@ -337,6 +339,7 @@ class MFEvent {
       dateRange = "${formatterOut.format(dateStart)} - ${formatterOut.format(dateStop)}";
     }
     hasAttended = (s["info"]["hasAttended"].toString().toLowerCase() == 'true') ? true : false;
+    testEvent = (s["info"]["testEvent"].toString().toLowerCase() == 'true') ? true : false;
     year = s["info"]["eventyear"];
     website = s["info"]["website"] ?? "";
     uberRegister = s["info"]["uberRegister"];

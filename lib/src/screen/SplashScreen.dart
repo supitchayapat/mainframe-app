@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:device_info/device_info.dart';
 import 'package:myapp/src/dao/DeviceInfoDao.dart';
 import 'package:myapp/src/enumeration/LogMessage.dart';
+import 'package:myapp/src/dao/UserDao.dart';
 import 'dart:convert' show json;
 
 class MainFrameSplash extends StatefulWidget {
@@ -74,7 +75,12 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
         });
       }
       else {
-        Navigator.of(context).pushReplacementNamed(_navi);
+        getCurrentUserProfile().then((_usr){
+          if(_usr?.testUser != null) {
+            global.testUserFlag = _usr.testUser;
+          }
+          Navigator.of(context).pushReplacementNamed(_navi);
+        });
       }
       //else {
         //FileUtil.loadImages();

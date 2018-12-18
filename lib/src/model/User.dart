@@ -84,6 +84,7 @@ class User {
   String displayPhotoUrl;
   bool hasProfileSetup;
   bool ao;
+  bool testUser;
   String devicePlatform;
   String appVersion;
 
@@ -102,6 +103,7 @@ class User {
                         category = getDanceCategoryFromString(s.value["category"]),
                         displayPhotoUrl = s.value["displayPhotoUrl"],
                         ao = s.value["ao"],
+                        testUser = s.value["testUser"],
                         appVersion = s.value["appVersion"],
                         devicePlatform = s.value["devicePlatform"],
                         hasProfileSetup = s.value["hasProfileSetup"];
@@ -118,6 +120,7 @@ class User {
         category = getDanceCategoryFromString(s["category"]),
         displayPhotoUrl = s["displayPhotoUrl"],
         ao = s["ao"],
+        testUser = s.value["testUser"],
         appVersion = s["appVersion"],
         devicePlatform = s["devicePlatform"],
         hasProfileSetup = s["hasProfileSetup"];
