@@ -37,6 +37,8 @@ Future userExists(FirebaseUser user) {
   return reference.child(user.uid).child("info").once().then((DataSnapshot data) {
     if(data.value != null && data.value.length > 0) {
       User _usr = new User.fromSnapshot(data);
+      _usr.uid = user.uid;
+      global.currentUserProfile = _usr;
       if(_usr?.testUser != null) {
         global.testUserFlag = _usr.testUser;
       }
@@ -116,7 +118,9 @@ Future<User> getCurrentUserProfile() async {
     if(data == null || data.value == null) {
       return null;
     }
-    return new User.fromSnapshot(data);
+    User _usr = new User.fromSnapshot(data);
+    _usr.uid = fuser.uid;
+    return _usr;
   });
 }
 

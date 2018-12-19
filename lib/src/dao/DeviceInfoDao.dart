@@ -39,9 +39,10 @@ class DeviceInfoDao {
     return _pushedRef.key;
   }
 
-  static Future updateStatus(String status) async {
+  static Future updateStatus(String status, {bool saveUID}) async {
     String pId = await global.getDevicePushId();
     String loginState = await global.getSharedValue("loginState");
+    print("USERID IF LOGGED IN: ${global.currentUserProfile?.uid}");
 
     if(loginState != null && loginState == "Success") {
       print("LOGIN WAS ALREADY SUCCESSFUL. STOPPED LOGGING");
@@ -55,6 +56,11 @@ class DeviceInfoDao {
         DateTime _currentTimeStamp = new DateTime.now().toUtc();
         if(dInfo.logs == null) {
           dInfo.logs = [];
+        }
+
+        if(saveUID != null && saveUID) {
+          if(global.currentUserProfile != null && global.currentUserProfile.uid != null)
+            dInfo.uid = global.currentUserProfile.uid;
         }
 
         dInfo.logs.add(new DeviceLog(logMessage: status, timeStamp: _currentTimeStamp));

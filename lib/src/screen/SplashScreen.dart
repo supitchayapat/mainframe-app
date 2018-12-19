@@ -76,6 +76,7 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       }
       else {
         getCurrentUserProfile().then((_usr){
+          global.currentUserProfile = _usr;
           if(_usr?.testUser != null) {
             global.testUserFlag = _usr.testUser;
           }

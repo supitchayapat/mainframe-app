@@ -8,6 +8,7 @@ class DeviceInfo {
   String model;
   String version;
   String lastLogMessage;
+  String uid;
   DateTime lastTimeStamp;
   List<DeviceLog> logs;
 
@@ -18,6 +19,7 @@ class DeviceInfo {
     model = s.value["model"];
     version = s.value["version"];
     lastLogMessage = s.value["lastLogMessage"];
+    uid = s.value["uid"];
     if(s.value["lastTimeStamp"] != null) {
       lastTimeStamp = formatter.parse(s.value["lastTimeStamp"]);
     }
@@ -36,6 +38,7 @@ class DeviceInfo {
       "model": model,
       "version": version,
       "lastLogMessage": lastLogMessage,
+      "uid": uid,
       "lastTimeStamp": lastTimeStamp!= null ? formatter.format(lastTimeStamp) : formatter.format(new DateTime.now()),
       "logs": logs?.map((val) => val?.toJson())?.toList(),
     };

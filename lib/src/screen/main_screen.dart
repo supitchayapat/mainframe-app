@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     global.messageLogs.add("Main Page Load.");
     AnalyticsUtil.setCurrentScreen("Main Screen", screenClassName: "MainScreen");
 
-    DeviceInfoDao.updateStatus("Main Screen Loaded");
+    DeviceInfoDao.updateStatus("Main Screen Loaded", saveUID: true);
     global.setSharedValue("loginState", "Success");
 
     /*getCurrentUserProfile().then((usr) {
