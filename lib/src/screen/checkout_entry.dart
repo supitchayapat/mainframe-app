@@ -100,118 +100,120 @@ class _checkout_entryState extends State<checkout_entry> {
         showMainFrameDialog(context, "Transaction Failed", "Unable to process payment. Please contact application support.");
       }
       else {
-        double _sumAmount = (totalAmount.toDouble() * financeCharge) + totalAmount.toDouble();
-        Surcharge surcharge = new Surcharge.fromFinance(event_details.eventItem.finance);
-        surcharge.amount = (totalAmount.toDouble() * financeCharge);
-        // create new invoice info
-        InvoiceInfo info = new InvoiceInfo(
-          event: event_details.eventItem,
-          totalAmount: _sumAmount,
-          surcharge: surcharge,
-        );
-        info.entries = [];
-        info.tickets = [];
-        info.billingInfo = new BillingInfo(name: _studioCtrl.text, address: _addressCtrl.text);
-        // save user details with info
-        user.studioName = _studioCtrl.text;
-        user.invoiceAddress = _addressCtrl.text;
-        saveUser(user);
+        try {
+          double _sumAmount = (totalAmount.toDouble() * financeCharge) + totalAmount.toDouble();
+          Surcharge surcharge = new Surcharge.fromFinance(event_details.eventItem.finance);
+          surcharge.amount = (totalAmount.toDouble() * financeCharge);
+          // create new invoice info
+          InvoiceInfo info = new InvoiceInfo(
+            event: event_details.eventItem,
+            totalAmount: _sumAmount,
+            surcharge: surcharge,
+          );
+          info.entries = [];
+          info.tickets = [];
+          info.billingInfo = new BillingInfo(name: _studioCtrl.text, address: _addressCtrl.text);
+          // save user details with info
+          user.studioName = _studioCtrl.text;
+          user.invoiceAddress = _addressCtrl.text;
+          saveUser(user);
 
-        // update event entry
-        summary.eventEntries?.forEach((key, val) {
-          //print(key);
-          //print(val.toJson());
-          if (val?.payment == null) {
-            bool isInvoice = val.paidEntries != val?.danceEntries;
-            print("${val.paidEntries} != ${val.danceEntries}");
-            // pay this entry
-            val.paidEntries = val?.danceEntries;
-            val.payment = data;
-            // new Invoice Participants
-            InvoiceParticipants invParticipants = new InvoiceParticipants(formName: val?.formEntry?.name);
-            invParticipants.participants = [];
-            invParticipants.participantEntries = [];
-            FormParticipantType fType;
-            if(val?.participant != null) {
-              if(val.participant is Couple) {
-                invParticipants.participants.addAll(val.participant.couple);
-                fType = FormParticipantType.COUPLE;
-              } else if(val.participant is Group) {
-                invParticipants.participants.addAll(val.participant.members);
-                fType = FormParticipantType.GROUP;
-              } else if(val.participant is User){
-                invParticipants.participants.add(val.participant);
-                fType = FormParticipantType.SOLO;
+          // update event entry
+          summary.eventEntries?.forEach((key, val) {
+            //print(key);
+            //print(val.toJson());
+            if (val?.payment == null) {
+              bool isInvoice = val.paidEntries != val?.danceEntries;
+              print("${val.paidEntries} != ${val.danceEntries}");
+              // pay this entry
+              val.paidEntries = val?.danceEntries;
+              val.payment = data;
+              // new Invoice Participants
+              InvoiceParticipants invParticipants = new InvoiceParticipants(formName: val?.formEntry?.name);
+              invParticipants.participants = [];
+              invParticipants.participantEntries = [];
+              FormParticipantType fType;
+              if(val?.participant != null) {
+                if(val.participant is Couple) {
+                  invParticipants.participants.addAll(val.participant.couple);
+                  fType = FormParticipantType.COUPLE;
+                } else if(val.participant is Group) {
+                  invParticipants.participants.addAll(val.participant.members);
+                  fType = FormParticipantType.GROUP;
+                } else if(val.participant is User){
+                  invParticipants.participants.add(val.participant);
+                  fType = FormParticipantType.SOLO;
+                }
+
               }
 
-            }
+              double _price = EntryFormUtil.getPriceFromForm(summary.entryForms[val?.formEntry?.name], val.participant, fType);
+              if (val?.levels != null) {
+                for (var _lvl in val.levels) {
+                  for (var _ageMap in _lvl.ageMap) {
+                    _ageMap.subCategoryMap.forEach((_k, _v) {
+                      if (_v["selected"]) {
+                        //print("key: $_k paid: ${_v["paid"]}");
+                        if(!_v["paid"]) {
+                          String _content = EntryFormUtil.getLookupDescription(val.formEntry, _k, "DANCES");
+                          ParticipantEntry _pEntry = new ParticipantEntry(name: "${_ageMap.ageCategory} ${_lvl.levelName.toUpperCase()} $_content", price: _price);
+                          //print(_pEntry.toJson());
+                          invParticipants.participantEntries.add(_pEntry);
+                        }
 
-            double _price = EntryFormUtil.getPriceFromForm(summary.entryForms[val?.formEntry?.name], val.participant, fType);
-            if (val?.levels != null) {
-              for (var _lvl in val.levels) {
-                for (var _ageMap in _lvl.ageMap) {
-                  _ageMap.subCategoryMap.forEach((_k, _v) {
-                    if (_v["selected"]) {
-                      //print("key: $_k paid: ${_v["paid"]}");
-                      if(!_v["paid"]) {
-                        String _content = EntryFormUtil.getLookupDescription(val.formEntry, _k, "DANCES");
-                        ParticipantEntry _pEntry = new ParticipantEntry(name: "${_ageMap.ageCategory} ${_lvl.levelName.toUpperCase()} $_content", price: _price);
-                        //print(_pEntry.toJson());
-                        invParticipants.participantEntries.add(_pEntry);
+                        _v["paid"] = true;
                       }
-
-                      _v["paid"] = true;
-                    }
-                  });
+                    });
+                  }
                 }
               }
-            }
-            else if(val?.freeForm != null) {
-              // free form GROUP
-              if(val.formEntry.type == FormType.GROUP || val.formEntry.type == FormType.SOLO) {
-                String _entryName = "";
-                if(val.formEntry.type == FormType.GROUP)
-                  _entryName = "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}";
-                if(val.formEntry.type == FormType.SOLO)
-                  _entryName = val.freeForm.dance;
+              else if(val?.freeForm != null) {
+                // free form GROUP
+                if(val.formEntry.type == FormType.GROUP || val.formEntry.type == FormType.SOLO) {
+                  String _entryName = "";
+                  if(val.formEntry.type == FormType.GROUP)
+                    _entryName = "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}";
+                  if(val.formEntry.type == FormType.SOLO)
+                    _entryName = val.freeForm.dance;
 
-                ParticipantEntry _pEntry = new ParticipantEntry(
-                    name: _entryName, price: _price);
-                invParticipants.participantEntries.add(_pEntry);
+                  ParticipantEntry _pEntry = new ParticipantEntry(
+                      name: _entryName, price: _price);
+                  invParticipants.participantEntries.add(_pEntry);
+                }
               }
+
+              if(isInvoice) {
+                //print("INV PARTICIPANTS");
+                //print(invParticipants.toJson());
+                info.entries.add(invParticipants);
+              }
+
+              UserEvent userEvent = new UserEvent(
+                  usrEntryForm: val,
+                  info: event_details.eventItem
+              );
+              EventEntryDao.updateEventEntry(key, userEvent);
             }
+          });
 
-            if(isInvoice) {
-              //print("INV PARTICIPANTS");
-              //print(invParticipants.toJson());
-              info.entries.add(invParticipants);
-            }
+          // save tickets
+          summary.participantTickets.forEach((_participant, _ticketMap) {
+            //_saveTickets(pushId, info, _participant, _ticketMap);
+            info.tickets.add(_ticketMap);
+            TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem, isPaid: true);
+          });
 
-            UserEvent userEvent = new UserEvent(
-              usrEntryForm: val,
-              info: event_details.eventItem
-            );
-            EventEntryDao.updateEventEntry(key, userEvent);
-          }
-        });
-
-        // save tickets
-        summary.participantTickets.forEach((_participant, _ticketMap) {
-          //_saveTickets(pushId, info, _participant, _ticketMap);
-          info.tickets.add(_ticketMap);
-          TicketDao.saveTicket(_participant, _ticketMap, event_details.eventItem, isPaid: true);
-        });
-
-        //print("SOURCE: ${data["charge"]["source"]}");
-        //print("INVOICE INFO");
-        //print(info.toJson());
-        PaymentDao.savePaymentInvoiceInfo(pushId, info);
-
+          //print("SOURCE: ${data["charge"]["source"]}");
+          //print("INVOICE INFO");
+          //print(info.toJson());
+          PaymentDao.savePaymentInvoiceInfo(pushId, info);
+        } catch(err) {
+          showMainFrameDialog(context, "Transaction Failed", "Unable to process payment. Please contact application support.");
+        }
 
         if (MainFrameLoadingIndicator.isOpened) {
           MainFrameLoadingIndicator.hideLoading(context);
         }
-
         Navigator.of(context).pushNamed("/paymentSuccess");
       }
     }).then((val){ listener = val; });

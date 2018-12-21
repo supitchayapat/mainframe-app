@@ -159,4 +159,14 @@ class EntryFormUtil {
     }
     return retVal;
   }
+
+  static bool isEventEntryFinalized(eventItem) {
+    bool retVal = false;
+    // check if finance charges are set
+    if(eventItem?.finance != null) {
+      retVal = true;
+    }
+    // other entry checking
+    return retVal;
+  }
 }

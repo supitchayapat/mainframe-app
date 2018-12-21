@@ -815,29 +815,33 @@ class _event_registrationState extends State<event_registration> {
                   AnalyticsUtil.sendAnalyticsEvent("proceed_btn_press", params: {
                     'screen': 'event_registration'
                   });
-                  if(_participantEntries.length > 0) {
-                    if(_participants.length == _participantEntries.length) {
-                      print(_participantEntries);
-                      summary.participantEntries = _participantEntries;
-                      summary.eventEntries = _eventEntries;
-                      Navigator.of(context).pushNamed("/registrationSummary");
-                      // deactivate tips for registration
-                      participant = null;
-                      if (tipsTimer != null)
-                        tipsTimer.cancel();
-                      tipsTimer = null;
-                    } else {
-                      // entries are not filled
-                      for(var _pEntries in _participants) {
-                        if(!_participantEntries.containsKey(_pEntries)) {
-                          showMainFrameDialog(context, "Cannot Proceed", "Please select an Entry for ${_pEntries.name}.");
-                          break;
+                  if(EntryFormUtil.isEventEntryFinalized(eventItem)) {
+                    if(_participantEntries.length > 0) {
+                      if(_participants.length == _participantEntries.length) {
+                        print(_participantEntries);
+                        summary.participantEntries = _participantEntries;
+                        summary.eventEntries = _eventEntries;
+                        Navigator.of(context).pushNamed("/registrationSummary");
+                        // deactivate tips for registration
+                        participant = null;
+                        if (tipsTimer != null)
+                          tipsTimer.cancel();
+                        tipsTimer = null;
+                      } else {
+                        // entries are not filled
+                        for(var _pEntries in _participants) {
+                          if(!_participantEntries.containsKey(_pEntries)) {
+                            showMainFrameDialog(context, "Cannot Proceed", "Please select an Entry for ${_pEntries.name}.");
+                            break;
+                          }
                         }
                       }
                     }
-                  }
-                  else {
-                    showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
+                    else {
+                      showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
+                    }
+                  } else {
+                    showMainFrameDialog(context, "Cannot Proceed", "Event Entries are not yet finalized. Please contact Support for details.");
                   }
                 },
                 child: new Container(
