@@ -22,6 +22,7 @@ import 'package:myapp/MFGlobals.dart' as global;
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/AdminNotifDao.dart';
 
 var eventItem;
 var participant;
@@ -841,7 +842,8 @@ class _event_registrationState extends State<event_registration> {
                       showMainFrameDialog(context, "Cannot Proceed", "Please add Participant(s) to the event with associated entries.");
                     }
                   } else {
-                    showMainFrameDialog(context, "Cannot Proceed", "Event Entries are not yet finalized. Please contact Support for details.");
+                    AdminNotification.sendNotification("Event Not finalized. Please check Finance for Event.");
+                    showMainFrameDialog(context, "Cannot Proceed", "Event Entries are not yet finalised. Please contact Support for details.");
                   }
                 },
                 child: new Container(
