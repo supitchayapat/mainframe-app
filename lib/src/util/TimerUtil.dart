@@ -12,8 +12,9 @@ class TimerUtil {
     else {
       redirectUri = "http://itunes.apple.com"; // http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
     }
+    String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf("."));
 
-    if(global.conf_version.isNotEmpty && global.app_version.isNotEmpty && global.conf_version != global.app_version) {
+    if(!global.conf_version.isEmpty && !global.app_version.isEmpty && confAppVer != global.conf_version) {
       print("SHOWING ALERT MESSAGE BOX");
       showMainFrameDialog(
           context,
