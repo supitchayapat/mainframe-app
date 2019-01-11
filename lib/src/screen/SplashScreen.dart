@@ -12,6 +12,7 @@ import 'package:device_info/device_info.dart';
 import 'package:myapp/src/dao/DeviceInfoDao.dart';
 import 'package:myapp/src/enumeration/LogMessage.dart';
 import 'package:myapp/src/dao/UserDao.dart';
+import 'package:myapp/src/dao/ConfigDao.dart';
 import 'dart:convert' show json;
 
 class MainFrameSplash extends StatefulWidget {
@@ -58,6 +59,15 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       if(data != null) {
         var result = json.decode(data);
         global.app_version = result['app_version'];
+        ConfigDao.getMinVersion().then((versionString){
+          if(versionString != null) {
+            String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf("."));
+            global.conf_version = confAppVer;
+            if(versionString != confAppVer) {
+              print("VERSION STRING DID NOT MATCH: ${confAppVer} != ${versionString}");
+            }
+          }
+        });
       }
     });
 

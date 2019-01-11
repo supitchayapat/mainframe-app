@@ -18,6 +18,7 @@ List<MFEvent> events = <MFEvent>[];
 bool hasTips = true;
 String devicePlatform = "";
 String app_version = "";
+String conf_version = "";
 List<String> messageLogs = <String>[];
 bool aoFlag;
 bool testUserFlag = false;

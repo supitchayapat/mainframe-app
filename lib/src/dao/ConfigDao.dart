@@ -49,4 +49,14 @@ class ConfigDao {
       }
     });
   }
+
+  static Future getMinVersion() async {
+    return reference.child("minimum_version").once().then((DataSnapshot data){
+      if(data?.value != null) {
+        return data.value;
+      } else {
+        return null;
+      }
+    });
+  }
 }

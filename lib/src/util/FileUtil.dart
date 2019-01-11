@@ -1,6 +1,7 @@
-import 'dart:convert' show JSON;
+import 'dart:convert' show json;
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:myapp/src/dao/EventDao.dart';
 import 'package:flutter/material.dart';
@@ -161,7 +162,7 @@ class FileUtil {
     if(isExist) {
       if(!isDelete) {
         List events = [];
-        var result = JSON.decode(jsonFile.readAsStringSync());
+        var result = json.decode(jsonFile.readAsStringSync());
         //MFEvent event = new MFEvent.fromJsonData(result);
         for(var evtItem in result){
           //print(evtItem);
@@ -188,7 +189,7 @@ class FileUtil {
     //if(!isExist) {
       print("saving JSON file");
       //print(event.toJsonData().toString());
-      jsonFile.writeAsStringSync(JSON.encode(events.map((val) => val?.toJsonData()).toList()));
+      jsonFile.writeAsStringSync(json.encode(events.map((val) => val?.toJsonData()).toList()));
       print("saved Json File");
     //}
     return null;
@@ -226,5 +227,12 @@ class FileUtil {
       print("DELETING ${del.path}");
       del.deleteSync();
     });
+  }
+
+  static Future getAppVersion() async {
+    String data = await rootBundle.loadString('mainframe_assets/conf/config.json');
+    var result = json.decode(data);
+    String app_version = result['app_version'];
+    return app_version;
   }
 }

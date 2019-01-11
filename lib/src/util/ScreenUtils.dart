@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 //import 'package:facebook_sign_in/facebook_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:myapp/src/model/FormAgeCat.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /*
   Author: Art
@@ -30,7 +32,7 @@ void showFacebookAppShareDialog() {
   A method that shows a dialog screen
   that accepts a String message and a string title
  */
-Future<Null> showMainFrameDialog(BuildContext context, String title, String msg) async {
+Future<Null> showMainFrameDialog(BuildContext context, String title, String msg, {String uriRedirect}) async {
 
   return showDialog<Null>(
     context: context,
@@ -48,7 +50,19 @@ Future<Null> showMainFrameDialog(BuildContext context, String title, String msg)
         new FlatButton(
           child: new Text('OK'),
           onPressed: () {
-            Navigator.of(context).pop();
+            if(uriRedirect == null) {
+              Navigator.pop(context);
+            } else {
+              canLaunch(uriRedirect).then((canLaunch){
+                if(canLaunch) {
+                  launch(uriRedirect).then((nil){
+                    exit(0);
+                  });
+                } else {
+                  exit(0);
+                }
+              });
+            }
           },
         ),
       ],

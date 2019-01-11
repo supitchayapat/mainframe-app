@@ -7,6 +7,7 @@ import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:myapp/src/dao/UserDao.dart';
 import 'package:myapp/MFGlobals.dart' as global;
 import 'package:myapp/src/dao/DeviceInfoDao.dart';
+import 'package:myapp/src/util/TimerUtil.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var listener = null;
   String _nextRoute = "/mainscreen"; // if user is logged-in
   String _str = "";
+  Timer verTimer;
 
   void _signInEmailPressed() {
     print("Listener CANCELLED");
@@ -88,6 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+
+    verTimer = new Timer(new Duration(seconds: 10), () => TimerUtil.timerCheckVersion(context, verTimer));
+
     // check user logged in
     /*listener = initAuthStateListener((bool isLogged) {
       print("[Main page] Is loggedin: $isLogged");
