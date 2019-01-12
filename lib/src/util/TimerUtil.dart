@@ -12,7 +12,11 @@ class TimerUtil {
     else {
       redirectUri = "http://itunes.apple.com"; // http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
     }
-    String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf("."));
+    String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf(".")); // strip dev
+    confAppVer = confAppVer.substring(0, confAppVer.lastIndexOf(".")); // strip date
+
+    print("conf_ver: ${global.conf_version}");
+    print("confAppVer: ${confAppVer}");
 
     if(!global.conf_version.isEmpty && !global.app_version.isEmpty && confAppVer != global.conf_version) {
       print("SHOWING ALERT MESSAGE BOX");
