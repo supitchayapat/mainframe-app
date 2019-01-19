@@ -10,7 +10,7 @@ class TimerUtil {
       redirectUri = "https://play.google.com/store/apps/details?id=com.danceframe.ballroomgo"; // https://play.google.com/store/apps/details?id=<package_name>
     }
     else {
-      redirectUri = "http://itunes.apple.com"; // http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
+      redirectUri = "https://itunes.apple.com/us/app/ballroomgo/id1360103285?mt=8"; // http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
     }
     String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf(".")); // strip dev
     confAppVer = confAppVer.substring(0, confAppVer.lastIndexOf(".")); // strip date
@@ -23,7 +23,7 @@ class TimerUtil {
       showMainFrameDialog(
           context,
           "UPDATE",
-          "New Update of the application was released. Please download the latest one",
+          "You are currently running version ${confAppVer}. A New Update of the application ver ${global.conf_version} was released. Please download the latest one",
           uriRedirect: redirectUri
       );
       verTimer.cancel();
