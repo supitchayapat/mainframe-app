@@ -12,8 +12,8 @@ class TimerUtil {
     else {
       redirectUri = "https://itunes.apple.com/us/app/ballroomgo/id1360103285?mt=8"; // http://itunes.apple.com/<country>/app/<app–name>/id<app-ID>?mt=8
     }
-    String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf(".")); // strip dev
-    confAppVer = confAppVer.substring(0, confAppVer.lastIndexOf(".")); // strip date
+    String confAppVer = (global.app_version.contains(".")) ? global.app_version?.substring(0, global.app_version.lastIndexOf(".")) : ""; // strip dev
+    confAppVer = (global.app_version.contains(".")) ? confAppVer.substring(0, confAppVer.lastIndexOf(".")) : ""; // strip date
 
     print("conf_ver: ${global.conf_version}");
     print("confAppVer: ${confAppVer}");
@@ -22,8 +22,8 @@ class TimerUtil {
       print("SHOWING ALERT MESSAGE BOX");
       showMainFrameDialog(
           context,
-          "UPDATE",
-          "You are currently running version ${confAppVer}. A New Update of the application ver ${global.conf_version} was released. Please download the latest one",
+          "NEW UPDATE",
+          "You are currently running version ${confAppVer}. A New Update of the application ver ${global.conf_version} was released. Please download the latest one. Thank you",
           uriRedirect: redirectUri
       );
       verTimer.cancel();

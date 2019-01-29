@@ -59,10 +59,13 @@ class _MainFrameSplashState extends State<MainFrameSplash> {
       if(data != null) {
         var result = json.decode(data);
         global.app_version = result['app_version'];
+        print("global.app_version: ${global.app_version}");
         ConfigDao.getMinVersion().then((versionString){
           if(versionString != null) {
-            String confAppVer = global.app_version.substring(0, global.app_version.lastIndexOf("."));
-            global.conf_version = confAppVer;
+            String confAppVer = (global.app_version.contains(".")) ? global.app_version?.substring(0, global.app_version.lastIndexOf(".")) : "";
+            //global.conf_version = confAppVer;
+            global.conf_version = versionString;
+            print("CONF VERSION: ${confAppVer} RTDB: ${versionString}");
             if(versionString != confAppVer) {
               print("VERSION STRING DID NOT MATCH: ${confAppVer} != ${versionString}");
             }
