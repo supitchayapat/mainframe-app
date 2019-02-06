@@ -399,14 +399,16 @@ class FormEntry {
   FormStructure structure;
   List lookups;
   List exclusions;
+  String sessionCode;
 
   FormEntry({this.name, this.order, this.type, this.prices,
-    this.participants, this.structure, this.lookups, this.exclusions});
+    this.participants, this.structure, this.lookups, this.exclusions, this.sessionCode});
 
   FormEntry.fromSnapshot(var s) {
     //print(s);
     name = s["name"];
     order = s["order"];
+    sessionCode = s["sessionCode"];
     type = getFormTypeFromString(s["type"]);
 
     participants = [];
@@ -454,6 +456,7 @@ class FormEntry {
     return {
       "name": name,
       "order": order,
+      "sessionCode": sessionCode,
       "type": type != null ? type.toString().replaceAll("FormType.", "") : null,
       "participants": participants?.map((val) => val?.toJson())?.toList(),
       "prices": prices?.map((val) => val?.toJson())?.toList(),

@@ -155,9 +155,36 @@ Future<dynamic> saveUserSoloParticipants(User user) async {
   return partnerRef.child(fuser.uid).child("solo_participants").push().set(user.toJson());
 }
 
+Future<dynamic> saveAttendee(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  User _existingUser = await getAttendeeViaName(user);
+  if(_existingUser != null) {
+    print("User ${user.first_name} ${user.last_name} exists");
+    return _existingUser;
+  }
+
+  return partnerRef.child(fuser.uid).child("attendees").push().set(user.toJson());
+}
+
 Future<User> getUserSoloParticipantViaName(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return partnerRef.child(fuser.uid).child("solo_participants").orderByChild("first_name").equalTo(user.first_name).once().then((data){
+    User _retVal = null;
+    if(data.value != null && data.value.length > 0) {
+      data.value.forEach((dataKey, dataVal) {
+        User dataUser = new User.fromDataSnapshot(dataVal);
+        if(dataUser.last_name == user.last_name) {
+          _retVal = dataUser;
+        }
+      });
+    }
+    return _retVal;
+  });
+}
+
+Future<User> getAttendeeViaName(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("attendees").orderByChild("first_name").equalTo(user.first_name).once().then((data){
     User _retVal = null;
     if(data.value != null && data.value.length > 0) {
       data.value.forEach((dataKey, dataVal) {
@@ -261,6 +288,21 @@ Future<StreamSubscription> soloParticipantsListener(Function p) async {
   });
 }
 
+Future<StreamSubscription> attendeesListener(Function p) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return reference.child(fuser.uid).child("attendees").onValue.listen((event){
+    if(event.snapshot.value != null && event.snapshot.value.length > 0) {
+      List<User> _users = <User>[];
+      var _snapshot = event.snapshot;
+      _snapshot.value.forEach((key, dataVal){
+        _users.add(new User.fromDataSnapshot(dataVal));
+      });
+      _users.sort((a, b) => (a.first_name).compareTo(b.first_name));
+      Function.apply(p, [_users]);
+    }
+  });
+}
+
 Future<void> removeSoloParticipant(User user) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
   return partnerRef.child(fuser.uid).child("solo_participants").once().then((_snapshot){
@@ -275,6 +317,24 @@ Future<void> removeSoloParticipant(User user) async {
       if(keyId != null)
         return partnerRef.child(fuser.uid).child("solo_participants")
             .child(keyId).set(null);
+    }
+  });
+}
+
+Future<void> removeAttendee(User user) async {
+  FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  return partnerRef.child(fuser.uid).child("attendees").once().then((_snapshot){
+    if(_snapshot.value != null && _snapshot.value.length > 0) {
+      var keyId;
+      _snapshot.value.forEach((key, dataVal){
+        User _userSnap = new User.fromDataSnapshot(dataVal);
+        if(_userSnap == user) {
+          keyId = key;
+        }
+      });
+      if(keyId != null)
+        return partnerRef.child(fuser.uid).child("attendees")
+          .child(keyId).set(null);
     }
   });
 }

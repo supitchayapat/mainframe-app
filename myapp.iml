@@ -7,6 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/FB-Signin-Plugin/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/FB-Signin-Plugin/build" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/firebase_plugins/firebase_auth/build" />

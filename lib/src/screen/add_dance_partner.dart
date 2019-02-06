@@ -14,6 +14,7 @@ import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+import 'package:myapp/src/screen/attendee_management.dart' as attendee;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var tipsTimer;
@@ -202,9 +203,15 @@ class _AddDancePartnerState extends State<AddDancePartner> {
         Navigator.maybePop(context);
       });
     } else if(participant.participantType == "coach") {
-      setState((){
+      setState(() {
         group.formCoach = usr;
         Navigator.maybePop(context);
+      });
+    } else if(attendee.participantType == "attendee") {
+      setState(() {
+        attendee.participantUser = usr;
+        attendee.tipsTimer = null;
+        Navigator.of(context).popUntil(ModalRoute.withName("/attendeeManagement"));
       });
     } else {
       Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));

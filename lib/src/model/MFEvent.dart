@@ -3,6 +3,7 @@ import 'EventDanceCategory.dart';
 import 'EventLevel.dart';
 import 'FormEntry.dart';
 import 'MFResult.dart';
+import 'TicketConfig.dart';
 
 class Venue {
   String venueName;
@@ -216,6 +217,8 @@ class MFEvent {
   List<EventLevel> levels;
   List<FormEntry> formEntries;
   Admission admission;
+  TicketConfig ticketConfig;
+
   EventSchedule schedule;
 
   MFEvent({this.id, this.evtPId, this.eventTitle, this.thumbnail, this.thumbnailBg, this.dateRange, this.year, this.hasAttended});
@@ -287,6 +290,7 @@ class MFEvent {
     if(s["forms"] != null) {
       var _forms = s["forms"]["form"];
       var _admission = s["forms"]["admission"];
+      var _ticketConfig = s["forms"]["ticket_config"];
       if(_forms != null) {
         formEntries = [];
         if(_forms is List) {
@@ -303,6 +307,10 @@ class MFEvent {
       }
       if(_admission != null) {
         admission = new Admission.fromSnapshot(_admission);
+        //print(admission.toJson());
+      }
+      if(_ticketConfig != null) {
+        ticketConfig = new TicketConfig.fromSnapshot(_ticketConfig);
         //print(admission.toJson());
       }
     }
@@ -424,6 +432,7 @@ class MFEvent {
     if(s["forms"] != null) {
       var _forms = s["forms"]["form"];
       var _admission = s["forms"]["admission"];
+      var _ticketConfig = s["forms"]["ticket_config"];
       if(_forms != null) {
         formEntries = [];
         if(_forms is List) {
@@ -441,6 +450,9 @@ class MFEvent {
       if(_admission != null) {
         admission = new Admission.fromSnapshot(_admission);
         //print(admission.toJson());
+      }
+      if(_ticketConfig != null) {
+        ticketConfig = new TicketConfig.fromSnapshot(_ticketConfig);
       }
     }
 

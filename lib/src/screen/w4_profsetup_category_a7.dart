@@ -12,6 +12,7 @@ import 'package:myapp/src/screen/participant_list.dart' as participant;
 import 'package:myapp/src/screen/couple_management.dart' as couple;
 import 'package:myapp/src/screen/solo_management.dart' as solo;
 import 'package:myapp/src/screen/GroupDance.dart' as group;
+import 'package:myapp/src/screen/attendee_management.dart' as attendee;
 import 'w2_profsetup_name_a18.dart' as setup;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 import 'package:myapp/src/dao/DeviceInfoDao.dart';
@@ -123,6 +124,12 @@ class _ProfileSetupCategoryState extends State<ProfileSetupCategory> {
             setState((){
               group.formCoach = _user;
               Navigator.of(context).popUntil(ModalRoute.withName("/entryGroupForm"));
+            });
+          } else if(attendee.participantType == "attendee") {
+            setState(() {
+              attendee.participantUser = _user;
+              attendee.tipsTimer = null;
+              Navigator.of(context).popUntil(ModalRoute.withName("/attendeeManagement"));
             });
           } else {
             Navigator.of(context).popUntil(ModalRoute.withName("/addPartner"));

@@ -18,6 +18,7 @@ import 'package:myapp/src/enumeration/DanceCategory.dart';
 import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as partList;
 import 'package:myapp/MFGlobals.dart' as global;
+import 'package:myapp/src/screen/ticket_summary_a60.dart' as ticketSummary;
 //import 'package:strings/strings.dart';
 import '../util/StringUtil.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
@@ -807,7 +808,39 @@ class _event_registrationState extends State<event_registration> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               new Expanded(
-                child: new Container(),
+                child: new Wrap(
+                  children: <Widget>[
+                    new InkWell(
+                      onTap: (){
+                        print("participants: ${_participants.length}");
+                        ticketSummary.ticketConf = eventItem.ticketConfig;
+                        ticketSummary.participants = [];
+                        ticketSummary.participants.addAll(_participants);
+
+                        ticketSummary.participants.forEach((evtParticipant){
+                          evtParticipant.formEntries = [];
+                          _eventEntries.forEach((key, itm){
+                            if(itm.participant == evtParticipant.user) {
+                              // if matched user
+                              print("matched user participant: ${itm.participant.toJson()}");
+                              evtParticipant.formEntries.add(itm.formEntry);
+                              print(evtParticipant.formEntries?.runtimeType);
+                            }
+                          });
+                        });
+                        Navigator.of(context).pushNamed("/ticketSummary");
+                      },
+                      child: new Container(
+                        decoration: new BoxDecoration(
+                          image: new DecorationImage(image: new ExactAssetImage(_imgAsset)),
+                        ),
+                        width: 115.0,
+                        height: 32.0,
+                        child: new Center(child: new Text("Tickets", style: new TextStyle(fontSize: 17.0))),
+                      ),
+                    )
+                  ],
+                ),
               ),
               new InkWell(
                 onTap: (){

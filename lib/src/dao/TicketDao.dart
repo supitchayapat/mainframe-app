@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/model/EventTicket.dart';
+import 'package:myapp/src/model/Ticket.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("users");
 
@@ -61,6 +62,46 @@ class TicketDao {
     }
   }
 
+  static Future saveEventTickets(evt, TicketEvent ticketEvent) async {
+    FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
+    if(ticketEvent.pushId != null) {
+      return reference.child(fUser.uid)
+          .child("events")
+          .child(evt.evtPId)
+          .child("tickets")
+          .child(ticketEvent.pushId)
+          .set(ticketEvent.toJson());
+    }
+    else {
+      return reference.child(fUser.uid)
+          .child("events")
+          .child(evt.evtPId)
+          .child("tickets")
+          .push()
+          .set(ticketEvent.toJson());
+    }
+  }
+  
+  static Future getEventTickets(evt, Function p) async {
+    FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
+    return reference.child(fUser.uid)
+        .child("events")
+        .child(evt.evtPId)
+        .child("tickets")
+        .once()
+        .then((snapshot){
+      if(snapshot.value != null) {
+        List<TicketEvent> _tickets = [];
+        snapshot.value.forEach((dataKey, dataVal) {
+          TicketEvent _ticketEvt = new TicketEvent.fromSnapshot(dataVal);
+          _ticketEvt.pushId = dataKey;
+          _tickets.add(_ticketEvt);
+          Function.apply(p, [_tickets]);
+        });
+      }
+    });
+  }
+
   static Future<StreamSubscription> getTickets(evt, Function p) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
     return reference
@@ -75,7 +116,7 @@ class TicketDao {
       if(event.snapshot?.value != null) {
         Map<String, EventTicket> _evtTickets = {};
         event.snapshot.value.forEach((dataKey, dataVal) {
-          _evtTickets.putIfAbsent(dataKey, () => new EventTicket.fromSnapshot(dataVal));
+          //_evtTickets.putIfAbsent(dataKey, () => new EventTicket.fromSnapshot(dataVal));
           Function.apply(p, [_evtTickets]);
         });
       }

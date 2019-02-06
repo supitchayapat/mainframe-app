@@ -25,9 +25,11 @@ import 'src/screen/entry_freeform.dart';
 import 'src/screen/GroupDance.dart';
 import 'src/screen/payment_success.dart';
 import 'src/screen/solo_management.dart';
+import 'src/screen/attendee_management.dart';
 import 'src/screen/change_password.dart';
 import 'src/screen/forgotpass_success.dart';
 import 'src/screen/feedback.dart';
+import 'src/screen/ticket_purchase.dart';
 
 /*
   Author: Art
@@ -158,6 +160,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new ticket_summary_a60(),
         settings: settings,
       );
+    case '/ticketPurchase':
+      return new MainFrameRoute(
+        builder: (_) => new ticket_purchase(),
+        settings: settings,
+      );
     case '/registration':
       return new MainFrameRoute(
         builder: (_) => new event_registration(),
@@ -181,6 +188,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
     case '/soloManagement':
       return new MainFrameRoute(
         builder: (_) => new solo_management(),
+        settings: settings,
+      );
+    case '/attendeeManagement':
+      return new MainFrameRoute(
+        builder: (_) => new attendee_management(),
         settings: settings,
       );
     case '/participants':
@@ -230,11 +242,13 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/addPartner': (BuildContext context) => new AddDancePartner(),
     '/event': (BuildContext context) => new EventDetails(),
     '/ticketSummary': (BuildContext context) => new ticket_summary_a60(),
+    '/ticketPurchase': (BuildContext context) => new ticket_purchase(),
     '/registration': (BuildContext context) => new event_registration(),
     '/result': (BuildContext context) => new event_result(),
     '/heatlist': (BuildContext context) => new event_heatlist(),
     '/coupleManagement': (BuildContext context) => new couple_management(),
     '/soloManagement': (BuildContext context) => new solo_management(),
+    '/attendeeManagement': (BuildContext context) => new attendee_management(),
     '/participants': (BuildContext context) => new participant_list(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
     '/checkoutEntry': (BuildContext context) => new checkout_entry(),
