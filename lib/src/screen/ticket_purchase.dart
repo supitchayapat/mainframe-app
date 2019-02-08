@@ -239,7 +239,8 @@ class _ticket_purchaseState extends State<ticket_purchase> {
               amount_total: ticket.amount * _ticketCount[ticket.content],
               content: ticket.content,
               count: _ticketCount[ticket.content],
-              ticket_amount: ticket.amount
+              ticket_amount: ticket.amount,
+              competitor_ticket: ticket.competitor_ticket
             );
             print("_selected: ${_selected.toJson()}");
             if(_selected.count > 0) {

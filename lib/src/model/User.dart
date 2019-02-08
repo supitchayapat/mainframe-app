@@ -79,6 +79,8 @@ class User {
   String email;
   String studioName;
   String invoiceAddress;
+  String studioPhoneNumber;
+  String studioEmail;
   DateTime birthday;
   Gender gender;
   DanceCategory category;
@@ -99,6 +101,8 @@ class User {
                         email = s.value["email"],
                         studioName = s.value["studioName"],
                         invoiceAddress = s.value["invoiceAddress"],
+                        studioPhoneNumber = s.value["studioPhoneNumber"],
+                        studioEmail = s.value["studioEmail"],
                         birthday = new DateFormat("MM/dd/yyyy").parse(s.value["birthday"]),
                         gender = getGenderFromString(s.value["gender"]),
                         category = getDanceCategoryFromString(s.value["category"]),
@@ -116,6 +120,8 @@ class User {
         email = s["email"],
         studioName = s["studioName"],
         invoiceAddress = s["invoiceAddress"],
+        studioPhoneNumber = s["studioPhoneNumber"],
+        studioEmail = s["studioEmail"],
         birthday = new DateFormat("MM/dd/yyyy").parse(s["birthday"]),
         gender = getGenderFromString(s["gender"]),
         category = getDanceCategoryFromString(s["category"]),
@@ -135,6 +141,8 @@ class User {
       "email": email,
       "studioName": studioName,
       "invoiceAddress": invoiceAddress,
+      "studioPhoneNumber": studioPhoneNumber,
+      "studioEmail": studioEmail,
       "birthday": birthday!= null ? formatter.format(birthday) : formatter.format(new DateTime.now()),
       "gender": gender != null ? gender.toString().replaceAll("Gender.", "") : null,
       "category": category != null ? category.toString().replaceAll("DanceCategory.", "") : null,

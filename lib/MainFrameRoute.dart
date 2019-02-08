@@ -30,6 +30,8 @@ import 'src/screen/change_password.dart';
 import 'src/screen/forgotpass_success.dart';
 import 'src/screen/feedback.dart';
 import 'src/screen/ticket_purchase.dart';
+import 'src/screen/studio_details.dart';
+import 'src/screen/payment_notice.dart';
 
 /*
   Author: Art
@@ -200,6 +202,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
         builder: (_) => new participant_list(),
         settings: settings,
       );
+    case '/studioDetails':
+      return new MainFrameRoute(
+        builder: (_) => new studio_details(),
+        settings: settings,
+      );
     case '/registrationSummary':
       return new MainFrameRoute(
         builder: (_) => new entry_summary(),
@@ -213,6 +220,11 @@ Route<Null> getMainFrameOnRoute(RouteSettings settings) {
     case '/paymentSuccess':
       return new MainFrameRoute(
         builder: (_) => new payment_success(),
+        settings: settings,
+      );
+    case '/paymentNotice':
+      return new MainFrameRoute(
+        builder: (_) => new payment_notice(),
         settings: settings,
       );
     default:
@@ -250,8 +262,10 @@ Map<String, WidgetBuilder> getMainFrameRoute() {
     '/soloManagement': (BuildContext context) => new solo_management(),
     '/attendeeManagement': (BuildContext context) => new attendee_management(),
     '/participants': (BuildContext context) => new participant_list(),
+    '/studioDetails': (BuildContext context) => new studio_details(),
     '/registrationSummary': (BuildContext context) => new entry_summary(),
     '/checkoutEntry': (BuildContext context) => new checkout_entry(),
     '/paymentSuccess': (BuildContext context) => new payment_success(),
+    '/paymentNotice': (BuildContext context) => new payment_notice(),
   };
 }

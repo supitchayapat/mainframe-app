@@ -92,13 +92,15 @@ class TicketSelected {
   int count;
   double ticket_amount;
   double amount_total;
+  bool competitor_ticket;
 
-  TicketSelected({this.content, this.id, this.amount_total, this.count, this.ticket_amount});
+  TicketSelected({this.content, this.id, this.amount_total, this.count, this.ticket_amount, this.competitor_ticket});
 
   TicketSelected.fromSnapshot(var s) {
     content = s["content"];
     id = s["id"];
     count = s["count"];
+    competitor_ticket = s["competitor_ticket"];
     ticket_amount = (s["ticket_amount"])?.toDouble();
     amount_total = (s["amount_total"])?.toDouble();
   }
@@ -108,6 +110,7 @@ class TicketSelected {
       "content": content,
       "id": id,
       "count": count,
+      "competitor_ticket": competitor_ticket,
       "ticket_amount": ticket_amount,
       "amount_total": amount_total,
     };

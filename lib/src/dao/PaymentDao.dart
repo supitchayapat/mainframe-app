@@ -3,8 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:stripe_plugin/stripe_plugin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/src/model/PaymentTransaction.dart';
+import 'package:myapp/src/model/InvoiceInfo.dart';
 
 final reference = FirebaseDatabase.instance.reference().child("stripe_payments");
+final etransfer = FirebaseDatabase.instance.reference().child("etransfer_payments");
 final user_ref = FirebaseDatabase.instance.reference().child("users");
 final config_ref = FirebaseDatabase.instance.reference().child("configuration").child("public");
 final String stripeKey_pk = "pk_test_I3QbZv331ioLsVDcw4LXxM82";
@@ -106,6 +108,36 @@ class PaymentDao {
     return user_ref.child(fuser.uid).child("cardTokens").once().then((data){
       print(data?.value);
       return data?.value;
+    });
+  }
+
+  static Future saveEtransferPayment(event, invoiceInfo) async {
+    FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+    return etransfer
+        .child(fuser.uid)
+        .child("events")
+        .child(event.evtPId)
+        .child("invoiceInfo").set(invoiceInfo.toJson());
+  }
+
+  static Future getEtransferPaymentReceivedAmount(event) async {
+    FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+    return etransfer
+        .child(fuser.uid)
+        .child("events")
+        .child(event.evtPId)
+        .child("invoiceInfo").once().then((snapshot){
+      if(snapshot.value != null) {
+        var invoiceInfo = snapshot.value;
+        double receivedAmount = 0.0;
+        if(invoiceInfo["receivedAmount"] != null) {
+          receivedAmount = (invoiceInfo["receivedAmount"])?.toDouble();
+        }
+        return receivedAmount;
+      }
+      else {
+        return 0.0;
+      }
     });
   }
 }

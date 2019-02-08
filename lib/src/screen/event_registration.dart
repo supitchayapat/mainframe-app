@@ -855,7 +855,9 @@ class _event_registrationState extends State<event_registration> {
                         print(_participantEntries);
                         summary.participantEntries = _participantEntries;
                         summary.eventEntries = _eventEntries;
-                        Navigator.of(context).pushNamed("/registrationSummary");
+                        summary.participants = _participants;
+                        //Navigator.of(context).pushNamed("/registrationSummary");
+                        Navigator.of(context).pushNamed("/studioDetails");
                         // deactivate tips for registration
                         participant = null;
                         if (tipsTimer != null)

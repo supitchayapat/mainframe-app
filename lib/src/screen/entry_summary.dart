@@ -10,9 +10,18 @@ import 'package:myapp/src/model/User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
+import 'package:myapp/src/model/InvoiceInfo.dart';
+import 'package:myapp/src/enumeration/FormParticipantType.dart';
+import 'package:myapp/src/enumeration/FormType.dart';
+import 'package:myapp/src/dao/PaymentDao.dart';
+import 'package:myapp/src/screen/ticket_summary_a60.dart' as ticketSummary;
+import 'package:myapp/src/screen/studio_details.dart' as studioDetails;
+import 'package:myapp/src/util/LoadingIndicator.dart';
 
 var participantEntries;
 var eventEntries;
+var participants;
 Map participantTickets;
 Map<String, Map<String, dynamic>> entryForms = {};
 List admissionTickets;
@@ -25,6 +34,15 @@ class entry_summary extends StatefulWidget {
 
 class _entry_summaryState extends State<entry_summary> {
   double _total = 0.0;
+  double _totalTicketAdmissionFees = 0.0;
+  double _totalTicketSessionFees = 0.0;
+  int _competitorTickets = 0;
+  int _sessionTickets = 0;
+  String _paymentMode = "";
+  double financeCharge = 0.0;
+  var _evtTickets;
+  double _recievedAmount;
+
   var tipsTimer;
   /*Map<String, Map<String, double>> _entryForms = {
     'Showdance Solo': 100.0,
@@ -38,6 +56,15 @@ class _entry_summaryState extends State<entry_summary> {
   @override
   void initState() {
     super.initState();
+    _total = 0.0;
+    _totalTicketAdmissionFees = 0.0;
+    _totalTicketSessionFees = 0.0;
+    _competitorTickets = 0;
+    _sessionTickets = 0;
+    // world of dance event payment mode e-transfer
+    _paymentMode = "e-transfer";
+    _evtTickets = [];
+    _recievedAmount = 0.0;
 
     // logging for crashlytics
     global.messageLogs.add("Entry Summary Screen load.");
@@ -65,17 +92,60 @@ class _entry_summaryState extends State<entry_summary> {
       }*/
     }
 
+    // get Tickets from TicketDao
+    TicketDao.getEventTickets(reg.eventItem, (evtTickets){
+      setState(() {
+        if(evtTickets != null && evtTickets.length > 0) {
+          //print("LENGTH: ${eventTickets.length}");
+          for(var itm in evtTickets){
+            print("EVT TICKET TYPE: ${evtTickets.runtimeType}");
+            if(itm.attendee_tickets != null && !itm.attendee_tickets.isEmpty) {
+              for(var aTicket in itm.attendee_tickets) {
+                if(aTicket.tickets_selected != null && !aTicket.tickets_selected.isEmpty) {
+                  for(var _selected in aTicket.tickets_selected) {
+                    if(_selected.competitor_ticket) {
+                      _competitorTickets += 1;
+                      _totalTicketAdmissionFees += _selected.amount_total;
+                    }
+                    else {
+                      _sessionTickets += 1;
+                      _totalTicketSessionFees += _selected.amount_total;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          print("Total admission tickets: ${_competitorTickets}");
+          print("Total admission amount: ${_totalTicketAdmissionFees}");
+          print("Total session tickets: ${_sessionTickets}");
+          print("Total session amount: ${_totalTicketSessionFees}");
+
+          _evtTickets = evtTickets;
+        }
+      });
+    });
+
+    if(reg.eventItem?.finance != null) {
+      financeCharge = reg.eventItem?.finance.surcharge / 100;
+    }
+
+    PaymentDao.getEtransferPaymentReceivedAmount(reg.eventItem).then((recievedAmount){
+      _recievedAmount = recievedAmount;
+    });
+
     //print("participantTickets $participantTickets");
     //print("ticketUsers $ticketUsers");
-    if(participantEntries != null) {
+    /*if(participantEntries != null) {
       if(participantTickets == null)
         participantTickets = {};
 
       print("INITIALIZE TICKETS");
       participantEntries.forEach((_participant, val) {
-        populateParticipantTickets(_participant, (ticketUsers == null || ticketUsers.isEmpty) ? null : ticketUsers);
+        //populateParticipantTickets(_participant, (ticketUsers == null || ticketUsers.isEmpty) ? null : ticketUsers);
       });
-    }
+    }*/
     //print(_entryForms.length);
     //print(_entryForms);
   }
@@ -159,6 +229,8 @@ class _entry_summaryState extends State<entry_summary> {
         );
 
         _total += _price;
+        // add ticket fees
+        _total += _totalTicketSessionFees + _totalTicketAdmissionFees;
 
         _children.add(
             new Wrap(
@@ -322,6 +394,126 @@ class _entry_summaryState extends State<entry_summary> {
     );
   }
 
+  Widget generateTickets(admissionTicketType, ticketCount, _ticketFee) {
+    List<Widget> _children = [];
+
+    Widget _priceText = new Text("Fee: \$${_ticketFee.toStringAsFixed(2)}", style: new TextStyle(fontSize: 16.0));
+    _children.add(
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text("${admissionTicketType}  x  ${ticketCount}", style: new TextStyle(fontSize: 16.0))
+            ),
+            _priceText
+          ],
+        )
+    );
+
+    return new Container(
+      //color: Colors.amber,
+      margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _children,
+      ),
+    );
+  }
+
+  void _handlePaymentEtransfer() {
+    double _sumAmount = (_total.toDouble() * financeCharge) + _total.toDouble();
+    Surcharge surcharge = new Surcharge.fromFinance(reg.eventItem.finance);
+    surcharge.amount = (_total.toDouble() * financeCharge);
+    // create new invoice info
+    InvoiceInfo info = new InvoiceInfo(
+      event: reg.eventItem,
+      totalAmount: _sumAmount,
+      surcharge: surcharge,
+    );
+    info.entries = [];
+    info.tickets = [];
+    info.billingInfo = new BillingInfo(name: studioDetails.studioCtrl.text, address: studioDetails.addressCtrl.text);
+
+    eventEntries?.forEach((key, val) {
+      if (val?.payment == null) {
+        bool isInvoice = val.paidEntries != val?.danceEntries;
+        print("${val.paidEntries} != ${val.danceEntries}");
+        // pay this entry
+        val.paidEntries = val?.danceEntries;
+        //val.payment = data;
+        // new Invoice Participants
+        InvoiceParticipants invParticipants = new InvoiceParticipants(formName: val?.formEntry?.name);
+        invParticipants.participants = [];
+        invParticipants.participantEntries = [];
+        FormParticipantType fType;
+        if(val?.participant != null) {
+          if(val.participant is Couple) {
+            invParticipants.participants.addAll(val.participant.couple);
+            fType = FormParticipantType.COUPLE;
+          } else if(val.participant is Group) {
+            invParticipants.participants.addAll(val.participant.members);
+            fType = FormParticipantType.GROUP;
+          } else if(val.participant is User){
+            invParticipants.participants.add(val.participant);
+            fType = FormParticipantType.SOLO;
+          }
+
+        }
+
+        double _price = EntryFormUtil.getPriceFromForm(entryForms[val?.formEntry?.name], val.participant, fType);
+        if (val?.levels != null) {
+          for (var _lvl in val.levels) {
+            for (var _ageMap in _lvl.ageMap) {
+              _ageMap.subCategoryMap.forEach((_k, _v) {
+                if (_v["selected"]) {
+                  //print("key: $_k paid: ${_v["paid"]}");
+                  if(!_v["paid"]) {
+                    String _content = EntryFormUtil.getLookupDescription(val.formEntry, _k, "DANCES");
+                    ParticipantEntry _pEntry = new ParticipantEntry(name: "${_ageMap.ageCategory} ${_lvl.levelName.toUpperCase()} $_content", price: _price);
+                    //print(_pEntry.toJson());
+                    invParticipants.participantEntries.add(_pEntry);
+                  }
+                  // not yet paid
+                  _v["paid"] = false;
+                }
+              });
+            }
+          }
+        }
+        else if(val?.freeForm != null) {
+          // free form GROUP
+          if(val.formEntry.type == FormType.GROUP || val.formEntry.type == FormType.SOLO) {
+            String _entryName = "";
+            if(val.formEntry.type == FormType.GROUP)
+              _entryName = "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}";
+            if(val.formEntry.type == FormType.SOLO)
+              _entryName = val.freeForm.dance;
+
+            ParticipantEntry _pEntry = new ParticipantEntry(
+                name: _entryName, price: _price);
+            invParticipants.participantEntries.add(_pEntry);
+          }
+        }
+
+        if(isInvoice) {
+          //print("INV PARTICIPANTS");
+          //print(invParticipants.toJson());
+          info.entries.add(invParticipants);
+        }
+      }
+    });
+
+    // add the tickets
+    info.tickets = _evtTickets;
+    // add receieved amount
+    info.receivedAmount = _recievedAmount;
+
+    // save InvoiceInfo
+    PaymentDao.saveEtransferPayment(reg.eventItem, info).then((retVal){
+      MainFrameLoadingIndicator.hideLoading(context);
+      Navigator.pushNamed(context, "/paymentNotice");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _total = 0.0;
@@ -346,16 +538,77 @@ class _entry_summaryState extends State<entry_summary> {
       }
     }
 
-    if(participantTickets != null && participantTickets.isNotEmpty) {
-      _children.add(new Container(
-        //color: Colors.amber,
-        margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0, top: 20.0),
-        child: new Text("Admission Fees", style: new TextStyle(fontSize: 22.0)),
-      ));
-
+    /*if(participantTickets != null && participantTickets.isNotEmpty) {
       participantTickets.forEach((key, val){
         _children.add(generateAdmissionTickets(key, val));
       });
+    }*/
+
+    _children.add(new Container(
+      //color: Colors.amber,
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0, top: 20.0),
+        child: new Row(
+          children: <Widget>[
+            new Container(
+                child: new Text("Tickets", style: new TextStyle(fontSize: 22.0))
+            ),
+            new InkWell(
+              onTap: () {
+                print("participants LENGTH: ${participants.length}");
+                ticketSummary.ticketConf = reg.eventItem.ticketConfig;
+                ticketSummary.participants = [];
+                ticketSummary.participants.addAll(participants);
+
+                ticketSummary.participants.forEach((evtParticipant){
+                  evtParticipant.formEntries = [];
+                  eventEntries.forEach((key, itm){
+                    if(itm.participant == evtParticipant.user) {
+                      // if matched user
+                      print("matched user participant: ${itm.participant.toJson()}");
+                      evtParticipant.formEntries.add(itm.formEntry);
+                      print(evtParticipant.formEntries?.runtimeType);
+                    }
+                  });
+                });
+                Navigator.of(context).pushNamed("/ticketSummary");
+              },
+              child: new Container(
+                decoration: new BoxDecoration(
+                    borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                    border: new Border.all(
+                      color: Colors.white,
+                      style: BorderStyle.solid,
+                    )
+                ),
+                margin: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.all(4.0),
+                child: new Row(
+                  children: <Widget>[
+                    new Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: new Text("view tickets", style: new TextStyle(color: new Color(0xff00e5ff))),
+                    ),
+                    new Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: new Icon(FontAwesomeIcons.externalLinkAlt, color: new Color(0xff00e5ff), size: 16.0)
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        )
+    ));
+
+    if(_competitorTickets > 0) {
+      _children.add(
+        generateTickets("Admission Ticket(s)", _competitorTickets, _totalTicketAdmissionFees)
+      );
+    }
+    if(_sessionTickets > 0) {
+      _children.add(
+        generateTickets("Session Ticket(s)", _sessionTickets, _totalTicketSessionFees)
+      );
     }
 
     /*print("ticket owners:");
@@ -395,14 +648,20 @@ class _entry_summaryState extends State<entry_summary> {
               ),
               new InkWell(
                 onTap: (){
+
                   // logging for crashlytics
                   global.messageLogs.add("Pay Fees button pressed.");
                   AnalyticsUtil.sendAnalyticsEvent("pay_fees_pressed", params: {
                     'screen': 'entry_summary'
                   });
-                  if(_total > 0.0) {
+                  if(_total > 0.0 && _paymentMode != "e-transfer") {
                     checkout.totalAmount = _total;
                     Navigator.of(context).pushNamed("/checkoutEntry");
+                  }
+                  else if(_total > 0.0 && _paymentMode == "e-transfer") {
+                    MainFrameLoadingIndicator.showLoading(context);
+                    print("E-TRANSFER SAVING");
+                    _handlePaymentEtransfer();
                   }
                 },
                 child: _total > 0 ? new Container(

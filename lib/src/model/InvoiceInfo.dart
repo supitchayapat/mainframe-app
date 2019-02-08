@@ -1,6 +1,7 @@
 import 'MFEvent.dart';
 import 'FormEntry.dart';
 import 'User.dart';
+import 'Ticket.dart';
 
 class BillingInfo {
   String name;
@@ -26,6 +27,12 @@ class Surcharge {
   Surcharge.fromFinance(Finance f) {
     description = f.description;
     percentage = f.surcharge;
+  }
+
+  Surcharge.fromSnapshot(var s) {
+    description = s["description"];
+    percentage = s["percentage"];
+    amount = s["amount"];
   }
 
   toJson() {
@@ -72,14 +79,25 @@ class InvoiceInfo {
   Surcharge surcharge;
   MFEvent event;
   BillingInfo billingInfo;
-  List<Ticket> tickets;
+  //List<Ticket> tickets;
+  List<TicketEvent> tickets;
   List<InvoiceParticipants> entries;
+  double receivedAmount;
 
-  InvoiceInfo({this.totalAmount, this.surcharge, this.event, this.billingInfo, this.tickets, this.entries});
+  InvoiceInfo({this.totalAmount, this.receivedAmount, this.surcharge, this.event, this.billingInfo, this.tickets, this.entries});
+
+  InvoiceInfo.fromSnapshot(var s) {
+    totalAmount = s["totalAmount"];
+    if(s["surcharge"] != null) {
+      surcharge = new Surcharge.fromSnapshot(s["surcharge"]);
+    }
+
+  }
 
   toJson() {
     return {
       "totalAmount": totalAmount,
+      "receivedAmount": receivedAmount,
       "surcharge": surcharge.toJson(),
       "event": event.toJson(),
       "billingInfo": billingInfo?.toJson(),
