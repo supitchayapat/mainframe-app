@@ -68,9 +68,13 @@ class TicketDate {
     if(s["rows"] != null) {
       var _rows = s["rows"];
       this.rows = [];
-      _rows.forEach((itm){
-        rows.add(new TicketRows.fromSnapshot(itm));
-      });
+      if(_rows is List) {
+        _rows.forEach((itm) {
+          rows.add(new TicketRows.fromSnapshot(itm));
+        });
+      } else {
+        rows.add(new TicketRows.fromSnapshot(_rows));
+      }
     }
   }
 }
@@ -108,9 +112,13 @@ class TicketRows {
       //print(s["types"]);
       var _types = s["types"];
       this.types = [];
-      _types.forEach((itm){
-        types.add(new TicketType.fromSnapshot(itm));
-      });
+      if(_types is List) {
+        _types.forEach((itm) {
+          types.add(new TicketType.fromSnapshot(itm));
+        });
+      } else {
+        types.add(new TicketType.fromSnapshot(_types));
+      }
     }
   }
 }

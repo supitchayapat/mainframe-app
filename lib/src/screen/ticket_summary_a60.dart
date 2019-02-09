@@ -51,9 +51,6 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
         );
         eventTickets.add(_ticket);
         //print("ENTRIES: ${itm.formEntries?.length}");
-        itm.formEntries.forEach((entri){
-          //print("ENTRY: ${entri.toJson()}");
-        });
       });
     }
     if(attendees != null && attendees.length > 0){
