@@ -147,6 +147,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           }
         }
         if(_horizon.position == "subheader") {
+          print("horizon_link: ${_horizon.link}");
           var _formLookup = formEntry.getFormLookup(_horizon.link);
           //print(_formLookup.toJson());
           var _headLookup;
@@ -165,6 +166,10 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
             for(var elem2 in _headLookup.elements) {
               if(elem2.id == elem.grouping) {
+                //print("header: ${elem2.code}");
+                //print("header id: ${elem2.id}");
+                //print("subheader: ${elem.code}");
+                //print("subheader id: ${elem.grouping}");
                 if(danceCatMap[elem2.code].subCategories == null) {
                   danceCatMap[elem2.code].subCategories = [];
                 }
@@ -172,6 +177,14 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               }
             }
           }
+
+          danceCatMap.forEach((key, val){
+            print("key: $key");
+            print("category: ${val.category}");
+            val.subCategories.forEach((sub){
+              print("sub: ${sub.toJson()}");
+            });
+          });
 
           if(_changeTreshold) {
             setState((){subColumnTreshold = 60.0;});
@@ -559,7 +572,11 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
         Navigator.of(context).maybePop();
       }
     } else {
-      Navigator.of(context).maybePop();
+      var val = await showMainFrameDialogWithCancel(
+          context, "No Changes", "There were no new Entry/Entries Selected. Would you like to leave this screen?");
+      if (val == "OK") {
+        Navigator.of(context).maybePop();
+      }
     }
   }
 
@@ -772,6 +789,9 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       levelValMap[_lvlValMapIdx] = {};
     }
     levelValMap[_lvlValMapIdx].putIfAbsent(headingVal, () => "");
+
+    //print("levelValMapIdx: ${_lvlValMapIdx}");
+    //print("headingVal: ${headingVal}");
 
     Radio _rPanelRadio = new Radio(
         activeColor: isPaidSubCategory(_lvlValMapIdx, headingVal) ? new Color(0xff00e5ff) : Colors.white,

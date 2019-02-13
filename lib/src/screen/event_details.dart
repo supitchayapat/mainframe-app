@@ -118,7 +118,7 @@ class _EventDetailsState extends State<EventDetails> {
 
       // perform refresh events
       eventTimer = new Timer.periodic(new Duration(minutes: _refreshDelay), (timer) {
-        print("Check event timer");
+        //print("Check event timer");
         if(checkIsStopDate()) {
           showMainFrameDialog(context, "Event Inactive", "Event is already inactive. You will be redirected to the events list").then((val){
             Navigator.of(context).popUntil(ModalRoute.withName("/mainscreen"));
@@ -164,7 +164,7 @@ class _EventDetailsState extends State<EventDetails> {
     DateTime _now = new DateTime.now();
     DateTime _tempStop = eventItem.dateStop.add(new Duration(days: 1, hours: 6));
     //_now = _now.add(new Duration(days: 1, hours: 19, minutes: 55));
-    print("dateStop: ${eventItem.dateStop} , tempstop: ${_tempStop} , timeNow: ${_now}, isAfter: ${_now.isAfter(_tempStop)}");
+    //print("dateStop: ${eventItem.dateStop} , tempstop: ${_tempStop} , timeNow: ${_now}, isAfter: ${_now.isAfter(_tempStop)}");
     return _now.isAfter(_tempStop);
   }
 
@@ -188,7 +188,7 @@ class _EventDetailsState extends State<EventDetails> {
 
   Widget _buildEventInfo() {
     bool displayUrl = true;
-    print("website enabled: ${eventItem?.websiteEnabled}");
+    //print("website enabled: ${eventItem?.websiteEnabled}");
 
     if(global.devicePlatform == "ios"
         && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
@@ -200,7 +200,7 @@ class _EventDetailsState extends State<EventDetails> {
       displayUrl = false;
     }
 
-    print("displayURL: ${displayUrl}");
+    //print("displayURL: ${displayUrl}");
 
     return new Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),

@@ -237,9 +237,9 @@ class _GroupDanceState extends State<GroupDance> {
   Widget build(BuildContext context) {
     String _imgAsset = "mainframe_assets/images/add_via_email.png";
     List<Widget> _children = [];
-    _children.add(new MaterialButton(
-      padding: const EdgeInsets.all(0.0),
-      onPressed: (){
+    _children.add(new InkWell(
+      //padding: const EdgeInsets.all(0.0),
+      onTap: (){
         if(!isPaid) {
           participantList.participantType = "group";
           addPartner.tipsTimer = null;

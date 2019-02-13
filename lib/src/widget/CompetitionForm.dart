@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const Duration _kBaseSettleDuration = const Duration(milliseconds: 246);
 const double _kWidth = 304.0;
@@ -68,7 +69,28 @@ class _CompetitionFormState extends State<CompetitionForm> {
     super.initState();
     _scrollController.addListener(_panelResizedListener);
     leftPanel = widget.maximizedLeftPanel;
-    rightPanel = new Container(color: new Color(0xff113E69));
+    rightPanel = new Container(
+      color: new Color(0xff113E69),
+      child: new Wrap(
+        children: <Widget>[
+          new Padding(
+            padding: const EdgeInsets.only(left: 5.0, top: 10.0),
+            child: new Icon(FontAwesomeIcons.arrowLeft, size: 25.0),
+          ),
+          new Container(
+              padding: const EdgeInsets.only(left: 5.0, top: 7.0),
+              constraints: new BoxConstraints(maxWidth: 260.0),
+              child: new Text(
+                "DRAG THE LEFT PANEL TO SEE ENTRY SELECTIONS",
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.0
+                ),
+              )
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -104,7 +126,28 @@ class _CompetitionFormState extends State<CompetitionForm> {
         isBuildRPanel = true;
       }
       else {
-        rightPanel = new Container(color: new Color(0xff113E69));
+        rightPanel = new Container(
+          color: new Color(0xff113E69),
+          child: new Wrap(
+            children: <Widget>[
+              new Padding(
+                padding: const EdgeInsets.only(left: 5.0, top: 10.0),
+                child: new Icon(FontAwesomeIcons.arrowLeft, size: 25.0),
+              ),
+              new Container(
+                padding: const EdgeInsets.only(left: 5.0, top: 7.0),
+                constraints: new BoxConstraints(maxWidth: 260.0),
+                child: new Text(
+                  "DRAG THE LEFT PANEL TO SEE ENTRY SELECTIONS",
+                  style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.0
+                  ),
+                )
+              )
+            ],
+          ),
+        );
         isBuildRPanel = false;
       }
     });
@@ -136,7 +179,9 @@ class _CompetitionFormState extends State<CompetitionForm> {
       }).toList());
     }
     else {
-      children.add(new Container());
+      children.add(
+        new Container()
+      );
     }
     return new DefaultTabController(
         length: widget.rightPanelTabs != null ? widget.rightPanelTabs.length : 0,
@@ -177,6 +222,7 @@ class _CompetitionFormState extends State<CompetitionForm> {
     }
 
     //print("from inside form: ${rPanelWidth}");
+    //print("isBuildRPanel: $isBuildRPanel");
 
     return new SizedBox.expand(
       child: new NotificationListener<ScrollEndNotification>(
