@@ -87,6 +87,10 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
     });
   }
 
+  void _handleBackButton() {
+    Navigator.of(context).popUntil(ModalRoute.withName("/registration"));
+  }
+
   bool _isWithinEventTickets(eventTickets, participantAttendeeTicket) {
     bool retVal = false;
     for(var _et in eventTickets) {
@@ -712,7 +716,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
           )
         ],
       ),*/
-      appBar: new MFAppBar("Tickets - SUMMARY", context),
+      appBar: new MFAppBar("Tickets - SUMMARY", context, backButtonFunc: _handleBackButton),
       body: new DropdownButtonHideUnderline(
           child: new Column(
             children: <Widget>[

@@ -64,12 +64,13 @@ class TicketDao {
 
   static Future saveEventTickets(evt, TicketEvent ticketEvent) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
-    if(ticketEvent.pushId != null) {
+    TicketEvent _existing = await getExistingTicketEvent(fUser, evt, ticketEvent);
+    if(_existing != null) {
       return reference.child(fUser.uid)
           .child("events")
           .child(evt.evtPId)
           .child("tickets")
-          .child(ticketEvent.pushId)
+          .child(_existing.pushId)
           .set(ticketEvent.toJson());
     }
     else {
@@ -80,6 +81,27 @@ class TicketDao {
           .push()
           .set(ticketEvent.toJson());
     }
+  }
+
+  static getExistingTicketEvent(fUser, evt, TicketEvent ticketEvent) async {
+    print("ATTENDEE: ${ticketEvent.attendee}");
+    return reference.child(fUser.uid)
+        .child("events")
+        .child(evt.evtPId)
+        .child("tickets")
+        .orderByChild("attendee")
+        .equalTo(ticketEvent.attendee)
+        .once()
+        .then((snapshot){
+      TicketEvent _existing;
+      snapshot.value.forEach((key, val){
+        _existing = new TicketEvent.fromSnapshot(snapshot.value);
+        _existing.pushId = key;
+      });
+      return _existing;
+    }).catchError((err){
+      print("Error found on retrieving data: $err");
+    });
   }
   
   static Future getEventTickets(evt, Function p) async {
@@ -96,8 +118,9 @@ class TicketDao {
           TicketEvent _ticketEvt = new TicketEvent.fromSnapshot(dataVal);
           _ticketEvt.pushId = dataKey;
           _tickets.add(_ticketEvt);
-          Function.apply(p, [_tickets]);
         });
+        // back to callback
+        Function.apply(p, [_tickets]);
       }
     });
   }

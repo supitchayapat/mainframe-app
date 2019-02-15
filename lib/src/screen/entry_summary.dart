@@ -94,36 +94,36 @@ class _entry_summaryState extends State<entry_summary> {
 
     // get Tickets from TicketDao
     TicketDao.getEventTickets(reg.eventItem, (evtTickets){
+      print("EVT TICKETS: ${evtTickets}");
       setState(() {
-        if(evtTickets != null && evtTickets.length > 0) {
-          //print("LENGTH: ${eventTickets.length}");
-          for(var itm in evtTickets){
-            print("EVT TICKET TYPE: ${evtTickets.runtimeType}");
-            if(itm.attendee_tickets != null && !itm.attendee_tickets.isEmpty) {
-              for(var aTicket in itm.attendee_tickets) {
-                if(aTicket.tickets_selected != null && !aTicket.tickets_selected.isEmpty) {
-                  for(var _selected in aTicket.tickets_selected) {
-                    if(_selected.competitor_ticket) {
-                      _competitorTickets += 1;
-                      _totalTicketAdmissionFees += _selected.amount_total;
-                    }
-                    else {
-                      _sessionTickets += 1;
-                      _totalTicketSessionFees += _selected.amount_total;
-                    }
+      if(evtTickets != null && evtTickets.length > 0) {
+        for(var itm in evtTickets){
+          if(itm.attendee_tickets != null && !itm.attendee_tickets.isEmpty) {
+            for(var aTicket in itm.attendee_tickets) {
+              if(aTicket.tickets_selected != null && !aTicket.tickets_selected.isEmpty) {
+                for(var _selected in aTicket.tickets_selected) {
+                  if(_selected?.competitor_ticket != null && _selected.competitor_ticket) {
+                    _competitorTickets += 1;
+                    _totalTicketAdmissionFees += _selected.amount_total;
+                  }
+                  else {
+                    _sessionTickets += 1;
+                    _totalTicketSessionFees += _selected.amount_total;
                   }
                 }
               }
             }
           }
-
-          print("Total admission tickets: ${_competitorTickets}");
-          print("Total admission amount: ${_totalTicketAdmissionFees}");
-          print("Total session tickets: ${_sessionTickets}");
-          print("Total session amount: ${_totalTicketSessionFees}");
-
-          _evtTickets = evtTickets;
         }
+
+        //print("LENGTH: ${eventTickets.length}");
+        //print("Total admission tickets: ${_competitorTickets}");
+        //print("Total admission amount: ${_totalTicketAdmissionFees}");
+        //print("Total session tickets: ${_sessionTickets}");
+        //print("Total session amount: ${_totalTicketSessionFees}");
+
+        _evtTickets = evtTickets;
+      }
       });
     });
 
