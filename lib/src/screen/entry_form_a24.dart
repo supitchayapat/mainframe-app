@@ -17,6 +17,7 @@ import 'package:myapp/MFGlobals.dart' as global;
 import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:collection/collection.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
@@ -147,7 +148,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           }
         }
         if(_horizon.position == "subheader") {
-          print("horizon_link: ${_horizon.link}");
+          //print("horizon_link: ${_horizon.link}");
           var _formLookup = formEntry.getFormLookup(_horizon.link);
           //print(_formLookup.toJson());
           var _headLookup;
@@ -177,14 +178,6 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               }
             }
           }
-
-          danceCatMap.forEach((key, val){
-            print("key: $key");
-            print("category: ${val.category}");
-            val.subCategories.forEach((sub){
-              print("sub: ${sub.toJson()}");
-            });
-          });
 
           if(_changeTreshold) {
             setState((){subColumnTreshold = 60.0;});
@@ -483,7 +476,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
                       }
                     });
 
-                    print(subEntry.toJson());
+                    //print(subEntry.toJson());
 
                     if (subEntry.subCategoryMap.length > 0)
                       levelEntry.ageMap.add(subEntry);
@@ -774,6 +767,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
   }
 
   bool isPaidSubCategory(idx, headingVal) {
+    //print("idx: ${idx} levelValPaidMap: ${levelValPaidMap}");
     if(levelValPaidMap[idx] != null) {
       if (levelValPaidMap[idx][headingVal] != null &&
           levelValPaidMap[idx][headingVal].isNotEmpty) {
@@ -793,7 +787,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     //print("levelValMapIdx: ${_lvlValMapIdx}");
     //print("headingVal: ${headingVal}");
 
-    Radio _rPanelRadio = new Radio(
+    /*Radio _rPanelRadio = new Radio(
         activeColor: isPaidSubCategory(_lvlValMapIdx, headingVal) ? new Color(0xff00e5ff) : Colors.white,
         value: headingVal,
         groupValue: levelValMap[_lvlValMapIdx][headingVal],
@@ -804,7 +798,13 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             });
           }
         }
-    );
+    );*/
+    Color _rPanelRadioColor = isPaidSubCategory(_lvlValMapIdx, headingVal) ? new Color(0xff00e5ff) : Colors.white;
+    Icon _rPanelRadio = new Icon(FontAwesomeIcons.circleO, color: _rPanelRadioColor);
+    String _catVal = levelValMap[_lvlValMapIdx][headingVal];
+    if (!_catVal.isEmpty && _catVal == headingVal) {
+      _rPanelRadio = new Icon(FontAwesomeIcons.dotCircleO, color: _rPanelRadioColor);
+    }
 
     Widget _container = new Container(
         width: subColumnTreshold,
@@ -813,12 +813,20 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           onTap: () {
             if(!excludes.contains(_exclude)) {
               String catVal = levelValMap[_lvlValMapIdx][headingVal];
+              //print("catVal: ${catVal}");
               if (!catVal.isEmpty && catVal == headingVal) {
                 catVal = "";
               } else {
                 catVal = headingVal;
               }
-              _rPanelRadio.onChanged(catVal);
+              //print("catVal after: ${catVal}");
+              //_rPanelRadio.onChanged(catVal);
+              // Radio changed
+              if(!excludes.contains(_exclude) && !isPaidSubCategory(_lvlValMapIdx, headingVal)) {
+                setState(() {
+                  levelValMap[_lvlValMapIdx][headingVal] = catVal;
+                });
+              }
             }
           },
           child: new Container(
