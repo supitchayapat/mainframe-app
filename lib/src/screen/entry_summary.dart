@@ -433,85 +433,115 @@ class _entry_summaryState extends State<entry_summary> {
     info.tickets = [];
     info.billingInfo = new BillingInfo(name: studioDetails.studioCtrl.text, address: studioDetails.addressCtrl.text);
 
-    eventEntries?.forEach((key, val) {
-      if (val?.payment == null) {
-        bool isInvoice = val.paidEntries != val?.danceEntries;
-        print("${val.paidEntries} != ${val.danceEntries}");
-        // pay this entry
-        val.paidEntries = val?.danceEntries;
-        //val.payment = data;
-        // new Invoice Participants
-        InvoiceParticipants invParticipants = new InvoiceParticipants(formName: val?.formEntry?.name);
-        invParticipants.participants = [];
-        invParticipants.participantEntries = [];
-        FormParticipantType fType;
-        if(val?.participant != null) {
-          if(val.participant is Couple) {
-            invParticipants.participants.addAll(val.participant.couple);
-            fType = FormParticipantType.COUPLE;
-          } else if(val.participant is Group) {
-            invParticipants.participants.addAll(val.participant.members);
-            fType = FormParticipantType.GROUP;
-          } else if(val.participant is User){
-            invParticipants.participants.add(val.participant);
-            fType = FormParticipantType.SOLO;
-          }
-
-        }
-
-        double _price = EntryFormUtil.getPriceFromForm(entryForms[val?.formEntry?.name], val.participant, fType);
-        if (val?.levels != null) {
-          for (var _lvl in val.levels) {
-            for (var _ageMap in _lvl.ageMap) {
-              _ageMap.subCategoryMap.forEach((_k, _v) {
-                if (_v["selected"]) {
-                  //print("key: $_k paid: ${_v["paid"]}");
-                  if(!_v["paid"]) {
-                    String _content = EntryFormUtil.getLookupDescription(val.formEntry, _k, "DANCES");
-                    ParticipantEntry _pEntry = new ParticipantEntry(name: "${_ageMap.ageCategory} ${_lvl.levelName.toUpperCase()} $_content", price: _price);
-                    //print(_pEntry.toJson());
-                    invParticipants.participantEntries.add(_pEntry);
-                  }
-                  // not yet paid
-                  _v["paid"] = false;
-                }
-              });
+    try {
+      eventEntries?.forEach((key, val) {
+        if (val?.payment == null) {
+          bool isInvoice = val.paidEntries != val?.danceEntries;
+          print("${val.paidEntries} != ${val.danceEntries}");
+          // pay this entry
+          val.paidEntries = val?.danceEntries;
+          //val.payment = data;
+          // new Invoice Participants
+          InvoiceParticipants invParticipants = new InvoiceParticipants(
+              formName: val?.formEntry?.name);
+          invParticipants.participants = [];
+          invParticipants.participantEntries = [];
+          FormParticipantType fType;
+          if (val?.participant != null) {
+            if (val.participant is Couple) {
+              invParticipants.participants.addAll(val.participant.couple);
+              fType = FormParticipantType.COUPLE;
+            } else if (val.participant is Group) {
+              invParticipants.participants.addAll(val.participant.members);
+              fType = FormParticipantType.GROUP;
+            } else if (val.participant is User) {
+              invParticipants.participants.add(val.participant);
+              fType = FormParticipantType.SOLO;
             }
           }
-        }
-        else if(val?.freeForm != null) {
-          // free form GROUP
-          if(val.formEntry.type == FormType.GROUP || val.formEntry.type == FormType.SOLO) {
-            String _entryName = "";
-            if(val.formEntry.type == FormType.GROUP)
-              _entryName = "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val.freeForm["event_type"]}";
-            if(val.formEntry.type == FormType.SOLO)
-              _entryName = val.freeForm.dance;
 
-            ParticipantEntry _pEntry = new ParticipantEntry(
-                name: _entryName, price: _price);
-            invParticipants.participantEntries.add(_pEntry);
+          double _price = EntryFormUtil.getPriceFromForm(
+              entryForms[val?.formEntry?.name], val.participant, fType);
+          if (val?.levels != null) {
+            for (var _lvl in val.levels) {
+              for (var _ageMap in _lvl.ageMap) {
+                _ageMap.subCategoryMap.forEach((_k, _v) {
+                  if (_v["selected"]) {
+                    //print("key: $_k paid: ${_v["paid"]}");
+                    if (!_v["paid"]) {
+                      String _content = EntryFormUtil.getLookupDescription(
+                          val.formEntry, _k, "DANCES");
+                      ParticipantEntry _pEntry = new ParticipantEntry(
+                          name: "${_ageMap.ageCategory} ${_lvl.levelName
+                              .toUpperCase()} $_content", price: _price);
+                      //print(_pEntry.toJson());
+                      invParticipants.participantEntries.add(_pEntry);
+                    }
+                    // not yet paid
+                    _v["paid"] = false;
+                  }
+                });
+              }
+            }
+          }
+          else if (val?.freeForm != null) {
+            // free form GROUP
+            if (val.formEntry.type == FormType.GROUP ||
+                val.formEntry.type == FormType.SOLO) {
+              String _entryName = "";
+              if (val.formEntry.type == FormType.GROUP)
+                _entryName =
+                "${val.freeForm["age"]} ${val.freeForm["dance"]} ${val
+                    .freeForm["event_type"]}";
+              if (val.formEntry.type == FormType.SOLO)
+                _entryName = val.freeForm.dance;
+
+              ParticipantEntry _pEntry = new ParticipantEntry(
+                  name: _entryName, price: _price);
+              invParticipants.participantEntries.add(_pEntry);
+            }
+          }
+
+          if (isInvoice) {
+            //print("INV PARTICIPANTS");
+            //print(invParticipants.toJson());
+            info.entries.add(invParticipants);
           }
         }
+      });
 
-        if(isInvoice) {
-          //print("INV PARTICIPANTS");
-          //print(invParticipants.toJson());
-          info.entries.add(invParticipants);
-        }
+      // add the tickets
+      if (_evtTickets != null && !_evtTickets.isEmpty) {
+        info.tickets = [];
+        info.tickets.addAll(_evtTickets);
       }
-    });
+      // add receieved amount
+      if (_recievedAmount != null) {
+        info.receivedAmount = _recievedAmount;
+      }
+      else {
+        info.receivedAmount = 0.0;
+      }
 
-    // add the tickets
-    info.tickets = _evtTickets;
-    // add receieved amount
-    info.receivedAmount = _recievedAmount;
-
-    // save InvoiceInfo
-    PaymentDao.saveEtransferPayment(reg.eventItem, info).then((retVal){
-      MainFrameLoadingIndicator.hideLoading(context);
-      Navigator.pushNamed(context, "/paymentNotice");
-    });
+      // save InvoiceInfo
+      PaymentDao.saveEtransferPayment(reg.eventItem, info).then((retVal){
+        MainFrameLoadingIndicator.hideLoading(context);
+        Navigator.pushNamed(context, "/paymentNotice");
+      }).catchError((err){
+        MainFrameLoadingIndicator.hideLoading(context);
+        showMainFrameDialog(
+            context, "ERROR", "An error occurred during payment transaction. Please contact support."
+        ).then((_thn){
+          MainFrameLoadingIndicator.hideLoading(context);
+        });
+      });
+    } catch(err) {
+      showMainFrameDialog(
+        context, "ERROR", "An error occurred during payment transaction. Please contact support."
+      ).then((_thn){
+        MainFrameLoadingIndicator.hideLoading(context);
+      });
+    }
   }
 
   @override
