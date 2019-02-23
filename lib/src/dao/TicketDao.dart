@@ -103,6 +103,11 @@ class TicketDao {
       print("Error found on retrieving data: $err");
     });
   }
+
+  static Future isTicketRequired(evt, Function p) async {
+    FirebaseUser fUser = await FirebaseAuth.instance.currentUser();
+    return null;
+  }
   
   static Future getEventTickets(evt, Function p) async {
     FirebaseUser fUser = await FirebaseAuth.instance.currentUser();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main_drawer.dart';
+import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/widget/MFAppBar.dart';
 import 'package:myapp/src/util/ScreenUtils.dart';
 import 'package:intl/intl.dart';
@@ -44,12 +45,25 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
 
     if(participants != null) {
       participants.forEach((itm) {
-        ParticipantAttendeeTicket _ticket = new ParticipantAttendeeTicket(
-            name: itm.name,
-            type: "participant",
-            user: itm.user
-        );
-        eventTickets.add(_ticket);
+        if (itm.user is Couple) {
+          print("IS COUPLE: Adding couple participants");
+          if(itm.user?.couple != null) {
+            itm.user.couple.forEach((_cpl){
+              addEventTicketParticipant(_cpl);
+            });
+          }
+        }
+        else if (itm.user is Group) {
+          print("IS GROUP: Adding group members.");
+          if(itm.user?.members != null) {
+            itm.user.members.forEach((membr){
+              addEventTicketParticipant(membr);
+            });
+          }
+        } else {
+          print("IS SOLO: Adding participant");
+          addEventTicketParticipant(itm.user);
+        }
         //print("ENTRIES: ${itm.formEntries?.length}");
       });
     }
@@ -89,6 +103,33 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
 
   void _handleBackButton() {
     Navigator.of(context).popUntil(ModalRoute.withName("/registration"));
+  }
+
+  void addEventTicketParticipant(usr) {
+    ParticipantAttendeeTicket _ticket = new ParticipantAttendeeTicket(
+        name: "${usr.first_name} ${usr.last_name}",
+        type: "participant",
+        user: usr
+    );
+    if(!_isWithinEventTickets(eventTickets, _ticket)) {
+      eventTickets.add(_ticket);
+    }
+  }
+
+  bool setSessionCodes(usr, itm) {
+    bool retVal = false;
+    String _name = "${usr.first_name} ${usr.last_name}";
+    if(dropValue == _name) {
+      ticketPurchase.isParticipant = true;
+      retVal = true;
+      ticketPurchase.formSessionCodes = [];
+      //print("FORM ENTRY: ${itm.formEntries}");
+      itm.formEntries.forEach((entry){
+        //print("ENTRY SESSION CODE: ${entry.sessionCode}");
+        ticketPurchase.formSessionCodes.add(entry.sessionCode);
+      });
+    }
+    return retVal;
   }
 
   bool _isWithinEventTickets(eventTickets, participantAttendeeTicket) {
@@ -133,15 +174,30 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
         // get session code if participant
         bool _isParticipant = false;
         for(var itm in participants){
-          if(dropValue == itm.name) {
-            ticketPurchase.isParticipant = true;
-            _isParticipant = true;
-            ticketPurchase.formSessionCodes = [];
-            //print("FORM ENTRY: ${itm.formEntries}");
-            itm.formEntries.forEach((entry){
-              //print("ENTRY SESSION CODE: ${entry.sessionCode}");
-              ticketPurchase.formSessionCodes.add(entry.sessionCode);
-            });
+          if (itm.user is Couple) {
+            print("IS COUPLE: iterating couple");
+            if(itm.user?.couple != null) {
+              for(var _cpl in itm.user.couple) {
+                if(setSessionCodes(_cpl, itm)) {
+                  _isParticipant = true;
+                  break;
+                }
+              }
+            }
+          }
+          else if (itm.user is Group) {
+            print("IS GROUP: iterating group members.");
+            if(itm.user?.members != null) {
+              for(var membr in itm.user.members) {
+                if(setSessionCodes(membr, itm)) {
+                  _isParticipant = true;
+                  break;
+                }
+              }
+            }
+          } else {
+            print("IS SOLO: solo participant");
+            _isParticipant = setSessionCodes(itm.user, itm);
           }
         }
 

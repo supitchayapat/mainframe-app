@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 
 class TicketConfig {
+  bool admission_required;
   List<TicketColumn> columns;
   List<TicketDate> dates;
   List<ConfigTicket> tickets;
@@ -9,6 +10,7 @@ class TicketConfig {
   TicketConfig({this.columns, this.dates});
 
   TicketConfig.fromSnapshot(var s){
+    admission_required = s["admission_required"];
     if(s["columns"] != null) {
       //print("COLUMNS COLUMS: ${s["columns"]["column"]}");
       var _columns = s["columns"]["column"];

@@ -42,6 +42,7 @@ class _entry_summaryState extends State<entry_summary> {
   double financeCharge = 0.0;
   var _evtTickets;
   double _recievedAmount;
+  bool _isTicketRequired = false;
 
   var tipsTimer;
   /*Map<String, Map<String, double>> _entryForms = {
@@ -65,6 +66,7 @@ class _entry_summaryState extends State<entry_summary> {
     _paymentMode = "e-transfer";
     _evtTickets = [];
     _recievedAmount = 0.0;
+    _isTicketRequired = false;
 
     // logging for crashlytics
     global.messageLogs.add("Entry Summary Screen load.");
@@ -126,6 +128,10 @@ class _entry_summaryState extends State<entry_summary> {
       }
       });
     });
+
+    if(reg.eventItem.ticketConfig?.admission_required != null)
+      _isTicketRequired = reg.eventItem.ticketConfig.admission_required;
+    print("IS TICKET REQUIRED: $_isTicketRequired");
 
     if(reg.eventItem?.finance != null) {
       financeCharge = reg.eventItem?.finance.surcharge / 100;
@@ -544,6 +550,36 @@ class _entry_summaryState extends State<entry_summary> {
     }
   }
 
+  int getNumberOfParticipants() {
+    List<String> _participantNameBucket = [];
+    for(var _pt in participants) {
+      if (_pt.user is Couple) {
+        for(var usr in _pt.user.couple) {
+          String _name = "${usr.first_name} ${usr.last_name}";
+          if(!_participantNameBucket.contains(_name)) {
+            _participantNameBucket.add(_name);
+          }
+        }
+      }
+      else if (_pt.user is Group) {
+        if(_pt.user?.members != null) {
+          for(var usr in _pt.user.members) {
+            String _name = "${usr.first_name} ${usr.last_name}";
+            if(!_participantNameBucket.contains(_name)) {
+              _participantNameBucket.add(_name);
+            }
+          }
+        }
+      } else {
+        String _name = "${_pt.user.first_name} ${_pt.user.last_name}";
+        if(!_participantNameBucket.contains(_name)) {
+          _participantNameBucket.add(_name);
+        }
+      }
+    }
+    return _participantNameBucket.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     _total = 0.0;
@@ -689,9 +725,18 @@ class _entry_summaryState extends State<entry_summary> {
                     Navigator.of(context).pushNamed("/checkoutEntry");
                   }
                   else if(_total > 0.0 && _paymentMode == "e-transfer") {
-                    MainFrameLoadingIndicator.showLoading(context);
-                    print("E-TRANSFER SAVING");
-                    _handlePaymentEtransfer();
+                    // get number of participants
+                    int _participantsCount = 0;
+                    _participantsCount = getNumberOfParticipants();
+                    print("PARTICIPANTS COUNT: $_participantsCount");
+                    if(_competitorTickets == _participantsCount) {
+                      MainFrameLoadingIndicator.showLoading(context);
+                      print("E-TRANSFER SAVING");
+                      _handlePaymentEtransfer();
+                    } else {
+                      print("PARTICIPANTS TYPE: ${participants.runtimeType}");
+                      showMainFrameDialog(context, "Unmatched Tickets", "Number of Participants (${_participantsCount}) does not match to Competitor Admission Tickets (${_competitorTickets}) purchased.");
+                    }
                   }
                 },
                 child: _total > 0 ? new Container(
