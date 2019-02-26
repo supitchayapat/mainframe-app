@@ -812,7 +812,7 @@ class _event_registrationState extends State<event_registration> {
                   children: <Widget>[
                     new InkWell(
                       onTap: (){
-                        print("participants: ${_participants.length}");
+                        //print("participants: ${_participants.length}");
                         ticketSummary.ticketConf = eventItem.ticketConfig;
                         ticketSummary.participants = [];
                         ticketSummary.participants.addAll(_participants);
@@ -822,9 +822,9 @@ class _event_registrationState extends State<event_registration> {
                           _eventEntries.forEach((key, itm){
                             if(itm.participant == evtParticipant.user) {
                               // if matched user
-                              print("matched user participant: ${itm.participant.toJson()}");
+                              //print("matched user participant: ${itm.participant.toJson()}");
                               evtParticipant.formEntries.add(itm.formEntry);
-                              print(evtParticipant.formEntries?.runtimeType);
+                              //print(evtParticipant.formEntries?.runtimeType);
                             }
                           });
                         });

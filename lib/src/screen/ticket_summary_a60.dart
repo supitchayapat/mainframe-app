@@ -46,7 +46,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
     if(participants != null) {
       participants.forEach((itm) {
         if (itm.user is Couple) {
-          print("IS COUPLE: Adding couple participants");
+          //print("IS COUPLE: Adding couple participants");
           if(itm.user?.couple != null) {
             itm.user.couple.forEach((_cpl){
               addEventTicketParticipant(_cpl);
@@ -54,14 +54,14 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
           }
         }
         else if (itm.user is Group) {
-          print("IS GROUP: Adding group members.");
+          //print("IS GROUP: Adding group members.");
           if(itm.user?.members != null) {
             itm.user.members.forEach((membr){
               addEventTicketParticipant(membr);
             });
           }
         } else {
-          print("IS SOLO: Adding participant");
+          //print("IS SOLO: Adding participant");
           addEventTicketParticipant(itm.user);
         }
         //print("ENTRIES: ${itm.formEntries?.length}");
@@ -167,7 +167,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
 
         if(btnId != null) {
           ticketPurchase.selectedTickets = _getSelectedTicketsFromBucket(dt, btnId);
-          print("SELECTED TICKETS: ${ticketPurchase.selectedTickets}");
+          //print("SELECTED TICKETS: ${ticketPurchase.selectedTickets}");
           ticketPurchase.buttonId = btnId;
         }
 
@@ -175,7 +175,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
         bool _isParticipant = false;
         for(var itm in participants){
           if (itm.user is Couple) {
-            print("IS COUPLE: iterating couple");
+            //print("IS COUPLE: iterating couple");
             if(itm.user?.couple != null) {
               for(var _cpl in itm.user.couple) {
                 if(setSessionCodes(_cpl, itm)) {
@@ -186,7 +186,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
             }
           }
           else if (itm.user is Group) {
-            print("IS GROUP: iterating group members.");
+            //print("IS GROUP: iterating group members.");
             if(itm.user?.members != null) {
               for(var membr in itm.user.members) {
                 if(setSessionCodes(membr, itm)) {
@@ -196,7 +196,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
               }
             }
           } else {
-            print("IS SOLO: solo participant");
+            //print("IS SOLO: solo participant");
             _isParticipant = setSessionCodes(itm.user, itm);
           }
         }
@@ -839,7 +839,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
                                               if (val != null)
                                                 dropValue = val;
                                               if(dropValue == "ADD ATTENDEE ...") {
-                                                print("add attendee selected");
+                                                //print("add attendee selected");
                                                 Navigator.pushNamed(context, "/attendeeManagement");
                                               }
                                             });

@@ -31,6 +31,7 @@ class _ticket_purchaseState extends State<ticket_purchase> {
   int _totalCount = 0;
   double _sessionTotal = 0.00;
   int _competitorTicketCounter = 0;
+  List<int> _linkTicketIds = [];
 
   List<Widget> _generateTicketTypes() {
     List<Widget> _children = [];
@@ -51,6 +52,13 @@ class _ticket_purchaseState extends State<ticket_purchase> {
 
     if(ticketSummary.ticketConf?.tickets != null) {
       ticketSummary.ticketConf.tickets.forEach((ticket){
+
+        String _ticketAmt = ticket.amount.toStringAsFixed(2);
+        if(_linkTicketIds.contains(ticket.id)) {
+          // link was found. make amount zero
+          _ticketAmt = "0.00";
+        }
+
         if(_isTicketShown(ticket)) {
           _children.add(
               new Container(
@@ -121,7 +129,7 @@ class _ticket_purchaseState extends State<ticket_purchase> {
                           child: new Container(
                             //color: Colors.cyan,
                             alignment: Alignment.centerRight,
-                            child: new Text("\$${ticket.amount.toStringAsFixed(2)}",
+                            child: new Text("\$${_ticketAmt}",
                                 style: new TextStyle(color: Colors.black)),
                           )
                       )
@@ -217,6 +225,24 @@ class _ticket_purchaseState extends State<ticket_purchase> {
     }
   }
 
+  void _handleTicketLink(configTicketId) {
+    print("HANDLING TICKET LINK");
+    if(ticketSummary.attendeeBucket[attendee] != null &&
+        ticketSummary.attendeeBucket[attendee].attendee_tickets.isNotEmpty) {
+      for(var _attendeeTicket in ticketSummary.attendeeBucket[attendee].attendee_tickets){
+        for(var _ticketSelect in _attendeeTicket.tickets_selected) {
+          if(_ticketSelect.id == configTicketId && _ticketSelect.competitor_ticket) {
+            print("LINK FOUND: ${_ticketSelect.content}");
+            // found link
+            // make amount zero
+            _ticketSelect.ticket_amount = 0.0;
+            _ticketSelect.amount_total = 0.0;
+          }
+        }
+      }
+    }
+  }
+
   void _handleOKBtn() {
     if(isParticipant != null && isParticipant && formSessionCodes.contains(sessionCode) && _competitorTicketCounter < 1) {
       showMainFrameDialog(context, "COMPETITOR ADMISSION", "Admission Ticket for the competitor is required.");
@@ -234,17 +260,25 @@ class _ticket_purchaseState extends State<ticket_purchase> {
             print("TICKET: ${ticket.content}");
             print("COUNT: ${_ticketCount[ticket.content]}");
             print("Amount total: ${ticket.amount * _ticketCount[ticket.content]}");
+            print("Ticket link: ${ticket.ticket_link}");
+            print("CONTAINS: ${_linkTicketIds.contains(ticket.id)}");
             TicketSelected _selected = new TicketSelected(
               id: ticket.id,
-              amount_total: ticket.amount * _ticketCount[ticket.content],
+              amount_total: _linkTicketIds.contains(ticket.id) ? 0.0 : ticket.amount * _ticketCount[ticket.content],
               content: ticket.content,
               count: _ticketCount[ticket.content],
-              ticket_amount: ticket.amount,
+              ticket_amount: _linkTicketIds.contains(ticket.id) ? 0.0 : ticket.amount,
               competitor_ticket: ticket.competitor_ticket
             );
             print("_selected: ${_selected.toJson()}");
             if(_selected.count > 0) {
               _selectedTickets.add(_selected);
+              // adjust amount for ticket link
+              if(ticket?.ticket_link != null && ticket.ticket_link.length > 0) {
+                ticket.ticket_link.forEach((ticketConfigId){
+                  _handleTicketLink(ticketConfigId);
+                });
+              }
             }
           }
         }
@@ -321,10 +355,13 @@ class _ticket_purchaseState extends State<ticket_purchase> {
     _competitorTicketCounter = 0;
     _ticketCount = {};
     _sessionTotal = 0.00;
+    _linkTicketIds = [];
 
+    List<int> _ticketLinkIds = [];
+    Map<int, List<int>> _ticketIdMap = {};
     // iterate tickets and save in the map
     if(ticketSummary.ticketConf?.tickets != null) {
-      ticketSummary.ticketConf.tickets.forEach((ticket){
+      for(var ticket in ticketSummary.ticketConf.tickets){
         if(_isTicketShown(ticket)) {
           //print("TICKET: ${ticket.content}");
           var _countTicket = _getCountTicket(ticket);
@@ -338,7 +375,30 @@ class _ticket_purchaseState extends State<ticket_purchase> {
             _sessionTotal += _countTicket * ticket.amount;
           }
         }
-      });
+
+        // check if it has ticket link
+        if(ticket.ticket_link != null && ticket.ticket_link.length > 0) {
+          _ticketLinkIds.add(ticket.id);
+          _ticketIdMap.putIfAbsent(ticket.id, () => ticket.ticket_link);
+        }
+      }
+    }
+    // search if there are ticket links that have ticket purchases
+    if(ticketSummary.attendeeBucket[attendee] != null &&
+        ticketSummary.attendeeBucket[attendee].attendee_tickets.isNotEmpty) {
+      print("NOT EMPTY BUCKET [${_ticketLinkIds}]");
+      for(var _attendeeTicket in ticketSummary.attendeeBucket[attendee].attendee_tickets){
+        for(var _ticketSelect in _attendeeTicket.tickets_selected) {
+          for(int configTicketId in _ticketLinkIds) {
+            if(_ticketSelect.id == configTicketId) {
+              // found link
+              print("LINK FOUND: ${_ticketSelect.content}");
+              print("MAP: ${_ticketIdMap[configTicketId]}");
+              _linkTicketIds.addAll(_ticketIdMap[configTicketId]);
+            }
+          }
+        }
+      }
     }
   }
 

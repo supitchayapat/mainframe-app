@@ -89,8 +89,9 @@ class ConfigTicket {
   String session;
   bool dinner_included;
   bool competitor_ticket;
+  List<int> ticket_link;
 
-  ConfigTicket({this.id, this.amount, this.content, this.order, this.session, this.dinner_included, this.competitor_ticket});
+  ConfigTicket({this.id, this.amount, this.content, this.order, this.session, this.dinner_included, this.competitor_ticket, this.ticket_link});
 
   ConfigTicket.fromSnapshot(var s) {
     id = s["id"];
@@ -100,6 +101,18 @@ class ConfigTicket {
     session = s["session"];
     dinner_included = s["dinner_included"];
     competitor_ticket = s["competitor_ticket"];
+    if(s["ticket_link"] != null && s["ticket_link"].toString().indexOf(",") > -1) {
+      ticket_link = [];
+      String _slink = s["ticket_link"];
+      List<String> _tlinks = _slink.split(",");
+      for(String s in _tlinks) {
+        ticket_link.add(int.parse(s));
+      }
+    }
+    else if(s["ticket_link"] != null) {
+      ticket_link = [];
+      ticket_link.add(int.parse(s["ticket_link"]));
+    }
   }
 }
 

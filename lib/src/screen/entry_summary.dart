@@ -630,9 +630,9 @@ class _entry_summaryState extends State<entry_summary> {
                   eventEntries.forEach((key, itm){
                     if(itm.participant == evtParticipant.user) {
                       // if matched user
-                      print("matched user participant: ${itm.participant.toJson()}");
+                      //print("matched user participant: ${itm.participant.toJson()}");
                       evtParticipant.formEntries.add(itm.formEntry);
-                      print(evtParticipant.formEntries?.runtimeType);
+                      //print(evtParticipant.formEntries?.runtimeType);
                     }
                   });
                 });
