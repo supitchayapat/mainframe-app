@@ -145,7 +145,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
 
   void _handleBtnPress(session, date, sessionCode, {bool isDinner, int btnId}) {
     DateFormat dformatter = new DateFormat("yyyy-MM-dd");
-    if(dropValue == "SELECT ATTENDEE" || dropValue == "ADD ATTENDEE ...") {
+    if(dropValue == "SELECT ATTENDEE" || dropValue == "ADD ATTENDEE") {
       showMainFrameDialog(context, "SELECT ATTENDEE", "Please select attendee first before adding a session ticket.");
     }
     else {
@@ -633,7 +633,7 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
       //print("eventickets name: ${itm.name}");
       _attendees.add(itm.name);
     });
-    _attendees.add("ADD ATTENDEE ...");
+    _attendees.add("ADD ATTENDEE");
     ticketConf?.columns.forEach((itm) {
       _columnHeaders.add(itm.header);
     });
@@ -829,16 +829,28 @@ class _ticket_summary_a60State extends State<ticket_summary_a60> {
                                           iconSize: 30.0,
                                           value: dropValue,
                                           items: _attendees.map((String value) {
+                                            Widget _dropTxt = new Text(value);
+                                            if(value == "ADD ATTENDEE") {
+                                              _dropTxt = new Wrap(
+                                                children: <Widget>[
+                                                  new Icon(Icons.add_box),
+                                                  new Padding(
+                                                    padding: const EdgeInsets.only(left: 3.0, top: 2.0),
+                                                    child: new Text(value, style: new TextStyle(fontWeight: FontWeight.bold)),
+                                                  )
+                                                ],
+                                              );
+                                            }
                                             return new DropdownMenuItem<String>(
                                                 value: value,
-                                                child: new Text(value));
+                                                child: _dropTxt);
                                           }).toList(),
                                           onChanged: (val){
                                             setState(() {
                                               eventTickets;
                                               if (val != null)
                                                 dropValue = val;
-                                              if(dropValue == "ADD ATTENDEE ...") {
+                                              if(dropValue == "ADD ATTENDEE") {
                                                 //print("add attendee selected");
                                                 Navigator.pushNamed(context, "/attendeeManagement");
                                               }

@@ -285,6 +285,9 @@ class _couple_managementState extends State<couple_management> {
                             //Navigator.maybePop(context);
                             Navigator.of(context).popUntil(ModalRoute.withName("/registration"));
                         }
+                        else {
+                          showMainFrameDialog(context, "Couple Exists", "Couple already added on the list. Please check your couples list below.");
+                        }
                       });
                     }
                     else {
