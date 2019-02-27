@@ -167,7 +167,7 @@ class _couple_managementState extends State<couple_management> {
               padding: const EdgeInsets.only(top: 10.0),
               child: new Row(
                 children: <Widget>[
-                  new Text("Name:", style: new TextStyle(fontSize: 17.0)),
+                  new Text("Participant 1:", style: new TextStyle(fontSize: 17.0)),
                   new Container(
                     margin: const EdgeInsets.only(left: 10.0),
                     decoration: new BoxDecoration(
@@ -215,7 +215,7 @@ class _couple_managementState extends State<couple_management> {
               padding: const EdgeInsets.only(top: 10.0),
               child: new Row(
                 children: <Widget>[
-                  new Text("Name:", style: new TextStyle(fontSize: 17.0)),
+                  new Text("Participant 2:", style: new TextStyle(fontSize: 17.0)),
                   new Container(
                     margin: const EdgeInsets.only(left: 10.0),
                     decoration: new BoxDecoration(
