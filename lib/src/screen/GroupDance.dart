@@ -298,7 +298,7 @@ class _GroupDanceState extends State<GroupDance> {
       new Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(top: 10.0),
-        child: new Text("Dance Coach", style: new TextStyle(fontSize: 18.0)),
+        child: new Text("Dance Coach *", style: new TextStyle(fontSize: 18.0)),
       ),
     );
     _children.add(new Container(
@@ -338,7 +338,7 @@ class _GroupDanceState extends State<GroupDance> {
       new Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(top: 10.0),
-        child: new Text("Dance Title", style: new TextStyle(fontSize: 18.0)),
+        child: new Text("Dance Title *", style: new TextStyle(fontSize: 18.0)),
       ),
     );
     _children.add(
