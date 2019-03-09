@@ -6,6 +6,8 @@ import 'package:myapp/src/model/EventEntry.dart';
 import 'package:myapp/src/model/UserEvent.dart';
 import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
+import 'package:myapp/src/model/User.dart';
 import 'event_registration.dart' as registration;
 
 var formEntry;
@@ -88,6 +90,28 @@ class _entry_freeformState extends State<entry_freeform> {
           EventEntryDao.updateEventEntry(formPushId, userEvent);
         } else {
           EventEntryDao.saveEventEntry(userEvent);
+        }
+
+        // default add competitor tickets
+        Set<String> _competitors = new Set();
+        if(formParticipant is Couple) {
+          if(formParticipant?.couple != null) {
+            for(User _cp in formParticipant.couple) {
+              _competitors.add("${_cp.first_name} ${_cp.last_name}");
+            }
+          }
+        } else if(formParticipant is User) { // user
+          _competitors.add("${formParticipant.first_name} ${formParticipant.last_name}");
+        }
+        else {
+          if(formParticipant?.members != null) {
+            for(User _cp in formParticipant.members) {
+              _competitors.add("${_cp.first_name} ${_cp.last_name}");
+            }
+          }
+        }
+        for(String competitorName in _competitors) {
+          TicketDao.autoAddCompetitorTickets(registration.eventItem, formEntry.sessionCode, competitorName);
         }
         Navigator.of(context).maybePop();
       }

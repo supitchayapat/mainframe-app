@@ -69,7 +69,7 @@ class _ticket_purchaseState extends State<ticket_purchase> {
                     //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
 
-                      new Container(
+                      (ticket.competitor_ticket) ? new Container(width: 48.0) : new Container(
                         decoration: new BoxDecoration(
                             borderRadius: const BorderRadius.all(
                                 const Radius.circular(4.0)),

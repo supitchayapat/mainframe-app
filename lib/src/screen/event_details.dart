@@ -189,18 +189,32 @@ class _EventDetailsState extends State<EventDetails> {
   Widget _buildEventInfo() {
     bool displayUrl = true;
     //print("website enabled: ${eventItem?.websiteEnabled}");
-
-    if(global.devicePlatform == "ios"
-        && ((global.currentUserProfile?.ao != null && !global.currentUserProfile?.ao) || global.currentUserProfile?.ao == null)) {
-      displayUrl = false;
+    if(global.devicePlatform != "ios") {
+      // Android implementation
+      // will only check if websiteEnabled true
+      // will not display URL if null or disabled
+      print("IS ANDROID.");
+      if(eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled) {
+        displayUrl = false;
+      }
+    }
+    else if(global.devicePlatform == "ios") {
+      print("IS IOS.");
+      if((global.aoFlag != null && !global.aoFlag) || global.aoFlag == null) {
+        // aoFlag is null or false
+        displayUrl = false;
+      } else {
+        // aoFlag is true
+        // will not display URL if null or disabled
+        if(eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled) {
+          displayUrl = false;
+        }
+      }
     }
 
-    // will not display URL if null or disabled
-    if(eventItem?.websiteEnabled == null || !eventItem?.websiteEnabled) {
-      displayUrl = false;
-    }
-
-    //print("displayURL: ${displayUrl}");
+    print("websiteEnabled: ${eventItem?.websiteEnabled}");
+    print("ao: ${global.aoFlag}");
+    print("displayURL: ${displayUrl}");
 
     return new Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),

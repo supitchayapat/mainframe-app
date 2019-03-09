@@ -9,6 +9,7 @@ import 'package:myapp/src/dao/EventEntryDao.dart';
 import 'package:myapp/src/model/User.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:myapp/src/util/AnalyticsUtil.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
 import 'participant_list.dart' as participantList;
 import 'event_registration.dart' as registration;
 import 'add_dance_partner.dart' as addPartner;
@@ -34,10 +35,14 @@ class _GroupDanceState extends State<GroupDance> {
   var _dataMap;
   bool isPaid = false;
   var tipsTimer;
+  Set<String> _initMembers;
 
   @override
   void initState() {
     super.initState();
+    _initMembers = new Set();
+
+    print("FORM SESSION CODE: ${formEntry.sessionCode}");
 
     // logging for crashlytics
     global.messageLogs.add("Group Entry form screen loaded.");
@@ -64,6 +69,14 @@ class _GroupDanceState extends State<GroupDance> {
     } else {
       _dataMap = new HashMap<dynamic, dynamic>();
     }
+
+    // a set of group member names
+    if(formParticipant?.members != null && formParticipant?.members?.length > 0) {
+      for(var membr in formParticipant.members) {
+        _initMembers.add("${membr.first_name} ${membr.last_name}");
+      }
+    }
+    print("init members: $_initMembers");
   }
 
   Future _handleBackButton() async {
@@ -82,6 +95,18 @@ class _GroupDanceState extends State<GroupDance> {
   }
 
   void _handleSaving() {
+    Set<String> _finalMembers = new Set();
+    if(formParticipant?.members != null && formParticipant?.members?.length > 0) {
+      for(var membr in formParticipant.members) {
+        _finalMembers.add("${membr.first_name} ${membr.last_name}");
+      }
+    }
+    print("final Members: ${_finalMembers}");
+    Set<String> _diff1 = new Set();
+    _diff1.addAll(_initMembers);
+    _diff1.removeAll(_finalMembers);
+    print("DIFF: $_diff1");
+
     if((_dataMap["danceTitle"] != null && _dataMap["danceTitle"].isNotEmpty)
         && formCoach != null) {
       // logging for crashlytics
@@ -113,6 +138,16 @@ class _GroupDanceState extends State<GroupDance> {
       } else {
         EventEntryDao.saveEventEntry(userEvent);
       }
+
+      // add tickets
+      for(var _m in _finalMembers) {
+        TicketDao.autoAddCompetitorTickets(registration.eventItem, formEntry.sessionCode, _m);
+      }
+      // remove tickets
+      for(var _m in _diff1) {
+        TicketDao.autoRemoveCompetitorTickets(registration.eventItem, formEntry.sessionCode, _m);
+      }
+
       _clearInputs();
       Navigator.of(context).maybePop();
     }

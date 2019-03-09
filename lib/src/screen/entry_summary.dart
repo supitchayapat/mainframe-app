@@ -425,7 +425,81 @@ class _entry_summaryState extends State<entry_summary> {
     );
   }
 
+  String getSessionCode(String formName) {
+    String retVal;
+    if(reg.eventItem != null && reg.eventItem?.formEntries != null) {
+      for(var _formEntry in reg.eventItem.formEntries) {
+        if(_formEntry.name == formName && _formEntry?.sessionCode != null) {
+          retVal = _formEntry.sessionCode;
+          break;
+        }
+      }
+    }
+    return retVal;
+  }
+
+  void _handleCompetitorTickets() {
+    Map<String, Set<String>> _participantSession = {};
+    for(var _pEntries in participants) {
+      String sessCode;
+      print("_partEntries: ${participantEntries[_pEntries]}");
+      for(var _ent in participantEntries[_pEntries].entries) {
+        sessCode = getSessionCode(_ent.key);
+      }
+      print("sessCode: $sessCode");
+      if (_pEntries.user is Couple) {
+        Set<String> _coupleSessionCodes;
+        _pEntries.user.couple.forEach((itm){
+          print("pEntries: ${itm.first_name} ${itm.last_name}");
+          if(_participantSession.containsKey("${itm.first_name} ${itm.last_name}")) {
+            _coupleSessionCodes = _participantSession["${itm.first_name} ${itm.last_name}"];
+            _coupleSessionCodes.add(sessCode);
+          } else {
+            _coupleSessionCodes = new Set();
+            _coupleSessionCodes.add(sessCode);
+            _participantSession.putIfAbsent("${itm.first_name} ${itm.last_name}", () => _coupleSessionCodes);
+          }
+        });
+      } else if (_pEntries.user is Group) {
+        Set<String> _grpSessionCodes;
+        _pEntries.user.members.forEach((itm){
+          print("pEntries: ${itm.first_name} ${itm.last_name}");
+          if(_participantSession.containsKey("${itm.first_name} ${itm.last_name}")) {
+            _grpSessionCodes = _participantSession["${itm.first_name} ${itm.last_name}"];
+            _grpSessionCodes.add(sessCode);
+          } else {
+            _grpSessionCodes = new Set();
+            _grpSessionCodes.add(sessCode);
+            _participantSession.putIfAbsent("${itm.first_name} ${itm.last_name}", () => _grpSessionCodes);
+          }
+        });
+      } else {
+        Set<String> _soloSessionCodes;
+        print("pEntries: ${_pEntries.user.first_name} ${_pEntries.user.last_name}");
+        if(_participantSession.containsKey("${_pEntries.user.first_name} ${_pEntries.user.last_name}")) {
+          _soloSessionCodes = _participantSession["${_pEntries.user.first_name} ${_pEntries.user.last_name}"];
+          _soloSessionCodes.add(sessCode);
+        } else {
+          _soloSessionCodes = new Set();
+          _soloSessionCodes.add(sessCode);
+          _participantSession.putIfAbsent("${_pEntries.user.first_name} ${_pEntries.user.last_name}", () => _soloSessionCodes);
+        }
+      }
+    }
+    print(_participantSession);
+    // loop session codes and save ticket
+    for(var _entry in _participantSession.entries) {
+      for(var _setItem in _entry.value) {
+        print("${_entry.key} : ${_setItem}");
+        TicketDao.autoAddCompetitorTickets(reg.eventItem, _setItem, _entry.key);
+      }
+    }
+  }
+
   void _handlePaymentEtransfer() {
+    // add competitor tickets
+    _handleCompetitorTickets();
+
     double _sumAmount = (_total.toDouble() * financeCharge) + _total.toDouble();
     Surcharge surcharge = new Surcharge.fromFinance(reg.eventItem.finance);
     surcharge.amount = (_total.toDouble() * financeCharge);
@@ -729,14 +803,14 @@ class _entry_summaryState extends State<entry_summary> {
                     int _participantsCount = 0;
                     _participantsCount = getNumberOfParticipants();
                     print("PARTICIPANTS COUNT: $_participantsCount");
-                    if(_competitorTickets == _participantsCount) {
+                    //if(_competitorTickets == _participantsCount) {
                       MainFrameLoadingIndicator.showLoading(context);
                       print("E-TRANSFER SAVING");
                       _handlePaymentEtransfer();
-                    } else {
+                    /*} else {
                       print("PARTICIPANTS TYPE: ${participants.runtimeType}");
                       showMainFrameDialog(context, "Unmatched Tickets", "Number of Participants (${_participantsCount}) does not match to Competitor Admission Tickets (${_competitorTickets}) purchased.");
-                    }
+                    }*/
                   }
                 },
                 child: _total > 0 ? new Container(

@@ -18,6 +18,8 @@ import 'package:mframe_plugins/mframe_plugins.dart';
 import 'package:myapp/src/util/ShowTipsUtil.dart';
 import 'package:collection/collection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:myapp/src/dao/TicketDao.dart';
+import 'package:myapp/src/model/User.dart';
 
 double subColumnTreshold = 40.0;
 const double minMaxDiffRpanel = 185.0;
@@ -78,7 +80,6 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
   @override
   void initState() {
-
     // logging for crashlytics
     global.messageLogs.add("Entry Form Screen [${formEntry.name}]");
 
@@ -558,6 +559,21 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           } else {
             EventEntryDao.saveEventEntry(usrEvent);
           }
+        }
+
+        // default add competitor tickets
+        Set<String> _competitors = new Set();
+        if(formParticipant is Couple) {
+          if(formParticipant?.couple != null) {
+            for(User _cp in formParticipant.couple) {
+              _competitors.add("${_cp.first_name} ${_cp.last_name}");
+            }
+          }
+        } else { // user
+          _competitors.add("${formParticipant.first_name} ${formParticipant.last_name}");
+        }
+        for(String competitorName in _competitors) {
+          TicketDao.autoAddCompetitorTickets(registration.eventItem, formEntry.sessionCode, competitorName);
         }
         Navigator.of(context).maybePop();
       }
