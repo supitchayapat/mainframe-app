@@ -68,11 +68,11 @@ class EntryFormUtil {
   static bool isFormApplicable(FormEntry form, participant, type) {
     bool retVal = false;
     FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);
-    //print("USER: ${userCode}");
+    print("USER: ${userCode}");
     List<FormParticipantCode> _participants = [];
 
     form.participants.forEach((val) {
-      //print(getParticipantCodeFromString(val.code));
+      print(getParticipantCodeFromString(val.code));
       _participants.add(getParticipantCodeFromString(val.code));
     });
     //print(_participants.contains(_getParticipantCodeOnUser(participant, type)));
@@ -91,16 +91,20 @@ class EntryFormUtil {
 
     switch(participantType) {
       case FormParticipantType.SOLO: // FOR SOLO PARTICIPANTS
-        if(participant.gender == Gender.MAN && participant.category == DanceCategory.AMATEUR) {
+        if (participant.gender == Gender.MAN &&
+            participant.category == DanceCategory.AMATEUR) {
           retVal = FormParticipantCode.SOLO_GUY;
         }
-        else if(participant.gender == Gender.WOMAN && participant.category == DanceCategory.AMATEUR) {
+        else if (participant.gender == Gender.WOMAN &&
+            participant.category == DanceCategory.AMATEUR) {
           retVal = FormParticipantCode.SOLO_GIRL;
         }
-        else if(participant.gender == Gender.MAN && participant.category == DanceCategory.PROFESSIONAL) {
+        else if (participant.gender == Gender.MAN &&
+            participant.category == DanceCategory.PROFESSIONAL) {
           retVal = FormParticipantCode.POLO_GUY;
         }
-        else if(participant.gender == Gender.WOMAN && participant.category == DanceCategory.PROFESSIONAL) {
+        else if (participant.gender == Gender.WOMAN &&
+            participant.category == DanceCategory.PROFESSIONAL) {
           retVal = FormParticipantCode.POLO_GIRL;
         }
         break;
@@ -110,33 +114,54 @@ class EntryFormUtil {
         User c2 = couple.couple[1];
         String user1 = _getUserParticipantCode(couple.couple[0]);
         String user2 = _getUserParticipantCode(couple.couple[1]);
+        User assistant = couple.assistant;
 
-        if(c1.category == DanceCategory.AMATEUR && c2.category == DanceCategory.AMATEUR) {
-          //print("${c1.gender} = ${c2.gender}");
-          if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
-            retVal = FormParticipantCode.AM_GIRL;
+        if (assistant == null) {
+          if (c1.category == DanceCategory.AMATEUR &&
+              c2.category == DanceCategory.AMATEUR) {
+            //print("${c1.gender} = ${c2.gender}");
+            if (c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
+              retVal = FormParticipantCode.AM_GIRL;
+            }
+            else if (c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
+              retVal = FormParticipantCode.AM_GUY;
+            } else {
+              retVal = FormParticipantCode.AM;
+            }
           }
-          else if(c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
-            retVal = FormParticipantCode.AM_GUY;
+          else if (c1.category == DanceCategory.PROFESSIONAL &&
+              c2.category == DanceCategory.PROFESSIONAL) {
+            if (c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
+              retVal = FormParticipantCode.PRO_GIRL;
+            }
+            else if (c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
+              retVal = FormParticipantCode.PRO_GUY;
+            } else {
+              retVal = FormParticipantCode.PRO;
+            }
+          }
+          else if (c1.category == DanceCategory.AMATEUR) {
+            retVal = getParticipantCodeFromString(
+                "PRO" + user1.replaceAll("ATEUR", ""));
+          }
+          else if (c2.category == DanceCategory.AMATEUR) {
+            retVal = getParticipantCodeFromString(
+                "PRO" + user2.replaceAll("ATEUR", ""));
+          }
+        } else {
+          if(assistant == c1) {
+            if(c2.gender == Gender.MAN) {
+              retVal = FormParticipantCode.ASST_GUY;
+            } else {
+              retVal = FormParticipantCode.ASST_GIRL;
+            }
           } else {
-            retVal = FormParticipantCode.AM;
+            if(c1.gender == Gender.MAN) {
+              retVal = FormParticipantCode.ASST_GUY;
+            } else {
+              retVal = FormParticipantCode.ASST_GIRL;
+            }
           }
-        }
-        else if(c1.category == DanceCategory.PROFESSIONAL && c2.category == DanceCategory.PROFESSIONAL) {
-          if(c1.gender == Gender.WOMAN && c2.gender == Gender.WOMAN) {
-            retVal = FormParticipantCode.PRO_GIRL;
-          }
-          else if(c1.gender == Gender.MAN && c2.gender == Gender.MAN) {
-            retVal = FormParticipantCode.PRO_GUY;
-          } else {
-            retVal = FormParticipantCode.PRO;
-          }
-        }
-        else if(c1.category == DanceCategory.AMATEUR) {
-          retVal = getParticipantCodeFromString("PRO"+user1.replaceAll("ATEUR", ""));
-        }
-        else if(c2.category == DanceCategory.AMATEUR){
-          retVal = getParticipantCodeFromString("PRO"+user2.replaceAll("ATEUR", ""));
         }
         break;
       case FormParticipantType.GROUP: // FOR GROUP PARTICIPANTS

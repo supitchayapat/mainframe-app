@@ -364,8 +364,9 @@ Future<User> getUserCoupleParticipants(User user) async {
   });
 }
 
-Future<dynamic> saveUserCoupleParticipants(User user, User user2) async {
+Future<dynamic> saveUserCoupleParticipants(User user, User user2, {User assistant}) async {
   FirebaseUser fuser = await FirebaseAuth.instance.currentUser();
+  print("assistant: ${assistant?.toJson()}");
   return partnerRef.child(fuser.uid).child("couple_participants").once().then((_snapshot){
     if(_snapshot.value != null && _snapshot.value.length > 0) {
       Couple couple = null;
@@ -381,7 +382,11 @@ Future<dynamic> saveUserCoupleParticipants(User user, User user2) async {
       if(couple == null) {
         couple = new Couple(
             coupleName: "${user.first_name} & ${user2.first_name}",
-            couple: [user, user2]);
+            couple: [user, user2],
+        );
+        if(assistant != null) {
+          couple.assistant = assistant;
+        }
         return partnerRef.child(fuser.uid).child("couple_participants")
             .push()
             .set(couple.toJson()).then((_val){

@@ -28,10 +28,12 @@ class _couple_managementState extends State<couple_management> {
   List _listItems = [];
   Map<String, List> _couples = {};
   var coupleListener;
+  String assistant = "";
 
   @override
   void initState() {
     super.initState();
+    assistant = "";
 
     // logging for crashlytics
     global.messageLogs.add("Couple Participant Management Screen.");
@@ -126,6 +128,16 @@ class _couple_managementState extends State<couple_management> {
     );
   }
 
+  void _assistantChecked(String assist) {
+    setState(() {
+      if (assistant != assist) {
+        assistant = assist;
+      } else {
+        assistant = "";
+      }
+    });
+  }
+
   Widget _generateInputContainer() {
     String _categoryGender1 = "";
     String _categoryGender2 = "";
@@ -164,99 +176,125 @@ class _couple_managementState extends State<couple_management> {
               child: new Text("Assign Couple", style: new TextStyle(fontSize: 18.0)),
             ),
             new Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(top: 10.0),
-              child: new Row(
-                children: <Widget>[
-                  new Text("Participant 1:", style: new TextStyle(fontSize: 17.0)),
-                  new Container(
-                    margin: const EdgeInsets.only(left: 10.0),
-                    decoration: new BoxDecoration(
-                        borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
-                        border: new Border.all(
-                          width: 2.0,
-                          color: const Color(0xFF313746),
-                          style: BorderStyle.solid,
-                        )
+              child: new Text("Participant 1:", style: new TextStyle(fontSize: 17.0)),
+            ),
+            new Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 5.0),
+              child: new Container(
+                margin: const EdgeInsets.only(left: 25.0),
+                decoration: new BoxDecoration(
+                    borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                    border: new Border.all(
+                      width: 2.0,
+                      color: const Color(0xFF313746),
+                      style: BorderStyle.solid,
+                    )
+                ),
+                child: new MaterialButton(
+                  padding: const EdgeInsets.all(7.0),
+                  minWidth: 5.0, height: 5.0,
+                  color: Colors.white,
+                  onPressed: () {
+                    // logging for crashlytics
+                    global.messageLogs.add("Assign button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed", params: {
+                      'screen': 'couple_management'
+                    });
+                    couple1 = "_assignCoupleParticipant";
+                    addPartner.tipsTimer = null;
+                    Navigator.of(context).pushNamed("/addPartner");
+                  },
+                  child: (couple1 == null || couple1 is String) ? new Text("ASSIGN",
+                    style: new TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.black
                     ),
-                    child: new MaterialButton(
-                      padding: const EdgeInsets.all(7.0),
-                      minWidth: 5.0, height: 5.0,
-                      color: Colors.white,
-                      onPressed: () {
-                        // logging for crashlytics
-                        global.messageLogs.add("Assign button pressed.");
-                        AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed", params: {
-                          'screen': 'couple_management'
-                        });
-                        couple1 = "_assignCoupleParticipant";
-                        addPartner.tipsTimer = null;
-                        Navigator.of(context).pushNamed("/addPartner");
-                      },
-                      child: (couple1 == null || couple1 is String) ? new Text("ASSIGN",
-                        style: new TextStyle(
-                            fontSize: 17.0,
-                            color: Colors.black
-                        ),
-                      ) : new Wrap(
-                        children: <Widget>[
-                          new Text("${couple1.first_name} ${couple1.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
-                          new Padding(
-                            padding: const EdgeInsets.only(top: 2.0),
-                            child: new Text("(${StringUtil.camelize(_categoryGender1)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
-                          )
-                        ],
-                      ),
-                    ),
+                  ) : new Wrap(
+                    children: <Widget>[
+                      new Text("${couple1.first_name} ${couple1.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
+                      new Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: new Text("(${StringUtil.camelize(_categoryGender1)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ),
+            new InkWell(
+              onTap: () {_assistantChecked("participant1");},
+              child: new Container(
+                  alignment: Alignment.centerLeft,
+                  child: new Wrap(
+                    children: <Widget>[
+                      new Padding(padding: const EdgeInsets.only(top: 5.0, left: 25.0), child: new Icon((assistant == "participant1") ? Icons.check_box : Icons.check_box_outline_blank)),
+                      new Padding(padding: const EdgeInsets.only(top: 6.0, left: 4.0), child: new Text("Assistant", style: new TextStyle(fontSize: 18.0)))
+                    ],
                   )
-                ],
               ),
             ),
             new Container(
+              alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(top: 10.0),
-              child: new Row(
-                children: <Widget>[
-                  new Text("Participant 2:", style: new TextStyle(fontSize: 17.0)),
-                  new Container(
-                    margin: const EdgeInsets.only(left: 10.0),
-                    decoration: new BoxDecoration(
-                        borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
-                        border: new Border.all(
-                          width: 2.0,
-                          color: const Color(0xFF313746),
-                          style: BorderStyle.solid,
-                        )
+              child: new Text("Participant 2:", style: new TextStyle(fontSize: 17.0)),
+            ),
+            new Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 5.0),
+              child: new Container(
+                margin: const EdgeInsets.only(left: 25.0),
+                decoration: new BoxDecoration(
+                    borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+                    border: new Border.all(
+                      width: 2.0,
+                      color: const Color(0xFF313746),
+                      style: BorderStyle.solid,
+                    )
+                ),
+                child: new MaterialButton(
+                  padding: const EdgeInsets.all(7.0),
+                  minWidth: 5.0, height: 5.0,
+                  color: Colors.white,
+                  onPressed: () {
+                    // logging for crashlytics
+                    global.messageLogs.add("Assign button pressed.");
+                    AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed_2", params: {
+                      'screen': 'couple_management'
+                    });
+                    couple2 = "_assignCoupleParticipant";
+                    addPartner.tipsTimer = null;
+                    Navigator.of(context).pushNamed("/addPartner");
+                  },
+                  child: (couple2 == null || couple2 is String) ? new Text("ASSIGN",
+                    style: new TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.black
                     ),
-                    child: new MaterialButton(
-                      padding: const EdgeInsets.all(7.0),
-                      minWidth: 5.0, height: 5.0,
-                      color: Colors.white,
-                      onPressed: () {
-                        // logging for crashlytics
-                        global.messageLogs.add("Assign button pressed.");
-                        AnalyticsUtil.sendAnalyticsEvent("assign_btn_pressed_2", params: {
-                          'screen': 'couple_management'
-                        });
-                        couple2 = "_assignCoupleParticipant";
-                        addPartner.tipsTimer = null;
-                        Navigator.of(context).pushNamed("/addPartner");
-                      },
-                      child: (couple2 == null || couple2 is String) ? new Text("ASSIGN",
-                        style: new TextStyle(
-                            fontSize: 17.0,
-                            color: Colors.black
-                        ),
-                      ) : new Wrap(
-                        children: <Widget>[
-                          new Text("${couple2.first_name} ${couple2.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
-                          new Padding(
-                            padding: const EdgeInsets.only(top: 2.0),
-                            child: new Text("(${StringUtil.camelize(_categoryGender2)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
-                          )
-                        ],
-                      ),
-                    ),
+                  ) : new Wrap(
+                    children: <Widget>[
+                      new Text("${couple2.first_name} ${couple2.last_name} ", style: new TextStyle(fontSize: 17.0,color: Colors.black)),
+                      new Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: new Text("(${StringUtil.camelize(_categoryGender2)})", style: new TextStyle(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold)),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ),
+            new InkWell(
+              onTap: (){_assistantChecked("participant2");},
+              child: new Container(
+                  alignment: Alignment.centerLeft,
+                  child: new Wrap(
+                    children: <Widget>[
+                      new Padding(padding: const EdgeInsets.only(top: 5.0, left: 25.0), child: new Icon((assistant == "participant2") ? Icons.check_box : Icons.check_box_outline_blank)),
+                      new Padding(padding: const EdgeInsets.only(top: 6.0, left: 4.0), child: new Text("Assistant", style: new TextStyle(fontSize: 18.0)))
+                    ],
                   )
-                ],
               ),
             ),
             new Container(
@@ -272,7 +310,16 @@ class _couple_managementState extends State<couple_management> {
                   });
                   if(couple1 != null && couple2 != null) {
                     if(couple1 != couple2) {
-                      saveUserCoupleParticipants(couple1, couple2).then((_coupl){
+                      var _asst;
+                      if(assistant != null && assistant == "participant1") {
+                        _asst = couple1;
+                      } else if(assistant != null && assistant.isNotEmpty) {
+                        _asst = couple2;
+                      } else {
+                        _asst = null;
+                      }
+
+                      saveUserCoupleParticipants(couple1, couple2, assistant: _asst).then((_coupl){
                         if(_coupl != null) {
                             registration.participant = {
                               "name": "${_coupl.coupleName}",

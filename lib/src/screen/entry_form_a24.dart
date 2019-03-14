@@ -198,6 +198,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             levelValMap.forEach((_key, _val) {
               String _lvl = _key.substring(0, _key.indexOf("_"));
               //print("_lvl: $_lvl");
+              //print("subcategories: ${val?.toJson()}");
               if(_lvl == ((key).toString().toLowerCase())) {
                 for(var _subCat in val.subCategories) {
                   _val.putIfAbsent("${_subCat.subCategory}${_subCat.id}", () => "");
@@ -296,7 +297,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
     // build data if formData is not null
     if(formData != null) {
       for(var _lvData in formData) {
-        print(_lvData.toJson());
+        //print(_lvData.toJson());
         String _lvlName = _lvData.levelName;
         Map<String, FormAgeCat> _lvAgeMap = {};
         for(var _subCat in _lvData.ageMap) {

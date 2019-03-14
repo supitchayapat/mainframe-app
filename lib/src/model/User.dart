@@ -8,12 +8,16 @@ class Couple {
   String key;
   String coupleName;
   List<User> couple;
+  User assistant;
 
   Couple({this.coupleName, this.couple});
 
   Couple.fromSnapshot(var s) {
     key = s["key"];
     coupleName = s["coupleName"];
+    if(s["assistant"] != null) {
+      assistant = new User.fromDataSnapshot(s["assistant"]);
+    }
 
     if(s["couple"].length > 0) {
       couple = [];
@@ -28,6 +32,7 @@ class Couple {
   toJson() {
     return {
       "coupleName": coupleName,
+      "assistant" : assistant?.toJson(),
       "couple": couple?.map((val) => val?.toJson())?.toList(),
     };
   }
