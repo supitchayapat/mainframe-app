@@ -24,7 +24,7 @@ class EventDanceCategory {
       "category": category,
       "code": code,
       "order": order,
-      "subCategories": subCategories.map((val) => val.toJson())
+      "subCategories": subCategories?.map((val) => val.toJson())
     };
   }
 }

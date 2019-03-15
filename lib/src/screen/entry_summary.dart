@@ -508,6 +508,7 @@ class _entry_summaryState extends State<entry_summary> {
       event: reg.eventItem,
       totalAmount: _sumAmount,
       surcharge: surcharge,
+      newEntries: true,
     );
     info.entries = [];
     info.tickets = [];

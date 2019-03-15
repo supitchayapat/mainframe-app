@@ -160,21 +160,28 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
           bool _changeTreshold = false;
 
+          //print("isVertical: ${isVerticalLvl}");
+          //print("headlookup: ${_headLookup?.toJson()}");
+          //print("formLookup: ${_formLookup?.toJson()}");
           for(var elem in _formLookup.elements) {
             DanceSubCategory subCategory = new DanceSubCategory(subCategory: elem.code, order: elem.order, code: elem.code, id: elem.id);
             if(subCategory.code.length > 4 && !_changeTreshold) {
               _changeTreshold = true;
             }
 
+            //print("headlookup elems: ${_headLookup.elements}");
             for(var elem2 in _headLookup.elements) {
               if(elem2.id == elem.grouping) {
-                //print("header: ${elem2.code}");
-                //print("header id: ${elem2.id}");
-                //print("subheader: ${elem.code}");
-                //print("subheader id: ${elem.grouping}");
+                print("header: ${elem2.code}");
+                print("header id: ${elem2.id}");
+                print("subheader: ${elem.code}");
+                print("subheader id: ${elem.grouping}");
                 if(danceCatMap[elem2.code].subCategories == null) {
                   danceCatMap[elem2.code].subCategories = [];
                 }
+                //if(elem2.code == "GOLD 1") {
+                  //print("${elem2.code} subCategory: $subCategory");
+                //}
                 danceCatMap[elem2.code].subCategories.add(subCategory);
               }
             }
@@ -189,17 +196,19 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       }
 
       if(danceCatMap != null) {
+        //print("danceCatMap length: ${danceCatMap.length}");
+        //print("danceCatMap: ${danceCatMap}");
         danceCatMap.forEach((key, val) {
           //print("key: $key");
           //print(val.toJson());
-          //print("sub length: ${val.subCategories.length}");
+          //print("sub length: ${val.subCategories?.length}");
 
           if(!isVerticalLvl) {
             levelValMap.forEach((_key, _val) {
               String _lvl = _key.substring(0, _key.indexOf("_"));
               //print("_lvl: $_lvl");
               //print("subcategories: ${val?.toJson()}");
-              if(_lvl == ((key).toString().toLowerCase())) {
+              if(_lvl == ((key).toString().toLowerCase()) && val.subCategories != null) {
                 for(var _subCat in val.subCategories) {
                   _val.putIfAbsent("${_subCat.subCategory}${_subCat.id}", () => "");
                 }
@@ -212,7 +221,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
         rPanelWidth = 0.0;
         danceCategories.forEach((danceCategory){
-          rPanelWidth += danceCategory.subCategories.length;
+          if(danceCategory.subCategories != null)
+            rPanelWidth += danceCategory.subCategories.length;
         });
         rPanelWidth = rPanelWidth * subColumnTreshold;
       }
@@ -739,7 +749,8 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
       new Row(
         children: danceCategories.map<Widget>((danceCategory){
           //print(col % 2);
-          return new Container(
+          //print("${danceCategory.category.toUpperCase()} : ${danceCategory.subCategories?.length}");
+          return (danceCategory.subCategories != null) ? new Container(
             color: (col++ % 2 == 1) ? const Color(0xff1e5484) : Colors.transparent,
             child: new Column(
               children: <Widget>[
@@ -777,7 +788,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
               ],
               crossAxisAlignment: CrossAxisAlignment.center,
             ),
-          );
+          ) : new Container();
         }).toList(),
       )
     ];
@@ -873,11 +884,14 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
 
       danceCategories.forEach((danceCategory) {
         List<String> _subValues = [];
-        danceCategory.subCategories.forEach((val) {
-          _subValues.add(val.subCategory + val.id.toString());
-          //subHeadingValues.add(val.subCategory + val.id.toString());
-        });
-        subHeadingValues.putIfAbsent(danceCategory.code.toUpperCase(), () => _subValues);
+        if(danceCategory.subCategories != null) {
+          danceCategory.subCategories.forEach((val) {
+            _subValues.add(val.subCategory + val.id.toString());
+            //subHeadingValues.add(val.subCategory + val.id.toString());
+          });
+          subHeadingValues.putIfAbsent(
+              danceCategory.code.toUpperCase(), () => _subValues);
+        }
       });
     }
 

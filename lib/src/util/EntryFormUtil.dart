@@ -68,11 +68,11 @@ class EntryFormUtil {
   static bool isFormApplicable(FormEntry form, participant, type) {
     bool retVal = false;
     FormParticipantCode userCode = getParticipantCodeOnUser(participant, type);
-    print("USER: ${userCode}");
+    //print("USER: ${userCode}");
     List<FormParticipantCode> _participants = [];
 
     form.participants.forEach((val) {
-      print(getParticipantCodeFromString(val.code));
+      //print(getParticipantCodeFromString(val.code));
       _participants.add(getParticipantCodeFromString(val.code));
     });
     //print(_participants.contains(_getParticipantCodeOnUser(participant, type)));

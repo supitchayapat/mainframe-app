@@ -83,8 +83,9 @@ class InvoiceInfo {
   List<TicketEvent> tickets;
   List<InvoiceParticipants> entries;
   double receivedAmount;
+  bool newEntries;
 
-  InvoiceInfo({this.totalAmount, this.receivedAmount, this.surcharge, this.event, this.billingInfo, this.tickets, this.entries});
+  InvoiceInfo({this.totalAmount, this.receivedAmount, this.surcharge, this.event, this.billingInfo, this.tickets, this.entries, this.newEntries});
 
   InvoiceInfo.fromSnapshot(var s) {
     totalAmount = s["totalAmount"];
@@ -101,6 +102,7 @@ class InvoiceInfo {
       "surcharge": surcharge.toJson(),
       "event": event.toJson(),
       "billingInfo": billingInfo?.toJson(),
+      "newEntries": newEntries,
       "tickets": tickets?.map((val) => val?.toJson())?.toList(),
       "entries": entries?.map((val) => val?.toJson())?.toList(),
     };

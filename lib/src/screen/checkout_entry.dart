@@ -109,6 +109,7 @@ class _checkout_entryState extends State<checkout_entry> {
             event: event_details.eventItem,
             totalAmount: _sumAmount,
             surcharge: surcharge,
+            newEntries: true,
           );
           info.entries = [];
           info.tickets = [];
