@@ -30,6 +30,7 @@ class _entry_freeformState extends State<entry_freeform> {
   @override
   void initState() {
     super.initState();
+    freeFormObj.init();
 
     tipsTimer = ShowTips.showTips(context, "showdanceSolo");
 
@@ -41,6 +42,7 @@ class _entry_freeformState extends State<entry_freeform> {
       print("FORM DATA: ${formData?.toJson()}");
       setState(() {
         freeFormObj = formData;
+        freeFormObj.init();
       });
     }
   }

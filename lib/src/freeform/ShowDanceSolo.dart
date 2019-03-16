@@ -6,6 +6,7 @@ import 'package:myapp/src/widget/MFTextFormField.dart';
 
 class ShowDanceSolo {
   String dance;
+  TextEditingController _danceCtrl;
 
   ShowDanceSolo({this.dance});
 
@@ -19,10 +20,12 @@ class ShowDanceSolo {
     };
   }
 
-  Widget toWidget() {
+  void init() {
+    _danceCtrl = new TextEditingController();
+    _danceCtrl.text = (dance != null) ? dance : "";
+  }
 
-    TextEditingController _danceCtrl = new TextEditingController();
-    _danceCtrl.text = dance != null ? dance : "";
+  Widget toWidget() {
 
     return new Container(
       //color: Colors.amber,
