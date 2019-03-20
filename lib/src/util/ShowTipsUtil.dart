@@ -101,7 +101,7 @@ class ShowTips {
             break;
           case 'addParticipant':
             showContentTips(context, "Add Participant Screen ", false, [
-              new Text("To add/select a Participant, you may add them via Facebook, Contacts or Existing. Please Tap on their names or you can add a participant manually by pressing "),
+              new Text("To add/select a Participant, you may add them via Contacts or Existing. Please Tap on their names or you can add a participant manually by pressing "),
               new Text("ADD MANUALLY ", style: new TextStyle(color: new Color(0xff00e5ff))),
               new Text("Button."),
             ]);

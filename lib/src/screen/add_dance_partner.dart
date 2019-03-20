@@ -18,6 +18,7 @@ import 'package:myapp/src/screen/attendee_management.dart' as attendee;
 import 'package:myapp/src/util/AnalyticsUtil.dart';
 
 var tipsTimer;
+var titlePart;
 
 class AddDancePartner extends StatefulWidget {
   @override
@@ -37,6 +38,10 @@ class _AddDancePartnerState extends State<AddDancePartner> {
   @override
   void initState() {
     super.initState();
+
+    if(titlePart == null) {
+      titlePart = "PARTICIPANT";
+    }
 
     // logging for crashlytics
     global.messageLogs.add("Add Participant Screen loaded.");
@@ -554,7 +559,7 @@ class _AddDancePartnerState extends State<AddDancePartner> {
 
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: new MFAppBar("ADD PARTICIPANT", context),
+      appBar: new MFAppBar("ADD ${titlePart}", context),
       body: new Column(
         children: <Widget>[
           /*new Row(

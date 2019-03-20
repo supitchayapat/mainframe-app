@@ -13,6 +13,7 @@ class MFTextFormField extends StatefulWidget {
   TextInputType keyboardType;
   TextEditingController controller;
   String initialValue;
+  TextStyle errorStyle;
   bool isEnabled;
   bool isDatePicker;
 
@@ -21,6 +22,7 @@ class MFTextFormField extends StatefulWidget {
     this.hintText,
     this.icon,
     this.onSaved,
+    this.errorStyle,
     this.validator,
     this.obscureText : false,
     this.keyboardType : TextInputType.text,
@@ -46,7 +48,8 @@ class _MFTextFormFieldState extends State<MFTextFormField> {
         //icon: widget.icon,
         hintText: widget.hintText,
         labelText: widget.labelText,
-        border: InputBorder.none
+        border: InputBorder.none,
+        errorStyle: widget.errorStyle,
         //hideDivider: true,
     );
 

@@ -197,6 +197,7 @@ class _attendee_managementState extends State<attendee_management> {
                       });
                       addPartner.tipsTimer = null;
                       participantType = "attendee";
+                      addPartner.titlePart = "ATTENDEE";
                       Navigator.of(context).pushNamed("/addPartner");
                     },
                     child: (participantUser == null || participantUser is String) ? new Text("ASSIGN",

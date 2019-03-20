@@ -353,6 +353,7 @@ class _GroupDanceState extends State<GroupDance> {
           color: Colors.white,
           onPressed: () {
             participantList.participantType = "coach";
+            addPartner.titlePart = "COACH";
             Navigator.of(context).pushNamed("/addPartner");
           },
           child: new Container(

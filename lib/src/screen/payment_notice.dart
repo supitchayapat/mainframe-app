@@ -25,7 +25,7 @@ class _payment_noticeState extends State<payment_notice> {
             //color: Colors.amber,
             height: 250.0,
             child: new Text(
-                "Payment Transaction sent. Please check email for the payment process. Thank you",
+                "Payment Transaction sent. Thank you",
                 style: new TextStyle(fontSize: 20.0, color: Colors.white, fontFamily: "Montserrat-Light", fontWeight: FontWeight.bold)
             ),
           ),

@@ -40,7 +40,18 @@ class ShowDanceSolo {
             validator: _validateNotEmpty,
             controller: _danceCtrl,
             initialValue: dance != null ? dance : "",
+            errorStyle: new TextStyle(fontSize: 20.0),
           ),
+          /*new TextFormField(
+            decoration: new InputDecoration(
+              labelText: 'Dance',
+            ),
+            keyboardType: TextInputType.text,
+            onSaved: (String val) => dance = val,
+            validator: _validateNotEmpty,
+            controller: _danceCtrl,
+            initialValue: dance != null ? dance : "",
+          )*/
         ],
       ),
     );

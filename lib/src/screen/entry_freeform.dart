@@ -61,7 +61,8 @@ class _entry_freeformState extends State<entry_freeform> {
   void _handleSaving() {
     final FormState form = _formKey.currentState;
     if(!form.validate()){
-      showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+      //showInSnackBar(_scaffoldKey, 'Please fix the errors in red before submitting.');
+      showMainFrameDialog(context, "Error", "Please fill in required fields before submitting.");
     }
     else {
       form.save();
