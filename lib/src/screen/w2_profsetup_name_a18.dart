@@ -70,7 +70,7 @@ class _ProfileSetupNameState extends State<ProfileSetupName> {
           if(global.dancePartner.email == null || global.dancePartner.email.isEmpty) {
             isEmailEnabled = true;
           }
-          headingTitle = "ADD A PARTICIPANT";
+          headingTitle = "PERSON INFORMATION";
           textDescription = "Please provide the following information accurately.";
           _user = new User(first_name: _fnameCtrl.text, last_name: _lnameCtrl.text, email: _emailCtrl.text);
         });

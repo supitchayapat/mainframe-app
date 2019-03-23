@@ -688,6 +688,7 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
           global.messageLogs.add("Add Age Category button pressed.");
           //print(_levelMap[levelTxt]);
           Map<String, FormAgeCat> _selButtons = {};
+          Set<String> _origSelButtons = new Set();
           if(_levelMap.containsKey(levelTxt)) {
             //_selButtons.addAll(levelMap[levelTxt]);
             /*for(var _lm in _levelMap[levelTxt]) {
@@ -696,43 +697,75 @@ class _EntryFormState extends State<EntryForm> with WidgetsBindingObserver {
             _levelMap[levelTxt].forEach((key,val){
               FormAgeCat _temp = new FormAgeCat(age: val.age, catOpen: val.catOpen, catClosed: val.catClosed);
               _selButtons.putIfAbsent(key, () => _temp);
+              _origSelButtons.add(key);
             });
           }
           showAgeCategoryDialog(context, triggerCategory, agesText, _selButtons, () {
             //print("COMPLETED");
             //print("_levelMap[levelTxt] = ${_levelMap[levelTxt]}");
             setState(() {
-              print("_selButtons = ${_selButtons}");
+              //print("_selButtons = ${_selButtons}");
+              //print("original: ${_origSelButtons}");
+              Set<String> _finalSelButtons = new Set();
+              bool hasEntries = false;
               List<String> _selBtnList = [];
               _selButtons.forEach((key, val) {
                 _selBtnList.add(key);
+                _finalSelButtons.add(key);
               });
-              //levelMap.putIfAbsent(levelTxt, () => _selButtons);
-              _levelMap[levelTxt] = _selButtons;
-              print("_levelMap = ${_levelMap[levelTxt]}");
-              _levelMap.forEach((key, values) {
-                if (triggerCategory) {
-                  values.forEach((key2, val) {
-                    if (val.catOpen)
-                      levelValMap.putIfAbsent(key + "_" + key2 + "O", () => {});
-                    if (val.catClosed)
-                      levelValMap.putIfAbsent(key + "_" + key2 + "C", () => {});
-                  });
+              Set<String> _diff1 = new Set();
+              _diff1.addAll(_origSelButtons);
+              _diff1.removeAll(_finalSelButtons);
+              print("DIFF: $_diff1");
+              //print("levelTxt: $levelTxt");
+              if(_diff1.isNotEmpty) {
+                for(String _df in _diff1) {
+                  // check open
+                  print("${levelTxt}_${_df}O: ${levelValMap[levelTxt+"_"+_df+"O"]}");
+                  if(levelValMap[levelTxt+"_"+_df+"O"] != null && levelValMap[levelTxt+"_"+_df+"O"].isNotEmpty) {
+                    for(var entri in levelValMap[levelTxt+"_"+_df+"O"].entries) {
+                      //print("key: ${entri.key}");
+                      //print("value: ${entri.value}");
+                      if(entri.value != null && entri.value.isNotEmpty) {
+                        hasEntries = true;
+                      }
+                    }
+                  }
                 }
-                else {
-                  values.forEach((key2, val) =>
-                      levelValMap.putIfAbsent(key + "_" + key2, () => {}));
-                }
-              });
-              if (_selButtons.length < 1) {
-                _levelMap.remove(levelTxt);
               }
+              //levelMap.putIfAbsent(levelTxt, () => _selButtons);
+              if(hasEntries) {
+                print("Level has entries!!");
+                showMainFrameDialog(context, "Error", "Could not Deselect Age Category. Please remove added dance entries (radio buttons right panel) for age category deselected.");
+              } else {
+                _levelMap[levelTxt] = _selButtons;
+                _levelMap.forEach((key, values) {
+                  if (triggerCategory) {
+                    values.forEach((key2, val) {
+                      if (val.catOpen)
+                        levelValMap.putIfAbsent(
+                            key + "_" + key2 + "O", () => {});
+                      if (val.catClosed)
+                        levelValMap.putIfAbsent(
+                            key + "_" + key2 + "C", () => {});
+                    });
+                  }
+                  else {
+                    values.forEach((key2, val) =>
+                        levelValMap.putIfAbsent(key + "_" + key2, () => {}));
+                  }
+                });
+                if (_selButtons.length < 1) {
+                  _levelMap.remove(levelTxt);
+                }
 
-              // trigger tips
-              //if(tipsTimer != null) {
-              tipsTimer =
-                  ShowTips.showTips(context, "standardFormHorizontalLevelMin");
-              //}
+                // trigger tips
+                //if(tipsTimer != null) {
+                tipsTimer =
+                    ShowTips.showTips(
+                        context, "standardFormHorizontalLevelMin");
+                //}
+              }
             });
           });
         },

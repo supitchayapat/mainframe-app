@@ -1535,6 +1535,8 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
                 _formAgeCat.catOpen = !_formAgeCat.catOpen;
                 if(!_formAgeCat.catOpen && !_formAgeCat.catClosed) {
                   _selectedButtons.remove(str);
+                  print("STR: $str");
+                  print("BOTH REMOVED");
                 }
               }
               Navigator.of(context).pop();
@@ -1557,6 +1559,8 @@ Future<dynamic> showAgeCategoryDialog(BuildContext context, bool hasCat, List<St
                 _formAgeCat.catClosed = !_formAgeCat.catClosed;
                 if(!_formAgeCat.catOpen && !_formAgeCat.catClosed) {
                   _selectedButtons.remove(str);
+                  print("STR: $str");
+                  print("BOTH REMOVED");
                 }
               }
               Navigator.of(context).pop();
